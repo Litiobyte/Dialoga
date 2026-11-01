@@ -387,6 +387,9 @@ msgstr "CCO (opcional)"
 msgid "Back to Dashboard"
 msgstr "Volver al panel de control"
 
+msgid "Back to flows"
+msgstr "Volver a los flujos"
+
 msgid "Back to public leads"
 msgstr "Volver a los contactos públicos"
 
@@ -827,6 +830,9 @@ msgstr "Crea flujos de conversación para tu chatbot con nuestro editor visual d
 
 msgid "Create your first flow"
 msgstr "Crea tu primer flujo"
+
+msgid "Create, review, and manage your conversational flows."
+msgstr "Crea, revisa y administra tus flujos conversacionales."
 
 msgid "Created"
 msgstr "Creado"
@@ -1284,6 +1290,9 @@ msgstr "Error al transferir flujos. Inténtalo de nuevo."
 msgid "Flow updated"
 msgstr "Flujo actualizado"
 
+msgid "Flows"
+msgstr "Flujos"
+
 msgid "For HMAC-SHA256 signing"
 msgstr "Para firmar con HMAC-SHA256"
 
@@ -1641,7 +1650,7 @@ msgid "Logged-in Users Only"
 msgstr "Solo usuarios que hayan iniciado sesión"
 
 msgid "Logged-in users"
-msgstr "Usuarios conectados"
+msgstr "Usuarios con sesión iniciada"
 
 msgid "Loop"
 msgstr "Bucle"
@@ -2375,6 +2384,9 @@ msgstr "Muestra casillas en lugar de botones. El visitante puede elegir más de 
 msgid "Show different messages during and after business hours."
 msgstr "Muestra mensajes diferentes dentro y fuera del horario comercial."
 
+msgid "Show more details"
+msgstr "Mostrar más detalles"
+
 msgid "Show this message before looping back. Leave blank to skip."
 msgstr "Muestra este mensaje antes de volver. Déjalo vacío para omitirlo."
 
@@ -2406,7 +2418,7 @@ msgid "Specific User Roles"
 msgstr "Perfiles de usuario específicos"
 
 msgid "Specific roles"
-msgstr "Roles específicos"
+msgstr "Perfiles específicos"
 
 msgid "Started"
 msgstr "Iniciada"
@@ -2552,6 +2564,9 @@ msgstr "El mensaje que se muestra al visitante"
 msgid "The options visitors can click to answer this question."
 msgstr "Las opciones en las que los visitantes pueden hacer clic para responder a esta pregunta."
 
+msgid "The selected flow could not be found."
+msgstr "No se encontró el flujo seleccionado."
+
 msgid "The selected flow could not be found. Please refresh and try again."
 msgstr "No se encontró el flujo seleccionado. Actualiza la página e inténtalo de nuevo."
 
@@ -2677,6 +2692,9 @@ msgstr "Flujo sin título"
 
 msgid "Untitled node"
 msgstr "Nodo sin título"
+
+msgid "Updated"
+msgstr "Actualizado"
 
 msgid "Updated:"
 msgstr "Actualizado:"

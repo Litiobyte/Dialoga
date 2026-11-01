@@ -97,7 +97,8 @@ function settings_run_tests() {
         $dom = new DOMDocument(); @$dom->loadHTML('<?xml encoding="UTF-8">' . $html); $xpath = new DOMXPath($dom);
         i18n_assert($xpath->query('//form')->length === 1, 'Exactly one form');
         i18n_assert($xpath->query('//form//section')->length === 7, 'All seven settings panels belong to the form');
-        i18n_assert($xpath->query('//form//nav/a')->length === 7, 'Seven fragment links');
+        i18n_assert($xpath->query('//form//nav/a')->length === 8, 'Eight fragment links');
+        i18n_assert($xpath->query('//*[@id="dialogawp-settings-danger-zone" and not(ancestor::form)]')->length === 1, 'Danger Zone is a tab panel outside the save form');
         i18n_assert($xpath->query('//*[@hidden]')->length === 0, 'No-JS must expose every panel and role selector');
         i18n_assert($xpath->query('//form//*[@id="dialogawp-clear-all-leads-btn" or @id="dialogawp-clear-all-convs-btn" or @id="dialogawp-reset-analytics-btn"]')->length === 0, 'Destructive controls outside save form');
         i18n_assert($xpath->query('//form//button[@type="submit" and @name="dialogawp_save_settings"]')->length === 2, 'Both save buttons submit same form');

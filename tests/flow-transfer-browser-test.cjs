@@ -122,12 +122,12 @@ async function main() {
             await page.addScriptTag({ content: '(function($){' + builderSource + '})(jQuery);' });
             await page.evaluate(({ templates, savedGraph, freshGraph }) => {
                 window.dialogawpTemplates = templates;
-                window.dialogawpAdmin = { ajaxUrl: '/wp-admin/admin-ajax.php', nonce: 'browser-test-nonce' };
+                window.dialogawpAdmin = { ajaxUrl: '/wp-admin/admin-ajax.php', nonce: 'browser-test-nonce', builderMode: 'editor', builderUrl: '/wp-admin/admin.php?page=dialogawp-builder', flowId: 7 };
                 window.fixture = { messages: [], saveCalls: [], loadCalls: 0, switchCalls: 0, resizeCalls: 0,
                     graph: structuredClone(freshGraph), writes: [] };
                 window.dialogawpModal = Object.fromEntries(['alert', 'error', 'success'].map(type => [type,
                     (message, title) => fixture.messages.push({ type, message, title })]));
-                Object.assign(dialogawpBuilder, { currentFlowId: '7', nodes: structuredClone(savedGraph.nodes),
+                Object.assign(dialogawpBuilder, { isEditor: true, currentFlowId: '7', nodes: structuredClone(savedGraph.nodes),
                     edges: structuredClone(savedGraph.edges), selectedNode: null });
                 dialogawpBuilder.markDirty = () => { dialogawpBuilder.isDirty = true; };
                 const save = dialogawpBuilder.saveNodeEdits;
@@ -173,6 +173,15 @@ async function main() {
         await page.locator('#dialogawp-import-file').setInputFiles({ name, mimeType: 'application/json',
             buffer: Buffer.from(typeof pkg === 'string' ? pkg : JSON.stringify(pkg)) });
     }
+    async function addListTransferControls(page) {
+        await page.evaluate(() => {
+            if (document.querySelector('.dialogawp-export-flows')) return;
+            const actions = document.createElement('div');
+            actions.className = 'dialogawp-builder-list-actions';
+            actions.innerHTML = '<button type="button" class="dialogawp-export-flows">Export flows</button>';
+            document.body.append(actions);
+        });
+    }
     async function message(page, type, fragment) {
         await page.waitForFunction(({ type, fragment }) => fixture.messages.some(item => item.type === type && item.message.includes(fragment)), { type, fragment });
     }
@@ -180,6 +189,10 @@ async function main() {
 
     try {
         await test('individual download uses current form and latest graph, not saved DB graph', async ({ page, state }) => {
+            assert.equal(await page.locator('.dialogawp-import-flows').count(), 1,
+                'editor exposes import for a single flow workflow');
+            assert.equal(await page.locator('.dialogawp-export-flows').count(), 0,
+                'editor does not expose bulk export');
             const pkg = await downloaded(page, () => page.locator('.dialogawp-export-current').click());
             assert.equal(pkg.format, 'dialogawp-flows');
             assert.equal(pkg.version, 1);
@@ -192,6 +205,30 @@ async function main() {
             assert.equal(state.requests[0].fields.current_flow.id, 7);
             assert.equal(await page.locator('.dialogawp-export-current').isEnabled(), true);
         });
+
+        for (const width of [1025, 1100, 1280, 1440]) {
+            await test('editor toolbar stays on one row at ' + width, async ({ page }) => {
+                await page.evaluate(() => {
+                    jQuery('#dialogawp-visibility-settings').show();
+                    jQuery('#dialogawp-save-status')
+                        .removeClass('dialogawp-save-status--saved')
+                        .addClass('dialogawp-save-status--unsaved')
+                        .find('.dialogawp-save-status-text').text('Unsaved changes');
+                });
+                const layout = await page.evaluate(() => {
+                    const toolbar = document.querySelector('.dialogawp-builder-toolbar');
+                    const groups = [...toolbar.querySelectorAll(':scope > div')].map(item => item.getBoundingClientRect());
+                    return {
+                        height: toolbar.getBoundingClientRect().height,
+                        scrollWidth: toolbar.scrollWidth,
+                        clientWidth: toolbar.clientWidth,
+                        centers: groups.map(box => Math.round(box.top + box.height / 2))
+                    };
+                });
+                assert.equal(new Set(layout.centers).size, 1, 'toolbar groups share one row');
+                assert.ok(layout.scrollWidth <= layout.clientWidth, 'toolbar does not overflow horizontally: ' + JSON.stringify(layout));
+            }, { width, height: 900 });
+        }
 
         await test('selectedNode form commit preserves fresh graph positions, new nodes and edges', async ({ page }) => {
             await page.evaluate(() => {
@@ -269,6 +306,7 @@ async function main() {
         });
 
         await test('mass export sends only selected IDs and current override only when included', async ({ page, state }) => {
+            await addListTransferControls(page);
             await page.locator('.dialogawp-export-flows').click();
             await page.locator('.dialogawp-export-choice[value="8"]').check();
             const pkg = await downloaded(page, () => submit(page).click());
@@ -286,6 +324,7 @@ async function main() {
         });
 
         await test('mass export select all, empty selection and 100-flow limit', async ({ page, state }) => {
+            await addListTransferControls(page);
             state.rows = Array.from({ length: 101 }, (_, index) => flow(index + 1, 'Flow ' + (index + 1)));
             await page.locator('.dialogawp-export-flows').click();
             await page.locator('.dialogawp-export-choice[value="7"]').uncheck();
@@ -302,6 +341,7 @@ async function main() {
         });
 
         await test('import previews exact counts and scrub warnings, commits inactive without switching editor', async ({ page, state }) => {
+            await addListTransferControls(page);
             const pkg = packageFixture();
             pkg.flows[0].flow_data.nodes[0].data.config = { api_key: 'private', connector_id: 'local', url: 'https://example.com/review' };
             await page.evaluate(() => { window.beforeImportGraph = structuredClone(fixture.graph); });
@@ -321,17 +361,16 @@ async function main() {
             assert.equal(config.connector_id, '');
             assert.deepEqual(await page.evaluate(() => ({ id: dialogawpBuilder.currentFlowId, switches: fixture.switchCalls,
                 unchanged: JSON.stringify(fixture.graph) === JSON.stringify(beforeImportGraph) })), { id: '7', switches: 0, unchanged: true });
-            await page.waitForFunction(() => fixture.loadCalls === 1 && document.querySelector('.dialogawp-flow-item[data-flow-id="101"]'), null, { timeout: 1500 });
-            assert.equal(await page.locator('.dialogawp-flow-item[data-flow-id="101"] .dialogawp-flow-status').textContent(), 'Inactive');
         });
 
-        await test('production sidebar render helper supports escaped flow names', async ({ page }) => {
-            await page.evaluate(row => dialogawpBuilder.renderFlowList([row]), flow(7, 'Sales <script>alert(1)</script> & $&'));
-            assert.equal(await page.locator('.dialogawp-flow-item h4').textContent(), 'Sales <script>alert(1)</script> & $&');
-            assert.equal(await page.locator('#dialogawp-flows-list script').count(), 0);
+        await test('production editor escapes flow names without rendering a sidebar', async ({ page }) => {
+            assert.equal(await page.locator('.dialogawp-flows-sidebar').count(), 0);
+            assert.equal(await page.evaluate(() => dialogawpBuilder.escapeEditorHtml('Sales <script>alert(1)</script> & $&')),
+                'Sales &lt;script&gt;alert(1)&lt;/script&gt; &amp; $&amp;');
         });
 
         await test('invalid JSON, wrong extension, oversized upload and invalid package fail without commits', async ({ page, state }) => {
+            await addListTransferControls(page);
             await upload(page, '{bad');
             await message(page, 'error', 'does not contain valid JSON');
             assert.equal(state.requests.length, 0);
@@ -350,6 +389,7 @@ async function main() {
         });
 
         await test('import commit failure remains in preview, reenables controls and never switches or reloads editor', async ({ page, state }) => {
+            await addListTransferControls(page);
             await upload(page, packageFixture());
             await page.locator('.dialogawp-transfer-dialog').waitFor();
             state.fault = { body: JSON.stringify({ success: false, data: {
@@ -366,6 +406,7 @@ async function main() {
         });
 
         await test('export progress disables controls, prevents duplicates, exposes server error and permits retry', async ({ page, state }) => {
+            await addListTransferControls(page);
             let release;
             state.gate = new Promise(resolve => { release = resolve; });
             await page.locator('.dialogawp-export-flows').click();
@@ -401,6 +442,7 @@ async function main() {
         }
 
         await test('export warning appears after selection dialog closes', async ({ page, state }) => {
+            await addListTransferControls(page);
             const graph = structuredClone(savedGraph);
             graph.nodes[0].data.config = { api_key: 'private' };
             state.rows[1].flow_data = JSON.stringify(graph);
@@ -414,13 +456,13 @@ async function main() {
         });
 
         for (const viewport of [{ width: 1440, height: 900 }, { width: 1100, height: 650 }]) {
-            await test('fullscreen hides sidebar/admin chrome, fits and resizes viewport ' + viewport.width, async ({ page }) => {
+            await test('fullscreen hides admin chrome, fits and resizes viewport ' + viewport.width, async ({ page }) => {
                 await page.locator('.dialogawp-fullscreen-toggle').click();
                 assert.equal(await page.locator('body').evaluate(el => el.classList.contains('dialogawp-canvas-fullscreen')), true);
                 assert.equal(await page.locator('.dialogawp-fullscreen-toggle').getAttribute('aria-pressed'), 'true');
                 for (const selector of ['#wpadminbar', '#adminmenumain'])
                     assert.equal(await page.locator(selector).evaluate(el => getComputedStyle(el).visibility), 'hidden');
-                assert.equal(await page.locator('.dialogawp-flows-sidebar').isVisible(), false);
+                assert.equal(await page.locator('.dialogawp-flows-sidebar').count(), 0);
                 for (const size of [viewport, { width: viewport.width - 40, height: viewport.height - 90 }]) {
                     await page.setViewportSize(size);
                     const box = await page.locator('.dialogawp-builder-container').boundingBox();
@@ -433,12 +475,13 @@ async function main() {
                 await page.waitForFunction(() => fixture.resizeCalls >= 2);
                 await page.keyboard.press('Escape');
                 assert.equal(await page.locator('.dialogawp-fullscreen-toggle').getAttribute('aria-pressed'), 'false');
-                assert.equal(await page.locator('.dialogawp-flows-sidebar').isVisible(), true);
+                assert.equal(await page.locator('.dialogawp-flows-sidebar').count(), 0);
                 assert.equal(await page.locator('#wpadminbar').evaluate(el => getComputedStyle(el).visibility), 'visible');
             }, viewport);
         }
 
         await test('dialog Tab/Shift-Tab focus trap and Escape closes dialog before fullscreen; focus/scroll restored', async ({ page }) => {
+            await addListTransferControls(page);
             await page.evaluate(() => window.scrollTo(0, 100));
             const scroll = await page.evaluate(() => window.scrollY);
             await page.locator('.dialogawp-fullscreen-toggle').click();

@@ -288,7 +288,7 @@ function CanvasInner(props) {
     const viewportRef = useRef({ x: 0, y: 0, zoom: 1 });
     const [nodes, setNodes] = useState(() => toCanvasNodes(initialPortableNodes));
     const [edges, setEdges] = useState(() => toCanvasEdges(initialPortableEdges, initialPortableNodes));
-    const { screenToFlowPosition } = useReactFlow();
+    const { screenToFlowPosition, fitView } = useReactFlow();
 
     const notifyChanged = useCallback(() => {
         if (window.jQuery) {
@@ -367,7 +367,10 @@ function CanvasInner(props) {
         }
         setNodes(toCanvasNodes(nodesRef.current));
         setEdges(toCanvasEdges(edgesRef.current, nodesRef.current));
-    }, []);
+        // The initial fit runs before AJAX supplies an existing flow. Refit after
+        // React commits the new nodes so imported and saved graphs open centered.
+        requestAnimationFrame(() => requestAnimationFrame(() => fitView({ padding: 0.2, maxZoom: 1, duration: 0 })));
+    }, [fitView]);
 
     useLayoutEffect(() => {
         const api = {

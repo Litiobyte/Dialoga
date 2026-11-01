@@ -23,6 +23,7 @@
                 panels[i].hidden = i !== index;
             });
             if (focus) tabs[index].focus();
+            form.classList.toggle('dialogawp-settings-form--danger', tabs[index].hash === '#dialogawp-settings-danger-zone');
             // The fragment also travels with the native form POST action.
             if (persist) {
                 try {

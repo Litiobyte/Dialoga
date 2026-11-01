@@ -10,7 +10,7 @@ const { createRequire } = require('node:module');
 const { spawnSync } = require('node:child_process');
 const root = path.resolve(__dirname, '..');
 const temporaryTools = '/var/folders/2w/_41g_m7s1b3ds8bs1w06m15r0000gp/T/opencode/flow-transfer-browser-tooling';
-const slugs = ['general', 'appearance', 'messages', 'business-hours', 'notifications', 'engagement', 'data-privacy'];
+const slugs = ['general', 'appearance', 'messages', 'business-hours', 'notifications', 'engagement', 'data-privacy', 'danger-zone'];
 const fragment = slug => '#dialogawp-settings-' + slug;
 const tab = (page, slug) => page.locator('#dialogawp-settings-tab-' + slug);
 function dependency(name) {
@@ -35,7 +35,7 @@ async function selected(page, slug, focused = false) {
         focused: document.activeElement === element, role: element.getAttribute('role'),
         controls: element.getAttribute('aria-controls'), labelled: document.getElementById(element.hash.slice(1)).getAttribute('aria-labelledby')
     })));
-    assert.equal(state.length, 7);
+    assert.equal(state.length, 8);
     for (const item of state) {
         assert.equal(item.selected, String(item.slug === slug));
         assert.equal(item.tabIndex, item.slug === slug ? 0 : -1);
@@ -125,7 +125,7 @@ async function main() {
             assert.equal(await page.evaluate(() => typeof window.jQuery), 'undefined', 'native DOM without jQuery');
             assert.equal(await page.locator('.dialogawp-settings-tabs').getAttribute('role'), 'tablist');
             await selected(page, 'general'); await tab(page, 'general').focus();
-            for (const [key, slug] of [['End', 'data-privacy'], ['ArrowRight', 'general'], ['ArrowLeft', 'data-privacy'],
+            for (const [key, slug] of [['End', 'danger-zone'], ['ArrowRight', 'general'], ['ArrowLeft', 'danger-zone'],
                 ['Home', 'general'], ['ArrowDown', 'appearance'], ['ArrowUp', 'general']]) {
                 await page.keyboard.press(key); await selected(page, slug, true);
                 assert.equal(new URL(page.url()).hash, fragment(slug));
@@ -198,6 +198,7 @@ async function main() {
                 const dictionary = state.rendered.dictionary;
                 assert.equal(await tab(page, 'appearance').textContent(), dictionary.Appearance);
                 assert.equal(await page.locator('h1').textContent(), dictionary['Settings']);
+                await tab(page, 'danger-zone').click();
                 await page.locator('#dialogawp-clear-all-leads-btn').click();
                 await page.waitForFunction(() => !document.querySelector('#dialogawp-clear-all-leads-btn').disabled);
                 assert.deepEqual(state.dialogs.map(item => item.message), [dictionary['Delete ALL leads?\n\nThis cannot be undone.'],
@@ -215,11 +216,26 @@ async function main() {
                 for (const slug of slugs) {
                     await tab(page, slug).click();
                     const layout = await page.evaluate(() => ({ viewport: innerWidth, scroll: document.documentElement.scrollWidth,
+                        tabs: (() => {
+                            const nav = document.querySelector('.dialogawp-settings-tabs');
+                            const firstTab = document.querySelector('.dialogawp-settings-tab');
+                            const box = nav.getBoundingClientRect();
+                            return {
+                                left: box.left, right: box.right, clientWidth: nav.clientWidth, scrollWidth: nav.scrollWidth,
+                                overflowX: getComputedStyle(nav).overflowX, wrap: getComputedStyle(nav).flexWrap,
+                                tabHeight: firstTab.getBoundingClientRect().height, whiteSpace: getComputedStyle(firstTab).whiteSpace
+                            };
+                        })(),
                         rows: [...document.querySelectorAll('.dialogawp-settings-panel:not([hidden]) .dialogawp-setting-row')].map(row => ({
                             direction: getComputedStyle(row).flexDirection, left: row.getBoundingClientRect().left, right: row.getBoundingClientRect().right,
                             controls: [...row.querySelectorAll('input,select,textarea')].map(el => ({ left: el.getBoundingClientRect().left, right: el.getBoundingClientRect().right }))
                         })) }));
                     assert.ok(layout.scroll <= layout.viewport + 1, slug + ' horizontal overflow: ' + JSON.stringify(layout));
+                    assert.ok(layout.tabs.left >= -1 && layout.tabs.right <= width + 1, slug + ' tab bar escapes viewport: ' + JSON.stringify(layout.tabs));
+                    assert.equal(layout.tabs.wrap, 'nowrap', 'tabs remain in a single horizontal row');
+                    assert.equal(layout.tabs.whiteSpace, 'nowrap', 'tab labels do not wrap');
+                    assert.ok(layout.tabs.tabHeight >= 44, 'tabs keep a touch-friendly target');
+                    if (width <= 782) assert.ok(['auto', 'scroll'].includes(layout.tabs.overflowX), 'small screens scroll tabs internally');
                     for (const row of layout.rows) {
                         if (width <= 782) assert.equal(row.direction, 'column', 'mobile setting labels/controls stack');
                         for (const box of row.controls) assert.ok(box.left >= -1 && box.right <= width + 1, slug + ' control escapes viewport: ' + JSON.stringify(box));

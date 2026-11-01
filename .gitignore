@@ -8,3 +8,4 @@ node_modules/
 .opencode/
 DialogaWP/
 DialogaWP.zip
+.wp-env.override.json

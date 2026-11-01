@@ -193,6 +193,7 @@ $tabs = array(
     'notifications' => __('Notifications', 'dialogawp'),
     'engagement' => __('Engagement', 'dialogawp'),
     'data-privacy' => __('Data & Privacy', 'dialogawp'),
+    'danger-zone' => __('Danger Zone', 'dialogawp'),
 );
 $sections = array(
     'general' => array(
@@ -398,7 +399,7 @@ $widget_enabled = !empty($settings['enabled']);
         <p class="submit"><button type="submit" name="dialogawp_save_settings" value="1" class="button button-primary button-large"><?php echo esc_html__('Save Settings', 'dialogawp'); ?></button></p>
     </form>
 
-    <section class="dialogawp-settings-danger" aria-labelledby="dialogawp-settings-danger-heading">
+    <section id="dialogawp-settings-danger-zone" class="dialogawp-settings-panel dialogawp-settings-danger" aria-labelledby="dialogawp-settings-danger-heading">
         <h2 id="dialogawp-settings-danger-heading"><?php echo esc_html__('Danger Zone', 'dialogawp'); ?></h2>
         <div>
             <h3><?php echo esc_html__('Delete All Leads', 'dialogawp'); ?></h3>

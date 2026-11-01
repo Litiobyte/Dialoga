@@ -196,7 +196,7 @@ function i18n_run_tests() {
             else i18n_assert(!$GLOBALS['i18n_fixture']['loads'], 'English preference must not load Spanish MO');
             DialogaWP::get_instance()->add_admin_menu();
             DialogaWP::get_instance()->add_analytics_menu();
-            foreach (array('DialogaWP' => 'Dashboard', 'dialogawp-builder' => 'Flow Builder', 'dialogawp-leads' => 'Leads',
+            foreach (array('DialogaWP' => 'Dashboard', 'dialogawp-builder' => 'Flows', 'dialogawp-leads' => 'Leads',
                 'dialogawp-settings' => 'Settings', 'dialogawp-ai-settings' => 'AI Settings', 'dialogawp-analytics' => 'Analytics') as $slug => $id) {
                 $expected = $spanish ? $messages[$id] : $id;
                 i18n_assert($GLOBALS['i18n_fixture']['menus'][$slug] === array($expected, $expected, 'manage_options'), 'Menu translation/capability: ' . $slug);

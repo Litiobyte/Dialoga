@@ -65,6 +65,9 @@ class Transfer_DB {
         $this->last_error = $this->fail_read ? 'PRIVATE SQL ERROR' : '';
         return isset($this->rows[$id]) ? $this->rows[$id] : null;
     }
+    public function get_results($query) {
+        return array_values($this->rows);
+    }
     public function insert($table, $data, $formats) {
         assert_test('wp_dialogawp_flows' === $table && count($formats) === count($data), 'insert table and formats');
         ++$this->inserts;

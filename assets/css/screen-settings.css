@@ -23,32 +23,51 @@
 
 .dialogawp-settings-tabs {
     display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
+    align-items: stretch;
+    width: 100%;
+    max-width: 100%;
     margin: 20px 0;
-    padding-bottom: 8px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: #C8D0DD transparent;
     border-bottom: 1px solid #E5E7EF;
 }
 
+.dialogawp-settings-tabs::-webkit-scrollbar {
+    height: 5px;
+}
+
+.dialogawp-settings-tabs::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: #C8D0DD;
+}
+
 .dialogawp-settings-tab {
-    padding: 10px 14px;
-    border: 1px solid transparent;
-    border-radius: 4px;
-    color: #26233A;
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    min-height: 44px;
+    box-sizing: border-box;
+    padding: 0 16px;
+    border: 0;
+    border-bottom: 3px solid transparent;
+    color: #646970;
     text-decoration: none;
     font-weight: 600;
+    line-height: 1.25;
+    white-space: nowrap;
+    transition: color 120ms ease, border-color 120ms ease, background-color 120ms ease;
 }
 
 .dialogawp-settings-tab:hover {
-    background: #E6F7F6;
-    color: #26233A;
+    background: rgba(0, 173, 161, 0.06);
+    color: #190F4F;
 }
 
 .dialogawp-settings-tab[aria-selected="true"] {
-    background: #fff;
-    border-color: #E5E7EF;
-    box-shadow: inset 0 -3px #00ADA1;
-    color: #26233A;
+    border-bottom-color: #00ADA1;
+    color: #190F4F;
 }
 
 .dialogawp-settings-tab:focus-visible,
@@ -59,6 +78,13 @@
 
 .dialogawp-settings-wrap [hidden] {
     display: none !important;
+}
+
+/* The Danger Zone is its own tab and lives outside the settings form.
+   Hide the save controls while it is active so they don't float above it. */
+.dialogawp-settings-wrap .dialogawp-settings-form--danger .dialogawp-settings-top-actions,
+.dialogawp-settings-wrap .dialogawp-settings-form--danger p.submit {
+    display: none;
 }
 
 .dialogawp-settings-subheading {
@@ -150,8 +176,16 @@
 }
 
 @media (max-width: 782px) {
+    .dialogawp-settings-tabs {
+        margin-right: -10px;
+        margin-left: -10px;
+        width: calc(100% + 20px);
+        padding: 0 10px;
+        scroll-padding-inline: 10px;
+    }
+
     .dialogawp-settings-tab {
-        padding: 12px;
+        padding: 0 14px;
     }
 
     .dialogawp-settings-wrap .dialogawp-setting-row {
