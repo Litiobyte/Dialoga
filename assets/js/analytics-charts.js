@@ -58,7 +58,7 @@
         new Chart(donutEl, {
             type: 'doughnut',
             data: {
-                labels: [t('Leads Captured'), t('No Lead')],
+                labels: [t('Converted'), t('Not converted')],
                 datasets: [{
                     data: total > 0 ? [data.conversion.converted, data.conversion.not_converted] : [0, 1],
                     backgroundColor: total > 0 ? ['#10B981', '#E5E7EF'] : ['#E5E7EF', '#E5E7EF'],

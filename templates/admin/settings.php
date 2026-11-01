@@ -29,6 +29,7 @@ $defaults = array(
     'primary_color' => '#190F4F',
     'chat_position' => 'bottom-right',
     'session_duration' => 7,
+    'chat_header_title' => 'Chat with us',
     'welcome_message' => 'Hi! How can we help you today?',
     'offline_message' => 'We\'re currently offline. Please leave your contact information and we\'ll get back to you.',
     'business_hours' => array('enabled' => false, 'timezone' => 'America/New_York'),
@@ -60,7 +61,7 @@ if (isset($_POST['dialogawp_save_settings'])) {
     check_admin_referer('dialogawp_settings');
     $scalar_fields = array(
         'enabled', 'test_mode', 'bubble_nudge', 'visibility_mode', 'multi_flow_strategy',
-        'primary_color', 'chat_position', 'session_duration', 'welcome_message', 'offline_message',
+        'primary_color', 'chat_position', 'session_duration', 'chat_header_title', 'welcome_message', 'offline_message',
         'business_hours_enabled', 'timezone', 'email_notifications_enabled',
         'email_notifications_recipient', 'email_notifications_subject', 'lead_retention_enabled',
         'lead_retention_days', 'conversation_retention_enabled', 'conversation_retention_days',
@@ -128,6 +129,10 @@ if (isset($_POST['dialogawp_save_settings'])) {
         }
         if (isset($posted['session_duration']) && preg_match('/^\d+$/', $posted['session_duration'])) {
             $settings['session_duration'] = min(90, max(1, intval($posted['session_duration'])));
+        }
+        if (isset($posted['chat_header_title'])) {
+            $header_title = sanitize_text_field($posted['chat_header_title']);
+            $settings['chat_header_title'] = $header_title !== '' ? $header_title : $defaults['chat_header_title'];
         }
         foreach (array('welcome_message', 'offline_message') as $key) {
             if (isset($posted[$key])) {
@@ -203,6 +208,7 @@ $sections = array(
         array('primary_color', __('Primary Color', 'dialogawp'), __('Main color for the chat widget buttons and header.', 'dialogawp'), 'color'),
     ),
     'messages' => array(
+        array('chat_header_title', __('Chat Header Title', 'dialogawp'), __('Text displayed at the top of the open chat window.', 'dialogawp'), 'text'),
         array('welcome_message', __('Welcome Message', 'dialogawp'), __('First message visitors see when opening the chat.', 'dialogawp'), 'textarea'),
         array('offline_message', __('Offline Message', 'dialogawp'), __('Message shown when outside business hours.', 'dialogawp'), 'textarea'),
     ),
@@ -249,7 +255,16 @@ $active_flows_count = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}
 $widget_enabled = !empty($settings['enabled']);
 ?>
 <div class="wrap dialogawp-settings-wrap">
-    <h1><?php echo esc_html__('DIALOGAWP Settings', 'dialogawp'); ?></h1>
+    <div class="dialogawp-screen-header">
+        <div>
+            <h1><?php echo esc_html__('Settings', 'dialogawp'); ?></h1>
+            <p><?php echo esc_html__('Control your widget appearance, messaging, visibility, and data preferences.', 'dialogawp'); ?></p>
+        </div>
+        <div class="dialogawp-settings-summary" role="status">
+            <strong><?php echo $widget_enabled ? esc_html__('Widget active', 'dialogawp') : esc_html__('Widget paused', 'dialogawp'); ?></strong>
+            <span><?php echo esc_html(sprintf(_n('%d active flow', '%d active flows', $active_flows_count, 'dialogawp'), $active_flows_count)); ?></span>
+        </div>
+    </div>
     <?php $extra_tabs = apply_filters('dialogawp_settings_tabs', array()); ?>
     <?php if (!empty($extra_tabs) && is_array($extra_tabs)) : ?>
         <nav class="nav-tab-wrapper dialogawp-settings-extension-nav" aria-label="<?php echo esc_attr__('Settings pages', 'dialogawp'); ?>">
@@ -261,9 +276,9 @@ $widget_enabled = !empty($settings['enabled']);
     <?php endif; ?>
 
     <?php if ($saved) : ?>
-        <div class="notice notice-success"><p><?php echo esc_html__('Settings saved successfully!', 'dialogawp'); ?></p></div>
+        <div class="notice notice-success" role="status"><p><?php echo esc_html__('Settings saved successfully!', 'dialogawp'); ?></p></div>
     <?php elseif ($save_error) : ?>
-        <div class="notice notice-error"><p><?php echo esc_html__('Settings were not saved because the request contained invalid fields. Please reload the page and try again.', 'dialogawp'); ?></p></div>
+        <div class="notice notice-error" role="alert"><p><?php echo esc_html__('Settings were not saved because the request contained invalid fields. Please reload the page and try again.', 'dialogawp'); ?></p></div>
     <?php endif; ?>
     <?php if ($widget_enabled && $active_flows_count === 0) : ?>
         <div class="notice notice-warning">
@@ -344,6 +359,7 @@ $widget_enabled = !empty($settings['enabled']);
                             <?php else : ?>
                                 <input type="<?php echo esc_attr($type); ?>" id="<?php echo esc_attr($id); ?>" name="<?php echo esc_attr($name); ?>" value="<?php echo esc_attr(is_scalar($value) ? $value : ''); ?>" aria-describedby="<?php echo esc_attr($id); ?>-help"
                                     <?php if ($type === 'number') : ?> min="<?php echo esc_attr($field[4][0]); ?>" max="<?php echo esc_attr($field[4][1]); ?>" step="1"<?php endif; ?>
+                                    <?php if ($name === 'chat_header_title') : ?> maxlength="80"<?php endif; ?>
                                     <?php if ($name === 'preview_message_text') : ?> maxlength="120" placeholder="<?php echo esc_attr__('Hi! 👋 Got a question?', 'dialogawp'); ?>"<?php endif; ?> />
                                 <?php if ($type === 'number') : ?>
                                     <span><?php echo $name === 'preview_message_delay' ? esc_html__('seconds', 'dialogawp') : esc_html__('days', 'dialogawp'); ?></span>

@@ -359,6 +359,9 @@ JS;
         $preview_enabled = !empty($preview['enabled']) && !empty($preview['text']);
         $preview_delay   = isset($preview['delay']) ? max(0, intval($preview['delay'])) : 5;
         $preview_text    = isset($preview['text']) ? $preview['text'] : '';
+        $header_title    = isset($settings['chat_header_title']) && is_scalar($settings['chat_header_title'])
+            ? (string) $settings['chat_header_title']
+            : 'Chat with us';
 
         // Bubble nudge — server-rendered class so the pulse + ripple animation
         // starts on first paint, not after JS loads.
@@ -398,7 +401,7 @@ JS;
                 <!-- Header -->
                 <div class="dialogawp-header">
                     <div class="dialogawp-header-title">
-                        <strong>Chat with us</strong>
+                        <strong><?php echo esc_html($header_title); ?></strong>
                         <span class="dialogawp-header-status">● Online</span>
                     </div>
                     <div class="dialogawp-header-actions">

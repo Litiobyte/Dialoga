@@ -21,7 +21,7 @@ if (!defined('ABSPATH')) {
  */
 function dialogawp_builder_templates() {
     $flow_item = <<<'HTML'
-<div class="dialogawp-flow-item {{editing_class}}" data-flow-id="{{id}}">
+<div class="dialogawp-flow-item {{editing_class}}" data-flow-id="{{id}}" role="button" tabindex="0" aria-label="Edit {{flow_name}}">
     <div class="dialogawp-flow-item-header">
         <h4>{{flow_name}}</h4>
         <span class="dialogawp-flow-status {{status_class}}">{{status}}</span>
@@ -33,7 +33,6 @@ function dialogawp_builder_templates() {
     </div>
     <div class="dialogawp-flow-item-actions">
         <button class="button button-small dialogawp-edit-flow" data-flow-id="{{id}}">Edit</button>
-        <button class="button button-small dialogawp-duplicate-flow" data-flow-id="{{id}}">Duplicate</button>
         <button class="button button-small button-link-delete dialogawp-delete-flow" data-flow-id="{{id}}">Delete</button>
     </div>
 </div>

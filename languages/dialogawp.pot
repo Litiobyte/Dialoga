@@ -16,8 +16,23 @@ msgstr ""
 msgid "%1$s visitors reached; %2$s never got here"
 msgstr ""
 
+msgid "%d active flow"
+msgid_plural "%d active flows"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d admin test lead hidden"
 msgid_plural "%d admin test leads hidden"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d conversation with a conversion link click"
+msgid_plural "%d conversations with conversion link clicks"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d conversation with lead data"
+msgid_plural "%d conversations with lead data"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -35,6 +50,11 @@ msgstr ""
 
 msgid "%d lead"
 msgid_plural "%d leads"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d lead record shown"
+msgid_plural "%d lead records shown"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -134,6 +154,9 @@ msgid "A \"conversion\" is a chat session where the visitor submitted the Captur
 msgstr ""
 
 msgid "A basic template flow has been prepared instead. You can create it and customize it in the builder."
+msgstr ""
+
+msgid "A conversion is a conversation where the visitor submitted a Capture Lead form or clicked a Link Button marked as a conversion."
 msgstr ""
 
 msgid "A pulsing ripple plays after a few seconds on pages where the visitor has not started a chat yet."
@@ -248,6 +271,9 @@ msgid "Add clickable buttons that link to pages or trigger actions."
 msgstr ""
 
 msgid "Add personality and instructions for your chatbot"
+msgstr ""
+
+msgid "Add tag to lead %d"
 msgstr ""
 
 msgid "Additional Intro (Optional)"
@@ -457,6 +483,9 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
+msgid "Cancel adding a tag to lead %d"
+msgstr ""
+
 msgid "Cannot save empty flow! Please add at least one node."
 msgstr ""
 
@@ -485,6 +514,9 @@ msgid "Chat Customization"
 msgstr ""
 
 msgid "Chat Goals"
+msgstr ""
+
+msgid "Chat Header Title"
 msgstr ""
 
 msgid "Chat Position"
@@ -572,6 +604,15 @@ msgid "Clicks on this button will count toward your Conversions metric on the da
 msgstr ""
 
 msgid "Close"
+msgstr ""
+
+msgid "Close dialog"
+msgstr ""
+
+msgid "Close lead details"
+msgstr ""
+
+msgid "Close node editor"
 msgstr ""
 
 msgid "Closed"
@@ -664,6 +705,9 @@ msgstr ""
 msgid "Control who can see the chatbot. Perfect for testing before going live!"
 msgstr ""
 
+msgid "Control your widget appearance, messaging, visibility, and data preferences."
+msgstr ""
+
 msgid "Controls how long AI responses can be. 500 is a good default for chat."
 msgstr ""
 
@@ -727,7 +771,13 @@ msgstr ""
 msgid "Could not delete the flow. Please try again."
 msgstr ""
 
+msgid "Could not load flows. Please refresh and try again."
+msgstr ""
+
 msgid "Could not load lead details."
+msgstr ""
+
+msgid "Could not load the flow. Please try again."
 msgstr ""
 
 msgid "Could not read flows."
@@ -922,6 +972,9 @@ msgstr ""
 msgid "Deleting..."
 msgstr ""
 
+msgid "Design conversation paths, capture leads, and publish when your flow is ready."
+msgstr ""
+
 msgid "Desktop Mode"
 msgstr ""
 
@@ -980,6 +1033,9 @@ msgid "E-commerce / Retail"
 msgstr ""
 
 msgid "Each action type does something different when a visitor reaches this node: capture their contact info, show a booking link, redirect to a page, send an email, tag them, or set a variable."
+msgstr ""
+
+msgid "Each converted conversation is counted once, even when it includes both actions."
 msgstr ""
 
 msgid "Each flow requires a name (1-255 bytes), valid visibility, roles array and flow_data with nodes/edges arrays."
@@ -1177,6 +1233,9 @@ msgstr ""
 msgid "Filter by tag:"
 msgstr ""
 
+msgid "Filter leads by tag"
+msgstr ""
+
 msgid "Finance / Insurance"
 msgstr ""
 
@@ -1291,7 +1350,13 @@ msgstr ""
 msgid "Go Back"
 msgstr ""
 
+msgid "Go to <a href=\"https://console.anthropic.com/\" target=\"_blank\" rel=\"noopener noreferrer\">console.anthropic.com</a> and create an account"
+msgstr ""
+
 msgid "Go to <a href=\"https://console.anthropic.com/\" target=\"_blank\">console.anthropic.com</a> and create an account"
+msgstr ""
+
+msgid "Go to <a href=\"https://platform.openai.com/signup\" target=\"_blank\" rel=\"noopener noreferrer\">platform.openai.com</a> and create an account"
 msgstr ""
 
 msgid "Go to <a href=\"https://platform.openai.com/signup\" target=\"_blank\">platform.openai.com</a> and create an account"
@@ -1510,6 +1575,14 @@ msgstr ""
 msgid "Lead not found"
 msgstr ""
 
+msgid "Lead records table"
+msgstr ""
+
+msgid "Lead records: %d result"
+msgid_plural "Lead records: %d results"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Lead status updated!"
 msgstr ""
 
@@ -1550,6 +1623,9 @@ msgid "Loading flows..."
 msgstr ""
 
 msgid "Loading knowledge base..."
+msgstr ""
+
+msgid "Loading lead record"
 msgstr ""
 
 msgid "Loading wizard..."
@@ -1768,6 +1844,9 @@ msgstr ""
 msgid "No tags"
 msgstr ""
 
+msgid "No tags available"
+msgstr ""
+
 msgid "No thanks"
 msgstr ""
 
@@ -1786,6 +1865,9 @@ msgstr ""
 msgid "Not configured"
 msgstr ""
 
+msgid "Not converted"
+msgstr ""
+
 msgid "Not empty"
 msgstr ""
 
@@ -1799,6 +1881,9 @@ msgid "OK"
 msgstr ""
 
 msgid "OR"
+msgstr ""
+
+msgid "Of %1$s conversations in this range, %2$s converted and %3$s did not."
 msgstr ""
 
 msgid "Of %1$s conversations in this range, %2$s submitted a lead and %3$s did not."
@@ -2062,6 +2147,9 @@ msgstr ""
 msgid "Remove tag"
 msgstr ""
 
+msgid "Remove tag %1$s from lead %2$d"
+msgstr ""
+
 msgid "Remove this item from the knowledge base?"
 msgstr ""
 
@@ -2167,6 +2255,9 @@ msgstr ""
 msgid "Scanning your website..."
 msgstr ""
 
+msgid "Scroll horizontally to view all lead record columns."
+msgstr ""
+
 msgid "Seconds to wait before the preview bubble appears."
 msgstr ""
 
@@ -2216,6 +2307,9 @@ msgid "Select which roles can see the chatbot."
 msgstr ""
 
 msgid "Select your industry..."
+msgstr ""
+
+msgid "Selected date range"
 msgstr ""
 
 msgid "Send Email"
@@ -2371,7 +2465,13 @@ msgstr ""
 msgid "Tag Lead"
 msgstr ""
 
+msgid "Tag name for lead %d"
+msgstr ""
+
 msgid "Tag: %s"
+msgstr ""
+
+msgid "Tagged “%s”"
 msgstr ""
 
 msgid "Tags"
@@ -2413,6 +2513,9 @@ msgstr ""
 msgid "Testing..."
 msgstr ""
 
+msgid "Text displayed at the top of the open chat window."
+msgstr ""
+
 msgid "Text shown on the CTA button."
 msgstr ""
 
@@ -2447,6 +2550,9 @@ msgid "The message shown to the visitor"
 msgstr ""
 
 msgid "The options visitors can click to answer this question."
+msgstr ""
+
+msgid "The selected flow could not be found. Please refresh and try again."
 msgstr ""
 
 msgid "The selected node no longer exists. Close its editor and try again."
@@ -2728,7 +2834,13 @@ msgstr ""
 msgid "Who should see your chatbot? You can change this anytime in the flow builder."
 msgstr ""
 
+msgid "Widget active"
+msgstr ""
+
 msgid "Widget appearance and behavior"
+msgstr ""
+
+msgid "Widget paused"
 msgstr ""
 
 msgid "Wizard"

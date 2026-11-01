@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const directory = path.resolve(__dirname, '../languages');
 const messages = {};
-for (const part of ['scripts', 'settings', 'templates', 'backend', 'core', 'wizard', 'fixes']) {
+for (const part of ['scripts', 'settings', 'templates', 'backend', 'core', 'wizard', 'fixes', 'admin-ui']) {
     Object.assign(messages, JSON.parse(fs.readFileSync(path.join(directory, part + '-es.json'), 'utf8')));
 }
 const header = 'Project-Id-Version: DialogaWP\nLanguage: es_ES\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n != 1);\n';
@@ -13,7 +13,12 @@ const pairs = [
     ['%d admin test lead hidden', '%d admin test leads hidden'],
     ['%d lead', '%d leads'], ['%d link click', '%d link clicks'],
     ['across %1$d visitor (%2$s avg)', 'across %1$d visitors (%2$s avg)'],
-    ['across %d visitor', 'across %d visitors']
+    ['across %d visitor', 'across %d visitors'],
+    ['%d active flow', '%d active flows'],
+    ['%d conversation with lead data', '%d conversations with lead data'],
+    ['%d conversation with a conversion link click', '%d conversations with conversion link clicks'],
+    ['%d lead record shown', '%d lead records shown'],
+    ['Lead records: %d result', 'Lead records: %d results']
 ];
 const plurals = new Map(pairs);
 const pluralOthers = new Set(pairs.map(pair => pair[1]));

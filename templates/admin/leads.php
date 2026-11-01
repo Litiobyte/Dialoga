@@ -89,19 +89,40 @@ $export_url = wp_nonce_url(
 ?>
 
 <div class="wrap dialogawp-leads-wrap">
-    <h1><?php echo esc_html__('DialogaWP Leads', 'dialogawp'); ?>
+    <div class="dialogawp-leads-header">
+        <div>
+            <div class="dialogawp-leads-title-row">
+                <h1><?php echo esc_html__('DialogaWP Leads', 'dialogawp'); ?></h1>
+                <?php if ($show_admin_only) : ?>
+                    <span class="dialogawp-leads-view-badge"><?php echo esc_html__('Admin test sessions only', 'dialogawp'); ?></span>
+                <?php endif; ?>
+            </div>
+            <p class="dialogawp-leads-description">
+                <?php
+                /* translators: %d: number of lead records shown. */
+                echo esc_html(sprintf(_n('%d lead record shown', '%d lead records shown', count($leads), 'dialogawp'), count($leads)));
+                ?>
+                <?php if ($tag_filter) : ?>
+                    <span class="dialogawp-leads-current-filter">
+                        <?php
+                        /* translators: %s: active tag filter. */
+                        echo esc_html(sprintf(__('Tagged “%s”', 'dialogawp'), $tag_filter));
+                        ?>
+                    </span>
+                <?php endif; ?>
+            </p>
+        </div>
         <?php if ($show_admin_only) : ?>
-            <span style="font-size:13px;background:#fef3c7;color:#92400e;padding:3px 10px;border-radius:10px;vertical-align:middle;margin-left:8px;"><?php echo esc_html__('Admin test sessions only', 'dialogawp'); ?></span>
-            <a href="<?php echo esc_url(admin_url('admin.php?page=dialogawp-leads')); ?>" style="font-size:13px;margin-left:8px;text-decoration:none;">&larr; <?php echo esc_html__('Back to public leads', 'dialogawp'); ?></a>
+            <a href="<?php echo esc_url(admin_url('admin.php?page=dialogawp-leads')); ?>" class="button">&larr; <?php echo esc_html__('Back to public leads', 'dialogawp'); ?></a>
         <?php endif; ?>
-    </h1>
+    </div>
 
     <?php
     if (!$show_admin_only && !$include_admin && $has_admin_flag_col) {
         $admin_count = (int) $wpdb->get_var("SELECT COUNT(*) FROM $leads_table WHERE is_admin_session = 1");
         if ($admin_count > 0) :
     ?>
-        <p style="color:#6b7280;font-size:13px;margin:-4px 0 12px;">
+        <p class="dialogawp-leads-admin-note">
             <?php
             /* translators: %d: hidden admin test lead count. */
             echo esc_html(sprintf(_n('%d admin test lead hidden', '%d admin test leads hidden', $admin_count, 'dialogawp'), $admin_count));
@@ -111,16 +132,13 @@ $export_url = wp_nonce_url(
         </p>
     <?php endif; } ?>
 
-    <!-- Tag filter + Export bar -->
-    <?php if (!empty($leads)) : ?>
-    <div style="margin-bottom:16px;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;">
-        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;flex:1 1 auto;">
+    <div class="dialogawp-leads-toolbar">
+        <nav class="dialogawp-leads-filters" aria-label="<?php echo esc_attr__('Filter leads by tag', 'dialogawp'); ?>">
             <?php if (!empty($all_tags)) : ?>
-            <span style="font-size:13px;color:#666;font-weight:600;"><?php echo esc_html__('Filter by tag:', 'dialogawp'); ?></span>
+            <span class="dialogawp-leads-filter-label"><?php echo esc_html__('Filter by tag:', 'dialogawp'); ?></span>
             <a href="<?php echo esc_url($base_url); ?>"
-               style="padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600;text-decoration:none;
-                      background:<?php echo $tag_filter ? '#F7F8FC' : '#190F4F'; ?>;
-                      color:<?php echo $tag_filter ? '#374151' : '#fff'; ?>;border:1px solid #E5E7EF;">
+               class="dialogawp-filter-tag dialogawp-filter-tag--all<?php echo $tag_filter ? '' : ' is-active'; ?>"
+               <?php echo $tag_filter ? '' : 'aria-current="page"'; ?>>
                 <?php echo esc_html__('All', 'dialogawp'); ?>
             </a>
             <?php foreach ($all_tags as $t) :
@@ -128,20 +146,22 @@ $export_url = wp_nonce_url(
                 list($bg, $text) = dialogawp_tag_color($t);
             ?>
             <a href="<?php echo esc_url($base_url . '&tag=' . urlencode($t)); ?>"
-               style="padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600;text-decoration:none;
-                      background:<?php echo esc_attr($active ? $text : $bg); ?>;
-                      color:<?php echo esc_attr($active ? '#fff' : $text); ?>;
-                      border:1px solid <?php echo esc_attr($text); ?>;">
+               class="dialogawp-filter-tag<?php echo $active ? ' is-active' : ''; ?>"
+               <?php echo $active ? 'aria-current="page"' : ''; ?>
+               style="background:<?php echo esc_attr($active ? $text : $bg); ?>;
+                       color:<?php echo esc_attr($active ? '#fff' : $text); ?>;
+                       border:1px solid <?php echo esc_attr($text); ?>;">
                 <?php echo esc_html($t); ?>
             </a>
             <?php endforeach; ?>
+            <?php else : ?>
+                <span class="dialogawp-leads-filter-label"><?php echo esc_html__('No tags available', 'dialogawp'); ?></span>
             <?php endif; ?>
-        </div>
-        <a href="<?php echo esc_url($export_url); ?>" class="button button-primary" style="flex-shrink:0;">
-            <span class="dashicons dashicons-download" style="margin-top:3px;"></span> <?php echo esc_html__('Export CSV', 'dialogawp'); ?>
+        </nav>
+        <a href="<?php echo esc_url($export_url); ?>" class="button button-primary dialogawp-leads-export">
+            <span class="dashicons dashicons-download" aria-hidden="true"></span> <?php echo esc_html__('Export CSV', 'dialogawp'); ?>
         </a>
     </div>
-    <?php endif; ?>
 
     <!-- Datalist for tag autocomplete (populated from existing tags) -->
     <datalist id="dialogawp-tag-suggestions">
@@ -151,24 +171,35 @@ $export_url = wp_nonce_url(
     </datalist>
 
     <?php if (empty($leads)) : ?>
-        <div class="dialogawp-notice">
+        <div class="dialogawp-notice dialogawp-leads-empty">
             <p><?php
             /* translators: %s: tag name. */
             echo $tag_filter ? sprintf(esc_html__('No leads with tag %s.', 'dialogawp'), '<strong>' . esc_html($tag_filter) . '</strong>') : esc_html__('No leads captured yet.', 'dialogawp');
             ?></p>
         </div>
     <?php else : ?>
-        <table class="dialogawp-leads-table wp-list-table widefat striped" style="border-radius:6px;overflow:hidden;">
+        <div class="dialogawp-leads-table-shell">
+        <p id="dialogawp-leads-table-help" class="screen-reader-text">
+            <?php echo esc_html__('Scroll horizontally to view all lead record columns.', 'dialogawp'); ?>
+        </p>
+        <div class="dialogawp-leads-table-scroll" tabindex="0" role="region" aria-label="<?php echo esc_attr__('Lead records table', 'dialogawp'); ?>" aria-describedby="dialogawp-leads-table-help">
+        <table class="dialogawp-leads-table wp-list-table widefat striped">
+            <caption>
+                <?php
+                /* translators: %d: number of lead records shown. */
+                echo esc_html(sprintf(_n('Lead records: %d result', 'Lead records: %d results', count($leads), 'dialogawp'), count($leads)));
+                ?>
+            </caption>
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th><?php echo esc_html__('Name', 'dialogawp'); ?></th>
-                    <th><?php echo esc_html__('Email', 'dialogawp'); ?></th>
-                    <th><?php echo esc_html__('Phone', 'dialogawp'); ?></th>
-                    <th><?php echo esc_html__('Status', 'dialogawp'); ?></th>
-                    <th><?php echo esc_html__('Tags', 'dialogawp'); ?></th>
-                    <th><?php echo esc_html__('Created', 'dialogawp'); ?></th>
-                    <th><?php echo esc_html__('Actions', 'dialogawp'); ?></th>
+                    <th scope="col">ID</th>
+                    <th scope="col"><?php echo esc_html__('Name', 'dialogawp'); ?></th>
+                    <th scope="col"><?php echo esc_html__('Email', 'dialogawp'); ?></th>
+                    <th scope="col"><?php echo esc_html__('Phone', 'dialogawp'); ?></th>
+                    <th scope="col"><?php echo esc_html__('Status', 'dialogawp'); ?></th>
+                    <th scope="col"><?php echo esc_html__('Tags', 'dialogawp'); ?></th>
+                    <th scope="col"><?php echo esc_html__('Created', 'dialogawp'); ?></th>
+                    <th scope="col"><?php echo esc_html__('Actions', 'dialogawp'); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -177,7 +208,7 @@ $export_url = wp_nonce_url(
                     if (!is_array($tags_arr)) $tags_arr = array();
                 ?>
                     <tr id="lead-row-<?php echo esc_attr($lead->id); ?>">
-                        <td><?php echo esc_html($lead->id); ?></td>
+                        <th scope="row"><?php echo esc_html($lead->id); ?></th>
                         <td><?php echo esc_html($lead->name ?: '—'); ?></td>
                         <td>
                             <?php if ($lead->email) : ?>
@@ -190,60 +221,62 @@ $export_url = wp_nonce_url(
                             <?php else : ?>—<?php endif; ?>
                         </td>
                         <td>
-                            <span class="dialogawp-lead-status <?php echo esc_attr($lead->status); ?>">
+                            <span class="dialogawp-lead-status dialogawp-lead-status--<?php echo esc_attr(sanitize_html_class($lead->status)); ?>">
                                 <?php echo esc_html($status_labels[$lead->status] ?? $lead->status); ?>
                             </span>
                         </td>
                         <td class="dialogawp-tags-cell" data-lead-id="<?php echo esc_attr($lead->id); ?>">
-                            <div class="dialogawp-tags-list" style="display:flex;flex-wrap:wrap;gap:4px;align-items:center;">
+                            <div class="dialogawp-tags-list">
                                 <?php foreach ($tags_arr as $tag) :
                                     list($bg, $text) = dialogawp_tag_color($tag);
                                 ?>
                                 <span class="dialogawp-tag-pill"
                                       data-tag="<?php echo esc_attr($tag); ?>"
-                                      style="display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;background:<?php echo esc_attr($bg); ?>;color:<?php echo esc_attr($text); ?>;border:1px solid <?php echo esc_attr($text); ?>;">
-                                    <?php echo esc_html($tag); ?>
-                                    <button type="button" class="dialogawp-tag-remove"
-                                            onclick="dialogawpLeads.removeTag(<?php echo esc_attr($lead->id); ?>, '<?php echo esc_js($tag); ?>')"
-                                            style="background:none;border:none;cursor:pointer;padding:0;line-height:1;color:inherit;font-size:13px;opacity:.7;"
-                                            title="<?php echo esc_attr__('Remove tag', 'dialogawp'); ?>">×</button>
+                                       style="background:<?php echo esc_attr($bg); ?>;color:<?php echo esc_attr($text); ?>;border-color:<?php echo esc_attr($text); ?>;">
+                                     <?php echo esc_html($tag); ?>
+                                     <button type="button" class="dialogawp-tag-remove"
+                                             onclick="dialogawpLeads.removeTag(<?php echo esc_attr($lead->id); ?>, '<?php echo esc_js($tag); ?>')"
+                                             aria-label="<?php
+                                             /* translators: 1: tag name, 2: lead ID. */
+                                             echo esc_attr(sprintf(__('Remove tag %1$s from lead %2$d', 'dialogawp'), $tag, $lead->id));
+                                             ?>">&times;</button>
                                 </span>
                                 <?php endforeach; ?>
-                                <button type="button" class="dialogawp-tag-add-btn"
-                                        onclick="dialogawpLeads.showAddTag(<?php echo esc_attr($lead->id); ?>)"
-                                        style="background:none;border:1px dashed #d1d5db;border-radius:10px;padding:2px 8px;font-size:11px;color:#9ca3af;cursor:pointer;">
-                                    + <?php echo esc_html__('tag', 'dialogawp'); ?>
-                                </button>
-                                <span class="dialogawp-tag-spinner" id="tag-spinner-<?php echo esc_attr($lead->id); ?>" style="display:none;">
-                                    <span class="dialogawp-spinner-dot"></span>
-                                    <span style="font-size:11px;color:#6b7280;"><?php echo esc_html__('Saving...', 'dialogawp'); ?></span>
-                                </span>
-                            </div>
-                            <div class="dialogawp-tag-input-wrap" id="tag-input-<?php echo esc_attr($lead->id); ?>" style="display:none;margin-top:4px;">
-                                <input type="text" placeholder="<?php echo esc_attr__('tag name', 'dialogawp'); ?>"
-                                       list="dialogawp-tag-suggestions"
-                                       autocomplete="off"
-                                       style="padding:3px 6px;font-size:12px;border:1px solid #d1d5db;border-radius:4px;width:140px;"
-                                       onkeydown="if(event.key==='Enter'){event.preventDefault();dialogawpLeads.addTag(<?php echo esc_attr($lead->id); ?>,this.value);}"
-                                       id="tag-input-field-<?php echo esc_attr($lead->id); ?>" />
-                                <button type="button" onclick="dialogawpLeads.addTag(<?php echo esc_attr($lead->id); ?>,document.getElementById('tag-input-field-<?php echo esc_attr($lead->id); ?>').value)"
-                                        style="margin-left:4px;padding:3px 8px;font-size:12px;background:#190F4F;color:#fff;border:none;border-radius:4px;cursor:pointer;"><?php echo esc_html__('Add', 'dialogawp'); ?></button>
-                                <button type="button" onclick="document.getElementById('tag-input-<?php echo esc_attr($lead->id); ?>').style.display='none'"
-                                        style="margin-left:2px;padding:3px 6px;font-size:12px;background:#F7F8FC;color:#374151;border:1px solid #E5E7EF;border-radius:4px;cursor:pointer;">✕</button>
+                                 <button type="button" class="dialogawp-tag-add-btn"
+                                         onclick="dialogawpLeads.showAddTag(<?php echo esc_attr($lead->id); ?>)"
+                                         aria-expanded="false"
+                                         aria-controls="tag-input-<?php echo esc_attr($lead->id); ?>"
+                                         aria-label="<?php echo esc_attr(sprintf(__('Add tag to lead %d', 'dialogawp'), $lead->id)); ?>">
+                                     + <?php echo esc_html__('tag', 'dialogawp'); ?>
+                                 </button>
+                                 <span class="dialogawp-tag-spinner" id="tag-spinner-<?php echo esc_attr($lead->id); ?>" hidden role="status">
+                                     <span class="dialogawp-spinner-dot" aria-hidden="true"></span>
+                                     <span><?php echo esc_html__('Saving...', 'dialogawp'); ?></span>
+                                 </span>
+                             </div>
+                            <div class="dialogawp-tag-input-wrap" id="tag-input-<?php echo esc_attr($lead->id); ?>" hidden>
+                                 <input type="text" placeholder="<?php echo esc_attr__('tag name', 'dialogawp'); ?>"
+                                        list="dialogawp-tag-suggestions"
+                                        autocomplete="off"
+                                        aria-label="<?php echo esc_attr(sprintf(__('Tag name for lead %d', 'dialogawp'), $lead->id)); ?>"
+                                        onkeydown="if(event.key==='Enter'){event.preventDefault();dialogawpLeads.addTag(<?php echo esc_attr($lead->id); ?>,this.value);}"
+                                        id="tag-input-field-<?php echo esc_attr($lead->id); ?>" />
+                                <button type="button" class="button button-small button-primary" onclick="dialogawpLeads.addTag(<?php echo esc_attr($lead->id); ?>,document.getElementById('tag-input-field-<?php echo esc_attr($lead->id); ?>').value)"><?php echo esc_html__('Add', 'dialogawp'); ?></button>
+                                <button type="button" class="button button-small" onclick="dialogawpLeads.hideAddTag(<?php echo esc_attr($lead->id); ?>)"
+                                        aria-label="<?php echo esc_attr(sprintf(__('Cancel adding a tag to lead %d', 'dialogawp'), $lead->id)); ?>"><?php echo esc_html__('Cancel', 'dialogawp'); ?></button>
                             </div>
                         </td>
                         <td><?php echo esc_html(wp_date('M d, Y g:i A', strtotime($lead->created_at), new DateTimeZone('UTC'))); ?></td>
-                        <td style="white-space:nowrap;">
+                        <td class="dialogawp-lead-actions">
                             <button class="button button-small"
                                     onclick="dialogawpLeads.viewLead(<?php echo esc_attr($lead->id); ?>)">
                                 <?php echo esc_html__('View', 'dialogawp'); ?>
                             </button>
-                            <button class="button button-small dialogawp-lead-delete-btn"
+                             <button class="button button-small dialogawp-lead-delete-btn"
                                     onclick="dialogawpLeads.deleteLead(<?php echo esc_attr($lead->id); ?>, '<?php
                                     /* translators: %d: lead ID. */
                                     echo esc_js($lead->name ?: $lead->email ?: sprintf(__('Lead #%d', 'dialogawp'), $lead->id));
-                                    ?>')"
-                                    style="color:#b91c1c;border-color:#fecaca;">
+                                     ?>')">
                                 <?php echo esc_html__('Delete', 'dialogawp'); ?>
                             </button>
                         </td>
@@ -251,18 +284,23 @@ $export_url = wp_nonce_url(
                 <?php endforeach; ?>
             </tbody>
         </table>
+        </div>
+        </div>
     <?php endif; ?>
 </div>
 
 <!-- Lead detail modal -->
-<div id="dialogawp-lead-modal" style="display:none;position:fixed;inset:0;background:rgba(15,23,42,0.55);z-index:99999;align-items:center;justify-content:center;padding:24px;">
-    <div style="background:#fff;border-radius:12px;max-width:780px;width:100%;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.25);overflow:hidden;">
-        <div style="padding:18px 24px;border-bottom:1px solid #E5E7EF;display:flex;align-items:center;justify-content:space-between;background:#F7F8FC;">
-            <h2 id="dialogawp-lead-modal-title" style="margin:0;font-size:18px;color:#26233A;"><?php echo esc_html__('Lead Details', 'dialogawp'); ?></h2>
-            <button type="button" onclick="dialogawpLeads.closeModal()" style="background:none;border:none;font-size:22px;color:#6b7280;cursor:pointer;line-height:1;padding:0;">&times;</button>
+<div id="dialogawp-lead-modal" class="dialogawp-lead-modal" hidden>
+    <div class="dialogawp-lead-dialog" role="dialog" aria-modal="true" aria-labelledby="dialogawp-lead-modal-title" aria-describedby="dialogawp-lead-modal-context">
+        <div class="dialogawp-lead-dialog-header">
+            <div>
+                <h2 id="dialogawp-lead-modal-title"><?php echo esc_html__('Lead Details', 'dialogawp'); ?></h2>
+                <p id="dialogawp-lead-modal-context"><?php echo esc_html__('Loading lead record', 'dialogawp'); ?></p>
+            </div>
+            <button type="button" class="dialogawp-lead-dialog-close" onclick="dialogawpLeads.closeModal()" aria-label="<?php echo esc_attr__('Close lead details', 'dialogawp'); ?>">&times;</button>
         </div>
-        <div id="dialogawp-lead-modal-body" style="padding:24px;overflow:auto;flex:1;">
-            <div style="text-align:center;padding:40px 0;color:#6b7280;"><?php echo esc_html__('Loading...', 'dialogawp'); ?></div>
+        <div id="dialogawp-lead-modal-body" class="dialogawp-lead-dialog-body" aria-live="polite" aria-busy="true">
+            <div class="dialogawp-ld-loading" role="status"><?php echo esc_html__('Loading...', 'dialogawp'); ?></div>
         </div>
     </div>
 </div>
@@ -283,6 +321,7 @@ var t = function(s) { return (dialogawpAdmin.i18n || {})[s] || s; };
 window.dialogawpLeads = {
     nonce: '%%DIALOGAWP_NONCE%%',
     ajaxUrl: '%%DIALOGAWP_AJAXURL%%',
+    previousFocus: null,
 
     escapeHtml: function(s) {
         if (s === null || s === undefined) return '';
@@ -297,8 +336,21 @@ window.dialogawpLeads = {
     },
 
     showAddTag: function(leadId) {
-        document.getElementById('tag-input-' + leadId).style.display = 'flex';
+        var inputWrap = document.getElementById('tag-input-' + leadId);
+        var button = document.querySelector('#lead-row-' + leadId + ' .dialogawp-tag-add-btn');
+        inputWrap.hidden = false;
+        if (button) button.setAttribute('aria-expanded', 'true');
         document.getElementById('tag-input-field-' + leadId).focus();
+    },
+
+    hideAddTag: function(leadId) {
+        var inputWrap = document.getElementById('tag-input-' + leadId);
+        var button = document.querySelector('#lead-row-' + leadId + ' .dialogawp-tag-add-btn');
+        if (inputWrap) inputWrap.hidden = true;
+        if (button) {
+            button.setAttribute('aria-expanded', 'false');
+            button.focus();
+        }
     },
 
     addTag: function(leadId, tagValue) {
@@ -318,17 +370,17 @@ window.dialogawpLeads = {
     setRowBusy: function(leadId, busy) {
         var row = document.getElementById('lead-row-' + leadId);
         if (!row) return;
-        row.style.opacity = busy ? '0.5' : '';
-        row.style.pointerEvents = busy ? 'none' : '';
+        row.classList.toggle('is-busy', busy);
+        row.setAttribute('aria-busy', busy ? 'true' : 'false');
         var spinner = document.getElementById('tag-spinner-' + leadId);
-        if (spinner) spinner.style.display = busy ? 'inline-flex' : 'none';
+        if (spinner) spinner.hidden = !busy;
     },
 
     saveTags: function(leadId, tags) {
         var self = this;
         // Close any open tag input for this row
         var inputWrap = document.getElementById('tag-input-' + leadId);
-        if (inputWrap) inputWrap.style.display = 'none';
+        if (inputWrap) inputWrap.hidden = true;
         self.setRowBusy(leadId, true);
         var data = new FormData();
         data.append('action', 'dialogawp_update_lead_tags');
@@ -385,10 +437,16 @@ window.dialogawpLeads = {
         var modal = document.getElementById('dialogawp-lead-modal');
         var body = document.getElementById('dialogawp-lead-modal-body');
         var title = document.getElementById('dialogawp-lead-modal-title');
+        var context = document.getElementById('dialogawp-lead-modal-context');
 
+        this.previousFocus = document.activeElement;
         title.textContent = t('Lead Details');
-        body.innerHTML = '<div style="text-align:center;padding:40px 0;color:#6b7280;">' + self.escapeHtml(t('Loading...')) + '</div>';
-        modal.style.display = 'flex';
+        context.textContent = t('Loading lead record');
+        body.setAttribute('aria-busy', 'true');
+        body.innerHTML = '<div class="dialogawp-ld-loading" role="status">' + self.escapeHtml(t('Loading...')) + '</div>';
+        modal.hidden = false;
+        document.body.classList.add('dialogawp-modal-open');
+        modal.querySelector('.dialogawp-lead-dialog-close').focus();
 
         var data = new FormData();
         data.append('action', 'dialogawp_get_lead_details');
@@ -402,10 +460,12 @@ window.dialogawpLeads = {
                     self.renderLeadDetails(response.data);
                 } else {
                     body.innerHTML = '<div class="dialogawp-ld-empty">' + self.escapeHtml(t('Could not load lead details.')) + '</div>';
+                    body.setAttribute('aria-busy', 'false');
                 }
             })
             .catch(function() {
                 body.innerHTML = '<div class="dialogawp-ld-empty">' + self.escapeHtml(t('Network error loading lead details.')) + '</div>';
+                body.setAttribute('aria-busy', 'false');
             });
     },
 
@@ -415,15 +475,19 @@ window.dialogawpLeads = {
         var conv = payload.conversation;
         var transcript = payload.transcript || [];
         var title = document.getElementById('dialogawp-lead-modal-title');
+        var context = document.getElementById('dialogawp-lead-modal-context');
         var body = document.getElementById('dialogawp-lead-modal-body');
+        var status = lead.status || 'new';
+        var statusLabel = ({new: t('New'), contacted: t('Contacted'), qualified: t('Qualified'), converted: t('Converted'), closed: t('Closed')})[status] || status;
 
-        title.textContent = t('Lead #%d').replace('%d', lead.id) + (lead.name ? ' — ' + lead.name : '');
+        title.textContent = lead.name || t('Lead #%d').replace('%d', lead.id);
+        context.textContent = t('Lead #%d').replace('%d', lead.id) + ' · ' + statusLabel;
 
         var tagsHtml = (lead.tags && lead.tags.length)
             ? lead.tags.map(function(t) {
-                return '<span style="display:inline-block;padding:2px 8px;margin:2px;background:#eef2ff;color:#3730a3;border-radius:10px;font-size:11px;font-weight:600;">' + self.escapeHtml(t) + '</span>';
+                return '<span class="dialogawp-ld-tag">' + self.escapeHtml(t) + '</span>';
             }).join('')
-            : '<span class="dialogawp-ld-empty" style="padding:0;">' + self.escapeHtml(t('none')) + '</span>';
+            : '<span class="dialogawp-ld-none">' + self.escapeHtml(t('none')) + '</span>';
 
         var extraFieldsHtml = '';
         var skip = { name: 1, email: 1, phone: 1 };
@@ -436,7 +500,7 @@ window.dialogawpLeads = {
             '<dt>' + self.escapeHtml(t('Name')) + '</dt><dd>' + self.escapeHtml(lead.name || '—') + '</dd>' +
             '<dt>' + self.escapeHtml(t('Email')) + '</dt><dd>' + (lead.email ? '<a href="mailto:' + self.escapeHtml(lead.email) + '">' + self.escapeHtml(lead.email) + '</a>' : '—') + '</dd>' +
             '<dt>' + self.escapeHtml(t('Phone')) + '</dt><dd>' + (lead.phone ? '<a href="tel:' + self.escapeHtml(lead.phone) + '">' + self.escapeHtml(lead.phone) + '</a>' : '—') + '</dd>' +
-            '<dt>' + self.escapeHtml(t('Status')) + '</dt><dd>' + self.escapeHtml(({new: t('New'), contacted: t('Contacted'), qualified: t('Qualified'), converted: t('Converted'), closed: t('Closed')})[lead.status || 'new'] || lead.status) + '</dd>' +
+            '<dt>' + self.escapeHtml(t('Status')) + '</dt><dd><span class="dialogawp-lead-status dialogawp-lead-status--' + self.escapeHtml(status) + '">' + self.escapeHtml(statusLabel) + '</span></dd>' +
             '<dt>' + self.escapeHtml(t('Captured')) + '</dt><dd>' + self.escapeHtml(lead.created_at) + '</dd>' +
             '<dt>' + self.escapeHtml(t('Tags')) + '</dt><dd>' + tagsHtml + '</dd>' +
             extraFieldsHtml;
@@ -455,7 +519,7 @@ window.dialogawpLeads = {
                 '</div>';
         }
 
-        var transcriptHtml = '<div class="dialogawp-ld-section"><h3>' + self.escapeHtml(t('Conversation')) + '</h3>';
+        var transcriptHtml = '<div class="dialogawp-ld-section"><h3>' + self.escapeHtml(t('Transcript')) + '</h3>';
         if (!transcript.length) {
             transcriptHtml += '<div class="dialogawp-ld-empty">' + self.escapeHtml(t('No conversation recorded.')) + '</div>';
         } else {
@@ -473,7 +537,7 @@ window.dialogawpLeads = {
                     '<div class="dialogawp-ld-msg ' + (isUser ? 'user' : 'bot') + '">' +
                         '<div>' +
                             '<div class="dialogawp-ld-msg-bubble">' + self.escapeHtml(text) + '</div>' +
-                            (item.timestamp ? '<div class="dialogawp-ld-msg-time" style="text-align:' + (isUser ? 'right' : 'left') + ';">' + self.escapeHtml(item.timestamp) + '</div>' : '') +
+                            (item.timestamp ? '<div class="dialogawp-ld-msg-time">' + self.escapeHtml(item.timestamp) + '</div>' : '') +
                         '</div>' +
                     '</div>';
             });
@@ -488,10 +552,17 @@ window.dialogawpLeads = {
             '</div>' +
             convHtml +
             transcriptHtml;
+        body.setAttribute('aria-busy', 'false');
     },
 
     closeModal: function() {
-        document.getElementById('dialogawp-lead-modal').style.display = 'none';
+        var modal = document.getElementById('dialogawp-lead-modal');
+        modal.hidden = true;
+        document.body.classList.remove('dialogawp-modal-open');
+        if (this.previousFocus && document.contains(this.previousFocus)) {
+            this.previousFocus.focus();
+        }
+        this.previousFocus = null;
     }
 };
 
@@ -504,10 +575,25 @@ document.addEventListener('click', function(e) {
 
 // ESC to close
 document.addEventListener('keydown', function(e) {
+    var modal = document.getElementById('dialogawp-lead-modal');
+    if (!modal || modal.hidden) return;
+
     if (e.key === 'Escape') {
-        var modal = document.getElementById('dialogawp-lead-modal');
-        if (modal && modal.style.display !== 'none') {
-            dialogawpLeads.closeModal();
+        dialogawpLeads.closeModal();
+        return;
+    }
+
+    if (e.key === 'Tab') {
+        var focusable = modal.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])');
+        if (!focusable.length) return;
+        var first = focusable[0];
+        var last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
         }
     }
 });

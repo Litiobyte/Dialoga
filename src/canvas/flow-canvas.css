@@ -1,0 +1,189 @@
+.dialogawp-rf-canvas,
+.dialogawp-rf-canvas .react-flow {
+    width: 100%;
+    height: 100%;
+    min-height: 400px;
+}
+
+.dialogawp-rf-canvas {
+    position: relative;
+    overflow: hidden;
+    background: #F7F8FC;
+}
+
+.dialogawp-builder-wrap .react-flow__pane {
+    cursor: grab;
+}
+
+.dialogawp-builder-wrap .react-flow__pane.dragging {
+    cursor: grabbing;
+}
+
+.dialogawp-rf-node {
+    position: relative;
+    min-width: 200px;
+    max-width: 260px;
+    padding: 15px 20px;
+    border: 2px solid var(--node-border);
+    border-radius: 8px;
+    background: var(--node-background);
+    box-shadow: 0 2px 4px rgba(25, 15, 79, 0.12);
+    color: #26233A;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.dialogawp-rf-node.is-selected {
+    border-color: #00ADA1;
+    box-shadow: 0 0 0 3px rgba(0, 173, 161, 0.22), 0 6px 18px rgba(25, 15, 79, 0.16);
+}
+
+.dialogawp-rf-node-type {
+    margin-bottom: 8px;
+    color: var(--node-text);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.dialogawp-rf-node-label {
+    overflow: hidden;
+    color: #26233A;
+    font-size: 13px;
+    line-height: 1.4;
+    text-overflow: ellipsis;
+}
+
+.dialogawp-builder-wrap .react-flow__handle {
+    width: 12px;
+    height: 12px;
+    border: 2px solid #FFFFFF;
+    background: var(--node-border, #00ADA1);
+}
+
+.dialogawp-builder-wrap .react-flow__handle.connectingfrom,
+.dialogawp-builder-wrap .react-flow__handle.connectingto {
+    background: #FD6A4D;
+    box-shadow: 0 0 0 4px rgba(253, 106, 77, 0.25);
+}
+
+.dialogawp-rf-node .dialogawp-node-delete {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    z-index: 5;
+    display: flex;
+    width: 20px;
+    height: 20px;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    opacity: 0;
+    background: #D32F2F;
+    color: #FFFFFF;
+    cursor: pointer;
+    line-height: 1;
+    transition: opacity 0.15s;
+}
+
+.dialogawp-rf-node:hover .dialogawp-node-delete,
+.dialogawp-rf-node .dialogawp-node-delete:focus-visible {
+    opacity: 1;
+}
+
+.dialogawp-rf-start {
+    min-width: 160px;
+    padding: 6px 14px;
+    border: 2px dashed #16A34A;
+    border-radius: 20px;
+    background: #F0FDF4;
+    color: #166534;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.dialogawp-rf-start .react-flow__handle {
+    background: #16A34A;
+    box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.25);
+}
+
+.dialogawp-rf-edge-delete {
+    position: absolute;
+    z-index: 1000;
+    display: flex;
+    width: 24px;
+    height: 24px;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 2px solid #FFFFFF;
+    border-radius: 50%;
+    background: #D32F2F;
+    color: #FFFFFF;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 700;
+    pointer-events: all;
+}
+
+.dialogawp-rf-count {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 5;
+    padding: 8px 12px;
+    border: 1px solid #E5E7EF;
+    border-radius: 6px;
+    background: #FFFFFF;
+    color: #26233A;
+    box-shadow: 0 2px 4px rgba(25, 15, 79, 0.1);
+    font-size: 12px;
+    pointer-events: none;
+}
+
+.dialogawp-rf-empty {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 4;
+    color: #64748B;
+    font-size: 14px;
+    text-align: center;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+.dialogawp-rf-empty img {
+    display: block;
+    width: auto;
+    height: 80px;
+    margin: 0 auto 14px;
+    opacity: 0.4;
+}
+
+.dialogawp-builder-wrap .react-flow__controls,
+.dialogawp-builder-wrap .react-flow__minimap {
+    overflow: hidden;
+    border: 1px solid #E5E7EF;
+    border-radius: 8px;
+    box-shadow: 0 4px 14px rgba(25, 15, 79, 0.12);
+}
+
+.dialogawp-builder-wrap .react-flow__controls-button {
+    border-bottom-color: #E5E7EF;
+    color: #190F4F;
+}
+
+.dialogawp-builder-wrap .react-flow__controls-button:hover {
+    background: #E6F7F6;
+}
+
+body.dialogawp-canvas-fullscreen .dialogawp-rf-canvas,
+body.dialogawp-canvas-fullscreen .dialogawp-rf-canvas .react-flow {
+    min-height: 0;
+}

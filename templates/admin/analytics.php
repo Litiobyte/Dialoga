@@ -106,35 +106,38 @@ wp_add_inline_script('dialogawp-admin', 'window.dialogawpAnalytics = ' . wp_json
 ?>
 
 <div class="wrap dialogawp-analytics-wrap">
-    <h1><?php echo esc_html__('Analytics', 'dialogawp'); ?></h1>
+    <div class="dialogawp-screen-header dialogawp-analytics-header">
+        <div>
+            <h1><?php echo esc_html__('Analytics', 'dialogawp'); ?></h1>
+            <p><?php echo esc_html__('Conversation trends and stats', 'dialogawp'); ?></p>
+        </div>
+    </div>
 
     <!-- Date filter -->
     <div class="dialogawp-analytics-filter">
         <!-- Preset pills -->
-        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;">
+        <nav class="dialogawp-analytics-presets" aria-label="<?php echo esc_attr__('Analytics', 'dialogawp'); ?>">
             <?php foreach ($presets as $key => $label) :
                 $active = ($preset === $key);
             ?>
             <a href="<?php echo esc_url($base_url . '&preset=' . $key); ?>"
-               style="padding:4px 12px;border-radius:16px;font-size:12px;font-weight:600;text-decoration:none;
-                      background:<?php echo $active ? '#190F4F' : '#F7F8FC'; ?>;
-                      color:<?php echo $active ? '#fff' : '#374151'; ?>;
-                      border:1px solid <?php echo $active ? '#190F4F' : '#E5E7EF'; ?>;">
+               class="dialogawp-analytics-preset<?php echo $active ? ' is-active' : ''; ?>"
+               <?php if ($active) : ?>aria-current="page"<?php endif; ?>>
                 <?php echo esc_html($label); ?>
             </a>
             <?php endforeach; ?>
-        </div>
+        </nav>
 
         <form method="get" action="">
             <input type="hidden" name="page" value="dialogawp-analytics" />
-            <div style="display:flex;gap:15px;align-items:flex-end;">
+            <div class="dialogawp-analytics-date-fields">
                 <div>
-                    <label><?php echo esc_html__('From', 'dialogawp'); ?></label><br/>
-                    <input type="date" name="date_from" value="<?php echo esc_attr($date_from); ?>" />
+                    <label for="dialogawp-date-from"><?php echo esc_html__('From', 'dialogawp'); ?></label>
+                    <input id="dialogawp-date-from" type="date" name="date_from" value="<?php echo esc_attr($date_from); ?>" />
                 </div>
                 <div>
-                    <label><?php echo esc_html__('To', 'dialogawp'); ?></label><br/>
-                    <input type="date" name="date_to" value="<?php echo esc_attr($date_to); ?>" />
+                    <label for="dialogawp-date-to"><?php echo esc_html__('To', 'dialogawp'); ?></label>
+                    <input id="dialogawp-date-to" type="date" name="date_to" value="<?php echo esc_attr($date_to); ?>" />
                 </div>
                 <div>
                     <button type="submit" class="button button-primary"><?php echo esc_html__('Apply', 'dialogawp'); ?></button>
@@ -144,18 +147,17 @@ wp_add_inline_script('dialogawp-admin', 'window.dialogawpAnalytics = ' . wp_json
     </div>
 
     <!-- Definition note -->
-    <p style="color:#64748B;font-size:13px;margin:0 0 16px;background:#F1F5F9;border-left:3px solid #00ADA1;padding:10px 14px;border-radius:4px;">
+    <p class="dialogawp-analytics-definition">
         <strong><?php echo esc_html__('How conversions are counted:', 'dialogawp'); ?></strong>
-        <?php echo esc_html__('A "conversion" is a chat session where the visitor submitted the Capture Lead form.', 'dialogawp'); ?>
-        <?php echo esc_html__('Conversion rate = (Leads Captured + Link Conversions) / Conversations x 100.', 'dialogawp'); ?>
+        <?php echo esc_html__('A conversion is a conversation where the visitor submitted a Capture Lead form or clicked a Link Button marked as a conversion.', 'dialogawp'); ?>
+        <?php echo esc_html__('Each converted conversation is counted once, even when it includes both actions.', 'dialogawp'); ?>
         <?php echo esc_html__('Link Conversions = clicks on Link Button nodes with "Count as conversion" enabled.', 'dialogawp'); ?>
-        <?php echo esc_html__('Note: "Total Leads" is an all-time count and may not match the Leads Captured number inside the selected date range.', 'dialogawp'); ?>
     </p>
 
     <!-- Wrapped content — overlay covers everything below the filter during reload -->
-    <div class="dialogawp-analytics-content" id="dialogawp-analytics-content">
-        <div class="dialogawp-analytics-loading">
-            <div class="dialogawp-analytics-spinner"></div>
+    <div class="dialogawp-analytics-content" id="dialogawp-analytics-content" aria-busy="false">
+        <div class="dialogawp-analytics-loading" role="status" aria-live="polite">
+            <div class="dialogawp-analytics-spinner" aria-hidden="true"></div>
             <div class="dialogawp-analytics-loading-text"><?php echo esc_html__('Loading analytics...', 'dialogawp'); ?></div>
         </div>
 
@@ -176,11 +178,11 @@ wp_add_inline_script('dialogawp-admin', 'window.dialogawpAnalytics = ' . wp_json
                     ? (int) $conversation_metrics['conversations_with_link_conversions']
                     : 0;
                 if ($links_n > 0) {
-                    /* translators: %d: lead count. */
-                    $leads_label = sprintf(_n('%d lead', '%d leads', $leads_n, 'dialogawp'), $leads_n);
-                    /* translators: %d: link click count. */
-                    $links_label = sprintf(_n('%d link click', '%d link clicks', $links_n, 'dialogawp'), $links_n);
-                    /* translators: %1$s: leads count label, %2$s: link click count label. */
+                    /* translators: %d: converted conversation count with captured lead data. */
+                    $leads_label = sprintf(_n('%d conversation with lead data', '%d conversations with lead data', $leads_n, 'dialogawp'), $leads_n);
+                    /* translators: %d: converted conversation count with a marked link button click. */
+                    $links_label = sprintf(_n('%d conversation with a conversion link click', '%d conversations with conversion link clicks', $links_n, 'dialogawp'), $links_n);
+                    /* translators: %1$s: lead-conversation count label, %2$s: link-conversion conversation count label. */
                     echo esc_html(sprintf(__('%1$s + %2$s', 'dialogawp'), $leads_label, $links_label));
                 } else {
                     echo esc_html__('Conversations with lead data', 'dialogawp');
@@ -196,7 +198,7 @@ wp_add_inline_script('dialogawp-admin', 'window.dialogawpAnalytics = ' . wp_json
         <div class="dialogawp-analytics-stat dialogawp-analytics-stat-accent-4">
             <h3><?php echo esc_html__('Total Leads', 'dialogawp'); ?></h3>
             <div class="dialogawp-analytics-stat-value"><?php echo number_format($lead_metrics['total_leads']); ?></div>
-            <div class="dialogawp-analytics-stat-label"><?php echo esc_html__('All time', 'dialogawp'); ?></div>
+            <div class="dialogawp-analytics-stat-label"><?php echo esc_html__('Selected date range', 'dialogawp'); ?></div>
         </div>
         <?php
         // v0.40.3 — Total Link Clicks tile. Counts EACH click on marked
@@ -251,14 +253,14 @@ wp_add_inline_script('dialogawp-admin', 'window.dialogawpAnalytics = ' . wp_json
     ?>
     <div class="dialogawp-settings-section">
         <h2><?php echo esc_html__('Top Drop-off Point', 'dialogawp'); ?></h2>
-        <p style="color:#666;margin-top:0;"><?php echo esc_html__('Where most visitors stop engaging in the active flow.', 'dialogawp'); ?></p>
-        <div style="background:#fff8f0;border:1px solid #ff9800;border-radius:6px;padding:16px 20px;display:flex;align-items:center;gap:20px;">
-            <div style="font-size:32px;font-weight:700;color:#f57c00;"><?php echo esc_html($drop_off['drop_off_pct']); ?>%</div>
+        <p class="dialogawp-analytics-section-description"><?php echo esc_html__('Where most visitors stop engaging in the active flow.', 'dialogawp'); ?></p>
+        <div class="dialogawp-analytics-dropoff">
+            <div class="dialogawp-analytics-dropoff-value"><?php echo esc_html($drop_off['drop_off_pct']); ?>%</div>
             <div>
-                <strong style="font-size:14px;"><?php echo esc_html__('of visitors drop off at:', 'dialogawp'); ?></strong><br/>
-                <span style="font-size:15px;"><?php echo esc_html($drop_off['node_label']); ?></span>
+                <strong class="dialogawp-analytics-dropoff-label"><?php echo esc_html__('of visitors drop off at:', 'dialogawp'); ?></strong><br/>
+                <span class="dialogawp-analytics-dropoff-node"><?php echo esc_html($drop_off['node_label']); ?></span>
                 <?php if ($type_pretty) : ?>
-                    <span style="background:#ff9800;color:#fff;padding:1px 7px;border-radius:4px;font-size:11px;margin-left:6px;"><?php echo esc_html($type_pretty); ?></span>
+                    <span class="dialogawp-analytics-dropoff-type"><?php echo esc_html($type_pretty); ?></span>
                 <?php endif; ?>
             </div>
         </div>
@@ -269,11 +271,11 @@ wp_add_inline_script('dialogawp-admin', 'window.dialogawpAnalytics = ' . wp_json
     <div class="dialogawp-chart-container">
         <h3><?php echo esc_html__('Conversations - Last 30 Days', 'dialogawp'); ?></h3>
         <?php if (!empty($time_metrics)) : ?>
-        <div style="position:relative;height:280px;padding:8px 4px 0;">
-            <canvas id="dialogawp-chart-trend"></canvas>
+        <div class="dialogawp-chart-canvas dialogawp-chart-canvas-trend">
+            <canvas id="dialogawp-chart-trend" role="img" aria-label="<?php echo esc_attr__('Conversations - Last 30 Days', 'dialogawp'); ?>"></canvas>
         </div>
         <?php else : ?>
-        <p style="text-align:center;padding:40px;color:#666;"><?php echo esc_html__('No conversation data yet.', 'dialogawp'); ?></p>
+        <p class="dialogawp-analytics-empty"><?php echo esc_html__('No conversation data yet.', 'dialogawp'); ?></p>
         <?php endif; ?>
     </div>
 
@@ -281,19 +283,19 @@ wp_add_inline_script('dialogawp-admin', 'window.dialogawpAnalytics = ' . wp_json
     <?php if ($conversation_metrics['total_conversations'] > 0) : ?>
     <div class="dialogawp-chart-container">
         <h3><?php echo esc_html__('Conversion Split', 'dialogawp'); ?></h3>
-        <div style="display:grid;grid-template-columns:280px 1fr;gap:24px;align-items:center;">
-            <div style="position:relative;height:220px;">
-                <canvas id="dialogawp-chart-conversion"></canvas>
+        <div class="dialogawp-analytics-conversion-layout">
+            <div class="dialogawp-chart-canvas dialogawp-chart-canvas-donut">
+                <canvas id="dialogawp-chart-conversion" role="img" aria-label="<?php echo esc_attr__('Conversion Split', 'dialogawp'); ?>"></canvas>
             </div>
-            <div style="font-size:14px;color:#475569;line-height:1.6;">
-                <p style="margin:0 0 10px;"><?php
+            <div class="dialogawp-analytics-conversion-copy">
+                <p><?php
                 /* translators: %1$s: total conversations, %2$s: converted conversations, %3$s: unconverted conversations. */
-                echo sprintf(esc_html__('Of %1$s conversations in this range, %2$s submitted a lead and %3$s did not.', 'dialogawp'),
-                    '<strong>' . esc_html(number_format($conversation_metrics['total_conversations'])) . '</strong>',
-                    '<strong style="color:#10B981;">' . esc_html(number_format($conv_converted)) . '</strong>',
-                    '<strong>' . esc_html(number_format($conv_not_converted)) . '</strong>');
+                echo esc_html(sprintf(__('Of %1$s conversations in this range, %2$s converted and %3$s did not.', 'dialogawp'),
+                    number_format($conversation_metrics['total_conversations']),
+                    number_format($conv_converted),
+                    number_format($conv_not_converted)));
                 ?></p>
-                <p style="margin:0;color:#64748B;font-size:13px;"><?php echo esc_html__('Want a higher conversion rate? Try making your Capture Lead form shorter or adding a clearer value proposition before asking for contact info.', 'dialogawp'); ?></p>
+                <p class="dialogawp-analytics-conversion-tip"><?php echo esc_html__('Want a higher conversion rate? Try making your Capture Lead form shorter or adding a clearer value proposition before asking for contact info.', 'dialogawp'); ?></p>
             </div>
         </div>
     </div>
@@ -301,14 +303,16 @@ wp_add_inline_script('dialogawp-admin', 'window.dialogawpAnalytics = ' . wp_json
 
     <!-- Top sources -->
     <div class="dialogawp-chart-container">
-        <h3><?php echo esc_html__('Top Pages Starting Conversations', 'dialogawp'); ?></h3>
+        <h3><?php echo esc_html__('Top Pages Starting Conversations', 'dialogawp'); ?> <span class="dialogawp-analytics-heading-meta"><?php echo esc_html__('All time', 'dialogawp'); ?></span></h3>
         <?php if (!empty($top_sources)) : ?>
-        <div style="position:relative;height:<?php echo intval(max(120, count($top_sources) * 40)); ?>px;margin-bottom:16px;">
-            <canvas id="dialogawp-chart-sources"></canvas>
+        <div class="dialogawp-chart-canvas dialogawp-chart-canvas-sources" style="--dialogawp-chart-height: <?php echo intval(max(120, count($top_sources) * 40)); ?>px;">
+            <canvas id="dialogawp-chart-sources" role="img" aria-label="<?php echo esc_attr__('Top Pages Starting Conversations', 'dialogawp'); ?>"></canvas>
         </div>
+        <div class="dialogawp-table-scroll" tabindex="0">
         <table class="dialogawp-leads-table">
+            <caption class="screen-reader-text"><?php echo esc_html__('Top Pages Starting Conversations', 'dialogawp'); ?></caption>
             <thead>
-                <tr><th><?php echo esc_html__('Page', 'dialogawp'); ?></th><th><?php echo esc_html__('Conversations', 'dialogawp'); ?></th></tr>
+                <tr><th scope="col"><?php echo esc_html__('Page', 'dialogawp'); ?></th><th scope="col"><?php echo esc_html__('Conversations', 'dialogawp'); ?></th></tr>
             </thead>
             <tbody>
                 <?php
@@ -321,11 +325,11 @@ wp_add_inline_script('dialogawp-admin', 'window.dialogawpAnalytics = ' . wp_json
                     $page_url = $source->page_url;
                 ?>
                 <tr>
-                    <td style="max-width:400px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                    <th scope="row" class="dialogawp-analytics-source-page">
                         <a href="<?php echo esc_url($page_url); ?>" target="_blank" rel="noopener noreferrer">
                             <?php echo esc_html($page_url); ?>
                         </a>
-                    </td>
+                    </th>
                     <td>
                         <?php if ($is_pro_here) :
                             $conv_url = add_query_arg(array(
@@ -339,9 +343,9 @@ wp_add_inline_script('dialogawp-admin', 'window.dialogawpAnalytics = ' . wp_json
                                /* translators: %s: conversation count. */
                                echo esc_attr(sprintf(__('View the %s conversations that started on this page', 'dialogawp'), number_format($source->count)));
                                ?>"
-                               style="font-weight:600;color:#007D75;text-decoration:none;">
-                                <?php echo number_format($source->count); ?>
-                                <span style="color:#94A3B8;font-size:11px;margin-left:4px;">→</span>
+                               class="dialogawp-analytics-count-link">
+                                 <?php echo number_format($source->count); ?>
+                                 <span aria-hidden="true">→</span>
                             </a>
                         <?php else : ?>
                             <?php echo number_format($source->count); ?>
@@ -351,15 +355,16 @@ wp_add_inline_script('dialogawp-admin', 'window.dialogawpAnalytics = ' . wp_json
                 <?php endforeach; ?>
             </tbody>
         </table>
+        </div>
         <?php else : ?>
-        <p style="text-align:center;padding:40px;color:#666;"><?php echo esc_html__('No source data yet - start a chat on your site to begin tracking.', 'dialogawp'); ?></p>
+        <p class="dialogawp-analytics-empty"><?php echo esc_html__('No source data yet - start a chat on your site to begin tracking.', 'dialogawp'); ?></p>
         <?php endif; ?>
     </div>
 
     <?php if (!dialogawp_is_pro()) : ?>
-    <div class="dialogawp-settings-section" style="background:#F7F8FC;border:1px solid #E5E7EF;">
-        <h2 style="color:#26233A;">DialogaWP Pro</h2>
-        <p style="color:#475569;"><?php echo esc_html__('DialogaWP Pro is a separate plugin that adds further reporting on top of everything here - a per-node conversation funnel, full chat transcripts by session, A/B test comparisons, time-to-lead, and analytics CSV export.', 'dialogawp'); ?></p>
+    <div class="dialogawp-settings-section dialogawp-analytics-pro-promo">
+        <h2>DialogaWP Pro</h2>
+        <p><?php echo esc_html__('DialogaWP Pro is a separate plugin that adds further reporting on top of everything here - a per-node conversation funnel, full chat transcripts by session, A/B test comparisons, time-to-lead, and analytics CSV export.', 'dialogawp'); ?></p>
         <a href="<?php echo esc_url(dialogawp_upgrade_url()); ?>" target="_blank" rel="noopener" class="button"><?php echo esc_html__('Learn more about DialogaWP Pro', 'dialogawp'); ?> &rarr;</a>
     </div>
     <?php endif; ?>
@@ -373,7 +378,10 @@ wp_add_inline_script('dialogawp-admin', <<<'JS'
 (function() {
     var content = document.getElementById('dialogawp-analytics-content');
     if (!content) return;
-    function showLoading() { content.classList.add('is-loading'); }
+    function showLoading() {
+        content.classList.add('is-loading');
+        content.setAttribute('aria-busy', 'true');
+    }
     var pills = document.querySelectorAll('.dialogawp-analytics-filter a[href*="preset="], .dialogawp-analytics-filter a[href*="page=dialogawp-analytics"]');
     pills.forEach(function(a) { a.addEventListener('click', showLoading); });
     var form = document.querySelector('.dialogawp-analytics-filter form');

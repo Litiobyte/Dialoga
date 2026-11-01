@@ -10,7 +10,7 @@
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: dialogawp
  * Domain Path: /languages
- * Requires at least: 5.0
+ * Requires at least: 6.2
  * Requires PHP: 7.4
  */
 
@@ -202,6 +202,7 @@ class DialogaWP {
                 'primary_color' => '#190F4F',
                 'chat_position' => 'bottom-right',
                 'session_duration' => 7,
+                'chat_header_title' => 'Chat with us',
                 'welcome_message' => 'Hi! How can we help you today?',
                 'offline_message' => 'We\'re currently offline. Please leave your contact information and we\'ll get back to you.',
                 'business_hours' => array(
@@ -270,11 +271,11 @@ class DialogaWP {
         
         add_submenu_page(
             'DialogaWP',
-            __('Settings', 'dialogawp'),
-            __('Settings', 'dialogawp'),
+            __('Analytics', 'dialogawp'),
+            __('Analytics', 'dialogawp'),
             'manage_options',
-            'dialogawp-settings',
-            array($this, 'render_settings')
+            'dialogawp-analytics',
+            array($this, 'render_analytics')
         );
 
         add_submenu_page(
@@ -285,45 +286,59 @@ class DialogaWP {
             'dialogawp-ai-settings',
             array($this, 'render_ai_settings')
         );
+
+        add_submenu_page(
+            'DialogaWP',
+            __('Settings', 'dialogawp'),
+            __('Settings', 'dialogawp'),
+            'manage_options',
+            'dialogawp-settings',
+            array($this, 'render_settings')
+        );
     }
 
     public function add_analytics_menu() {
-        add_submenu_page(
-            'DialogaWP',
-            __('Analytics', 'dialogawp'),
-            __('Analytics', 'dialogawp'),
-            'manage_options',
-            'dialogawp-analytics',
-            array($this, 'render_analytics')
-        );
+        // Analytics is registered with the primary submenu sequence above.
     }
     
     public function enqueue_admin_assets($hook) {
         if (stripos($hook, 'dialogawp') === false) {
             return;
         }
+
+        $dialogawp_screen_key = strtolower($hook);
+        $dialogawp_is_builder = 'dialogawp_page_dialogawp-builder' === $dialogawp_screen_key;
         
         // DialogaWP Modal (global — used by all admin JS)
         wp_enqueue_script('dialogawp-modal', DIALOGAWP_URL . 'assets/js/modal.js', array(), DIALOGAWP_VERSION, true);
 
-        // Enqueue React and ReactDOM (bundled locally for WordPress.org compliance)
-        wp_enqueue_script('react', DIALOGAWP_URL . 'assets/js/vendor/react.production.min.js', array(), '18.3.1', true);
-        wp_enqueue_script('react-dom', DIALOGAWP_URL . 'assets/js/vendor/react-dom.production.min.js', array('react'), '18.3.1', true);
-        
-        // Enqueue our React canvas component
-        wp_enqueue_script(
-            'dialogawp-react',
-            DIALOGAWP_URL . 'assets/js/flow-builder-react.js',
-            array('react', 'react-dom'),
-            DIALOGAWP_VERSION,
-            true
-        );
+        $dialogawp_admin_dependencies = array('jquery', 'dialogawp-modal');
+        $dialogawp_use_xyflow = false;
+
+        if ($dialogawp_is_builder) {
+            // Temporary development switch. Remove with the legacy canvas before release.
+            $dialogawp_use_xyflow = (bool) apply_filters('dialogawp_use_xyflow_canvas', true);
+            $dialogawp_canvas_file = $dialogawp_use_xyflow
+                ? 'assets/js/build/flow-canvas.js'
+                : 'assets/js/flow-builder-react.js';
+
+            // React and ReactDOM are provided and patched by WordPress core.
+            wp_enqueue_script(
+                'dialogawp-react',
+                DIALOGAWP_URL . $dialogawp_canvas_file,
+                array('react', 'react-dom'),
+                DIALOGAWP_VERSION,
+                true
+            );
+            $dialogawp_admin_dependencies[] = 'dialogawp-react';
+
+        }
         
         // Enqueue admin JS
         wp_enqueue_script(
             'dialogawp-admin',
             DIALOGAWP_URL . 'assets/js/admin.js',
-            array('jquery', 'dialogawp-react'),
+            $dialogawp_admin_dependencies,
             DIALOGAWP_VERSION,
             true
         );
@@ -335,6 +350,15 @@ class DialogaWP {
             array(),
             DIALOGAWP_VERSION
         );
+
+        if ($dialogawp_use_xyflow) {
+            wp_enqueue_style(
+                'dialogawp-flow-canvas',
+                DIALOGAWP_URL . 'assets/js/build/flow-canvas.css',
+                array('dialogawp-admin'),
+                DIALOGAWP_VERSION
+            );
+        }
 
         /*
          * v1.0.4 — per-screen admin CSS.
@@ -362,8 +386,6 @@ class DialogaWP {
 
         // The top-level menu slug is 'DialogaWP', so the hook suffix keeps that
         // capital D. Match case-insensitively rather than relying on it.
-        $dialogawp_screen_key = strtolower($hook);
-
         if (isset($dialogawp_screen_styles[$dialogawp_screen_key])) {
             $dialogawp_screen_file = $dialogawp_screen_styles[$dialogawp_screen_key];
             wp_enqueue_style(

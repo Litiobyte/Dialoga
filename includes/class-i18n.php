@@ -27,8 +27,13 @@ class DialogaWP_I18n {
             '%d link clicks' => '%d link click',
             'across %1$d visitors (%2$s avg)' => 'across %1$d visitor (%2$s avg)',
             'across %d visitors' => 'across %d visitor',
+            '%d active flows' => '%d active flow',
+            '%d conversations with lead data' => '%d conversation with lead data',
+            '%d conversations with conversion link clicks' => '%d conversation with a conversion link click',
+            '%d lead records shown' => '%d lead record shown',
+            'Lead records: %d results' => 'Lead records: %d result',
         );
-        foreach (array('scripts', 'settings', 'templates', 'backend', 'core', 'wizard', 'fixes') as $part) {
+        foreach (array('scripts', 'settings', 'templates', 'backend', 'core', 'wizard', 'fixes', 'admin-ui') as $part) {
             $path = DIALOGAWP_PATH . 'languages/' . $part . '-es.json';
             if (!is_readable($path)) {
                 continue;

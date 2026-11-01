@@ -209,6 +209,65 @@ async function main() {
                 livePosition: freshGraph.nodes[0].position }, 'silent save must preserve latest graph, including live canvas state');
         });
 
+        await test('question quick replies survive normal save with detached XYFlow node', async ({ page }) => {
+            await page.evaluate(() => {
+                dialogawpBuilder.selectedNode = structuredClone(dialogawpBuilder.nodes[0]);
+                jQuery('#dialogawp-node-editor').show();
+                jQuery('#dialogawp-node-editor-content').html(`
+                    <textarea class="dialogawp-node-field" data-field="message">Updated question</textarea>
+                    <div class="dialogawp-option-item" data-option-id="yes">
+                        <input class="dialogawp-option-label" value="Yes, please">
+                    </div>
+                    <div class="dialogawp-option-item" data-option-id="no">
+                        <input class="dialogawp-option-label" value="No, thanks">
+                    </div>
+                `);
+                dialogawpBuilder.saveNodeEdits(false);
+            });
+            await page.waitForFunction(() => fixture.graph.nodes[0]?.data?.options?.length === 2);
+            const result = await page.evaluate(() => ({
+                graph: fixture.graph,
+                write: fixture.writes.at(-1),
+            }));
+            const expectedOptions = [
+                { id: 'yes', label: 'Yes, please' },
+                { id: 'no', label: 'No, thanks' },
+            ];
+            assert.deepEqual(result.graph.nodes[0].data.options, expectedOptions);
+            assert.equal(result.graph.nodes[0].data.message, 'Updated question');
+            assert.deepEqual(result.graph.nodes.map(item => item.position), freshGraph.nodes.map(item => item.position));
+            assert.deepEqual(result.graph.edges, freshGraph.edges);
+            assert.deepEqual(result.write.nodes[0].data.options, expectedOptions);
+        });
+
+        await test('loop message and delay save for free installs with detached XYFlow node', async ({ page }) => {
+            await page.evaluate(() => {
+                const loopGraph = {
+                    nodes: [
+                        { id: 'loop', type: 'custom', position: { x: 320, y: 400 }, data: { nodeType: 'loop', label: 'Loop' } },
+                        { id: 'target', type: 'custom', position: { x: 80, y: 100 }, data: { nodeType: 'question', message: 'Target' } },
+                    ],
+                    edges: [{ id: 'loop-edge', source: 'loop', sourceHandle: 'left', target: 'target', type: 'smoothstep' }],
+                };
+                fixture.graph = structuredClone(loopGraph);
+                dialogawpBuilder.nodes = structuredClone(loopGraph.nodes);
+                dialogawpBuilder.edges = structuredClone(loopGraph.edges);
+                dialogawpBuilder.selectedNode = structuredClone(loopGraph.nodes[0]);
+                jQuery('#dialogawp-node-editor').show();
+                jQuery('#dialogawp-node-editor-content').html(`
+                    <textarea id="dialogawp-loop-message">Anything else?</textarea>
+                    <input type="number" id="dialogawp-loop-delay" value="1.5">
+                `);
+                dialogawpBuilder.saveNodeEdits(false);
+            });
+            await page.waitForFunction(() => fixture.graph.nodes[0]?.data?.delay_ms === 1500);
+            const graph = await page.evaluate(() => fixture.graph);
+            assert.equal(graph.nodes[0].data.message, 'Anything else?');
+            assert.equal(graph.nodes[0].data.delay_ms, 1500);
+            assert.equal(graph.nodes[0].data.target_node_id, 'target');
+            assert.deepEqual(graph.edges, [{ id: 'loop-edge', source: 'loop', sourceHandle: 'left', target: 'target', type: 'smoothstep' }]);
+        });
+
         await test('mass export sends only selected IDs and current override only when included', async ({ page, state }) => {
             await page.locator('.dialogawp-export-flows').click();
             await page.locator('.dialogawp-export-choice[value="8"]').check();

@@ -151,12 +151,14 @@ async function main() {
         }, { hash: fragment('engagement') });
         await test('native hidden-panel inputs submit with visible fields and persist cross-tab edits in real PHP', async ({ page, state }) => {
             await page.locator('[name="enabled"]').check();
-            await tab(page, 'messages').click(); await page.locator('[name="welcome_message"]').fill('Visitor\'s "welcome"\nSecond line \\ path');
+            await tab(page, 'messages').click(); await page.locator('[name="chat_header_title"]').fill('Talk to our team');
+            await page.locator('[name="welcome_message"]').fill('Visitor\'s "welcome"\nSecond line \\ path');
             await page.locator('[name="offline_message"]').fill('Offline\'s "message"\nOther line');
             await tab(page, 'notifications').click(); await page.locator('[name="email_notifications_subject"]').fill('Custom lead subject');
             await tab(page, 'data-privacy').click(); await page.locator('[name="lead_retention_enabled"]').check(); await page.locator('[name="lead_retention_days"]').fill('45');
             await tab(page, 'appearance').click(); await page.locator('[name="chat_position"]').selectOption('bottom-left');
             const successful = await page.evaluate(() => Object.fromEntries(new FormData(document.querySelector('form'))));
+            assert.equal(successful.chat_header_title, 'Talk to our team');
             assert.equal(successful.welcome_message, 'Visitor\'s "welcome"\nSecond line \\ path');
             assert.equal(successful.email_notifications_subject, 'Custom lead subject'); assert.equal(successful.lead_retention_days, '45');
             await Promise.all([page.waitForNavigation(), page.locator('[name="dialogawp_save_settings"]').first().click()]);
@@ -195,7 +197,7 @@ async function main() {
             await test('real MO-rendered tabs and translated destructive dialogs: ' + locale, async ({ page, state }) => {
                 const dictionary = state.rendered.dictionary;
                 assert.equal(await tab(page, 'appearance').textContent(), dictionary.Appearance);
-                assert.equal(await page.locator('h1').textContent(), dictionary['DIALOGAWP Settings']);
+                assert.equal(await page.locator('h1').textContent(), dictionary['Settings']);
                 await page.locator('#dialogawp-clear-all-leads-btn').click();
                 await page.waitForFunction(() => !document.querySelector('#dialogawp-clear-all-leads-btn').disabled);
                 assert.deepEqual(state.dialogs.map(item => item.message), [dictionary['Delete ALL leads?\n\nThis cannot be undone.'],

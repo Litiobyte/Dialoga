@@ -46,16 +46,27 @@
     background: transparent;
     border: none;
     margin-top: 20px !important;
-    /* v0.42.16 — empirically tuned. User confirmed `calc(100vh + 250px)`
-       makes the container's inner children (sidebar + main + canvas) actually
-       fill the visible viewport on their site. The extra 250px accommodates
-       WP admin's #wpbody-content padding, admin bar, H1 area, and typical
-       admin notices. Also fixes an underlying issue where inner flex:1
-       children (canvas) can't compute their height correctly unless the
-       parent container itself has a very generous min-height. */
-    min-height: calc(100vh + 250px) !important;
+    min-height: min(760px, calc(100vh - 180px)) !important;
     padding-bottom: 20px;
     box-sizing: border-box !important;
+}
+
+.dialogawp-builder-page-header {
+    margin-bottom: 12px;
+}
+
+.dialogawp-builder-empty-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 8px;
+}
+
+.dialogawp-builder-empty-note {
+    margin-top: 16px;
+    color: #64748B;
+    font-size: 13px;
 }
 
 .dialogawp-flows-sidebar {
@@ -189,6 +200,11 @@ body.dialogawp-canvas-fullscreen .dialogawp-node-editor {
     cursor: pointer;
     transition: all 0.2s;
     position: relative;
+}
+
+.dialogawp-flow-item:focus-visible {
+    outline: 3px solid rgba(0, 173, 161, 0.38);
+    outline-offset: 2px;
 }
 
 .dialogawp-flow-item:hover {
@@ -396,6 +412,29 @@ body.dialogawp-canvas-fullscreen .dialogawp-node-editor {
     min-width: 250px;
 }
 
+.dialogawp-visibility-controls {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 12px;
+    padding-left: 12px;
+    border-left: 1px solid #E5E7EF;
+}
+
+.dialogawp-visibility-controls label {
+    margin: 0;
+    color: #26233A;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.dialogawp-visibility-controls select {
+    min-width: 170px;
+    padding: 5px 10px;
+    font-size: 13px;
+}
+
 .dialogawp-active-toggle {
     display: flex;
     align-items: center;
@@ -494,8 +533,8 @@ body.dialogawp-canvas-fullscreen .dialogawp-node-editor {
     max-height: calc(100vh - 110px);
     background: #fff;
     border: 1px solid #E5E7EF;
-    border-radius: 4px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    border-radius: 12px;
+    box-shadow: 0 18px 48px rgba(25,15,79,0.2);
     z-index: 1000;
     display: flex;
     flex-direction: column;
@@ -525,6 +564,12 @@ body.dialogawp-canvas-fullscreen .dialogawp-node-editor {
 
 .dialogawp-close-editor:hover {
     color: #000;
+}
+
+.dialogawp-close-editor:focus-visible,
+.dialogawp-modal-close:focus-visible {
+    outline: 3px solid rgba(0, 173, 161, 0.38);
+    outline-offset: 2px;
 }
 
 .dialogawp-node-editor-content {
@@ -585,6 +630,16 @@ body.dialogawp-canvas-fullscreen .dialogawp-node-editor {
     padding: 20px;
     color: #666;
 }
+
+.dialogawp-builder-inline-error {
+    margin: 12px 0;
+    padding: 12px;
+    border: 1px solid #FECACA;
+    border-radius: 8px;
+    background: #FEF2F2;
+    color: #991B1B;
+    font-size: 13px;
+}
 .dialogawp-draggable-node.dragging {
     opacity: 0.5;
     cursor: grabbing;
@@ -613,4 +668,24 @@ body.dialogawp-canvas-fullscreen .dialogawp-node-editor {
 
 .dialogawp-node-palette h3 {
     color: #190F4F;
+}
+
+@media (max-width: 1200px) {
+    .dialogawp-builder-container {
+        min-height: 620px !important;
+    }
+}
+
+@media (max-width: 782px) {
+    .dialogawp-visibility-controls {
+        width: 100%;
+        margin-left: 0;
+        padding-left: 0;
+        border-left: 0;
+    }
+
+    .dialogawp-visibility-controls select {
+        flex: 1;
+        min-width: 0;
+    }
 }

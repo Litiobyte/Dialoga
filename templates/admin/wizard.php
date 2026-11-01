@@ -16,29 +16,30 @@
         <div class="dialogawp-wizard-brand">
             <img src="<?php echo esc_url(DIALOGAWP_LOGO_URL); ?>" alt="DialogaWP" class="dialogawp-wizard-brand-logo" onerror="this.style.display='none'" />
         </div>
-        <div class="dialogawp-wizard-progress" id="wizard-progress"></div>
+        <nav class="dialogawp-wizard-progress" id="wizard-progress" aria-label="<?php esc_attr_e('Setup progress', 'dialogawp'); ?>"></nav>
         <div class="dialogawp-wizard-header-actions">
             <span class="dialogawp-wizard-save-pill" id="wizard-save-pill" aria-live="polite">
                 <span class="dialogawp-wizard-save-dot"></span>
                 <span class="dialogawp-wizard-save-text"><?php esc_html_e('Progress saved', 'dialogawp'); ?></span>
             </span>
             <a href="<?php echo esc_url(admin_url('admin.php?page=dialogawp')); ?>" class="dialogawp-wizard-exit-btn" id="wizard-save-exit" title="<?php esc_attr_e('Your progress is auto-saved. Resume anytime from the Dashboard.', 'dialogawp'); ?>"><?php esc_html_e('Save & Exit', 'dialogawp'); ?></a>
-            <button class="dialogawp-wizard-skip-btn" id="wizard-skip"><?php esc_html_e('Skip Setup', 'dialogawp'); ?></button>
+            <button type="button" class="dialogawp-wizard-skip-btn" id="wizard-skip"><?php esc_html_e('Skip Setup', 'dialogawp'); ?></button>
         </div>
     </div>
 
     <!-- Loading state — shown until JS initializes -->
-    <div class="dialogawp-wizard-loading" id="wizard-loading">
+    <div class="dialogawp-wizard-loading" id="wizard-loading" role="status" aria-live="polite">
         <div class="dialogawp-wizard-spinner"></div>
         <p style="color:#94A3B8;font-size:14px;margin-top:12px;"><?php esc_html_e('Loading wizard...', 'dialogawp'); ?></p>
     </div>
+    <div class="dialogawp-wizard-sr-only" id="wizard-announcements" role="status" aria-live="polite" aria-atomic="true"></div>
 
     <!-- Steps Container -->
     <div class="dialogawp-wizard-content" style="display:none;">
         <div class="dialogawp-wizard-slider" id="wizard-slider">
 
             <!-- Step 0: Welcome -->
-            <div class="dialogawp-wizard-step" data-step="0">
+            <div class="dialogawp-wizard-step" id="wizard-step-0" data-step="0">
                 <div class="dialogawp-wizard-card dialogawp-wizard-card-wide">
                     <div class="dialogawp-wizard-welcome-icon">
                         <img src="<?php echo esc_url(DIALOGAWP_LOGO_URL); ?>" alt="DialogaWP" style="height:100px;width:auto;" onerror="this.style.display='none'" />
@@ -46,74 +47,74 @@
                     <h1><?php esc_html_e('Welcome to DialogaWP', 'dialogawp'); ?></h1>
                     <p class="dialogawp-wizard-subtitle"><?php esc_html_e('Let\'s build your first chatbot in just a few minutes. This wizard will walk you through everything — no coding required.', 'dialogawp'); ?></p>
                     <div class="dialogawp-wizard-welcome-steps" id="wizard-welcome-steps">
-                        <div class="dialogawp-wizard-welcome-step" data-goto="1">
+                        <button type="button" class="dialogawp-wizard-welcome-step" data-goto="1">
                             <div class="dialogawp-wizard-welcome-num" id="welcome-step-1">1</div>
                             <div>
                                 <strong><?php esc_html_e('AI Setup', 'dialogawp'); ?></strong>
                                 <span><?php esc_html_e('Connect your AI provider (OpenAI or Anthropic)', 'dialogawp'); ?></span>
                             </div>
                             <div class="dialogawp-wizard-welcome-arrow">&#8250;</div>
-                        </div>
-                        <div class="dialogawp-wizard-welcome-step" data-goto="2">
+                        </button>
+                        <button type="button" class="dialogawp-wizard-welcome-step" data-goto="2">
                             <div class="dialogawp-wizard-welcome-num" id="welcome-step-2">2</div>
                             <div>
                                 <strong><?php esc_html_e('Crawl Website', 'dialogawp'); ?></strong>
                                 <span><?php esc_html_e('We\'ll learn about your business from your website', 'dialogawp'); ?></span>
                             </div>
                             <div class="dialogawp-wizard-welcome-arrow">&#8250;</div>
-                        </div>
-                        <div class="dialogawp-wizard-welcome-step" data-goto="3">
+                        </button>
+                        <button type="button" class="dialogawp-wizard-welcome-step" data-goto="3">
                             <div class="dialogawp-wizard-welcome-num" id="welcome-step-3">3</div>
                             <div>
                                 <strong><?php esc_html_e('Chatbot Customization', 'dialogawp'); ?></strong>
                                 <span><?php esc_html_e('Add personality and instructions for your chatbot', 'dialogawp'); ?></span>
                             </div>
                             <div class="dialogawp-wizard-welcome-arrow">&#8250;</div>
-                        </div>
-                        <div class="dialogawp-wizard-welcome-step" data-goto="4">
+                        </button>
+                        <button type="button" class="dialogawp-wizard-welcome-step" data-goto="4">
                             <div class="dialogawp-wizard-welcome-num" id="welcome-step-4">4</div>
                             <div>
                                 <strong><?php esc_html_e('Chatbot Goals', 'dialogawp'); ?></strong>
                                 <span><?php esc_html_e('Select what you want your chatbot to do', 'dialogawp'); ?></span>
                             </div>
                             <div class="dialogawp-wizard-welcome-arrow">&#8250;</div>
-                        </div>
-                        <div class="dialogawp-wizard-welcome-step" data-goto="5">
+                        </button>
+                        <button type="button" class="dialogawp-wizard-welcome-step" data-goto="5">
                             <div class="dialogawp-wizard-welcome-num" id="welcome-step-5">5</div>
                             <div>
                                 <strong><?php esc_html_e('Chatbot Visibility', 'dialogawp'); ?></strong>
                                 <span><?php esc_html_e('Choose who can see your chatbot', 'dialogawp'); ?></span>
                             </div>
                             <div class="dialogawp-wizard-welcome-arrow">&#8250;</div>
-                        </div>
-                        <div class="dialogawp-wizard-welcome-step" data-goto="6">
+                        </button>
+                        <button type="button" class="dialogawp-wizard-welcome-step" data-goto="6">
                             <div class="dialogawp-wizard-welcome-num" id="welcome-step-6">6</div>
                             <div>
                                 <strong><?php esc_html_e('Launch Chatbot', 'dialogawp'); ?></strong>
                                 <span><?php esc_html_e('Review and create your chatbot', 'dialogawp'); ?></span>
                             </div>
                             <div class="dialogawp-wizard-welcome-arrow">&#8250;</div>
-                        </div>
+                        </button>
                     </div>
                 </div>
             </div>
 
             <!-- Step 1: AI Setup -->
-            <div class="dialogawp-wizard-step" data-step="1">
+            <div class="dialogawp-wizard-step" id="wizard-step-1" data-step="1">
                 <div class="dialogawp-wizard-card">
                     <h2><?php esc_html_e('Connect Your AI Provider', 'dialogawp'); ?></h2>
                     <p class="dialogawp-wizard-desc"><?php esc_html_e('DialogaWP uses AI to power your chatbot conversations. You\'ll need an API key from OpenAI or Anthropic.', 'dialogawp'); ?></p>
 
                     <!-- Instructions accordion — shown first for visibility -->
                     <div class="dialogawp-wizard-accordion" id="wizard-instructions-accordion" style="margin-bottom:24px;">
-                        <button class="dialogawp-wizard-accordion-toggle" id="wizard-instructions-toggle">
+                        <button type="button" class="dialogawp-wizard-accordion-toggle" id="wizard-instructions-toggle" aria-expanded="false" aria-controls="wizard-instructions-body">
                             <?php esc_html_e('How do I get an API key?', 'dialogawp'); ?> <span class="dialogawp-wizard-chevron">&#9660;</span>
                         </button>
-                        <div class="dialogawp-wizard-accordion-body" id="wizard-instructions-body">
+                        <div class="dialogawp-wizard-accordion-body" id="wizard-instructions-body" hidden>
                             <div class="dialogawp-wizard-instructions" id="wizard-openai-instructions">
                                 <h4><?php esc_html_e('Getting an OpenAI API Key', 'dialogawp'); ?></h4>
                                 <ol>
-                                    <li><?php echo wp_kses_post(__('Go to <a href="https://platform.openai.com/signup" target="_blank">platform.openai.com</a> and create an account', 'dialogawp')); ?></li>
+                                    <li><?php echo wp_kses_post(__('Go to <a href="https://platform.openai.com/signup" target="_blank" rel="noopener noreferrer">platform.openai.com</a> and create an account', 'dialogawp')); ?></li>
                                     <li><?php echo wp_kses_post(__('Navigate to <strong>API Keys</strong> in the left sidebar', 'dialogawp')); ?></li>
                                     <li><?php echo wp_kses_post(__('Click <strong>"Create new secret key"</strong>', 'dialogawp')); ?></li>
                                     <li><?php echo wp_kses_post(__('Copy the key (starts with <code>sk-</code>) and paste it below', 'dialogawp')); ?></li>
@@ -124,7 +125,7 @@
                             <div class="dialogawp-wizard-instructions" id="wizard-anthropic-instructions" style="display:none;">
                                 <h4><?php esc_html_e('Getting an Anthropic API Key', 'dialogawp'); ?></h4>
                                 <ol>
-                                    <li><?php echo wp_kses_post(__('Go to <a href="https://console.anthropic.com/" target="_blank">console.anthropic.com</a> and create an account', 'dialogawp')); ?></li>
+                                    <li><?php echo wp_kses_post(__('Go to <a href="https://console.anthropic.com/" target="_blank" rel="noopener noreferrer">console.anthropic.com</a> and create an account', 'dialogawp')); ?></li>
                                     <li><?php echo wp_kses_post(__('Navigate to <strong>API Keys</strong>', 'dialogawp')); ?></li>
                                     <li><?php echo wp_kses_post(__('Click <strong>"Create Key"</strong>', 'dialogawp')); ?></li>
                                     <li><?php echo wp_kses_post(__('Copy the key (starts with <code>sk-ant-</code>) and paste it below', 'dialogawp')); ?></li>
@@ -164,7 +165,7 @@
                         <div id="wizard-key-row-input">
                             <input type="password" id="wizard-api-key" placeholder="<?php esc_attr_e('Paste your API key here...', 'dialogawp'); ?>" autocomplete="off" />
                         </div>
-                        <div class="dialogawp-wizard-key-status" id="wizard-key-status"></div>
+                        <div class="dialogawp-wizard-key-status" id="wizard-key-status" role="status" aria-live="polite"></div>
                     </div>
 
                     <div class="dialogawp-wizard-field">
@@ -181,14 +182,14 @@
                         </select>
                     </div>
 
-                    <button class="dialogawp-wizard-btn dialogawp-wizard-btn-outline" id="wizard-test-connection">
+                    <button type="button" class="dialogawp-wizard-btn dialogawp-wizard-btn-outline" id="wizard-test-connection">
                         <?php esc_html_e('Test Connection', 'dialogawp'); ?>
                     </button>
                 </div>
             </div>
 
             <!-- Step 2: Website Crawl -->
-            <div class="dialogawp-wizard-step" data-step="2">
+            <div class="dialogawp-wizard-step" id="wizard-step-2" data-step="2">
                 <div class="dialogawp-wizard-card">
                     <h2><?php esc_html_e('Crawl Your Website', 'dialogawp'); ?></h2>
                     <p class="dialogawp-wizard-desc"><?php esc_html_e('We\'ll scan your website to learn about your business, services, and content. This helps the AI give accurate, relevant answers to your visitors.', 'dialogawp'); ?></p>
@@ -199,29 +200,29 @@
                     </div>
 
                     <div class="dialogawp-wizard-crawl-status" id="wizard-crawl-status">
-                        <button class="dialogawp-wizard-btn dialogawp-wizard-btn-primary dialogawp-wizard-btn-lg" id="wizard-crawl-btn">
+                        <button type="button" class="dialogawp-wizard-btn dialogawp-wizard-btn-primary dialogawp-wizard-btn-lg" id="wizard-crawl-btn">
                             <?php esc_html_e('Scan My Website', 'dialogawp'); ?>
                         </button>
                         <p class="dialogawp-wizard-note"><?php esc_html_e('This usually takes 10-30 seconds depending on your site size.', 'dialogawp'); ?></p>
                     </div>
 
-                    <div class="dialogawp-wizard-crawl-progress" id="wizard-crawl-progress" style="display:none;">
+                    <div class="dialogawp-wizard-crawl-progress" id="wizard-crawl-progress" role="status" aria-live="polite" style="display:none;">
                         <div class="dialogawp-wizard-spinner"></div>
                         <p><?php esc_html_e('Scanning your website...', 'dialogawp'); ?></p>
                         <p class="dialogawp-wizard-note"><?php esc_html_e('Reading pages, extracting content, and building your knowledge base.', 'dialogawp'); ?></p>
                     </div>
 
-                    <div class="dialogawp-wizard-crawl-results" id="wizard-crawl-results" style="display:none;">
+                    <div class="dialogawp-wizard-crawl-results" id="wizard-crawl-results" role="status" aria-live="polite" style="display:none;">
                         <div class="dialogawp-wizard-success-icon">&#x2705;</div>
                         <h3><?php esc_html_e('Website Scanned Successfully!', 'dialogawp'); ?></h3>
                         <p id="wizard-crawl-summary"></p>
-                        <button class="dialogawp-wizard-btn dialogawp-wizard-btn-outline dialogawp-wizard-btn-sm" id="wizard-recrawl-btn"><?php esc_html_e('Scan Again', 'dialogawp'); ?></button>
+                        <button type="button" class="dialogawp-wizard-btn dialogawp-wizard-btn-outline dialogawp-wizard-btn-sm" id="wizard-recrawl-btn"><?php esc_html_e('Scan Again', 'dialogawp'); ?></button>
                     </div>
                 </div>
             </div>
 
             <!-- Step 3: Customize -->
-            <div class="dialogawp-wizard-step" data-step="3">
+            <div class="dialogawp-wizard-step" id="wizard-step-3" data-step="3">
                 <div class="dialogawp-wizard-card">
                     <h2><?php esc_html_e('Customize Your Chatbot', 'dialogawp'); ?></h2>
                     <p class="dialogawp-wizard-desc"><?php esc_html_e('Give your chatbot a personality and context so it represents your business accurately.', 'dialogawp'); ?></p>
@@ -263,14 +264,14 @@
             </div>
 
             <!-- Step 4: Goal Selection -->
-            <div class="dialogawp-wizard-step" data-step="4">
+            <div class="dialogawp-wizard-step" id="wizard-step-4" data-step="4">
                 <div class="dialogawp-wizard-card dialogawp-wizard-card-wide">
                     <h2><?php esc_html_e('What Are Your Goals?', 'dialogawp'); ?></h2>
                     <p class="dialogawp-wizard-desc"><?php esc_html_e('Select all that apply — we\'ll build a flow that covers everything you need.', 'dialogawp'); ?></p>
 
                     <!-- Free Goals (4 cards) -->
                     <div class="dialogawp-wizard-goal-grid dialogawp-wizard-goal-grid-4">
-                        <button class="dialogawp-wizard-goal-card" data-goal="leads">
+                        <button type="button" class="dialogawp-wizard-goal-card" data-goal="leads" aria-pressed="false">
                             <div class="dialogawp-wizard-goal-icon">
                                 <svg width="40" height="40" viewBox="0 0 48 48" fill="none">
                                     <rect x="6" y="10" width="36" height="28" rx="4" stroke="#16A34A" stroke-width="3" fill="#F0FDF4"/>
@@ -290,7 +291,7 @@
                             </ul>
                         </button>
 
-                        <button class="dialogawp-wizard-goal-card" data-goal="booking">
+                        <button type="button" class="dialogawp-wizard-goal-card" data-goal="booking" aria-pressed="false">
                             <div class="dialogawp-wizard-goal-icon">
                                 <svg width="40" height="40" viewBox="0 0 48 48" fill="none">
                                     <rect x="8" y="6" width="32" height="36" rx="4" stroke="#7C3AED" stroke-width="3" fill="#F5F3FF"/>
@@ -311,7 +312,7 @@
                             </ul>
                         </button>
 
-                        <button class="dialogawp-wizard-goal-card" data-goal="support">
+                        <button type="button" class="dialogawp-wizard-goal-card" data-goal="support" aria-pressed="false">
                             <div class="dialogawp-wizard-goal-icon">
                                 <svg width="40" height="40" viewBox="0 0 48 48" fill="none">
                                     <circle cx="24" cy="24" r="18" stroke="#EA580C" stroke-width="3" fill="#FFF7ED"/>
@@ -331,7 +332,7 @@
                             </ul>
                         </button>
 
-                        <button class="dialogawp-wizard-goal-card" data-goal="info">
+                        <button type="button" class="dialogawp-wizard-goal-card" data-goal="info" aria-pressed="false">
                             <div class="dialogawp-wizard-goal-icon">
                                 <svg width="40" height="40" viewBox="0 0 48 48" fill="none">
                                     <rect x="4" y="4" width="40" height="32" rx="8" stroke="#007D75" stroke-width="3" fill="#EFF6FF"/>
@@ -362,13 +363,13 @@
             </div>
 
             <!-- Step 5: Chatbot Visibility -->
-            <div class="dialogawp-wizard-step" data-step="5">
+            <div class="dialogawp-wizard-step" id="wizard-step-5" data-step="5">
                 <div class="dialogawp-wizard-card dialogawp-wizard-card-wide">
                     <h2><?php esc_html_e('Chatbot Visibility', 'dialogawp'); ?></h2>
                     <p class="dialogawp-wizard-desc"><?php esc_html_e('Who should see your chatbot? You can change this anytime in the flow builder.', 'dialogawp'); ?></p>
 
                     <div class="dialogawp-wizard-visibility-grid">
-                        <button class="dialogawp-wizard-visibility-card selected" data-visibility="everyone">
+                        <button type="button" class="dialogawp-wizard-visibility-card selected" data-visibility="everyone" aria-pressed="true">
                             <div class="dialogawp-wizard-visibility-icon">
                                 <svg width="40" height="40" viewBox="0 0 48 48" fill="none">
                                     <circle cx="24" cy="24" r="18" stroke="#16A34A" stroke-width="3" fill="#F0FDF4"/>
@@ -380,7 +381,7 @@
                             <p><?php esc_html_e('All website visitors can see and interact with the chatbot. Best for most use cases.', 'dialogawp'); ?></p>
                         </button>
 
-                        <button class="dialogawp-wizard-visibility-card" data-visibility="logged_in">
+                        <button type="button" class="dialogawp-wizard-visibility-card" data-visibility="logged_in" aria-pressed="false">
                             <div class="dialogawp-wizard-visibility-icon">
                                 <svg width="40" height="40" viewBox="0 0 48 48" fill="none">
                                     <rect x="10" y="20" width="28" height="20" rx="4" stroke="#007D75" stroke-width="3" fill="#EFF6FF"/>
@@ -392,7 +393,7 @@
                             <p><?php esc_html_e('Only users who are logged into your WordPress site can see the chatbot.', 'dialogawp'); ?></p>
                         </button>
 
-                        <button class="dialogawp-wizard-visibility-card" data-visibility="specific_roles">
+                        <button type="button" class="dialogawp-wizard-visibility-card" data-visibility="specific_roles" aria-pressed="false" aria-controls="wizard-roles-section">
                             <div class="dialogawp-wizard-visibility-icon">
                                 <svg width="40" height="40" viewBox="0 0 48 48" fill="none">
                                     <circle cx="18" cy="16" r="6" stroke="#7C3AED" stroke-width="3" fill="#F5F3FF"/>
@@ -426,7 +427,7 @@
             </div>
 
             <!-- Step 6: Launch Chatbot -->
-            <div class="dialogawp-wizard-step" data-step="6">
+            <div class="dialogawp-wizard-step" id="wizard-step-6" data-step="6">
                 <div class="dialogawp-wizard-card">
                     <div id="wizard-review-summary">
                         <h2><?php esc_html_e('Review & Create', 'dialogawp'); ?></h2>
@@ -436,12 +437,12 @@
                             <!-- Populated by JS -->
                         </div>
 
-                        <button class="dialogawp-wizard-btn dialogawp-wizard-btn-primary dialogawp-wizard-btn-lg dialogawp-wizard-btn-full" id="wizard-create-btn">
+                        <button type="button" class="dialogawp-wizard-btn dialogawp-wizard-btn-primary dialogawp-wizard-btn-lg dialogawp-wizard-btn-full" id="wizard-create-btn">
                             <?php esc_html_e('Create My Chatbot', 'dialogawp'); ?>
                         </button>
                     </div>
 
-                    <div id="wizard-creating" style="display:none;">
+                    <div id="wizard-creating" role="status" aria-live="polite" style="display:none;">
                         <div class="dialogawp-wizard-creating">
                             <div class="dialogawp-wizard-spinner dialogawp-wizard-spinner-lg"></div>
                             <h3><?php esc_html_e('Building Your Chatbot...', 'dialogawp'); ?></h3>
@@ -449,24 +450,24 @@
                         </div>
                     </div>
 
-                    <div id="wizard-complete" style="display:none;">
+                    <div id="wizard-complete" role="status" aria-live="polite" style="display:none;">
                         <div class="dialogawp-wizard-complete">
                             <div class="dialogawp-wizard-complete-icon">&#x1f389;</div>
                             <h2><?php esc_html_e('Your Chatbot is Ready!', 'dialogawp'); ?></h2>
                             <p><?php esc_html_e('We\'ve created a custom flow based on your business. You can preview it, customize it further, or go live right away.', 'dialogawp'); ?></p>
-                            <button class="dialogawp-wizard-btn dialogawp-wizard-btn-primary dialogawp-wizard-btn-lg" id="wizard-go-to-builder">
+                            <button type="button" class="dialogawp-wizard-btn dialogawp-wizard-btn-primary dialogawp-wizard-btn-lg" id="wizard-go-to-builder">
                                 <?php esc_html_e('Open Flow Builder', 'dialogawp'); ?>
                             </button>
                         </div>
                     </div>
 
-                    <div id="wizard-error" style="display:none;">
+                    <div id="wizard-error" role="alert" aria-live="assertive" style="display:none;">
                         <div class="dialogawp-wizard-error">
                             <div class="dialogawp-wizard-error-icon">&#x26A0;&#xFE0F;</div>
                             <h3><?php esc_html_e('Something Went Wrong', 'dialogawp'); ?></h3>
                             <p id="wizard-error-message"></p>
-                            <button class="dialogawp-wizard-btn dialogawp-wizard-btn-outline" id="wizard-retry-btn"><?php esc_html_e('Try Again', 'dialogawp'); ?></button>
-                            <button class="dialogawp-wizard-btn dialogawp-wizard-btn-primary" id="wizard-use-template-btn"><?php esc_html_e('Use Starter Template', 'dialogawp'); ?></button>
+                            <button type="button" class="dialogawp-wizard-btn dialogawp-wizard-btn-outline" id="wizard-retry-btn"><?php esc_html_e('Try Again', 'dialogawp'); ?></button>
+                            <button type="button" class="dialogawp-wizard-btn dialogawp-wizard-btn-primary" id="wizard-use-template-btn"><?php esc_html_e('Use Starter Template', 'dialogawp'); ?></button>
                         </div>
                     </div>
                 </div>
@@ -477,11 +478,11 @@
 
     <!-- Footer -->
     <div class="dialogawp-wizard-footer">
-        <button class="dialogawp-wizard-btn dialogawp-wizard-btn-ghost" id="wizard-back" style="visibility:hidden;">
+        <button type="button" class="dialogawp-wizard-btn dialogawp-wizard-btn-ghost" id="wizard-back" style="visibility:hidden;">
             <?php esc_html_e('← Back', 'dialogawp'); ?>
         </button>
-        <div class="dialogawp-wizard-step-label" id="wizard-step-label"></div>
-        <button class="dialogawp-wizard-btn dialogawp-wizard-btn-primary" id="wizard-next">
+        <div class="dialogawp-wizard-step-label" id="wizard-step-label" aria-live="polite"></div>
+        <button type="button" class="dialogawp-wizard-btn dialogawp-wizard-btn-primary" id="wizard-next">
             <?php esc_html_e('Get Started →', 'dialogawp'); ?>
         </button>
     </div>

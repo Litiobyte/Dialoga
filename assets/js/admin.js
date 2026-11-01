@@ -290,6 +290,13 @@
                 e.preventDefault();
                 $('#dialogawp-node-editor').hide();
             });
+
+            $(document).on('keydown', '#dialogawp-node-editor', function(e) {
+                if (e.key === 'Escape') {
+                    e.preventDefault();
+                    $('#dialogawp-node-editor').hide();
+                }
+            });
             
             // Save node
             $(document).on('click', '.dialogawp-save-node', function(e) {
@@ -314,6 +321,14 @@
                 if (flowId && parseInt(flowId) !== parseInt(self.currentFlowId)) {
                     self.loadFlow(flowId);
                 }
+            });
+
+            $(document).on('keydown', '.dialogawp-flow-item', function(e) {
+                if (e.key !== 'Enter' && e.key !== ' ') return;
+                if ($(e.target).closest('.dialogawp-flow-item-actions, button, a').length) return;
+                e.preventDefault();
+                const flowId = $(this).data('flow-id');
+                if (flowId && parseInt(flowId) !== parseInt(self.currentFlowId)) self.loadFlow(flowId);
             });
 
             // Legacy Edit button (if still present anywhere)
@@ -380,12 +395,24 @@
             $(document).on('click', '#dialogawp-visibility-settings', function(e) {
                 e.preventDefault();
                 $('#dialogawp-visibility-modal').fadeIn(200);
+                window.setTimeout(function() {
+                    $('#dialogawp-visibility-modal').focus();
+                }, 0);
             });
             
             // Close visibility modal
             $(document).on('click', '.dialogawp-modal-close, .dialogawp-modal-backdrop', function(e) {
                 e.preventDefault();
                 $('#dialogawp-visibility-modal').fadeOut(200);
+                $('#dialogawp-visibility-settings').focus();
+            });
+
+            $(document).on('keydown', '#dialogawp-visibility-modal', function(e) {
+                if (e.key === 'Escape') {
+                    e.preventDefault();
+                    $('#dialogawp-visibility-modal').fadeOut(200);
+                    $('#dialogawp-visibility-settings').focus();
+                }
             });
             
             // Save roles
@@ -851,6 +878,10 @@
             $content.html(variablePicker + template);
             this.bindVariablePickerEvents();
             $editor.show();
+            window.setTimeout(function() {
+                const firstControl = $editor.find('input, select, textarea, button').filter(':visible').first();
+                (firstControl.length ? firstControl : $editor).focus();
+            }, 0);
         },
 
         getAvailableVariables: function(excludeNodeId) {
@@ -2730,14 +2761,10 @@
                 const targetLabel = targetNode ? (targetNode.data.message || targetNode.data.label || 'node') : '(none)';
                 this.selectedNode.data.label = '↩ ' + targetLabel;
 
-                // Pro-only fields: optional delay and message before looping
-                const isPro = (window.dialogawpAdmin && window.dialogawpAdmin.isPro) ? true : false;
-                if (isPro) {
-                    // UI shows seconds; backend stores milliseconds.
-                    const delaySecondsInput = parseFloat($('#dialogawp-loop-delay').val()) || 0;
-                    this.selectedNode.data.delay_ms = Math.round(delaySecondsInput * 1000);
-                    this.selectedNode.data.message = $('#dialogawp-loop-message').val() || '';
-                }
+                // UI shows seconds; backend stores milliseconds.
+                const delaySecondsInput = parseFloat($('#dialogawp-loop-delay').val()) || 0;
+                this.selectedNode.data.delay_ms = Math.round(delaySecondsInput * 1000);
+                this.selectedNode.data.message = $('#dialogawp-loop-message').val() || '';
             }
 
             if (nodeType === 'webhook') {
@@ -2791,7 +2818,12 @@
                 if (window.dialogawpReactInstance) {
                     const currentFlow = window.dialogawpReactInstance.getFlow();
                     if (currentFlow.nodes) {
-                        this.nodes = currentFlow.nodes;
+                        const updatedNode = this.selectedNode;
+                        this.nodes = currentFlow.nodes.map(node =>
+                            node.id === updatedNode.id
+                                ? { ...node, data: { ...updatedNode.data } }
+                                : node
+                        );
                     }
                     if (currentFlow.edges) {
                         this.edges = currentFlow.edges;
@@ -2850,10 +2882,8 @@
                 }
             });
             
-            // Update with collected values
-            if (currentOptions.length > 0) {
-                this.selectedNode.data.options = currentOptions;
-            }
+            // Update even when every option was removed, so deleted rows do not reappear.
+            this.selectedNode.data.options = currentOptions;
             
             const newOption = {
                 id: 'opt_' + Date.now(),
@@ -3267,7 +3297,12 @@
                 success: (response) => {
                     if (response.success) {
                         this.renderFlowList(response.data);
+                    } else {
+                        $('#dialogawp-flows-list').html('<p class="dialogawp-builder-inline-error" role="alert">' + this.escapeEditorHtml(t('Could not load flows. Please refresh and try again.')) + '</p>');
                     }
+                },
+                error: () => {
+                    $('#dialogawp-flows-list').html('<p class="dialogawp-builder-inline-error" role="alert">' + this.escapeEditorHtml(t('Could not load flows. Please refresh and try again.')) + '</p>');
                 }
             });
         },
@@ -3477,14 +3512,17 @@
                             setTimeout(() => self.startChangeDetection(), 500);
                         } else {
                             _error('❌ Flow not found:', flowId);
+                            dialogawpModal.error(t('The selected flow could not be found. Please refresh and try again.'));
                         }
                     } else {
                         _error('❌ Failed to get flows:', response);
+                        dialogawpModal.error(t('Could not load the flow. Please try again.'));
                     }
                 },
                 error: function(xhr, status, error) {
                     $(`.dialogawp-flow-item`).removeClass('loading');
                     _error('❌ AJAX error loading flow:', error);
+                    dialogawpModal.error(t('Could not load the flow. Please try again.'));
                 }
             });
         },

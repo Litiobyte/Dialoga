@@ -16,10 +16,25 @@ msgstr "%1$s disponen de búsqueda semántica (comprende el significado). %2$s d
 msgid "%1$s visitors reached; %2$s never got here"
 msgstr "%1$s visitantes llegaron; %2$s nunca llegaron aquí"
 
+msgid "%d active flow"
+msgid_plural "%d active flows"
+msgstr[0] "%d flujo activo"
+msgstr[1] "%d flujos activos"
+
 msgid "%d admin test lead hidden"
 msgid_plural "%d admin test leads hidden"
 msgstr[0] "%d contacto de prueba del administrador oculto"
 msgstr[1] "%d contactos de prueba del administrador ocultos"
+
+msgid "%d conversation with a conversion link click"
+msgid_plural "%d conversations with conversion link clicks"
+msgstr[0] "%d conversación con un clic en enlace de conversión"
+msgstr[1] "%d conversaciones con clics en enlaces de conversión"
+
+msgid "%d conversation with lead data"
+msgid_plural "%d conversations with lead data"
+msgstr[0] "%d conversación con datos de contacto"
+msgstr[1] "%d conversaciones con datos de contacto"
 
 msgid "%d embeddings generated for smart retrieval."
 msgstr "%d representaciones vectoriales generadas para la recuperación inteligente."
@@ -37,6 +52,11 @@ msgid "%d lead"
 msgid_plural "%d leads"
 msgstr[0] "%d contacto"
 msgstr[1] "%d contactos"
+
+msgid "%d lead record shown"
+msgid_plural "%d lead records shown"
+msgstr[0] "%d registro de contacto mostrado"
+msgstr[1] "%d registros de contactos mostrados"
 
 msgid "%d link click"
 msgid_plural "%d link clicks"
@@ -135,6 +155,9 @@ msgstr "Una «conversión» es una sesión de chat en la que el visitante envió
 
 msgid "A basic template flow has been prepared instead. You can create it and customize it in the builder."
 msgstr "Se ha preparado un flujo de plantilla básico en su lugar. Puedes crearlo y personalizarlo en el editor."
+
+msgid "A conversion is a conversation where the visitor submitted a Capture Lead form or clicked a Link Button marked as a conversion."
+msgstr "Una conversión es una conversación en la que el visitante envió un formulario de captura de contacto o hizo clic en un botón de enlace marcado como conversión."
 
 msgid "A pulsing ripple plays after a few seconds on pages where the visitor has not started a chat yet."
 msgstr "Después de unos segundos se muestra una onda pulsante en las páginas donde el visitante aún no ha iniciado un chat."
@@ -249,6 +272,9 @@ msgstr "Añade botones que enlacen a páginas o ejecuten acciones."
 
 msgid "Add personality and instructions for your chatbot"
 msgstr "Añade personalidad e instrucciones para tu chatbot"
+
+msgid "Add tag to lead %d"
+msgstr "Añadir etiqueta al contacto %d"
 
 msgid "Additional Intro (Optional)"
 msgstr "Introducción adicional (opcional)"
@@ -457,6 +483,9 @@ msgstr "Enlace al calendario o reserva"
 msgid "Cancel"
 msgstr "Cancelar"
 
+msgid "Cancel adding a tag to lead %d"
+msgstr "Cancelar la adición de etiqueta al contacto %d"
+
 msgid "Cannot save empty flow! Please add at least one node."
 msgstr "¡No se puede guardar un flujo vacío! Añade al menos un nodo."
 
@@ -486,6 +515,9 @@ msgstr "Personalización del chat"
 
 msgid "Chat Goals"
 msgstr "Objetivos del chat"
+
+msgid "Chat Header Title"
+msgstr "Título del encabezado del chat"
 
 msgid "Chat Position"
 msgstr "Posición del chat"
@@ -573,6 +605,15 @@ msgstr "Los clics en este botón contarán en la métrica de conversiones del pa
 
 msgid "Close"
 msgstr "Cerrar"
+
+msgid "Close dialog"
+msgstr "Cerrar diálogo"
+
+msgid "Close lead details"
+msgstr "Cerrar detalles del contacto"
+
+msgid "Close node editor"
+msgstr "Cerrar editor de nodo"
 
 msgid "Closed"
 msgstr "Cerrado"
@@ -664,6 +705,9 @@ msgstr "Continuar configuración"
 msgid "Control who can see the chatbot. Perfect for testing before going live!"
 msgstr "Controla quién puede ver el chatbot. Ideal para probarlo antes de publicarlo."
 
+msgid "Control your widget appearance, messaging, visibility, and data preferences."
+msgstr "Controla la apariencia, mensajes, visibilidad y preferencias de datos de tu widget."
+
 msgid "Controls how long AI responses can be. 500 is a good default for chat."
 msgstr "Controla la longitud de las respuestas de IA. 500 es un buen valor predeterminado para el chat."
 
@@ -727,8 +771,14 @@ msgstr "No se pudo eliminar el contacto."
 msgid "Could not delete the flow. Please try again."
 msgstr "No se pudo eliminar el flujo. Inténtalo de nuevo."
 
+msgid "Could not load flows. Please refresh and try again."
+msgstr "No se pudieron cargar los flujos. Actualiza la página e inténtalo de nuevo."
+
 msgid "Could not load lead details."
 msgstr "No se pudieron cargar los detalles del contacto."
+
+msgid "Could not load the flow. Please try again."
+msgstr "No se pudo cargar el flujo. Inténtalo de nuevo."
 
 msgid "Could not read flows."
 msgstr "No se pudieron leer los flujos."
@@ -922,6 +972,9 @@ msgstr "Elimina solo el registro de eventos: impresiones de la burbuja, vistas d
 msgid "Deleting..."
 msgstr "Eliminando..."
 
+msgid "Design conversation paths, capture leads, and publish when your flow is ready."
+msgstr "Diseña rutas de conversación, captura contactos y publica cuando tu flujo esté listo."
+
 msgid "Desktop Mode"
 msgstr "Modo de escritorio"
 
@@ -981,6 +1034,9 @@ msgstr "Comercio electrónico / Venta minorista"
 
 msgid "Each action type does something different when a visitor reaches this node: capture their contact info, show a booking link, redirect to a page, send an email, tag them, or set a variable."
 msgstr "Cada tipo de acción hace algo distinto cuando un visitante llega a este nodo: recopilar sus datos de contacto, mostrar un enlace de reserva, redirigir a una página, enviar un correo, añadir etiquetas o establecer una variable."
+
+msgid "Each converted conversation is counted once, even when it includes both actions."
+msgstr "Cada conversación convertida se cuenta una sola vez, aunque incluya ambas acciones."
 
 msgid "Each flow requires a name (1-255 bytes), valid visibility, roles array and flow_data with nodes/edges arrays."
 msgstr "Cada flujo requiere un nombre (1-255 bytes), una visibilidad válida, un array de roles y flow_data con arrays de nodos y conexiones."
@@ -1177,6 +1233,9 @@ msgstr "Campos que recopilar"
 msgid "Filter by tag:"
 msgstr "Filtrar por etiqueta:"
 
+msgid "Filter leads by tag"
+msgstr "Filtrar contactos por etiqueta"
+
 msgid "Finance / Insurance"
 msgstr "Finanzas / Seguros"
 
@@ -1291,8 +1350,14 @@ msgstr "Dale personalidad y contexto a tu chatbot para que represente fielmente 
 msgid "Go Back"
 msgstr "Volver"
 
+msgid "Go to <a href=\"https://console.anthropic.com/\" target=\"_blank\" rel=\"noopener noreferrer\">console.anthropic.com</a> and create an account"
+msgstr "Ve a <a href=\"https://console.anthropic.com/\" target=\"_blank\" rel=\"noopener noreferrer\">console.anthropic.com</a> y crea una cuenta"
+
 msgid "Go to <a href=\"https://console.anthropic.com/\" target=\"_blank\">console.anthropic.com</a> and create an account"
 msgstr "Ve a <a href=\"https://console.anthropic.com/\" target=\"_blank\">console.anthropic.com</a> y crea una cuenta"
+
+msgid "Go to <a href=\"https://platform.openai.com/signup\" target=\"_blank\" rel=\"noopener noreferrer\">platform.openai.com</a> and create an account"
+msgstr "Ve a <a href=\"https://platform.openai.com/signup\" target=\"_blank\" rel=\"noopener noreferrer\">platform.openai.com</a> y crea una cuenta"
 
 msgid "Go to <a href=\"https://platform.openai.com/signup\" target=\"_blank\">platform.openai.com</a> and create an account"
 msgstr "Ve a <a href=\"https://platform.openai.com/signup\" target=\"_blank\">platform.openai.com</a> y crea una cuenta"
@@ -1510,6 +1575,14 @@ msgstr "Detalles del contacto"
 msgid "Lead not found"
 msgstr "Contacto no encontrado"
 
+msgid "Lead records table"
+msgstr "Tabla de registros de contactos"
+
+msgid "Lead records: %d result"
+msgid_plural "Lead records: %d results"
+msgstr[0] "Registros de contactos: %d resultado"
+msgstr[1] "Registros de contactos: %d resultados"
+
 msgid "Lead status updated!"
 msgstr "¡Estado del contacto actualizado!"
 
@@ -1551,6 +1624,9 @@ msgstr "Cargando flujos..."
 
 msgid "Loading knowledge base..."
 msgstr "Cargando base de conocimiento..."
+
+msgid "Loading lead record"
+msgstr "Cargando registro de contacto"
 
 msgid "Loading wizard..."
 msgstr "Cargando asistente..."
@@ -1768,6 +1844,9 @@ msgstr "Todavía no hay datos de origen: inicia un chat en tu sitio para comenza
 msgid "No tags"
 msgstr "Sin etiquetas"
 
+msgid "No tags available"
+msgstr "No hay etiquetas disponibles"
+
 msgid "No thanks"
 msgstr "No, gracias"
 
@@ -1786,6 +1865,9 @@ msgstr "Organización sin fines de lucro"
 msgid "Not configured"
 msgstr "Sin configurar"
 
+msgid "Not converted"
+msgstr "No convertidas"
+
 msgid "Not empty"
 msgstr "No está vacío"
 
@@ -1800,6 +1882,9 @@ msgstr "Aceptar"
 
 msgid "OR"
 msgstr "O"
+
+msgid "Of %1$s conversations in this range, %2$s converted and %3$s did not."
+msgstr "De %1$s conversaciones en este rango, %2$s se convirtieron y %3$s no."
 
 msgid "Of %1$s conversations in this range, %2$s submitted a lead and %3$s did not."
 msgstr "De %1$s conversaciones en este intervalo, %2$s enviaron un contacto y %3$s no lo hicieron."
@@ -2062,6 +2147,9 @@ msgstr "Elimina las credenciales incrustadas en las URL antes de transferir este
 msgid "Remove tag"
 msgstr "Eliminar etiqueta"
 
+msgid "Remove tag %1$s from lead %2$d"
+msgstr "Quitar la etiqueta %1$s del contacto %2$d"
+
 msgid "Remove this item from the knowledge base?"
 msgstr "¿Eliminar este elemento de la base de conocimiento?"
 
@@ -2167,6 +2255,9 @@ msgstr "Analizar mi sitio web"
 msgid "Scanning your website..."
 msgstr "Analizando tu sitio web..."
 
+msgid "Scroll horizontally to view all lead record columns."
+msgstr "Desplázate horizontalmente para ver todas las columnas de contactos."
+
 msgid "Seconds to wait before the preview bubble appears."
 msgstr "Segundos de espera antes de que aparezca la burbuja de vista previa."
 
@@ -2217,6 +2308,9 @@ msgstr "Selecciona qué perfiles pueden ver el chatbot."
 
 msgid "Select your industry..."
 msgstr "Selecciona tu sector..."
+
+msgid "Selected date range"
+msgstr "Rango de fechas seleccionado"
 
 msgid "Send Email"
 msgstr "Enviar correo electrónico"
@@ -2371,8 +2465,14 @@ msgstr "Encuesta / Opiniones"
 msgid "Tag Lead"
 msgstr "Etiquetar contacto"
 
+msgid "Tag name for lead %d"
+msgstr "Nombre de etiqueta para el contacto %d"
+
 msgid "Tag: %s"
 msgstr "Etiqueta: %s"
+
+msgid "Tagged “%s”"
+msgstr "Con etiqueta “%s”"
 
 msgid "Tags"
 msgstr "Etiquetas"
@@ -2413,6 +2513,9 @@ msgstr "Proceso de prueba: selecciona Perfiles de usuario específicos y Adminis
 msgid "Testing..."
 msgstr "Probando..."
 
+msgid "Text displayed at the top of the open chat window."
+msgstr "Texto que se muestra en la parte superior de la ventana de chat abierta."
+
 msgid "Text shown on the CTA button."
 msgstr "Texto mostrado en el botón de llamada a la acción."
 
@@ -2448,6 +2551,9 @@ msgstr "El mensaje que se muestra al visitante"
 
 msgid "The options visitors can click to answer this question."
 msgstr "Las opciones en las que los visitantes pueden hacer clic para responder a esta pregunta."
+
+msgid "The selected flow could not be found. Please refresh and try again."
+msgstr "No se encontró el flujo seleccionado. Actualiza la página e inténtalo de nuevo."
 
 msgid "The selected node no longer exists. Close its editor and try again."
 msgstr "El nodo seleccionado ya no existe. Cierra su editor e inténtalo de nuevo."
@@ -2728,8 +2834,14 @@ msgstr "Dónde abandonan los visitantes"
 msgid "Who should see your chatbot? You can change this anytime in the flow builder."
 msgstr "¿Quién debería ver tu chatbot? Puedes cambiarlo en cualquier momento en el editor de flujos."
 
+msgid "Widget active"
+msgstr "Widget activo"
+
 msgid "Widget appearance and behavior"
 msgstr "Apariencia y comportamiento del widget"
+
+msgid "Widget paused"
+msgstr "Widget pausado"
 
 msgid "Wizard"
 msgstr "Asistente"

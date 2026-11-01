@@ -1,31 +1,630 @@
-/*
- * DialogaWP — leads screen styles.
- *
- * Was a nowdoc in templates/admin/leads.php passed to wp_add_inline_style().
- * That call ran while the page BODY rendered, by which point WP_Styles had
- * already printed the 'dialogawp-admin' handle and put it in $done — so
- * print_late_styles() skipped it and none of this CSS ever reached the page.
- * Enqueued per-screen from DialogaWP::enqueue_admin_assets() instead.
- */
-
-/* Tag save spinner */
-.dialogawp-tag-spinner { display:inline-flex; align-items:center; gap:6px; padding:2px 8px; border-radius:10px; background:#F7F8FC; border:1px solid #E5E7EF; }
-.dialogawp-spinner-dot {
-    width: 12px; height: 12px; border: 2px solid #E5E7EF; border-top-color: #00ADA1;
-    border-radius: 50%; display: inline-block; animation: dialogawp-spin 0.7s linear infinite;
+/* DialogaWP leads screen */
+.dialogawp-leads-wrap,
+.dialogawp-lead-modal {
+    --dialogawp-primary: #190f4f;
+    --dialogawp-secondary: #008f86;
+    --dialogawp-accent: #fd6a4d;
+    --dialogawp-panel: #f7f8fc;
+    --dialogawp-text: #26233a;
+    --dialogawp-muted: #646970;
+    --dialogawp-border: #dcdcde;
+    color: var(--dialogawp-text);
 }
-@keyframes dialogawp-spin { to { transform: rotate(360deg); } }
 
-.dialogawp-ld-section { margin-bottom: 20px; }
-.dialogawp-ld-section h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; margin: 0 0 8px; font-weight: 700; }
-.dialogawp-ld-grid { display: grid; grid-template-columns: 130px 1fr; gap: 8px 16px; font-size: 14px; }
-.dialogawp-ld-grid dt { color: #6b7280; font-weight: 600; }
-.dialogawp-ld-grid dd { margin: 0; color: #26233A; word-break: break-word; }
-.dialogawp-ld-transcript { background: #F7F8FC; border: 1px solid #E5E7EF; border-radius: 8px; padding: 12px; max-height: 320px; overflow-y: auto; }
-.dialogawp-ld-msg { margin-bottom: 10px; display: flex; }
-.dialogawp-ld-msg.user { justify-content: flex-end; }
-.dialogawp-ld-msg-bubble { max-width: 75%; padding: 8px 12px; border-radius: 14px; font-size: 13px; line-height: 1.4; }
-.dialogawp-ld-msg.bot .dialogawp-ld-msg-bubble { background: #fff; border: 1px solid #E5E7EF; color: #26233A; border-bottom-left-radius: 4px; }
-.dialogawp-ld-msg.user .dialogawp-ld-msg-bubble { background: #190F4F; color: #fff; border-bottom-right-radius: 4px; }
-.dialogawp-ld-msg-time { font-size: 10px; color: #9ca3af; margin-top: 2px; }
-.dialogawp-ld-empty { color: #9ca3af; font-style: italic; padding: 12px; text-align: center; }
+.dialogawp-leads-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    margin: 20px 0 16px;
+}
+
+.dialogawp-leads-title-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.dialogawp-leads-title-row h1 {
+    margin: 0;
+    padding: 0;
+    color: var(--dialogawp-primary);
+    font-size: 23px;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.dialogawp-leads-description {
+    margin: 5px 0 0;
+    color: var(--dialogawp-muted);
+    font-size: 13px;
+}
+
+.dialogawp-leads-current-filter::before {
+    content: "\2022";
+    margin: 0 7px;
+    color: #a7aaad;
+}
+
+.dialogawp-leads-view-badge {
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+    padding: 0 9px;
+    border: 1px solid #f0c36d;
+    border-radius: 999px;
+    background: #fcf0c3;
+    color: #6e4b00;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.dialogawp-leads-admin-note {
+    margin: -4px 0 14px;
+    color: var(--dialogawp-muted);
+    font-size: 13px;
+}
+
+.dialogawp-leads-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: 40px;
+    margin: 0 0 12px;
+    padding: 10px 12px;
+    border: 1px solid var(--dialogawp-border);
+    border-radius: 6px;
+    background: #fff;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.dialogawp-leads-filters {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.dialogawp-leads-filter-label {
+    margin-right: 2px;
+    color: #50575e;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.dialogawp-filter-tag {
+    display: inline-flex;
+    align-items: center;
+    min-height: 26px;
+    padding: 1px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.5;
+    text-decoration: none;
+}
+
+.dialogawp-filter-tag:hover {
+    filter: brightness(0.96);
+    text-decoration: none;
+}
+
+.dialogawp-filter-tag:focus {
+    box-shadow: 0 0 0 1px #fff, 0 0 0 3px #2271b1;
+    outline: 2px solid transparent;
+}
+
+.dialogawp-filter-tag--all {
+    border: 1px solid #c3c4c7;
+    background: var(--dialogawp-panel);
+    color: #3c434a;
+}
+
+.dialogawp-filter-tag--all.is-active {
+    border-color: var(--dialogawp-primary);
+    background: var(--dialogawp-primary);
+    color: #fff;
+}
+
+.dialogawp-leads-export {
+    flex: 0 0 auto;
+}
+
+.dialogawp-leads-export .dashicons {
+    width: 16px;
+    height: 16px;
+    margin: 4px 3px 0 0;
+    font-size: 16px;
+}
+
+.dialogawp-leads-table-shell {
+    overflow: hidden;
+    border: 1px solid var(--dialogawp-border);
+    border-radius: 6px;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.dialogawp-leads-table-scroll {
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+.dialogawp-leads-table-scroll:focus {
+    box-shadow: inset 0 0 0 2px #2271b1;
+    outline: 0;
+}
+
+.dialogawp-leads-table {
+    min-width: 1040px;
+    border: 0;
+    border-collapse: collapse;
+    box-shadow: none;
+}
+
+.dialogawp-leads-table caption {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.dialogawp-leads-table thead th {
+    padding: 10px;
+    border-bottom: 1px solid var(--dialogawp-border);
+    background: var(--dialogawp-panel);
+    color: #3c434a;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.dialogawp-leads-table tbody td,
+.dialogawp-leads-table tbody th {
+    padding: 11px 10px;
+    vertical-align: middle;
+}
+
+.dialogawp-leads-table tbody th {
+    color: var(--dialogawp-muted);
+    font-weight: 500;
+}
+
+.dialogawp-leads-table tr.is-busy {
+    opacity: 0.55;
+    pointer-events: none;
+}
+
+.dialogawp-lead-status {
+    display: inline-flex;
+    align-items: center;
+    min-height: 23px;
+    padding: 0 8px;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.5;
+    white-space: nowrap;
+}
+
+.dialogawp-lead-status--new {
+    border-color: #b8c5ed;
+    background: #edf0fb;
+    color: var(--dialogawp-primary);
+}
+
+.dialogawp-lead-status--contacted {
+    border-color: #9adbd5;
+    background: #e2f7f5;
+    color: #006b64;
+}
+
+.dialogawp-lead-status--qualified {
+    border-color: #f0c36d;
+    background: #fcf3cf;
+    color: #6e4b00;
+}
+
+.dialogawp-lead-status--converted {
+    border-color: #9bd2ad;
+    background: #e4f4e9;
+    color: #176b34;
+}
+
+.dialogawp-lead-status--closed {
+    border-color: #c3c4c7;
+    background: #f0f0f1;
+    color: #50575e;
+}
+
+.dialogawp-tags-list {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.dialogawp-tag-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    min-height: 22px;
+    padding: 0 5px 0 8px;
+    border: 1px solid;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.dialogawp-tag-remove {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    font-size: 15px;
+    line-height: 1;
+}
+
+.dialogawp-tag-remove:hover,
+.dialogawp-tag-remove:focus {
+    background: rgba(0, 0, 0, 0.1);
+    outline: 0;
+}
+
+.dialogawp-tag-remove:focus-visible {
+    box-shadow: 0 0 0 2px #2271b1;
+}
+
+.dialogawp-tag-add-btn {
+    min-height: 24px;
+    padding: 1px 8px;
+    border: 1px dashed #8c8f94;
+    border-radius: 999px;
+    background: transparent;
+    color: #50575e;
+    cursor: pointer;
+    font-size: 11px;
+}
+
+.dialogawp-tag-add-btn:hover,
+.dialogawp-tag-add-btn:focus {
+    border-color: #2271b1;
+    color: #135e96;
+}
+
+.dialogawp-tag-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 6px;
+}
+
+.dialogawp-tag-input-wrap[hidden],
+.dialogawp-tag-spinner[hidden],
+.dialogawp-lead-modal[hidden] {
+    display: none;
+}
+
+.dialogawp-tag-input-wrap input[type="text"] {
+    width: 140px;
+    min-height: 30px;
+    padding: 2px 7px;
+    font-size: 12px;
+}
+
+.dialogawp-tag-spinner {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    min-height: 22px;
+    padding: 0 7px;
+    border: 1px solid #e5e7ef;
+    border-radius: 999px;
+    background: var(--dialogawp-panel);
+    color: var(--dialogawp-muted);
+    font-size: 11px;
+}
+
+.dialogawp-spinner-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border: 2px solid #dcdcde;
+    border-top-color: var(--dialogawp-secondary);
+    border-radius: 50%;
+    animation: dialogawp-spin 0.7s linear infinite;
+}
+
+@keyframes dialogawp-spin {
+    to { transform: rotate(360deg); }
+}
+
+.dialogawp-lead-actions {
+    white-space: nowrap;
+}
+
+.dialogawp-lead-delete-btn {
+    border-color: #dba7a7 !important;
+    color: #b32d2e !important;
+}
+
+.dialogawp-lead-delete-btn:hover,
+.dialogawp-lead-delete-btn:focus {
+    border-color: #b32d2e !important;
+    background: #fcf0f1 !important;
+}
+
+.dialogawp-leads-empty {
+    margin-top: 0;
+    padding: 24px;
+    border: 1px solid var(--dialogawp-border);
+    border-left: 4px solid var(--dialogawp-secondary);
+    border-radius: 4px;
+    background: #fff;
+}
+
+.dialogawp-leads-empty p {
+    margin: 0;
+}
+
+body.dialogawp-modal-open {
+    overflow: hidden;
+}
+
+.dialogawp-lead-modal {
+    position: fixed;
+    z-index: 100000;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(25, 15, 79, 0.58);
+}
+
+.dialogawp-lead-dialog {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 680px;
+    max-height: min(760px, calc(100vh - 48px));
+    overflow: hidden;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 20px 60px rgba(17, 10, 56, 0.28);
+}
+
+.dialogawp-lead-dialog-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--dialogawp-border);
+    background: var(--dialogawp-panel);
+}
+
+.dialogawp-lead-dialog-header h2 {
+    margin: 0;
+    color: var(--dialogawp-primary);
+    font-size: 18px;
+    line-height: 1.35;
+}
+
+.dialogawp-lead-dialog-header p {
+    margin: 3px 0 0;
+    color: var(--dialogawp-muted);
+    font-size: 12px;
+}
+
+.dialogawp-lead-dialog-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 32px;
+    height: 32px;
+    margin: -4px -6px 0 0;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    background: transparent;
+    color: #50575e;
+    cursor: pointer;
+    font-size: 25px;
+    line-height: 1;
+}
+
+.dialogawp-lead-dialog-close:hover,
+.dialogawp-lead-dialog-close:focus {
+    border-color: #c3c4c7;
+    background: #fff;
+    color: var(--dialogawp-primary);
+    outline: 0;
+}
+
+.dialogawp-lead-dialog-close:focus-visible {
+    box-shadow: 0 0 0 2px #2271b1;
+}
+
+.dialogawp-lead-dialog-body {
+    flex: 1;
+    padding: 20px;
+    overflow: auto;
+}
+
+.dialogawp-ld-loading {
+    padding: 44px 0;
+    color: var(--dialogawp-muted);
+    text-align: center;
+}
+
+.dialogawp-ld-section {
+    margin-bottom: 22px;
+}
+
+.dialogawp-ld-section:last-child {
+    margin-bottom: 0;
+}
+
+.dialogawp-ld-section h3 {
+    margin: 0 0 10px;
+    color: #50575e;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.dialogawp-ld-grid {
+    display: grid;
+    grid-template-columns: 120px minmax(0, 1fr);
+    gap: 9px 16px;
+    margin: 0;
+    font-size: 14px;
+}
+
+.dialogawp-ld-grid dt {
+    color: var(--dialogawp-muted);
+    font-weight: 600;
+}
+
+.dialogawp-ld-grid dd {
+    min-width: 0;
+    margin: 0;
+    color: var(--dialogawp-text);
+    overflow-wrap: anywhere;
+}
+
+.dialogawp-ld-tag {
+    display: inline-block;
+    margin: 0 4px 3px 0;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: #edf0fb;
+    color: var(--dialogawp-primary);
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.dialogawp-ld-none {
+    color: #8c8f94;
+    font-style: italic;
+}
+
+.dialogawp-ld-transcript {
+    max-height: 300px;
+    padding: 12px;
+    overflow-y: auto;
+    border: 1px solid #e5e7ef;
+    border-radius: 6px;
+    background: var(--dialogawp-panel);
+}
+
+.dialogawp-ld-msg {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.dialogawp-ld-msg:last-child {
+    margin-bottom: 0;
+}
+
+.dialogawp-ld-msg.user {
+    justify-content: flex-end;
+}
+
+.dialogawp-ld-msg-bubble {
+    max-width: 460px;
+    padding: 8px 11px;
+    border-radius: 13px;
+    font-size: 13px;
+    line-height: 1.45;
+    white-space: pre-wrap;
+}
+
+.dialogawp-ld-msg.bot .dialogawp-ld-msg-bubble {
+    border: 1px solid #dcdcde;
+    border-bottom-left-radius: 3px;
+    background: #fff;
+    color: var(--dialogawp-text);
+}
+
+.dialogawp-ld-msg.user .dialogawp-ld-msg-bubble {
+    border-bottom-right-radius: 3px;
+    background: var(--dialogawp-primary);
+    color: #fff;
+}
+
+.dialogawp-ld-msg-time {
+    margin-top: 3px;
+    color: #8c8f94;
+    font-size: 10px;
+}
+
+.dialogawp-ld-msg.user .dialogawp-ld-msg-time {
+    text-align: right;
+}
+
+.dialogawp-ld-empty {
+    padding: 12px;
+    color: #8c8f94;
+    font-style: italic;
+    text-align: center;
+}
+
+@media (max-width: 782px) {
+    .dialogawp-leads-header,
+    .dialogawp-leads-toolbar {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .dialogawp-leads-header > .button,
+    .dialogawp-leads-export {
+        align-self: flex-start;
+    }
+
+    .dialogawp-lead-modal {
+        align-items: flex-end;
+        padding: 12px;
+    }
+
+    .dialogawp-lead-dialog {
+        max-height: calc(100vh - 24px);
+    }
+
+    .dialogawp-lead-dialog-header,
+    .dialogawp-lead-dialog-body {
+        padding: 14px 16px;
+    }
+
+    .dialogawp-ld-grid {
+        grid-template-columns: 1fr;
+        gap: 3px;
+    }
+
+    .dialogawp-ld-grid dd {
+        margin-bottom: 8px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .dialogawp-spinner-dot {
+        animation-duration: 1.5s;
+    }
+}

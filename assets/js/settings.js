@@ -96,6 +96,27 @@
         if (visibility) visibility.addEventListener('change', updateRoles);
         updateRoles();
 
+        function wireDependentControl(toggleName, controlNames) {
+            var toggle = form.querySelector('[name="' + toggleName + '"]');
+            var controls = controlNames.map(function (name) { return form.querySelector('[name="' + name + '"]'); }).filter(Boolean);
+            if (!toggle || !controls.length) return;
+            function update() {
+                controls.forEach(function (control) {
+                    // Keep fields operable so native validation and no-JS form semantics
+                    // remain intact; the visual state communicates the dependency.
+                    control.removeAttribute('aria-disabled');
+                    var row = control.closest('.dialogawp-setting-row');
+                    if (row) row.classList.toggle('is-dependent-disabled', !toggle.checked);
+                });
+            }
+            toggle.addEventListener('change', update);
+            update();
+        }
+        wireDependentControl('email_notifications_enabled', ['email_notifications_recipient', 'email_notifications_subject']);
+        wireDependentControl('lead_retention_enabled', ['lead_retention_days']);
+        wireDependentControl('conversation_retention_enabled', ['conversation_retention_days']);
+        wireDependentControl('preview_message_enabled', ['preview_message_text', 'preview_message_delay']);
+
         var config = window.dialogawpAdmin || {};
         function wireBulkDelete(id, action, confirmation, result) {
             var button = document.getElementById(id);

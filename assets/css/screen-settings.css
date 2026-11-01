@@ -3,6 +3,24 @@
     margin-bottom: 20px;
 }
 
+.dialogawp-settings-summary {
+    display: flex;
+    min-width: 180px;
+    flex-direction: column;
+    gap: 3px;
+    padding: 10px 14px;
+    border: 1px solid #C8ECE8;
+    border-radius: 10px;
+    background: #E6F7F6;
+    color: #26233A;
+    font-size: 12px;
+}
+
+.dialogawp-settings-summary strong {
+    color: #190F4F;
+    font-size: 13px;
+}
+
 .dialogawp-settings-tabs {
     display: flex;
     flex-wrap: wrap;
@@ -64,6 +82,11 @@
 
 .dialogawp-settings-wrap .dialogawp-setting-control input[type="number"] {
     width: 90px;
+}
+
+.dialogawp-settings-wrap .dialogawp-setting-row:has(input:disabled),
+.dialogawp-settings-wrap .dialogawp-setting-row.is-dependent-disabled {
+    opacity: 0.58;
 }
 
 .dialogawp-settings-wrap .dialogawp-color-picker input[name="primary_color_text"] {

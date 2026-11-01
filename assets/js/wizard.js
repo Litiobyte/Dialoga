@@ -83,7 +83,7 @@
                 dialogawpModal.confirm(
                     t('Managed AI is coming soon to DialogaWP Pro. We handle the AI infrastructure so you don\'t need your own API key — just plug in and go.\n\nIncludes:\n- No API key setup required\n- Pay-as-you-go usage billing\n- Automatic model updates\n- Priority AI response times\n\nWant to be notified when it launches?'),
                     function() {
-                        window.open('https://www.litiobyte.com/labs-detalle.php?slug=dialogawp', '_blank');
+                        window.open('https://www.litiobyte.com/labs-detalle.php?slug=dialogawp', '_blank', 'noopener,noreferrer');
                     },
                     { title: t('Managed AI — Coming Soon'), okText: t('Join Waitlist'), cancelText: t('Close'), icon: '\uD83E\uDD16' }
                 );
@@ -111,7 +111,10 @@
             // AI instructions accordion
             document.getElementById('wizard-instructions-toggle').addEventListener('click', function() {
                 var acc = document.getElementById('wizard-instructions-accordion');
-                acc.classList.toggle('open');
+                var body = document.getElementById('wizard-instructions-body');
+                var isOpen = acc.classList.toggle('open');
+                this.setAttribute('aria-expanded', String(isOpen));
+                body.hidden = !isOpen;
             });
 
             // Crawl
@@ -147,9 +150,11 @@
                     if (idx > -1) {
                         self.data.goal.types.splice(idx, 1);
                         card.classList.remove('selected');
+                        card.setAttribute('aria-pressed', 'false');
                     } else {
                         self.data.goal.types.push(goal);
                         card.classList.add('selected');
+                        card.setAttribute('aria-pressed', 'true');
                     }
                     self.debounceSave();
                 });
@@ -158,8 +163,12 @@
             // Visibility cards
             document.querySelectorAll('.dialogawp-wizard-visibility-card').forEach(function(card) {
                 card.addEventListener('click', function() {
-                    document.querySelectorAll('.dialogawp-wizard-visibility-card').forEach(function(c) { c.classList.remove('selected'); });
+                    document.querySelectorAll('.dialogawp-wizard-visibility-card').forEach(function(c) {
+                        c.classList.remove('selected');
+                        c.setAttribute('aria-pressed', 'false');
+                    });
                     card.classList.add('selected');
+                    card.setAttribute('aria-pressed', 'true');
                     self.data.visibility.mode = card.dataset.visibility;
                     // Show/hide roles checkboxes
                     var rolesSection = document.getElementById('wizard-roles-section');
@@ -188,6 +197,11 @@
             document.getElementById('wizard-use-template-btn').addEventListener('click', function() { self.useTemplate(); });
         },
 
+        announce: function(message) {
+            var announcements = document.getElementById('wizard-announcements');
+            if (announcements) announcements.textContent = message;
+        },
+
         // ====================================================================
         // Navigation
         // ====================================================================
@@ -195,15 +209,22 @@
             if (index < 0 || index >= this.totalSteps) return;
 
             // Hide all steps
-            document.querySelectorAll('.dialogawp-wizard-step').forEach(function(s) { s.classList.remove('active'); });
+            document.querySelectorAll('.dialogawp-wizard-step').forEach(function(s) {
+                s.classList.remove('active');
+                s.setAttribute('aria-hidden', 'true');
+            });
 
             // Show target step
             var step = document.querySelector('.dialogawp-wizard-step[data-step="' + index + '"]');
-            if (step) step.classList.add('active');
+            if (step) {
+                step.classList.add('active');
+                step.setAttribute('aria-hidden', 'false');
+            }
 
             this.currentStep = index;
             this.updateProgress();
             this.updateNavButtons();
+            this.announce(t('Step %1$d of %2$d').replace('%1$d', index + 1).replace('%2$d', this.totalSteps) + ': ' + t(this.stepLabels[index]));
 
             // Step-specific init
             if (index === 0) this.updateWelcomeSteps();
@@ -213,6 +234,14 @@
             if (index === 4) this.initGoalStep();
             if (index === 5) this.initVisibilityStep();
             if (index === 6) this.initReviewStep();
+
+            if (step) {
+                var heading = step.querySelector('h1, h2');
+                if (heading) {
+                    heading.setAttribute('tabindex', '-1');
+                    window.requestAnimationFrame(function() { heading.focus(); });
+                }
+            }
         },
 
         nextStep: function() {
@@ -272,6 +301,7 @@
             backBtn.style.visibility = this.currentStep > 0 ? 'visible' : 'hidden';
 
             if (this.currentStep === 0) {
+                nextBtn.style.display = '';
                 nextBtn.textContent = t('Get Started →');
             } else if (this.currentStep === this.totalSteps - 1) {
                 nextBtn.style.display = 'none';
@@ -293,10 +323,12 @@
             var shortLabels = ['Welcome', 'AI Setup', 'Crawl Website', 'Chat Customization', 'Chat Goals', 'Visibility', 'Launch'];
             var html = '';
             for (var i = 0; i < this.totalSteps; i++) {
+                var stepLabel = t(shortLabels[i]);
+                var ariaLabel = t('Step %1$d of %2$d').replace('%1$d', i + 1).replace('%2$d', this.totalSteps) + ': ' + stepLabel;
                 html += '<div class="dialogawp-wizard-progress-step">';
                 html += '<div class="dialogawp-wizard-progress-dot-wrap">';
-                html += '<div class="dialogawp-wizard-progress-dot" data-step="' + i + '">' + (i + 1) + '</div>';
-                html += '<div class="dialogawp-wizard-progress-label">' + escapeHtml(t(shortLabels[i])) + '</div>';
+                html += '<button type="button" class="dialogawp-wizard-progress-dot" data-step="' + i + '" aria-controls="wizard-step-' + i + '" aria-label="' + escapeHtml(ariaLabel) + '">' + (i + 1) + '</button>';
+                html += '<div class="dialogawp-wizard-progress-label">' + escapeHtml(stepLabel) + '</div>';
                 html += '</div>';
                 if (i < this.totalSteps - 1) {
                     html += '<div class="dialogawp-wizard-progress-line" data-line="' + i + '"></div>';
@@ -322,8 +354,10 @@
                 var line = document.querySelector('.dialogawp-wizard-progress-line[data-line="' + i + '"]');
 
                 dot.classList.remove('active', 'completed');
+                dot.removeAttribute('aria-current');
                 if (i === this.currentStep) {
                     dot.classList.add('active');
+                    dot.setAttribute('aria-current', 'step');
                     dot.innerHTML = i + 1;
                 } else if (stepDone[i] || i < this.currentStep) {
                     dot.classList.add('completed');
@@ -597,7 +631,9 @@
         initGoalStep: function() {
             var types = this.data.goal.types || [];
             document.querySelectorAll('.dialogawp-wizard-goal-card').forEach(function(c) {
-                c.classList.toggle('selected', types.indexOf(c.dataset.goal) > -1);
+                var selected = types.indexOf(c.dataset.goal) > -1;
+                c.classList.toggle('selected', selected);
+                c.setAttribute('aria-pressed', String(selected));
             });
         },
 
@@ -607,7 +643,9 @@
         initVisibilityStep: function() {
             var mode = this.data.visibility.mode || 'everyone';
             document.querySelectorAll('.dialogawp-wizard-visibility-card').forEach(function(c) {
-                c.classList.toggle('selected', c.dataset.visibility === mode);
+                var selected = c.dataset.visibility === mode;
+                c.classList.toggle('selected', selected);
+                c.setAttribute('aria-pressed', String(selected));
             });
             var rolesSection = document.getElementById('wizard-roles-section');
             if (rolesSection) {

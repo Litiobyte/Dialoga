@@ -24,12 +24,15 @@ if (!defined('ABSPATH')) {
     </div>
 </div>
 <div class="wrap dialogawp-builder-wrap">
-    <h1>
-        <?php echo esc_html__('DIALOGAWP - Flow Builder', 'dialogawp'); ?>
-        <button class="button button-primary dialogawp-new-flow">
-            <span class="dashicons dashicons-plus-alt"></span> <?php echo esc_html__('New Flow', 'dialogawp'); ?>
-        </button>
-    </h1>
+        <div class="dialogawp-screen-header dialogawp-builder-page-header">
+            <div>
+                <h1><?php echo esc_html__('Flow Builder', 'dialogawp'); ?></h1>
+                <p><?php echo esc_html__('Design conversation paths, capture leads, and publish when your flow is ready.', 'dialogawp'); ?></p>
+            </div>
+            <button class="button button-primary dialogawp-new-flow">
+                <span class="dashicons dashicons-plus-alt"></span> <?php echo esc_html__('New Flow', 'dialogawp'); ?>
+            </button>
+        </div>
     
     <div class="dialogawp-builder-container">
         <!-- Flow List Sidebar -->
@@ -61,7 +64,7 @@ if (!defined('ABSPATH')) {
                     <img src="<?php echo esc_url(DIALOGAWP_LOGO_URL); ?>" alt="DialogaWP" style="height:80px;width:auto;margin-bottom:20px;opacity:0.5;" onerror="this.style.display='none'" />
                     <h2><?php echo esc_html__('Welcome to the Flow Builder', 'dialogawp'); ?></h2>
                     <p><?php echo esc_html__('Create conversational chatbot flows with our visual drag-and-drop editor.', 'dialogawp'); ?></p>
-                    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:8px;">
+                    <div class="dialogawp-builder-empty-actions">
                         <button class="button button-primary dialogawp-new-flow" style="padding:8px 24px;font-size:14px;">
                             <span class="dashicons dashicons-plus-alt" style="margin-top:3px;"></span> <?php echo esc_html__('Create New Flow', 'dialogawp'); ?>
                         </button>
@@ -69,7 +72,7 @@ if (!defined('ABSPATH')) {
                             <span class="dashicons dashicons-admin-tools" style="margin-top:3px;"></span> <?php echo esc_html__('Setup Wizard', 'dialogawp'); ?>
                         </a>
                     </div>
-                    <p style="margin-top:16px;font-size:13px;color:#94A3B8;"><?php echo esc_html__('Or select an existing flow from the sidebar to edit it.', 'dialogawp'); ?></p>
+                    <p class="dialogawp-builder-empty-note"><?php echo esc_html__('Or select an existing flow from the sidebar to edit it.', 'dialogawp'); ?></p>
                 </div>
             </div>
 
@@ -77,6 +80,7 @@ if (!defined('ABSPATH')) {
             <div class="dialogawp-builder-active" id="dialogawp-builder-active" style="display:none;">
             <div class="dialogawp-builder-toolbar">
                 <div class="dialogawp-builder-toolbar-left">
+                    <label class="screen-reader-text" for="dialogawp-flow-name"><?php echo esc_html__('Flow Name', 'dialogawp'); ?></label>
                     <input type="text" 
                            id="dialogawp-flow-name" 
                            class="dialogawp-flow-name-input" 
@@ -88,16 +92,16 @@ if (!defined('ABSPATH')) {
                     </label>
                     
                     <!-- Visibility Controls -->
-                    <div class="dialogawp-visibility-controls" style="display: inline-flex; align-items: center; gap: 8px; margin-left: 12px; padding-left: 12px; border-left: 1px solid #E5E7EF;">
-                        <label style="font-size: 13px; font-weight: 600; margin: 0; white-space: nowrap;">
+                    <div class="dialogawp-visibility-controls">
+                        <label for="dialogawp-flow-visibility">
                             <?php echo esc_html__('Visible to:', 'dialogawp'); ?>
                         </label>
-                        <select id="dialogawp-flow-visibility" style="font-size: 13px; padding: 5px 10px; min-width: 170px;">
+                        <select id="dialogawp-flow-visibility">
                             <option value="everyone"><?php echo esc_html__('Everyone (Public)', 'dialogawp'); ?></option>
                             <option value="logged_in"><?php echo esc_html__('Logged-in Users', 'dialogawp'); ?></option>
                             <option value="specific_roles"><?php echo esc_html__('Specific Roles', 'dialogawp'); ?></option>
                         </select>
-                        <button type="button" class="button button-small" id="dialogawp-visibility-settings" style="display: none; font-size: 12px;">
+                        <button type="button" class="button button-small" id="dialogawp-visibility-settings" style="display: none;">
                             <?php echo esc_html__('Configure Roles', 'dialogawp'); ?>
                         </button>
                     </div>
@@ -106,13 +110,10 @@ if (!defined('ABSPATH')) {
                 <div class="dialogawp-builder-toolbar-right">
                     <button type="button" class="button dialogawp-export-current"><span class="dashicons dashicons-download"></span> <?php echo esc_html__('Export', 'dialogawp'); ?></button>
                     <button type="button" class="button dialogawp-fullscreen-toggle" aria-pressed="false" title="<?php echo esc_attr__('Expand canvas within this browser tab', 'dialogawp'); ?>"><span class="dashicons dashicons-editor-expand"></span> <span class="dialogawp-fullscreen-label"><?php echo esc_html__('Full screen', 'dialogawp'); ?></span></button>
-                    <span id="dialogawp-save-status" class="dialogawp-save-status dialogawp-save-status--saved" title="<?php echo esc_attr__('All changes saved', 'dialogawp'); ?>">
+                    <span id="dialogawp-save-status" class="dialogawp-save-status dialogawp-save-status--saved" role="status" aria-live="polite" title="<?php echo esc_attr__('All changes saved', 'dialogawp'); ?>">
                         <span class="dialogawp-save-status-dot"></span>
                         <span class="dialogawp-save-status-text"><?php echo esc_html__('All changes saved', 'dialogawp'); ?></span>
                     </span>
-                    <button class="button dialogawp-preview-flow">
-                        <span class="dashicons dashicons-visibility"></span> <?php echo esc_html__('Preview', 'dialogawp'); ?>
-                    </button>
                     <button class="button button-primary dialogawp-save-flow" id="dialogawp-save-flow">
                         <span class="dashicons dashicons-saved"></span> <?php echo esc_html__('Save Flow', 'dialogawp'); ?>
                     </button>
@@ -169,10 +170,10 @@ if (!defined('ABSPATH')) {
             <div id="dialogawp-canvas" class="dialogawp-canvas"></div>
 
             <!-- Node Editor Panel -->
-            <div id="dialogawp-node-editor" class="dialogawp-node-editor" style="display: none;">
+            <aside id="dialogawp-node-editor" class="dialogawp-node-editor" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="dialogawp-node-editor-title" tabindex="-1">
                 <div class="dialogawp-node-editor-header">
-                    <h3><?php echo esc_html__('Edit Node', 'dialogawp'); ?></h3>
-                    <button class="dialogawp-close-editor">
+                    <h3 id="dialogawp-node-editor-title"><?php echo esc_html__('Edit Node', 'dialogawp'); ?></h3>
+                    <button class="dialogawp-close-editor" type="button" aria-label="<?php echo esc_attr__('Close node editor', 'dialogawp'); ?>">
                         <span class="dashicons dashicons-no"></span>
                     </button>
                 </div>
@@ -183,16 +184,16 @@ if (!defined('ABSPATH')) {
                     <button class="button button-secondary dialogawp-delete-node"><?php echo esc_html__('Delete Node', 'dialogawp'); ?></button>
                     <button class="button button-primary dialogawp-save-node"><?php echo esc_html__('Save', 'dialogawp'); ?></button>
                 </div>
-            </div>
+            </aside>
     </div>
 
     <!-- Visibility Role Selection Modal -->
-    <div id="dialogawp-visibility-modal" class="dialogawp-modal" style="display: none;">
+    <div id="dialogawp-visibility-modal" class="dialogawp-modal" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="dialogawp-visibility-modal-title" tabindex="-1">
         <div class="dialogawp-modal-backdrop"></div>
         <div class="dialogawp-modal-content" style="max-width: 500px;">
             <div class="dialogawp-modal-header">
-                <h3>👑 <?php echo esc_html__('Select Visible Roles', 'dialogawp'); ?></h3>
-                <button class="dialogawp-modal-close">
+                <h3 id="dialogawp-visibility-modal-title">👑 <?php echo esc_html__('Select Visible Roles', 'dialogawp'); ?></h3>
+                <button class="dialogawp-modal-close" type="button" aria-label="<?php echo esc_attr__('Close dialog', 'dialogawp'); ?>">
                     <span class="dashicons dashicons-no"></span>
                 </button>
             </div>

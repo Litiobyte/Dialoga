@@ -42,7 +42,7 @@ class DialogaWP_Wizard {
      */
     public static function add_wizard_page() {
         add_submenu_page(
-            'DialogaWP',
+            null,
             esc_html__('Getting Started - DialogaWP', 'dialogawp'),
             esc_html__('Setup Wizard', 'dialogawp'),
             'manage_options',

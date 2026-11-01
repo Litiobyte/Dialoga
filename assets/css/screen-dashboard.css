@@ -9,11 +9,14 @@
  */
 
 /* Dashboard */
-.dialogawp-dashboard { max-width: 1200px; }
-.dialogawp-dash-header { margin-bottom: 8px; }
-.dialogawp-dash-header h1 { font-size: 24px; font-weight: 700; margin: 0; }
-.dialogawp-dash-subtitle { color: #64748B; font-size: 14px; margin: 4px 0 0; }
-.dialogawp-dash-header-actions { display: flex; gap: 8px; margin-bottom: 20px; }
+.dialogawp-dashboard { max-width: 1240px; color: #26233A; }
+.dialogawp-screen-header { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin: 20px 0 24px; padding-bottom: 20px; border-bottom: 1px solid #E5E7EF; }
+.dialogawp-screen-header h1 { padding: 0; color: #190F4F; font-size: 26px; font-weight: 700; line-height: 1.2; }
+.dialogawp-dash-subtitle { color: #64748B; font-size: 14px; margin: 6px 0 0; }
+.dialogawp-screen-header-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.dialogawp-screen-header-actions .button { display: inline-flex; align-items: center; justify-content: center; min-height: 36px; padding-inline: 14px; }
+.dialogawp-screen-header-actions .button-primary { border-color: #007D75; background: #007D75; }
+.dialogawp-screen-header-actions .button-primary:hover { border-color: #006A63; background: #006A63; }
 .dialogawp-dash-alert { padding: 12px 16px; border-radius: 8px; font-size: 13px; margin-bottom: 20px; line-height: 1.5; }
 .dialogawp-dash-alert a { font-weight: 600; }
 .dialogawp-dash-alert-warning { background: #FFFBEB; border: 1px solid #FDE68A; color: #92400E; }
@@ -30,20 +33,32 @@
 .dialogawp-dash-resume-dismiss { background: none; border: none; color: #64748B; cursor: pointer; font-size: 12px; padding: 6px 10px; border-radius: 6px; }
 .dialogawp-dash-resume-dismiss:hover { background: rgba(100,116,139,0.08); color: #26233A; }
 .dialogawp-dash-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
-.dialogawp-dash-stat { background: #fff; border: 1px solid #E5E7EF; border-radius: 12px; padding: 20px; display: flex; align-items: center; gap: 16px; }
+.dialogawp-dash-stat { min-width: 0; background: #fff; border: 1px solid #E5E7EF; border-radius: 12px; padding: 20px; display: flex; align-items: center; gap: 16px; box-shadow: 0 1px 2px rgba(25,15,79,0.04); }
 .dialogawp-dash-stat-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .dialogawp-dash-stat-icon .dashicons { font-size: 22px; width: 22px; height: 22px; }
+.dialogawp-dash-stat-icon-visibility { background: #E0E7FF; color: #4338CA; }
+.dialogawp-dash-stat-icon-chat { background: #E6F7F5; color: #007D75; }
+.dialogawp-dash-stat-icon-leads { background: #F0FDF4; color: #16A34A; }
+.dialogawp-dash-stat-icon-conversions { background: #ECFDF5; color: #059669; }
+.dialogawp-dash-stat-icon-rate { background: #FFF7ED; color: #EA580C; }
+.dialogawp-dash-stat-icon-flows { background: #F5F3FF; color: #7C3AED; }
 .dialogawp-dash-stat-value { font-size: 28px; font-weight: 700; color: #26233A; line-height: 1; }
 .dialogawp-dash-stat-label { font-size: 13px; color: #94A3B8; margin-top: 4px; }
 .dialogawp-dash-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 20px; }
-.dialogawp-dash-card { background: #fff; border: 1px solid #E5E7EF; border-radius: 12px; overflow: hidden; }
+.dialogawp-dash-card { min-width: 0; background: #fff; border: 1px solid #E5E7EF; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 2px rgba(25,15,79,0.04); }
+.dialogawp-dash-card-spaced { margin-bottom: 20px; }
 .dialogawp-dash-card-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid #F1F5F9; }
 .dialogawp-dash-card-header h3 { margin: 0; font-size: 15px; font-weight: 600; color: #26233A; }
 .dialogawp-dash-card-header a { font-size: 13px; text-decoration: none; font-weight: 500; }
-.dialogawp-dash-table { width: 100%; border-collapse: collapse; }
+.dialogawp-dash-card-meta { color: #94A3B8; font-size: 12px; }
+.dialogawp-table-scroll { max-width: 100%; overflow-x: auto; }
+.dialogawp-dash-table { width: 100%; min-width: 520px; border-collapse: collapse; }
 .dialogawp-dash-table th { text-align: left; padding: 10px 20px; font-size: 11px; font-weight: 600; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.05em; background: #F7F8FC; }
-.dialogawp-dash-table td { padding: 12px 20px; font-size: 13px; color: #26233A; border-bottom: 1px solid #F1F5F9; }
-.dialogawp-dash-table tr:last-child td { border-bottom: none; }
+.dialogawp-dash-table tbody th,
+.dialogawp-dash-table td { padding: 12px 20px; font-size: 13px; color: #26233A; border-bottom: 1px solid #F1F5F9; background: #fff; text-transform: none; letter-spacing: normal; }
+.dialogawp-dash-table tbody th { font-weight: 600; }
+.dialogawp-dash-table tbody th a { color: #007D75; text-decoration: none; }
+.dialogawp-dash-table tr:last-child > * { border-bottom: none; }
 .dialogawp-dash-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
 .dialogawp-dash-badge-active { background: #DCFCE7; color: #166534; }
 .dialogawp-dash-badge-inactive { background: #F1F5F9; color: #64748B; }
@@ -55,6 +70,25 @@
 .dialogawp-dash-link .dashicons { font-size: 20px; width: 20px; height: 20px; flex-shrink: 0; }
 .dialogawp-dash-link strong { display: block; font-size: 13px; color: #26233A; font-weight: 600; }
 .dialogawp-dash-link span { font-size: 12px; color: #94A3B8; }
+.dialogawp-dash-icon-teal { color: #007D75 !important; }
+.dialogawp-dash-icon-green { color: #16A34A !important; }
+.dialogawp-dash-icon-orange { color: #EA580C !important; }
+.dialogawp-dash-icon-purple { color: #7C3AED !important; }
+.dialogawp-dash-icon-pink { color: #DB2777 !important; }
+.dialogawp-dash-icon-cyan { color: #0891B2 !important; }
+.dialogawp-dash-icon-slate { color: #64748B !important; }
+.dialogawp-dash-dropoffs { display: flex; flex-direction: column; gap: 14px; padding: 20px; }
+.dialogawp-dash-dropoff { display: flex; align-items: center; gap: 16px; padding: 12px 16px; background: #FFFBF4; border: 1px solid #FEF3C7; border-radius: 8px; }
+.dialogawp-dash-dropoff-value { min-width: 64px; color: #B45309; font-size: 24px; font-weight: 700; text-align: right; }
+.dialogawp-dash-dropoff-content { flex: 1; min-width: 0; }
+.dialogawp-dash-dropoff-title { color: #26233A; font-size: 14px; font-weight: 600; line-height: 1.35; }
+.dialogawp-dash-dropoff-type { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 4px; background: #FEF3C7; color: #92400E; font-size: 11px; font-weight: 500; vertical-align: middle; }
+.dialogawp-dash-dropoff-meta { margin-top: 2px; color: #64748B; font-size: 12px; }
+.dialogawp-dash-dropoff-action { padding-top: 4px; text-align: right; }
+.dialogawp-dash-card-link { font-size: 13px; }
+
+.dialogawp-dashboard :where(a, button, input, .button):focus-visible,
+.dialogawp-dashboard .dialogawp-table-scroll:focus-visible { outline: 2px solid #007D75; outline-offset: 2px; box-shadow: none; }
 
 /* Pro-gated Quick Link: muted icon + small Pro pill */
 .dialogawp-dash-link.is-gated .dashicons { opacity: 0.55; }
@@ -77,5 +111,14 @@
 @media (max-width: 960px) {
     .dialogawp-dash-stats { grid-template-columns: repeat(2, 1fr); }
     .dialogawp-dash-grid { grid-template-columns: 1fr; }
-    .dialogawp-dash-header-actions { flex-wrap: wrap; }
+}
+@media (max-width: 600px) {
+    .dialogawp-screen-header { align-items: flex-start; flex-direction: column; gap: 16px; }
+    .dialogawp-screen-header-actions { width: 100%; }
+    .dialogawp-screen-header-actions .button { flex: 1; }
+    .dialogawp-dash-stats { grid-template-columns: 1fr; }
+    .dialogawp-dash-resume { align-items: flex-start; flex-wrap: wrap; }
+    .dialogawp-dash-resume-actions { width: 100%; justify-content: flex-end; }
+    .dialogawp-dash-dropoff { align-items: flex-start; }
+    .dialogawp-dash-dropoff-value { min-width: 54px; font-size: 20px; }
 }

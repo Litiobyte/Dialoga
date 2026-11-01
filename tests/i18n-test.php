@@ -121,7 +121,7 @@ function i18n_test($name, $run) {
 }
 function i18n_dictionaries() {
     $messages = array();
-    foreach (array('scripts', 'settings', 'templates', 'backend', 'core', 'wizard', 'fixes') as $part) {
+    foreach (array('scripts', 'settings', 'templates', 'backend', 'core', 'wizard', 'fixes', 'admin-ui') as $part) {
         $catalog = json_decode(file_get_contents(ABSPATH . 'languages/' . $part . '-es.json'), true, 512, JSON_THROW_ON_ERROR);
         foreach ($catalog as $id => $value) {
             i18n_assert(is_string($value) && $value !== '', 'Empty/non-string translation: ' . $id);
@@ -229,7 +229,12 @@ function i18n_run_tests() {
     });
     i18n_test('actual admin JavaScript t literals match translated dictionary', static function () use ($messages) {
         $errors = array(); $count = 0;
-        foreach (glob(ABSPATH . 'assets/js/*.js') as $file) {
+        $files = array_merge(
+            glob(ABSPATH . 'assets/js/*.js'),
+            glob(ABSPATH . 'src/canvas/*.js'),
+            glob(ABSPATH . 'src/canvas/*.jsx')
+        );
+        foreach ($files as $file) {
             preg_match_all('/\bt\(\s*([\'\"])((?:\\\\.|(?!\1)[^\\\\])*)\1/', file_get_contents($file), $matches, PREG_SET_ORDER);
             foreach ($matches as $match) {
                 $count++;

@@ -1,0 +1,22 @@
+{
+  "name": "dialogawp",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Build tooling for the DialogaWP WordPress plugin.",
+  "scripts": {
+    "build": "node tools/build-canvas.mjs",
+    "watch": "node tools/build-canvas.mjs --watch",
+    "test": "npm run build && php tests/flow-transfer-test.php && php tests/i18n-test.php && php tests/settings-test.php && node tests/canvas-build-test.cjs && node tests/canvas-browser-test.cjs"
+  },
+  "dependencies": {
+    "@xyflow/react": "12.12.0"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2",
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  },
+  "engines": {
+    "node": ">=22 <25"
+  }
+}

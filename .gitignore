@@ -5,3 +5,6 @@
 !.env.example
 node_modules/
 *.log
+.opencode/
+DialogaWP/
+DialogaWP.zip

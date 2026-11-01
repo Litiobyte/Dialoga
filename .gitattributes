@@ -1,0 +1,9 @@
+* text=auto eol=lf
+*.mo binary
+*.png binary
+/.git export-ignore
+/.github export-ignore
+/.opencode export-ignore
+/node_modules export-ignore
+/tests export-ignore
+/.distignore export-ignore

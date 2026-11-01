@@ -54,16 +54,15 @@ if (is_array($wizard_state) && isset($wizard_state['currentStep'])) {
 ?>
 <div class="wrap dialogawp-dashboard">
 
-    <div class="dialogawp-dash-header">
+    <div class="dialogawp-screen-header dialogawp-dash-header">
         <div>
             <h1><?php echo esc_html__('Dashboard', 'dialogawp'); ?></h1>
             <p class="dialogawp-dash-subtitle"><?php echo esc_html__("Welcome to DialogaWP. Here's how your chatbot is performing.", 'dialogawp'); ?></p>
         </div>
-    </div>
-
-    <div class="dialogawp-dash-header-actions">
-        <a href="<?php echo esc_url(admin_url('admin.php?page=dialogawp-builder')); ?>" class="button button-primary dialogawp-cta"><?php echo esc_html__('Create New Flow', 'dialogawp'); ?></a>
-        <a href="<?php echo esc_url(admin_url('admin.php?page=dialogawp-settings')); ?>" class="button"><?php echo esc_html__('Settings', 'dialogawp'); ?></a>
+        <div class="dialogawp-screen-header-actions dialogawp-dash-header-actions">
+            <a href="<?php echo esc_url(admin_url('admin.php?page=dialogawp-builder')); ?>" class="button button-primary dialogawp-cta"><?php echo esc_html__('Create New Flow', 'dialogawp'); ?></a>
+            <a href="<?php echo esc_url(admin_url('admin.php?page=dialogawp-settings')); ?>" class="button"><?php echo esc_html__('Settings', 'dialogawp'); ?></a>
+        </div>
     </div>
 
     <?php if ($wizard_resume) : ?>
@@ -122,7 +121,7 @@ if (is_array($wizard_state) && isset($wizard_state['currentStep'])) {
         if ($bubble_impressions > 0) :
         ?>
         <div class="dialogawp-dash-stat">
-            <div class="dialogawp-dash-stat-icon" style="background: #E0E7FF; color: #4338CA;">
+            <div class="dialogawp-dash-stat-icon dialogawp-dash-stat-icon-visibility">
                 <span class="dashicons dashicons-visibility"></span>
             </div>
             <div class="dialogawp-dash-stat-content">
@@ -133,7 +132,7 @@ if (is_array($wizard_state) && isset($wizard_state['currentStep'])) {
         <?php endif; ?>
 
         <div class="dialogawp-dash-stat">
-            <div class="dialogawp-dash-stat-icon" style="background: #EFF6FF; color: #007D75;">
+            <div class="dialogawp-dash-stat-icon dialogawp-dash-stat-icon-chat">
                 <span class="dashicons dashicons-format-chat"></span>
             </div>
             <div class="dialogawp-dash-stat-content">
@@ -143,7 +142,7 @@ if (is_array($wizard_state) && isset($wizard_state['currentStep'])) {
         </div>
 
         <div class="dialogawp-dash-stat">
-            <div class="dialogawp-dash-stat-icon" style="background: #F0FDF4; color: #16A34A;">
+            <div class="dialogawp-dash-stat-icon dialogawp-dash-stat-icon-leads">
                 <span class="dashicons dashicons-groups"></span>
             </div>
             <div class="dialogawp-dash-stat-content">
@@ -163,7 +162,7 @@ if (is_array($wizard_state) && isset($wizard_state['currentStep'])) {
         if ($has_link_conv_configured) :
         ?>
         <div class="dialogawp-dash-stat">
-            <div class="dialogawp-dash-stat-icon" style="background: #ECFDF5; color: #059669;">
+            <div class="dialogawp-dash-stat-icon dialogawp-dash-stat-icon-conversions">
                 <span class="dashicons dashicons-yes-alt"></span>
             </div>
             <div class="dialogawp-dash-stat-content">
@@ -174,7 +173,7 @@ if (is_array($wizard_state) && isset($wizard_state['currentStep'])) {
         <?php endif; ?>
 
         <div class="dialogawp-dash-stat">
-            <div class="dialogawp-dash-stat-icon" style="background: #FFF7ED; color: #EA580C;">
+            <div class="dialogawp-dash-stat-icon dialogawp-dash-stat-icon-rate">
                 <span class="dashicons dashicons-chart-line"></span>
             </div>
             <div class="dialogawp-dash-stat-content">
@@ -184,7 +183,7 @@ if (is_array($wizard_state) && isset($wizard_state['currentStep'])) {
         </div>
 
         <div class="dialogawp-dash-stat">
-            <div class="dialogawp-dash-stat-icon" style="background: #F5F3FF; color: #7C3AED;">
+            <div class="dialogawp-dash-stat-icon dialogawp-dash-stat-icon-flows">
                 <span class="dashicons dashicons-randomize"></span>
             </div>
             <div class="dialogawp-dash-stat-content">
@@ -213,31 +212,31 @@ if (is_array($wizard_state) && isset($wizard_state['currentStep'])) {
     );
     ?>
     <?php if (!empty($drop_offs_dash)) : ?>
-    <div class="dialogawp-dash-card" style="margin-bottom:24px;">
+    <div class="dialogawp-dash-card dialogawp-dash-card-spaced">
         <div class="dialogawp-dash-card-header">
             <h3><?php echo esc_html__('Where visitors are dropping off', 'dialogawp'); ?></h3>
             <?php if ($active_flow_dash) : ?>
-                <span style="font-size:12px;color:#94A3B8;">
+                <span class="dialogawp-dash-card-meta">
                     <?php echo esc_html__('Active flow:', 'dialogawp'); ?> <?php echo esc_html($active_flow_dash->flow_name); ?>
                 </span>
             <?php endif; ?>
         </div>
-        <div style="padding:20px;display:flex;flex-direction:column;gap:14px;">
+        <div class="dialogawp-dash-dropoffs">
             <?php foreach ($drop_offs_dash as $i => $do) :
                 $type_pretty = $type_label_map[$do['node_type']] ?? ucfirst($do['node_type']);
             ?>
-            <div style="display:flex;align-items:center;gap:16px;padding:12px 16px;background:#FFFBF4;border:1px solid #FEF3C7;border-radius:8px;">
-                <div style="font-size:24px;font-weight:700;color:#B45309;min-width:64px;text-align:right;">
+            <div class="dialogawp-dash-dropoff">
+                <div class="dialogawp-dash-dropoff-value">
                     <?php echo esc_html($do['drop_off_pct']); ?>%
                 </div>
-                <div style="flex:1;min-width:0;">
-                    <div style="font-size:14px;color:#26233A;font-weight:600;line-height:1.35;">
+                <div class="dialogawp-dash-dropoff-content">
+                    <div class="dialogawp-dash-dropoff-title">
                         <?php echo esc_html($do['node_label']); ?>
                         <?php if ($type_pretty) : ?>
-                            <span style="background:#FEF3C7;color:#92400E;padding:1px 7px;border-radius:4px;font-size:11px;margin-left:6px;vertical-align:middle;font-weight:500;"><?php echo esc_html($type_pretty); ?></span>
+                            <span class="dialogawp-dash-dropoff-type"><?php echo esc_html($type_pretty); ?></span>
                         <?php endif; ?>
                     </div>
-                    <div style="font-size:12px;color:#64748B;margin-top:2px;">
+                    <div class="dialogawp-dash-dropoff-meta">
                         <?php
                         /* translators: %1$s: visitor count, %2$s: missed visitor count. */
                         echo esc_html(sprintf(__('%1$s visitors reached; %2$s never got here', 'dialogawp'), number_format($do['views']), number_format($do['missed'])));
@@ -248,9 +247,9 @@ if (is_array($wizard_state) && isset($wizard_state['currentStep'])) {
             <?php endforeach; ?>
 
             <?php if ($is_pro) : ?>
-            <div style="text-align:right;padding-top:4px;">
+            <div class="dialogawp-dash-dropoff-action">
                 <a href="<?php echo esc_url(admin_url('admin.php?page=dialogawp-pro-analytics&tab=funnel&flow_id=' . intval($active_flow_dash->id))); ?>"
-                   style="font-size:13px;">
+                   class="dialogawp-dash-card-link">
                     <?php echo esc_html__('See full funnel breakdown', 'dialogawp'); ?> &rarr;
                 </a>
             </div>
@@ -261,26 +260,32 @@ if (is_array($wizard_state) && isset($wizard_state['currentStep'])) {
 
     <!-- Flows Overview -->
     <?php
-    $all_flows = $wpdb->get_results("SELECT id, name, is_active, created_at FROM {$wpdb->prefix}dialogawp_flows ORDER BY created_at DESC LIMIT 5");
+    $all_flows = $wpdb->get_results("SELECT id, flow_name, is_active, created_at FROM {$wpdb->prefix}dialogawp_flows ORDER BY created_at DESC LIMIT 5");
     ?>
     <?php if (!empty($all_flows)) : ?>
-    <div class="dialogawp-dash-card" style="margin-bottom: 20px;">
+    <div class="dialogawp-dash-card dialogawp-dash-card-spaced">
         <div class="dialogawp-dash-card-header">
             <h3><?php echo esc_html__('Your Flows', 'dialogawp'); ?></h3>
             <a href="<?php echo esc_url(admin_url('admin.php?page=dialogawp-builder')); ?>"><?php echo esc_html__('Manage Flows', 'dialogawp'); ?> &rarr;</a>
         </div>
+        <div class="dialogawp-table-scroll" tabindex="0">
         <table class="dialogawp-dash-table">
+            <caption class="screen-reader-text"><?php echo esc_html__('Your Flows', 'dialogawp'); ?></caption>
             <thead>
                 <tr>
-                    <th><?php echo esc_html__('Flow Name', 'dialogawp'); ?></th>
-                    <th><?php echo esc_html__('Status', 'dialogawp'); ?></th>
-                    <th><?php echo esc_html__('Created', 'dialogawp'); ?></th>
+                    <th scope="col"><?php echo esc_html__('Flow Name', 'dialogawp'); ?></th>
+                    <th scope="col"><?php echo esc_html__('Status', 'dialogawp'); ?></th>
+                    <th scope="col"><?php echo esc_html__('Created', 'dialogawp'); ?></th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($all_flows as $flow) : ?>
                 <tr>
-                    <td><strong><?php echo esc_html($flow->name ?: __('Untitled Flow', 'dialogawp')); ?></strong></td>
+                    <th scope="row">
+                        <a href="<?php echo esc_url(add_query_arg('flow_id', intval($flow->id), admin_url('admin.php?page=dialogawp-builder'))); ?>">
+                            <?php echo esc_html($flow->flow_name ?: __('Untitled Flow', 'dialogawp')); ?>
+                        </a>
+                    </th>
                     <td>
                         <?php if ($flow->is_active) : ?>
                             <span class="dialogawp-dash-badge dialogawp-dash-badge-active"><?php echo esc_html__('Active', 'dialogawp'); ?></span>
@@ -293,6 +298,7 @@ if (is_array($wizard_state) && isset($wizard_state['currentStep'])) {
                 <?php endforeach; ?>
             </tbody>
         </table>
+        </div>
     </div>
     <?php endif; ?>
 
@@ -306,12 +312,14 @@ if (is_array($wizard_state) && isset($wizard_state['currentStep'])) {
                 <a href="<?php echo esc_url(admin_url('admin.php?page=dialogawp-leads')); ?>"><?php echo esc_html__('View All', 'dialogawp'); ?> &rarr;</a>
             </div>
             <?php if (!empty($recent_leads)) : ?>
+            <div class="dialogawp-table-scroll" tabindex="0">
             <table class="dialogawp-dash-table">
+                <caption class="screen-reader-text"><?php echo esc_html__('Recent Leads', 'dialogawp'); ?></caption>
                 <thead>
                     <tr>
-                        <th><?php echo esc_html__('Name', 'dialogawp'); ?></th>
-                        <th><?php echo esc_html__('Email', 'dialogawp'); ?></th>
-                        <th><?php echo esc_html__('Date', 'dialogawp'); ?></th>
+                        <th scope="col"><?php echo esc_html__('Name', 'dialogawp'); ?></th>
+                        <th scope="col"><?php echo esc_html__('Email', 'dialogawp'); ?></th>
+                        <th scope="col"><?php echo esc_html__('Date', 'dialogawp'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -321,13 +329,14 @@ if (is_array($wizard_state) && isset($wizard_state['currentStep'])) {
                         $email = $data['email'] ?? '-';
                     ?>
                     <tr>
-                        <td><?php echo esc_html($name); ?></td>
+                        <th scope="row"><?php echo esc_html($name); ?></th>
                         <td><?php echo esc_html($email); ?></td>
                         <td><?php echo esc_html(wp_date('M j', strtotime($lead->created_at), new DateTimeZone('UTC'))); ?></td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
             </table>
+            </div>
             <?php else : ?>
             <div class="dialogawp-dash-empty">
                 <p><?php echo esc_html__("No leads captured yet. Once visitors fill out your chatbot forms, they'll appear here.", 'dialogawp'); ?></p>
@@ -342,21 +351,21 @@ if (is_array($wizard_state) && isset($wizard_state['currentStep'])) {
             </div>
             <div class="dialogawp-dash-links">
                 <a href="<?php echo esc_url(admin_url('admin.php?page=dialogawp-builder')); ?>" class="dialogawp-dash-link">
-                    <span class="dashicons dashicons-edit" style="color: #007D75;"></span>
+                    <span class="dashicons dashicons-edit dialogawp-dash-icon-teal"></span>
                     <div>
                         <strong><?php echo esc_html__('Flow Builder', 'dialogawp'); ?></strong>
                         <span><?php echo esc_html__('Create and edit chatbot flows', 'dialogawp'); ?></span>
                     </div>
                 </a>
                 <a href="<?php echo esc_url(admin_url('admin.php?page=dialogawp-leads')); ?>" class="dialogawp-dash-link">
-                    <span class="dashicons dashicons-groups" style="color: #16A34A;"></span>
+                    <span class="dashicons dashicons-groups dialogawp-dash-icon-green"></span>
                     <div>
                         <strong><?php echo esc_html__('Leads', 'dialogawp'); ?></strong>
                         <span><?php echo esc_html__('View and export captured leads', 'dialogawp'); ?></span>
                     </div>
                 </a>
                 <a href="<?php echo esc_url(admin_url('admin.php?page=dialogawp-analytics')); ?>" class="dialogawp-dash-link">
-                    <span class="dashicons dashicons-chart-bar" style="color: #EA580C;"></span>
+                    <span class="dashicons dashicons-chart-bar dialogawp-dash-icon-orange"></span>
                     <div>
                         <strong><?php echo esc_html__('Analytics', 'dialogawp'); ?></strong>
                         <span><?php echo esc_html__('Conversation trends and stats', 'dialogawp'); ?></span>
@@ -379,7 +388,7 @@ if (is_array($wizard_state) && isset($wizard_state['currentStep'])) {
                 $gated_target   = $is_pro ? '' : ' target="_blank" rel="noopener"';
                 ?>
                 <a href="<?php echo esc_url($convo_url); ?>" class="<?php echo esc_attr($gated_class); ?>"<?php echo wp_kses_post($gated_target); ?>>
-                    <span class="dashicons dashicons-format-chat" style="color: #7C3AED;"></span>
+                    <span class="dashicons dashicons-format-chat dialogawp-dash-icon-purple"></span>
                     <div>
                         <strong><?php echo esc_html__('Conversations', 'dialogawp'); ?></strong>
                         <span><?php echo esc_html__('Read every chat your visitors had', 'dialogawp'); ?></span>
@@ -387,7 +396,7 @@ if (is_array($wizard_state) && isset($wizard_state['currentStep'])) {
                     <?php if (!$is_pro) : ?><span class="dialogawp-pro-pill">Pro</span><?php endif; ?>
                 </a>
                 <a href="<?php echo esc_url($adv_url); ?>" class="<?php echo esc_attr($gated_class); ?>"<?php echo wp_kses_post($gated_target); ?>>
-                    <span class="dashicons dashicons-chart-pie" style="color: #DB2777;"></span>
+                    <span class="dashicons dashicons-chart-pie dialogawp-dash-icon-pink"></span>
                     <div>
                         <strong><?php echo esc_html__('Advanced Analytics', 'dialogawp'); ?></strong>
                         <span><?php echo esc_html__('Funnel, heatmap, flow performance', 'dialogawp'); ?></span>
@@ -395,21 +404,21 @@ if (is_array($wizard_state) && isset($wizard_state['currentStep'])) {
                     <?php if (!$is_pro) : ?><span class="dialogawp-pro-pill">Pro</span><?php endif; ?>
                 </a>
                 <a href="<?php echo esc_url(admin_url('admin.php?page=dialogawp-ai-settings')); ?>" class="dialogawp-dash-link">
-                    <span class="dashicons dashicons-admin-site-alt3" style="color: #7C3AED;"></span>
+                    <span class="dashicons dashicons-admin-site-alt3 dialogawp-dash-icon-purple"></span>
                     <div>
                         <strong><?php echo esc_html__('AI Settings', 'dialogawp'); ?></strong>
                         <span><?php echo esc_html__('Knowledge base and AI config', 'dialogawp'); ?></span>
                     </div>
                 </a>
                 <a href="<?php echo esc_url(admin_url('admin.php?page=dialogawp-wizard')); ?>" class="dialogawp-dash-link">
-                    <span class="dashicons dashicons-welcome-learn-more" style="color: #0891B2;"></span>
+                    <span class="dashicons dashicons-welcome-learn-more dialogawp-dash-icon-cyan"></span>
                     <div>
                         <strong><?php echo esc_html__('Setup Wizard', 'dialogawp'); ?></strong>
                         <span><?php echo esc_html__('Guided chatbot setup', 'dialogawp'); ?></span>
                     </div>
                 </a>
                 <a href="<?php echo esc_url(admin_url('admin.php?page=dialogawp-settings')); ?>" class="dialogawp-dash-link">
-                    <span class="dashicons dashicons-admin-generic" style="color: #64748B;"></span>
+                    <span class="dashicons dashicons-admin-generic dialogawp-dash-icon-slate"></span>
                     <div>
                         <strong><?php echo esc_html__('Settings', 'dialogawp'); ?></strong>
                         <span><?php echo esc_html__('Widget appearance and behavior', 'dialogawp'); ?></span>

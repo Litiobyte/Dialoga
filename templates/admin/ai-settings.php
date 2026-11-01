@@ -2,8 +2,10 @@
 if (!defined('ABSPATH')) exit;
 ?>
 <div class="wrap dialogawp-ai-settings-page">
-    <h1><?php echo esc_html__('DIALOGAWP - AI Settings', 'dialogawp'); ?></h1>
-    <p class="description"><?php echo esc_html__('Connect an AI provider to power conversational responses in your chatbot flows.', 'dialogawp'); ?></p>
+    <header class="dialogawp-ai-page-header">
+        <h1><?php echo esc_html__('DIALOGAWP - AI Settings', 'dialogawp'); ?></h1>
+        <p class="description"><?php echo esc_html__('Connect an AI provider to power conversational responses in your chatbot flows.', 'dialogawp'); ?></p>
+    </header>
 
     <div class="dialogawp-ai-layout">
 
@@ -48,7 +50,7 @@ if (!defined('ABSPATH')) exit;
                     <tr>
                         <th><label for="ai-api-key"><?php echo esc_html__('API Key', 'dialogawp'); ?></label></th>
                         <td>
-                            <input type="password" id="ai-api-key" class="regular-text" placeholder="<?php echo esc_attr__('Paste your API key here', 'dialogawp'); ?>" autocomplete="new-password" />
+                            <input type="password" id="ai-api-key" class="regular-text" placeholder="<?php echo esc_attr__('Paste your API key here', 'dialogawp'); ?>" autocomplete="new-password" aria-describedby="ai-api-key-current" />
                             <p class="description" id="ai-api-key-current"></p>
                             <p class="description">
                                 <?php echo esc_html__('Anthropic key:', 'dialogawp'); ?> <a href="https://console.anthropic.com/" target="_blank" rel="noopener">console.anthropic.com</a>
@@ -67,9 +69,9 @@ if (!defined('ABSPATH')) exit;
                 </table>
 
                 <div class="dialogawp-ai-actions">
-                    <button class="button button-primary" id="ai-save-settings"><?php echo esc_html__('Save Settings', 'dialogawp'); ?></button>
-                    <button class="button" id="ai-test-connection"><?php echo esc_html__('Test Connection', 'dialogawp'); ?></button>
-                    <span class="dialogawp-ai-status" id="ai-save-status"></span>
+                    <button type="button" class="button button-primary" id="ai-save-settings"><?php echo esc_html__('Save Settings', 'dialogawp'); ?></button>
+                    <button type="button" class="button" id="ai-test-connection"><?php echo esc_html__('Test Connection', 'dialogawp'); ?></button>
+                    <span class="dialogawp-ai-status" id="ai-save-status" role="status" aria-live="polite"></span>
                 </div>
             </div>
 
@@ -88,9 +90,9 @@ if (!defined('ABSPATH')) exit;
 - Our intake coordinator is Sarah — hello@example.com.
 - We accept Aetna, BCBS, and Cigna insurance.', 'dialogawp'); ?>"></textarea>
                 <p class="description"><?php echo esc_html__('Tip: Be specific. The more context you give, the better the AI represents your business.', 'dialogawp'); ?></p>
-                <div style="margin-top:8px;display:flex;align-items:center;gap:10px;">
-                    <button class="button button-primary" id="ai-save-instructions"><?php echo esc_html__('Save Instructions', 'dialogawp'); ?></button>
-                    <span class="dialogawp-ai-status" id="ai-instructions-status"></span>
+                <div class="dialogawp-ai-actions">
+                    <button type="button" class="button button-primary" id="ai-save-instructions"><?php echo esc_html__('Save Instructions', 'dialogawp'); ?></button>
+                    <span class="dialogawp-ai-status" id="ai-instructions-status" role="status" aria-live="polite"></span>
                 </div>
             </div>
 
@@ -104,18 +106,18 @@ if (!defined('ABSPATH')) exit;
 
                 <table class="form-table" style="margin-bottom:0;">
                     <tr>
-                        <th style="width:220px;"><label><?php echo esc_html__('Monthly Conversations', 'dialogawp'); ?></label></th>
+                        <th style="width:220px;"><label for="cost-conversations-num"><?php echo esc_html__('Monthly Conversations', 'dialogawp'); ?></label></th>
                         <td>
-                            <div style="display:flex;align-items:center;gap:12px;">
+                            <div class="dialogawp-ai-range-control">
                                 <input type="range" id="cost-conversations" min="10" max="10000" step="10" value="500" style="width:200px;" />
                                 <input type="number" id="cost-conversations-num" value="500" min="1" max="999999" style="width:80px;" class="small-text" />
                             </div>
                         </td>
                     </tr>
                     <tr>
-                        <th><label><?php echo esc_html__('Avg Messages per Conversation', 'dialogawp'); ?></label></th>
+                        <th><label for="cost-messages-num"><?php echo esc_html__('Avg Messages per Conversation', 'dialogawp'); ?></label></th>
                         <td>
-                            <div style="display:flex;align-items:center;gap:12px;">
+                            <div class="dialogawp-ai-range-control">
                                 <input type="range" id="cost-messages" min="1" max="30" step="1" value="5" style="width:200px;" />
                                 <input type="number" id="cost-messages-num" value="5" min="1" max="100" style="width:80px;" class="small-text" />
                             </div>
@@ -123,8 +125,8 @@ if (!defined('ABSPATH')) exit;
                     </tr>
                 </table>
 
-                <div id="cost-result" style="margin-top:16px;padding:16px;background:#F7F8FC;border-radius:4px;border:1px solid #E5E7EF;">
-                    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;">
+                <div id="cost-result" class="dialogawp-ai-cost-result" role="status" aria-live="polite" aria-atomic="true">
+                    <div class="dialogawp-ai-cost-summary">
                         <div id="cost-breakdown" style="font-size:13px;color:#3c434a;line-height:1.8;"></div>
                         <div style="text-align:right;">
                             <div style="font-size:13px;color:#787c82;"><?php echo esc_html__('Estimated monthly cost', 'dialogawp'); ?></div>
@@ -156,12 +158,12 @@ if (!defined('ABSPATH')) exit;
                 </p>
 
                 <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px;">
-                    <button class="button button-primary" id="ai-crawl-website">
+                    <button type="button" class="button button-primary" id="ai-crawl-website">
                         <span class="dashicons dashicons-update" style="vertical-align:middle;margin-top:-2px;"></span>
                         <?php echo esc_html__('Crawl Website', 'dialogawp'); ?>
                     </button>
                 </div>
-                <span class="dialogawp-ai-status" id="ai-crawl-status" style="display:block;margin-top:6px;font-size:12px;"></span>
+                <span class="dialogawp-ai-status" id="ai-crawl-status" role="status" aria-live="polite" aria-atomic="true" style="display:block;margin-top:6px;font-size:12px;"></span>
                 <p class="description" style="margin-top:8px;font-size:12px;">
                     &#x2728; <?php
                     /* translators: %s: AI Flow Wizard label. */
@@ -169,7 +171,7 @@ if (!defined('ABSPATH')) exit;
                     ?>
                 </p>
 
-                <div id="ai-knowledge-list" style="margin-top:16px;"></div>
+                <div id="ai-knowledge-list" role="status" aria-live="polite" aria-atomic="true" aria-busy="false" style="margin-top:16px;"></div>
             </div>
 
             <!-- Flow Wizard trigger (shown after knowledge base has items) -->
@@ -178,10 +180,10 @@ if (!defined('ABSPATH')) exit;
                 <p class="description">
                     <?php echo esc_html__('Your site has been indexed. Let the AI analyze your content and automatically generate a customized intake flow for your business.', 'dialogawp'); ?>
                 </p>
-                <button class="button button-primary dialogawp-cta" id="ai-generate-flow">
+                <button type="button" class="button button-primary dialogawp-cta" id="ai-generate-flow">
                     <?php echo esc_html__('Generate Suggested Flow', 'dialogawp'); ?>
                 </button>
-                <span class="dialogawp-ai-status" id="ai-wizard-trigger-status" style="display:block;margin-top:6px;font-size:12px;"></span>
+                <span class="dialogawp-ai-status" id="ai-wizard-trigger-status" role="status" aria-live="polite" style="display:block;margin-top:6px;font-size:12px;"></span>
             </div>
 
             <div class="dialogawp-card" style="background:#F7F8FC;">
@@ -207,7 +209,7 @@ if (!defined('ABSPATH')) exit;
     <div id="ai-flow-wizard" style="display:none;margin-top:20px;">
         <div class="dialogawp-card">
 
-            <div id="wizard-loading" style="display:none;text-align:center;padding:30px 0;">
+            <div id="wizard-loading" role="status" aria-live="polite" style="display:none;text-align:center;padding:30px 0;">
                 <span class="dashicons dashicons-update" style="font-size:32px;color:#190F4F;animation:dialogawp-spin 1s linear infinite;"></span>
                 <p style="margin-top:12px;font-size:15px;color:#3c434a;"><?php echo esc_html__('Analyzing your website and generating a personalized flow...', 'dialogawp'); ?></p>
                 <p class="description"><?php echo esc_html__('This usually takes 10-20 seconds.', 'dialogawp'); ?></p>
@@ -216,33 +218,33 @@ if (!defined('ABSPATH')) exit;
             <div id="wizard-result" style="display:none;">
                 <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;">
                     <h2 style="margin:0;">&#x2728; <?php echo esc_html__('AI-Generated Flow Suggestion', 'dialogawp'); ?></h2>
-                    <button class="button" id="wizard-dismiss" style="flex-shrink:0;"><?php echo esc_html__('Dismiss', 'dialogawp'); ?></button>
+                    <button type="button" class="button" id="wizard-dismiss" style="flex-shrink:0;"><?php echo esc_html__('Dismiss', 'dialogawp'); ?></button>
                 </div>
                 <div id="wizard-summary" style="margin-bottom:16px;padding:12px;background:#f0f6ff;border-radius:4px;border:1px solid #c3d9f7;font-size:13px;"></div>
                 <h3 style="margin-top:0;"><?php echo esc_html__('Suggested Flow Steps', 'dialogawp'); ?></h3>
                 <ol id="wizard-steps" style="font-size:13px;line-height:2;"></ol>
                 <p class="description" style="font-size:12px;margin-top:6px;">&#9998; <?php echo esc_html__('Edit any message above before creating the flow.', 'dialogawp'); ?></p>
                 <div style="display:flex;align-items:center;gap:12px;margin-top:16px;">
-                    <button class="button button-primary button-large dialogawp-cta" id="wizard-create-flow"><?php echo esc_html__('Create This Flow', 'dialogawp'); ?> &rarr;</button>
-                    <span class="dialogawp-ai-status" id="wizard-create-status"></span>
+                    <button type="button" class="button button-primary button-large dialogawp-cta" id="wizard-create-flow"><?php echo esc_html__('Create This Flow', 'dialogawp'); ?> &rarr;</button>
+                    <span class="dialogawp-ai-status" id="wizard-create-status" role="status" aria-live="polite"></span>
                 </div>
                 <p class="description" style="margin-top:8px;">
                     <?php echo esc_html__('The flow will open in the builder where you can customize every node before activating it.', 'dialogawp'); ?>
                 </p>
             </div>
 
-            <div id="wizard-error" style="display:none;">
+            <div id="wizard-error" role="alert" aria-live="assertive" style="display:none;">
                 <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
                     <h2 style="margin:0;color:#d63638;"><?php echo esc_html__('Could Not Generate Flow', 'dialogawp'); ?></h2>
-                    <button class="button" id="wizard-dismiss-error"><?php echo esc_html__('Dismiss', 'dialogawp'); ?></button>
+                    <button type="button" class="button" id="wizard-dismiss-error"><?php echo esc_html__('Dismiss', 'dialogawp'); ?></button>
                 </div>
                 <p class="description"><span id="wizard-error-msg"></span></p>
                 <p class="description">
                     <?php echo esc_html__('A basic template flow has been prepared instead. You can create it and customize it in the builder.', 'dialogawp'); ?>
                 </p>
                 <div style="display:flex;align-items:center;gap:12px;margin-top:12px;">
-                    <button class="button button-primary" id="wizard-use-template"><?php echo esc_html__('Use Template Flow Instead', 'dialogawp'); ?></button>
-                    <span class="dialogawp-ai-status" id="wizard-template-status"></span>
+                    <button type="button" class="button button-primary" id="wizard-use-template"><?php echo esc_html__('Use Template Flow Instead', 'dialogawp'); ?></button>
+                    <span class="dialogawp-ai-status" id="wizard-template-status" role="status" aria-live="polite"></span>
                 </div>
             </div>
 
@@ -461,6 +463,7 @@ jQuery(function($) {
     // =========================================================================
     function loadKnowledge() {
         $('#ai-crawl-website').prop('disabled', true);
+        $('#ai-knowledge-list').attr('aria-busy', 'true');
         $('#ai-knowledge-list').html(
             '<p class="description" style="color:#787c82;">' +
             '<span class="dashicons dashicons-update" style="font-size:14px;vertical-align:middle;margin-top:-2px;animation:dialogawp-spin 1s linear infinite;display:inline-block;"></span>' +
@@ -470,6 +473,7 @@ jQuery(function($) {
         $.post(ajax, { action: 'dialogawp_get_ai_knowledge', nonce: nonce }, function(res) {
             $('#ai-crawl-website').prop('disabled', false);
             const $list = $('#ai-knowledge-list');
+            $list.attr('aria-busy', 'false');
 
             if (!res.success || !res.data.length) {
                 $list.html('<p class="description">' + escHtml(t('No content indexed yet. Click "Crawl Website" to get started.')) + '</p>');
@@ -489,15 +493,15 @@ jQuery(function($) {
                         <span class="ki-type">${escHtml(({page: t('Page'), post: t('Post')})[item.content_type] || item.content_type)}</span>
                         <span class="ki-title" title="${escHtml(item.url)}">${escHtml(item.title)}</span>
                         <span class="ki-tokens" title="${escHtml(t('~%d tokens - estimated AI context size for this page').replace('%d', item.token_estimate))}">~${item.token_estimate}t</span>
-                        <button class="ki-delete" title="${escHtml(t('Remove'))}">&times;</button>
+                        <button type="button" class="ki-delete" title="${escHtml(t('Remove'))}" aria-label="${escHtml(t('Remove') + ': ' + item.title)}">&times;</button>
                     </div>`;
             });
 
             let html = `
-                <div class="dialogawp-kb-toggle" id="ki-toggle">
+                <button type="button" class="dialogawp-kb-toggle" id="ki-toggle" aria-expanded="false" aria-controls="ki-items">
                     <span class="ki-count">${escHtml((total === 1 ? t('%d item indexed') : t('%d items indexed')).replace('%d', total))}</span>
-                    <span class="ki-chevron">&#9654;</span>
-                </div>
+                    <span class="ki-chevron" aria-hidden="true">&#9654;</span>
+                </button>
                 <div class="dialogawp-kb-items" id="ki-items" style="display:none;">
                     ${items}
                 </div>`;
@@ -508,6 +512,7 @@ jQuery(function($) {
                 const $items = $('#ki-items');
                 const open   = $items.is(':visible');
                 $items.slideToggle(150);
+                $(this).attr('aria-expanded', String(!open));
                 $(this).find('.ki-chevron').css('transform', open ? '' : 'rotate(90deg)');
             });
 

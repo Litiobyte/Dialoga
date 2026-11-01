@@ -1,7 +1,7 @@
 === DialogaWP – Chatbot & Conversational Lead Capture Forms ===
 Contributors: litiobyte
 Tags: chatbot, lead generation, ai chat, conversational form, lead capture
-Requires at least: 5.0
+Requires at least: 6.2
 Tested up to: 7.1
 Requires PHP: 7.4
 Stable tag: 1.0.0
@@ -59,7 +59,7 @@ No coding required. Drag and drop nodes to create a conversation flow, connect y
 
 = Minimum Requirements =
 
-* WordPress 5.0+
+* WordPress 6.2+
 * PHP 7.4+
 * An OpenAI or Anthropic API key (for AI features)
 
@@ -88,6 +88,12 @@ Used when you select Anthropic as your provider in DialogaWP > AI Settings and e
 * **Privacy Policy:** [https://www.anthropic.com/legal/privacy](https://www.anthropic.com/legal/privacy)
 
 If you do not enter an API key and do not use AI Chat nodes, DialogaWP makes no external calls at all.
+
+== Source code ==
+
+The readable React Flow canvas source is included in `src/canvas/`. The production assets in `assets/js/build/` are generated with the pinned dependencies in `package-lock.json`.
+
+To reproduce the assets, install Node.js 22 and run `npm ci && npm run build` from the plugin directory. Third-party license notices are included in `THIRD-PARTY-LICENSES.txt`.
 
 == Frequently Asked Questions ==
 

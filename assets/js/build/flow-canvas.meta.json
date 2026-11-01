@@ -1,0 +1,2723 @@
+{
+  "inputs": {
+    "src/canvas/shims/react.js": {
+      "bytes": 1654,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/canvas/shims/jsx-runtime.js": {
+      "bytes": 212,
+      "imports": [
+        {
+          "path": "src/canvas/shims/react.js",
+          "kind": "import-statement",
+          "original": "./react.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/classcat/index.js": {
+      "bytes": 410,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-dispatch/src/dispatch.js": {
+      "bytes": 2743,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-dispatch/src/index.js": {
+      "bytes": 51,
+      "imports": [
+        {
+          "path": "node_modules/d3-dispatch/src/dispatch.js",
+          "kind": "import-statement",
+          "original": "./dispatch.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/namespaces.js": {
+      "bytes": 254,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/namespace.js": {
+      "bytes": 351,
+      "imports": [
+        {
+          "path": "node_modules/d3-selection/src/namespaces.js",
+          "kind": "import-statement",
+          "original": "./namespaces.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/creator.js": {
+      "bytes": 668,
+      "imports": [
+        {
+          "path": "node_modules/d3-selection/src/namespace.js",
+          "kind": "import-statement",
+          "original": "./namespace.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/namespaces.js",
+          "kind": "import-statement",
+          "original": "./namespaces.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/selector.js": {
+      "bytes": 152,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/selection/select.js": {
+      "bytes": 659,
+      "imports": [
+        {
+          "path": "node_modules/d3-selection/src/selection/index.js",
+          "kind": "import-statement",
+          "original": "./index.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selector.js",
+          "kind": "import-statement",
+          "original": "../selector.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/array.js": {
+      "bytes": 568,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/selectorAll.js": {
+      "bytes": 171,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/selection/selectAll.js": {
+      "bytes": 730,
+      "imports": [
+        {
+          "path": "node_modules/d3-selection/src/selection/index.js",
+          "kind": "import-statement",
+          "original": "./index.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/array.js",
+          "kind": "import-statement",
+          "original": "../array.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selectorAll.js",
+          "kind": "import-statement",
+          "original": "../selectorAll.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/matcher.js": {
+      "bytes": 211,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/selection/selectChild.js": {
+      "bytes": 403,
+      "imports": [
+        {
+          "path": "node_modules/d3-selection/src/matcher.js",
+          "kind": "import-statement",
+          "original": "../matcher.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/selection/selectChildren.js": {
+      "bytes": 421,
+      "imports": [
+        {
+          "path": "node_modules/d3-selection/src/matcher.js",
+          "kind": "import-statement",
+          "original": "../matcher.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/selection/filter.js": {
+      "bytes": 552,
+      "imports": [
+        {
+          "path": "node_modules/d3-selection/src/selection/index.js",
+          "kind": "import-statement",
+          "original": "./index.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/matcher.js",
+          "kind": "import-statement",
+          "original": "../matcher.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/selection/sparse.js": {
+      "bytes": 71,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/selection/enter.js": {
+      "bytes": 798,
+      "imports": [
+        {
+          "path": "node_modules/d3-selection/src/selection/sparse.js",
+          "kind": "import-statement",
+          "original": "./sparse.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selection/index.js",
+          "kind": "import-statement",
+          "original": "./index.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/constant.js": {
+      "bytes": 72,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/selection/data.js": {
+      "bytes": 4191,
+      "imports": [
+        {
+          "path": "node_modules/d3-selection/src/selection/index.js",
+          "kind": "import-statement",
+          "original": "./index.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selection/enter.js",
+          "kind": "import-statement",
+          "original": "./enter.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/constant.js",
+          "kind": "import-statement",
+          "original": "../constant.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/selection/exit.js": {
+      "bytes": 182,
+      "imports": [
+        {
+          "path": "node_modules/d3-selection/src/selection/sparse.js",
+          "kind": "import-statement",
+          "original": "./sparse.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selection/index.js",
+          "kind": "import-statement",
+          "original": "./index.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/selection/join.js": {
+      "bytes": 509,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/selection/merge.js": {
+      "bytes": 645,
+      "imports": [
+        {
+          "path": "node_modules/d3-selection/src/selection/index.js",
+          "kind": "import-statement",
+          "original": "./index.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/selection/order.js": {
+      "bytes": 380,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/selection/sort.js": {
+      "bytes": 684,
+      "imports": [
+        {
+          "path": "node_modules/d3-selection/src/selection/index.js",
+          "kind": "import-statement",
+          "original": "./index.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/selection/call.js": {
+      "bytes": 134,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/selection/nodes.js": {
+      "bytes": 57,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/selection/node.js": {
+      "bytes": 258,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/selection/size.js": {
+      "bytes": 134,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/selection/empty.js": {
+      "bytes": 53,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/selection/each.js": {
+      "bytes": 289,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/selection/attr.js": {
+      "bytes": 1463,
+      "imports": [
+        {
+          "path": "node_modules/d3-selection/src/namespace.js",
+          "kind": "import-statement",
+          "original": "../namespace.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/window.js": {
+      "bytes": 218,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/selection/style.js": {
+      "bytes": 971,
+      "imports": [
+        {
+          "path": "node_modules/d3-selection/src/window.js",
+          "kind": "import-statement",
+          "original": "../window.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/selection/property.js": {
+      "bytes": 617,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/selection/classed.js": {
+      "bytes": 1740,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/selection/text.js": {
+      "bytes": 528,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/selection/html.js": {
+      "bytes": 520,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/selection/raise.js": {
+      "bytes": 138,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/selection/lower.js": {
+      "bytes": 171,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/selection/append.js": {
+      "bytes": 238,
+      "imports": [
+        {
+          "path": "node_modules/d3-selection/src/creator.js",
+          "kind": "import-statement",
+          "original": "../creator.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/selection/insert.js": {
+      "bytes": 474,
+      "imports": [
+        {
+          "path": "node_modules/d3-selection/src/creator.js",
+          "kind": "import-statement",
+          "original": "../creator.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selector.js",
+          "kind": "import-statement",
+          "original": "../selector.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/selection/remove.js": {
+      "bytes": 153,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/selection/clone.js": {
+      "bytes": 453,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/selection/datum.js": {
+      "bytes": 132,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/selection/on.js": {
+      "bytes": 2027,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/selection/dispatch.js": {
+      "bytes": 894,
+      "imports": [
+        {
+          "path": "node_modules/d3-selection/src/window.js",
+          "kind": "import-statement",
+          "original": "../window.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/selection/iterator.js": {
+      "bytes": 231,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/selection/index.js": {
+      "bytes": 2805,
+      "imports": [
+        {
+          "path": "node_modules/d3-selection/src/selection/select.js",
+          "kind": "import-statement",
+          "original": "./select.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selection/selectAll.js",
+          "kind": "import-statement",
+          "original": "./selectAll.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selection/selectChild.js",
+          "kind": "import-statement",
+          "original": "./selectChild.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selection/selectChildren.js",
+          "kind": "import-statement",
+          "original": "./selectChildren.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selection/filter.js",
+          "kind": "import-statement",
+          "original": "./filter.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selection/data.js",
+          "kind": "import-statement",
+          "original": "./data.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selection/enter.js",
+          "kind": "import-statement",
+          "original": "./enter.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selection/exit.js",
+          "kind": "import-statement",
+          "original": "./exit.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selection/join.js",
+          "kind": "import-statement",
+          "original": "./join.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selection/merge.js",
+          "kind": "import-statement",
+          "original": "./merge.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selection/order.js",
+          "kind": "import-statement",
+          "original": "./order.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selection/sort.js",
+          "kind": "import-statement",
+          "original": "./sort.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selection/call.js",
+          "kind": "import-statement",
+          "original": "./call.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selection/nodes.js",
+          "kind": "import-statement",
+          "original": "./nodes.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selection/node.js",
+          "kind": "import-statement",
+          "original": "./node.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selection/size.js",
+          "kind": "import-statement",
+          "original": "./size.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selection/empty.js",
+          "kind": "import-statement",
+          "original": "./empty.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selection/each.js",
+          "kind": "import-statement",
+          "original": "./each.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selection/attr.js",
+          "kind": "import-statement",
+          "original": "./attr.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selection/style.js",
+          "kind": "import-statement",
+          "original": "./style.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selection/property.js",
+          "kind": "import-statement",
+          "original": "./property.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selection/classed.js",
+          "kind": "import-statement",
+          "original": "./classed.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selection/text.js",
+          "kind": "import-statement",
+          "original": "./text.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selection/html.js",
+          "kind": "import-statement",
+          "original": "./html.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selection/raise.js",
+          "kind": "import-statement",
+          "original": "./raise.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selection/lower.js",
+          "kind": "import-statement",
+          "original": "./lower.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selection/append.js",
+          "kind": "import-statement",
+          "original": "./append.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selection/insert.js",
+          "kind": "import-statement",
+          "original": "./insert.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selection/remove.js",
+          "kind": "import-statement",
+          "original": "./remove.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selection/clone.js",
+          "kind": "import-statement",
+          "original": "./clone.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selection/datum.js",
+          "kind": "import-statement",
+          "original": "./datum.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selection/on.js",
+          "kind": "import-statement",
+          "original": "./on.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selection/dispatch.js",
+          "kind": "import-statement",
+          "original": "./dispatch.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selection/iterator.js",
+          "kind": "import-statement",
+          "original": "./iterator.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/select.js": {
+      "bytes": 262,
+      "imports": [
+        {
+          "path": "node_modules/d3-selection/src/selection/index.js",
+          "kind": "import-statement",
+          "original": "./selection/index.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/create.js": {
+      "bytes": 168,
+      "imports": [
+        {
+          "path": "node_modules/d3-selection/src/creator.js",
+          "kind": "import-statement",
+          "original": "./creator.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/select.js",
+          "kind": "import-statement",
+          "original": "./select.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/local.js": {
+      "bytes": 536,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/sourceEvent.js": {
+      "bytes": 133,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/pointer.js": {
+      "bytes": 696,
+      "imports": [
+        {
+          "path": "node_modules/d3-selection/src/sourceEvent.js",
+          "kind": "import-statement",
+          "original": "./sourceEvent.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/pointers.js": {
+      "bytes": 395,
+      "imports": [
+        {
+          "path": "node_modules/d3-selection/src/pointer.js",
+          "kind": "import-statement",
+          "original": "./pointer.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/sourceEvent.js",
+          "kind": "import-statement",
+          "original": "./sourceEvent.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/selectAll.js": {
+      "bytes": 300,
+      "imports": [
+        {
+          "path": "node_modules/d3-selection/src/array.js",
+          "kind": "import-statement",
+          "original": "./array.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selection/index.js",
+          "kind": "import-statement",
+          "original": "./selection/index.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-selection/src/index.js": {
+      "bytes": 770,
+      "imports": [
+        {
+          "path": "node_modules/d3-selection/src/create.js",
+          "kind": "import-statement",
+          "original": "./create.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/creator.js",
+          "kind": "import-statement",
+          "original": "./creator.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/local.js",
+          "kind": "import-statement",
+          "original": "./local.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/matcher.js",
+          "kind": "import-statement",
+          "original": "./matcher.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/namespace.js",
+          "kind": "import-statement",
+          "original": "./namespace.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/namespaces.js",
+          "kind": "import-statement",
+          "original": "./namespaces.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/pointer.js",
+          "kind": "import-statement",
+          "original": "./pointer.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/pointers.js",
+          "kind": "import-statement",
+          "original": "./pointers.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/select.js",
+          "kind": "import-statement",
+          "original": "./select.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selectAll.js",
+          "kind": "import-statement",
+          "original": "./selectAll.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selection/index.js",
+          "kind": "import-statement",
+          "original": "./selection/index.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selector.js",
+          "kind": "import-statement",
+          "original": "./selector.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selectorAll.js",
+          "kind": "import-statement",
+          "original": "./selectorAll.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/selection/style.js",
+          "kind": "import-statement",
+          "original": "./selection/style.js"
+        },
+        {
+          "path": "node_modules/d3-selection/src/window.js",
+          "kind": "import-statement",
+          "original": "./window.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-drag/src/noevent.js": {
+      "bytes": 396,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-drag/src/nodrag.js": {
+      "bytes": 920,
+      "imports": [
+        {
+          "path": "node_modules/d3-selection/src/index.js",
+          "kind": "import-statement",
+          "original": "d3-selection"
+        },
+        {
+          "path": "node_modules/d3-drag/src/noevent.js",
+          "kind": "import-statement",
+          "original": "./noevent.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-drag/src/constant.js": {
+      "bytes": 29,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-drag/src/event.js": {
+      "bytes": 985,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-drag/src/drag.js": {
+      "bytes": 5558,
+      "imports": [
+        {
+          "path": "node_modules/d3-dispatch/src/index.js",
+          "kind": "import-statement",
+          "original": "d3-dispatch"
+        },
+        {
+          "path": "node_modules/d3-selection/src/index.js",
+          "kind": "import-statement",
+          "original": "d3-selection"
+        },
+        {
+          "path": "node_modules/d3-drag/src/nodrag.js",
+          "kind": "import-statement",
+          "original": "./nodrag.js"
+        },
+        {
+          "path": "node_modules/d3-drag/src/noevent.js",
+          "kind": "import-statement",
+          "original": "./noevent.js"
+        },
+        {
+          "path": "node_modules/d3-drag/src/constant.js",
+          "kind": "import-statement",
+          "original": "./constant.js"
+        },
+        {
+          "path": "node_modules/d3-drag/src/event.js",
+          "kind": "import-statement",
+          "original": "./event.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-drag/src/index.js": {
+      "bytes": 118,
+      "imports": [
+        {
+          "path": "node_modules/d3-drag/src/drag.js",
+          "kind": "import-statement",
+          "original": "./drag.js"
+        },
+        {
+          "path": "node_modules/d3-drag/src/nodrag.js",
+          "kind": "import-statement",
+          "original": "./nodrag.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-color/src/define.js": {
+      "bytes": 340,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-color/src/color.js": {
+      "bytes": 11086,
+      "imports": [
+        {
+          "path": "node_modules/d3-color/src/define.js",
+          "kind": "import-statement",
+          "original": "./define.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-color/src/math.js": {
+      "bytes": 76,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-color/src/lab.js": {
+      "bytes": 3603,
+      "imports": [
+        {
+          "path": "node_modules/d3-color/src/define.js",
+          "kind": "import-statement",
+          "original": "./define.js"
+        },
+        {
+          "path": "node_modules/d3-color/src/color.js",
+          "kind": "import-statement",
+          "original": "./color.js"
+        },
+        {
+          "path": "node_modules/d3-color/src/math.js",
+          "kind": "import-statement",
+          "original": "./math.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-color/src/cubehelix.js": {
+      "bytes": 1834,
+      "imports": [
+        {
+          "path": "node_modules/d3-color/src/define.js",
+          "kind": "import-statement",
+          "original": "./define.js"
+        },
+        {
+          "path": "node_modules/d3-color/src/color.js",
+          "kind": "import-statement",
+          "original": "./color.js"
+        },
+        {
+          "path": "node_modules/d3-color/src/math.js",
+          "kind": "import-statement",
+          "original": "./math.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-color/src/index.js": {
+      "bytes": 165,
+      "imports": [
+        {
+          "path": "node_modules/d3-color/src/color.js",
+          "kind": "import-statement",
+          "original": "./color.js"
+        },
+        {
+          "path": "node_modules/d3-color/src/lab.js",
+          "kind": "import-statement",
+          "original": "./lab.js"
+        },
+        {
+          "path": "node_modules/d3-color/src/cubehelix.js",
+          "kind": "import-statement",
+          "original": "./cubehelix.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-interpolate/src/basis.js": {
+      "bytes": 600,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-interpolate/src/basisClosed.js": {
+      "bytes": 363,
+      "imports": [
+        {
+          "path": "node_modules/d3-interpolate/src/basis.js",
+          "kind": "import-statement",
+          "original": "./basis.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-interpolate/src/constant.js": {
+      "bytes": 29,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-interpolate/src/color.js": {
+      "bytes": 700,
+      "imports": [
+        {
+          "path": "node_modules/d3-interpolate/src/constant.js",
+          "kind": "import-statement",
+          "original": "./constant.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-interpolate/src/rgb.js": {
+      "bytes": 1297,
+      "imports": [
+        {
+          "path": "node_modules/d3-color/src/index.js",
+          "kind": "import-statement",
+          "original": "d3-color"
+        },
+        {
+          "path": "node_modules/d3-interpolate/src/basis.js",
+          "kind": "import-statement",
+          "original": "./basis.js"
+        },
+        {
+          "path": "node_modules/d3-interpolate/src/basisClosed.js",
+          "kind": "import-statement",
+          "original": "./basisClosed.js"
+        },
+        {
+          "path": "node_modules/d3-interpolate/src/color.js",
+          "kind": "import-statement",
+          "original": "./color.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-interpolate/src/numberArray.js": {
+      "bytes": 332,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-interpolate/src/array.js": {
+      "bytes": 540,
+      "imports": [
+        {
+          "path": "node_modules/d3-interpolate/src/value.js",
+          "kind": "import-statement",
+          "original": "./value.js"
+        },
+        {
+          "path": "node_modules/d3-interpolate/src/numberArray.js",
+          "kind": "import-statement",
+          "original": "./numberArray.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-interpolate/src/date.js": {
+      "bytes": 144,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-interpolate/src/number.js": {
+      "bytes": 110,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-interpolate/src/object.js": {
+      "bytes": 393,
+      "imports": [
+        {
+          "path": "node_modules/d3-interpolate/src/value.js",
+          "kind": "import-statement",
+          "original": "./value.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-interpolate/src/string.js": {
+      "bytes": 1761,
+      "imports": [
+        {
+          "path": "node_modules/d3-interpolate/src/number.js",
+          "kind": "import-statement",
+          "original": "./number.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-interpolate/src/value.js": {
+      "bytes": 806,
+      "imports": [
+        {
+          "path": "node_modules/d3-color/src/index.js",
+          "kind": "import-statement",
+          "original": "d3-color"
+        },
+        {
+          "path": "node_modules/d3-interpolate/src/rgb.js",
+          "kind": "import-statement",
+          "original": "./rgb.js"
+        },
+        {
+          "path": "node_modules/d3-interpolate/src/array.js",
+          "kind": "import-statement",
+          "original": "./array.js"
+        },
+        {
+          "path": "node_modules/d3-interpolate/src/date.js",
+          "kind": "import-statement",
+          "original": "./date.js"
+        },
+        {
+          "path": "node_modules/d3-interpolate/src/number.js",
+          "kind": "import-statement",
+          "original": "./number.js"
+        },
+        {
+          "path": "node_modules/d3-interpolate/src/object.js",
+          "kind": "import-statement",
+          "original": "./object.js"
+        },
+        {
+          "path": "node_modules/d3-interpolate/src/string.js",
+          "kind": "import-statement",
+          "original": "./string.js"
+        },
+        {
+          "path": "node_modules/d3-interpolate/src/constant.js",
+          "kind": "import-statement",
+          "original": "./constant.js"
+        },
+        {
+          "path": "node_modules/d3-interpolate/src/numberArray.js",
+          "kind": "import-statement",
+          "original": "./numberArray.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-interpolate/src/discrete.js": {
+      "bytes": 154,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-interpolate/src/hue.js": {
+      "bytes": 178,
+      "imports": [
+        {
+          "path": "node_modules/d3-interpolate/src/color.js",
+          "kind": "import-statement",
+          "original": "./color.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-interpolate/src/round.js": {
+      "bytes": 122,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-interpolate/src/transform/decompose.js": {
+      "bytes": 672,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-interpolate/src/transform/parse.js": {
+      "bytes": 681,
+      "imports": [
+        {
+          "path": "node_modules/d3-interpolate/src/transform/decompose.js",
+          "kind": "import-statement",
+          "original": "./decompose.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-interpolate/src/transform/index.js": {
+      "bytes": 2070,
+      "imports": [
+        {
+          "path": "node_modules/d3-interpolate/src/number.js",
+          "kind": "import-statement",
+          "original": "../number.js"
+        },
+        {
+          "path": "node_modules/d3-interpolate/src/transform/parse.js",
+          "kind": "import-statement",
+          "original": "./parse.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-interpolate/src/zoom.js": {
+      "bytes": 1649,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-interpolate/src/hsl.js": {
+      "bytes": 550,
+      "imports": [
+        {
+          "path": "node_modules/d3-color/src/index.js",
+          "kind": "import-statement",
+          "original": "d3-color"
+        },
+        {
+          "path": "node_modules/d3-interpolate/src/color.js",
+          "kind": "import-statement",
+          "original": "./color.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-interpolate/src/lab.js": {
+      "bytes": 450,
+      "imports": [
+        {
+          "path": "node_modules/d3-color/src/index.js",
+          "kind": "import-statement",
+          "original": "d3-color"
+        },
+        {
+          "path": "node_modules/d3-interpolate/src/color.js",
+          "kind": "import-statement",
+          "original": "./color.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-interpolate/src/hcl.js": {
+      "bytes": 550,
+      "imports": [
+        {
+          "path": "node_modules/d3-color/src/index.js",
+          "kind": "import-statement",
+          "original": "d3-color"
+        },
+        {
+          "path": "node_modules/d3-interpolate/src/color.js",
+          "kind": "import-statement",
+          "original": "./color.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-interpolate/src/cubehelix.js": {
+      "bytes": 763,
+      "imports": [
+        {
+          "path": "node_modules/d3-color/src/index.js",
+          "kind": "import-statement",
+          "original": "d3-color"
+        },
+        {
+          "path": "node_modules/d3-interpolate/src/color.js",
+          "kind": "import-statement",
+          "original": "./color.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-interpolate/src/piecewise.js": {
+      "bytes": 427,
+      "imports": [
+        {
+          "path": "node_modules/d3-interpolate/src/value.js",
+          "kind": "import-statement",
+          "original": "./value.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-interpolate/src/quantize.js": {
+      "bytes": 163,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-interpolate/src/index.js": {
+      "bytes": 1397,
+      "imports": [
+        {
+          "path": "node_modules/d3-interpolate/src/value.js",
+          "kind": "import-statement",
+          "original": "./value.js"
+        },
+        {
+          "path": "node_modules/d3-interpolate/src/array.js",
+          "kind": "import-statement",
+          "original": "./array.js"
+        },
+        {
+          "path": "node_modules/d3-interpolate/src/basis.js",
+          "kind": "import-statement",
+          "original": "./basis.js"
+        },
+        {
+          "path": "node_modules/d3-interpolate/src/basisClosed.js",
+          "kind": "import-statement",
+          "original": "./basisClosed.js"
+        },
+        {
+          "path": "node_modules/d3-interpolate/src/date.js",
+          "kind": "import-statement",
+          "original": "./date.js"
+        },
+        {
+          "path": "node_modules/d3-interpolate/src/discrete.js",
+          "kind": "import-statement",
+          "original": "./discrete.js"
+        },
+        {
+          "path": "node_modules/d3-interpolate/src/hue.js",
+          "kind": "import-statement",
+          "original": "./hue.js"
+        },
+        {
+          "path": "node_modules/d3-interpolate/src/number.js",
+          "kind": "import-statement",
+          "original": "./number.js"
+        },
+        {
+          "path": "node_modules/d3-interpolate/src/numberArray.js",
+          "kind": "import-statement",
+          "original": "./numberArray.js"
+        },
+        {
+          "path": "node_modules/d3-interpolate/src/object.js",
+          "kind": "import-statement",
+          "original": "./object.js"
+        },
+        {
+          "path": "node_modules/d3-interpolate/src/round.js",
+          "kind": "import-statement",
+          "original": "./round.js"
+        },
+        {
+          "path": "node_modules/d3-interpolate/src/string.js",
+          "kind": "import-statement",
+          "original": "./string.js"
+        },
+        {
+          "path": "node_modules/d3-interpolate/src/transform/index.js",
+          "kind": "import-statement",
+          "original": "./transform/index.js"
+        },
+        {
+          "path": "node_modules/d3-interpolate/src/zoom.js",
+          "kind": "import-statement",
+          "original": "./zoom.js"
+        },
+        {
+          "path": "node_modules/d3-interpolate/src/rgb.js",
+          "kind": "import-statement",
+          "original": "./rgb.js"
+        },
+        {
+          "path": "node_modules/d3-interpolate/src/hsl.js",
+          "kind": "import-statement",
+          "original": "./hsl.js"
+        },
+        {
+          "path": "node_modules/d3-interpolate/src/lab.js",
+          "kind": "import-statement",
+          "original": "./lab.js"
+        },
+        {
+          "path": "node_modules/d3-interpolate/src/hcl.js",
+          "kind": "import-statement",
+          "original": "./hcl.js"
+        },
+        {
+          "path": "node_modules/d3-interpolate/src/cubehelix.js",
+          "kind": "import-statement",
+          "original": "./cubehelix.js"
+        },
+        {
+          "path": "node_modules/d3-interpolate/src/piecewise.js",
+          "kind": "import-statement",
+          "original": "./piecewise.js"
+        },
+        {
+          "path": "node_modules/d3-interpolate/src/quantize.js",
+          "kind": "import-statement",
+          "original": "./quantize.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-timer/src/timer.js": {
+      "bytes": 2910,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-timer/src/timeout.js": {
+      "bytes": 246,
+      "imports": [
+        {
+          "path": "node_modules/d3-timer/src/timer.js",
+          "kind": "import-statement",
+          "original": "./timer.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-timer/src/interval.js": {
+      "bytes": 531,
+      "imports": [
+        {
+          "path": "node_modules/d3-timer/src/timer.js",
+          "kind": "import-statement",
+          "original": "./timer.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-timer/src/index.js": {
+      "bytes": 169,
+      "imports": [
+        {
+          "path": "node_modules/d3-timer/src/timer.js",
+          "kind": "import-statement",
+          "original": "./timer.js"
+        },
+        {
+          "path": "node_modules/d3-timer/src/timeout.js",
+          "kind": "import-statement",
+          "original": "./timeout.js"
+        },
+        {
+          "path": "node_modules/d3-timer/src/interval.js",
+          "kind": "import-statement",
+          "original": "./interval.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-transition/src/transition/schedule.js": {
+      "bytes": 4617,
+      "imports": [
+        {
+          "path": "node_modules/d3-dispatch/src/index.js",
+          "kind": "import-statement",
+          "original": "d3-dispatch"
+        },
+        {
+          "path": "node_modules/d3-timer/src/index.js",
+          "kind": "import-statement",
+          "original": "d3-timer"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-transition/src/interrupt.js": {
+      "bytes": 676,
+      "imports": [
+        {
+          "path": "node_modules/d3-transition/src/transition/schedule.js",
+          "kind": "import-statement",
+          "original": "./transition/schedule.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-transition/src/selection/interrupt.js": {
+      "bytes": 141,
+      "imports": [
+        {
+          "path": "node_modules/d3-transition/src/interrupt.js",
+          "kind": "import-statement",
+          "original": "../interrupt.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-transition/src/transition/tween.js": {
+      "bytes": 2029,
+      "imports": [
+        {
+          "path": "node_modules/d3-transition/src/transition/schedule.js",
+          "kind": "import-statement",
+          "original": "./schedule.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-transition/src/transition/interpolate.js": {
+      "bytes": 340,
+      "imports": [
+        {
+          "path": "node_modules/d3-color/src/index.js",
+          "kind": "import-statement",
+          "original": "d3-color"
+        },
+        {
+          "path": "node_modules/d3-interpolate/src/index.js",
+          "kind": "import-statement",
+          "original": "d3-interpolate"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-transition/src/transition/attr.js": {
+      "bytes": 2673,
+      "imports": [
+        {
+          "path": "node_modules/d3-interpolate/src/index.js",
+          "kind": "import-statement",
+          "original": "d3-interpolate"
+        },
+        {
+          "path": "node_modules/d3-selection/src/index.js",
+          "kind": "import-statement",
+          "original": "d3-selection"
+        },
+        {
+          "path": "node_modules/d3-transition/src/transition/tween.js",
+          "kind": "import-statement",
+          "original": "./tween.js"
+        },
+        {
+          "path": "node_modules/d3-transition/src/transition/interpolate.js",
+          "kind": "import-statement",
+          "original": "./interpolate.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-transition/src/transition/attrTween.js": {
+      "bytes": 1148,
+      "imports": [
+        {
+          "path": "node_modules/d3-selection/src/index.js",
+          "kind": "import-statement",
+          "original": "d3-selection"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-transition/src/transition/delay.js": {
+      "bytes": 513,
+      "imports": [
+        {
+          "path": "node_modules/d3-transition/src/transition/schedule.js",
+          "kind": "import-statement",
+          "original": "./schedule.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-transition/src/transition/duration.js": {
+      "bytes": 531,
+      "imports": [
+        {
+          "path": "node_modules/d3-transition/src/transition/schedule.js",
+          "kind": "import-statement",
+          "original": "./schedule.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-transition/src/transition/ease.js": {
+      "bytes": 351,
+      "imports": [
+        {
+          "path": "node_modules/d3-transition/src/transition/schedule.js",
+          "kind": "import-statement",
+          "original": "./schedule.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-transition/src/transition/easeVarying.js": {
+      "bytes": 357,
+      "imports": [
+        {
+          "path": "node_modules/d3-transition/src/transition/schedule.js",
+          "kind": "import-statement",
+          "original": "./schedule.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-transition/src/transition/filter.js": {
+      "bytes": 577,
+      "imports": [
+        {
+          "path": "node_modules/d3-selection/src/index.js",
+          "kind": "import-statement",
+          "original": "d3-selection"
+        },
+        {
+          "path": "node_modules/d3-transition/src/transition/index.js",
+          "kind": "import-statement",
+          "original": "./index.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-transition/src/transition/merge.js": {
+      "bytes": 656,
+      "imports": [
+        {
+          "path": "node_modules/d3-transition/src/transition/index.js",
+          "kind": "import-statement",
+          "original": "./index.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-transition/src/transition/on.js": {
+      "bytes": 856,
+      "imports": [
+        {
+          "path": "node_modules/d3-transition/src/transition/schedule.js",
+          "kind": "import-statement",
+          "original": "./schedule.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-transition/src/transition/remove.js": {
+      "bytes": 284,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-transition/src/transition/select.js": {
+      "bytes": 832,
+      "imports": [
+        {
+          "path": "node_modules/d3-selection/src/index.js",
+          "kind": "import-statement",
+          "original": "d3-selection"
+        },
+        {
+          "path": "node_modules/d3-transition/src/transition/index.js",
+          "kind": "import-statement",
+          "original": "./index.js"
+        },
+        {
+          "path": "node_modules/d3-transition/src/transition/schedule.js",
+          "kind": "import-statement",
+          "original": "./schedule.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-transition/src/transition/selectAll.js": {
+      "bytes": 889,
+      "imports": [
+        {
+          "path": "node_modules/d3-selection/src/index.js",
+          "kind": "import-statement",
+          "original": "d3-selection"
+        },
+        {
+          "path": "node_modules/d3-transition/src/transition/index.js",
+          "kind": "import-statement",
+          "original": "./index.js"
+        },
+        {
+          "path": "node_modules/d3-transition/src/transition/schedule.js",
+          "kind": "import-statement",
+          "original": "./schedule.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-transition/src/transition/selection.js": {
+      "bytes": 174,
+      "imports": [
+        {
+          "path": "node_modules/d3-selection/src/index.js",
+          "kind": "import-statement",
+          "original": "d3-selection"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-transition/src/transition/style.js": {
+      "bytes": 2748,
+      "imports": [
+        {
+          "path": "node_modules/d3-interpolate/src/index.js",
+          "kind": "import-statement",
+          "original": "d3-interpolate"
+        },
+        {
+          "path": "node_modules/d3-selection/src/index.js",
+          "kind": "import-statement",
+          "original": "d3-selection"
+        },
+        {
+          "path": "node_modules/d3-transition/src/transition/schedule.js",
+          "kind": "import-statement",
+          "original": "./schedule.js"
+        },
+        {
+          "path": "node_modules/d3-transition/src/transition/tween.js",
+          "kind": "import-statement",
+          "original": "./tween.js"
+        },
+        {
+          "path": "node_modules/d3-transition/src/transition/interpolate.js",
+          "kind": "import-statement",
+          "original": "./interpolate.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-transition/src/transition/styleTween.js": {
+      "bytes": 742,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-transition/src/transition/text.js": {
+      "bytes": 476,
+      "imports": [
+        {
+          "path": "node_modules/d3-transition/src/transition/tween.js",
+          "kind": "import-statement",
+          "original": "./tween.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-transition/src/transition/textTween.js": {
+      "bytes": 599,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-transition/src/transition/transition.js": {
+      "bytes": 697,
+      "imports": [
+        {
+          "path": "node_modules/d3-transition/src/transition/index.js",
+          "kind": "import-statement",
+          "original": "./index.js"
+        },
+        {
+          "path": "node_modules/d3-transition/src/transition/schedule.js",
+          "kind": "import-statement",
+          "original": "./schedule.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-transition/src/transition/end.js": {
+      "bytes": 835,
+      "imports": [
+        {
+          "path": "node_modules/d3-transition/src/transition/schedule.js",
+          "kind": "import-statement",
+          "original": "./schedule.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-transition/src/transition/index.js": {
+      "bytes": 2346,
+      "imports": [
+        {
+          "path": "node_modules/d3-selection/src/index.js",
+          "kind": "import-statement",
+          "original": "d3-selection"
+        },
+        {
+          "path": "node_modules/d3-transition/src/transition/attr.js",
+          "kind": "import-statement",
+          "original": "./attr.js"
+        },
+        {
+          "path": "node_modules/d3-transition/src/transition/attrTween.js",
+          "kind": "import-statement",
+          "original": "./attrTween.js"
+        },
+        {
+          "path": "node_modules/d3-transition/src/transition/delay.js",
+          "kind": "import-statement",
+          "original": "./delay.js"
+        },
+        {
+          "path": "node_modules/d3-transition/src/transition/duration.js",
+          "kind": "import-statement",
+          "original": "./duration.js"
+        },
+        {
+          "path": "node_modules/d3-transition/src/transition/ease.js",
+          "kind": "import-statement",
+          "original": "./ease.js"
+        },
+        {
+          "path": "node_modules/d3-transition/src/transition/easeVarying.js",
+          "kind": "import-statement",
+          "original": "./easeVarying.js"
+        },
+        {
+          "path": "node_modules/d3-transition/src/transition/filter.js",
+          "kind": "import-statement",
+          "original": "./filter.js"
+        },
+        {
+          "path": "node_modules/d3-transition/src/transition/merge.js",
+          "kind": "import-statement",
+          "original": "./merge.js"
+        },
+        {
+          "path": "node_modules/d3-transition/src/transition/on.js",
+          "kind": "import-statement",
+          "original": "./on.js"
+        },
+        {
+          "path": "node_modules/d3-transition/src/transition/remove.js",
+          "kind": "import-statement",
+          "original": "./remove.js"
+        },
+        {
+          "path": "node_modules/d3-transition/src/transition/select.js",
+          "kind": "import-statement",
+          "original": "./select.js"
+        },
+        {
+          "path": "node_modules/d3-transition/src/transition/selectAll.js",
+          "kind": "import-statement",
+          "original": "./selectAll.js"
+        },
+        {
+          "path": "node_modules/d3-transition/src/transition/selection.js",
+          "kind": "import-statement",
+          "original": "./selection.js"
+        },
+        {
+          "path": "node_modules/d3-transition/src/transition/style.js",
+          "kind": "import-statement",
+          "original": "./style.js"
+        },
+        {
+          "path": "node_modules/d3-transition/src/transition/styleTween.js",
+          "kind": "import-statement",
+          "original": "./styleTween.js"
+        },
+        {
+          "path": "node_modules/d3-transition/src/transition/text.js",
+          "kind": "import-statement",
+          "original": "./text.js"
+        },
+        {
+          "path": "node_modules/d3-transition/src/transition/textTween.js",
+          "kind": "import-statement",
+          "original": "./textTween.js"
+        },
+        {
+          "path": "node_modules/d3-transition/src/transition/transition.js",
+          "kind": "import-statement",
+          "original": "./transition.js"
+        },
+        {
+          "path": "node_modules/d3-transition/src/transition/tween.js",
+          "kind": "import-statement",
+          "original": "./tween.js"
+        },
+        {
+          "path": "node_modules/d3-transition/src/transition/end.js",
+          "kind": "import-statement",
+          "original": "./end.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-ease/src/linear.js": {
+      "bytes": 31,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-ease/src/quad.js": {
+      "bytes": 192,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-ease/src/cubic.js": {
+      "bytes": 210,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-ease/src/poly.js": {
+      "bytes": 596,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-ease/src/sin.js": {
+      "bytes": 253,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-ease/src/math.js": {
+      "bytes": 152,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-ease/src/exp.js": {
+      "bytes": 233,
+      "imports": [
+        {
+          "path": "node_modules/d3-ease/src/math.js",
+          "kind": "import-statement",
+          "original": "./math.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-ease/src/circle.js": {
+      "bytes": 261,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-ease/src/bounce.js": {
+      "bytes": 521,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-ease/src/back.js": {
+      "bytes": 660,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-ease/src/elastic.js": {
+      "bytes": 1294,
+      "imports": [
+        {
+          "path": "node_modules/d3-ease/src/math.js",
+          "kind": "import-statement",
+          "original": "./math.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-ease/src/index.js": {
+      "bytes": 1310,
+      "imports": [
+        {
+          "path": "node_modules/d3-ease/src/linear.js",
+          "kind": "import-statement",
+          "original": "./linear.js"
+        },
+        {
+          "path": "node_modules/d3-ease/src/quad.js",
+          "kind": "import-statement",
+          "original": "./quad.js"
+        },
+        {
+          "path": "node_modules/d3-ease/src/cubic.js",
+          "kind": "import-statement",
+          "original": "./cubic.js"
+        },
+        {
+          "path": "node_modules/d3-ease/src/poly.js",
+          "kind": "import-statement",
+          "original": "./poly.js"
+        },
+        {
+          "path": "node_modules/d3-ease/src/sin.js",
+          "kind": "import-statement",
+          "original": "./sin.js"
+        },
+        {
+          "path": "node_modules/d3-ease/src/exp.js",
+          "kind": "import-statement",
+          "original": "./exp.js"
+        },
+        {
+          "path": "node_modules/d3-ease/src/circle.js",
+          "kind": "import-statement",
+          "original": "./circle.js"
+        },
+        {
+          "path": "node_modules/d3-ease/src/bounce.js",
+          "kind": "import-statement",
+          "original": "./bounce.js"
+        },
+        {
+          "path": "node_modules/d3-ease/src/back.js",
+          "kind": "import-statement",
+          "original": "./back.js"
+        },
+        {
+          "path": "node_modules/d3-ease/src/elastic.js",
+          "kind": "import-statement",
+          "original": "./elastic.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-transition/src/selection/transition.js": {
+      "bytes": 1093,
+      "imports": [
+        {
+          "path": "node_modules/d3-transition/src/transition/index.js",
+          "kind": "import-statement",
+          "original": "../transition/index.js"
+        },
+        {
+          "path": "node_modules/d3-transition/src/transition/schedule.js",
+          "kind": "import-statement",
+          "original": "../transition/schedule.js"
+        },
+        {
+          "path": "node_modules/d3-ease/src/index.js",
+          "kind": "import-statement",
+          "original": "d3-ease"
+        },
+        {
+          "path": "node_modules/d3-timer/src/index.js",
+          "kind": "import-statement",
+          "original": "d3-timer"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-transition/src/selection/index.js": {
+      "bytes": 251,
+      "imports": [
+        {
+          "path": "node_modules/d3-selection/src/index.js",
+          "kind": "import-statement",
+          "original": "d3-selection"
+        },
+        {
+          "path": "node_modules/d3-transition/src/selection/interrupt.js",
+          "kind": "import-statement",
+          "original": "./interrupt.js"
+        },
+        {
+          "path": "node_modules/d3-transition/src/selection/transition.js",
+          "kind": "import-statement",
+          "original": "./transition.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-transition/src/active.js": {
+      "bytes": 490,
+      "imports": [
+        {
+          "path": "node_modules/d3-transition/src/transition/index.js",
+          "kind": "import-statement",
+          "original": "./transition/index.js"
+        },
+        {
+          "path": "node_modules/d3-transition/src/transition/schedule.js",
+          "kind": "import-statement",
+          "original": "./transition/schedule.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-transition/src/index.js": {
+      "bytes": 192,
+      "imports": [
+        {
+          "path": "node_modules/d3-transition/src/selection/index.js",
+          "kind": "import-statement",
+          "original": "./selection/index.js"
+        },
+        {
+          "path": "node_modules/d3-transition/src/transition/index.js",
+          "kind": "import-statement",
+          "original": "./transition/index.js"
+        },
+        {
+          "path": "node_modules/d3-transition/src/active.js",
+          "kind": "import-statement",
+          "original": "./active.js"
+        },
+        {
+          "path": "node_modules/d3-transition/src/interrupt.js",
+          "kind": "import-statement",
+          "original": "./interrupt.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-zoom/src/constant.js": {
+      "bytes": 29,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-zoom/src/event.js": {
+      "bytes": 443,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-zoom/src/transform.js": {
+      "bytes": 1395,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-zoom/src/noevent.js": {
+      "bytes": 175,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/d3-zoom/src/zoom.js": {
+      "bytes": 15672,
+      "imports": [
+        {
+          "path": "node_modules/d3-dispatch/src/index.js",
+          "kind": "import-statement",
+          "original": "d3-dispatch"
+        },
+        {
+          "path": "node_modules/d3-drag/src/index.js",
+          "kind": "import-statement",
+          "original": "d3-drag"
+        },
+        {
+          "path": "node_modules/d3-interpolate/src/index.js",
+          "kind": "import-statement",
+          "original": "d3-interpolate"
+        },
+        {
+          "path": "node_modules/d3-selection/src/index.js",
+          "kind": "import-statement",
+          "original": "d3-selection"
+        },
+        {
+          "path": "node_modules/d3-transition/src/index.js",
+          "kind": "import-statement",
+          "original": "d3-transition"
+        },
+        {
+          "path": "node_modules/d3-zoom/src/constant.js",
+          "kind": "import-statement",
+          "original": "./constant.js"
+        },
+        {
+          "path": "node_modules/d3-zoom/src/event.js",
+          "kind": "import-statement",
+          "original": "./event.js"
+        },
+        {
+          "path": "node_modules/d3-zoom/src/transform.js",
+          "kind": "import-statement",
+          "original": "./transform.js"
+        },
+        {
+          "path": "node_modules/d3-zoom/src/noevent.js",
+          "kind": "import-statement",
+          "original": "./noevent.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/d3-zoom/src/index.js": {
+      "bytes": 154,
+      "imports": [
+        {
+          "path": "node_modules/d3-zoom/src/zoom.js",
+          "kind": "import-statement",
+          "original": "./zoom.js"
+        },
+        {
+          "path": "node_modules/d3-zoom/src/transform.js",
+          "kind": "import-statement",
+          "original": "./transform.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@xyflow/system/dist/esm/index.js": {
+      "bytes": 154994,
+      "imports": [
+        {
+          "path": "node_modules/d3-drag/src/index.js",
+          "kind": "import-statement",
+          "original": "d3-drag"
+        },
+        {
+          "path": "node_modules/d3-selection/src/index.js",
+          "kind": "import-statement",
+          "original": "d3-selection"
+        },
+        {
+          "path": "node_modules/d3-zoom/src/index.js",
+          "kind": "import-statement",
+          "original": "d3-zoom"
+        },
+        {
+          "path": "node_modules/d3-interpolate/src/index.js",
+          "kind": "import-statement",
+          "original": "d3-interpolate"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/use-sync-external-store/cjs/use-sync-external-store-shim.production.js": {
+      "bytes": 1967,
+      "imports": [
+        {
+          "path": "src/canvas/shims/react.js",
+          "kind": "require-call",
+          "original": "react"
+        }
+      ],
+      "format": "cjs"
+    },
+    "node_modules/use-sync-external-store/shim/index.js": {
+      "bytes": 234,
+      "imports": [
+        {
+          "path": "node_modules/use-sync-external-store/cjs/use-sync-external-store-shim.production.js",
+          "kind": "require-call",
+          "original": "../cjs/use-sync-external-store-shim.production.js"
+        }
+      ],
+      "format": "cjs"
+    },
+    "node_modules/use-sync-external-store/cjs/use-sync-external-store-shim/with-selector.production.js": {
+      "bytes": 2685,
+      "imports": [
+        {
+          "path": "src/canvas/shims/react.js",
+          "kind": "require-call",
+          "original": "react"
+        },
+        {
+          "path": "node_modules/use-sync-external-store/shim/index.js",
+          "kind": "require-call",
+          "original": "use-sync-external-store/shim"
+        }
+      ],
+      "format": "cjs"
+    },
+    "node_modules/use-sync-external-store/shim/with-selector.js": {
+      "bytes": 262,
+      "imports": [
+        {
+          "path": "node_modules/use-sync-external-store/cjs/use-sync-external-store-shim/with-selector.production.js",
+          "kind": "require-call",
+          "original": "../cjs/use-sync-external-store-shim/with-selector.production.js"
+        }
+      ],
+      "format": "cjs"
+    },
+    "node_modules/zustand/esm/vanilla.mjs": {
+      "bytes": 1690,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/zustand/esm/traditional.mjs": {
+      "bytes": 1158,
+      "imports": [
+        {
+          "path": "src/canvas/shims/react.js",
+          "kind": "import-statement",
+          "original": "react"
+        },
+        {
+          "path": "node_modules/use-sync-external-store/shim/with-selector.js",
+          "kind": "import-statement",
+          "original": "use-sync-external-store/shim/with-selector.js"
+        },
+        {
+          "path": "node_modules/zustand/esm/vanilla.mjs",
+          "kind": "import-statement",
+          "original": "zustand/vanilla"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/zustand/esm/shallow.mjs": {
+      "bytes": 1281,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/canvas/shims/react-dom.js": {
+      "bytes": 667,
+      "imports": [],
+      "format": "esm"
+    },
+    "node_modules/@xyflow/react/dist/esm/index.js": {
+      "bytes": 233341,
+      "imports": [
+        {
+          "path": "src/canvas/shims/jsx-runtime.js",
+          "kind": "import-statement",
+          "original": "react/jsx-runtime"
+        },
+        {
+          "path": "src/canvas/shims/react.js",
+          "kind": "import-statement",
+          "original": "react"
+        },
+        {
+          "path": "node_modules/classcat/index.js",
+          "kind": "import-statement",
+          "original": "classcat"
+        },
+        {
+          "path": "node_modules/@xyflow/system/dist/esm/index.js",
+          "kind": "import-statement",
+          "original": "@xyflow/system"
+        },
+        {
+          "path": "node_modules/@xyflow/system/dist/esm/index.js",
+          "kind": "import-statement",
+          "original": "@xyflow/system"
+        },
+        {
+          "path": "node_modules/zustand/esm/traditional.mjs",
+          "kind": "import-statement",
+          "original": "zustand/traditional"
+        },
+        {
+          "path": "node_modules/zustand/esm/shallow.mjs",
+          "kind": "import-statement",
+          "original": "zustand/shallow"
+        },
+        {
+          "path": "src/canvas/shims/react-dom.js",
+          "kind": "import-statement",
+          "original": "react-dom"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/@xyflow/react/dist/style.css": {
+      "bytes": 18596,
+      "imports": []
+    },
+    "src/canvas/flow-canvas.css": {
+      "bytes": 4119,
+      "imports": []
+    },
+    "src/canvas/index.jsx": {
+      "bytes": 19820,
+      "imports": [
+        {
+          "path": "src/canvas/shims/react.js",
+          "kind": "import-statement",
+          "original": "react"
+        },
+        {
+          "path": "node_modules/@xyflow/react/dist/esm/index.js",
+          "kind": "import-statement",
+          "original": "@xyflow/react"
+        },
+        {
+          "path": "node_modules/@xyflow/react/dist/style.css",
+          "kind": "import-statement",
+          "original": "@xyflow/react/dist/style.css"
+        },
+        {
+          "path": "src/canvas/flow-canvas.css",
+          "kind": "import-statement",
+          "original": "./flow-canvas.css"
+        }
+      ],
+      "format": "esm"
+    }
+  },
+  "outputs": {
+    "assets/js/build/flow-canvas.js.LEGAL.txt": {
+      "imports": [],
+      "exports": [],
+      "inputs": {},
+      "bytes": 755
+    },
+    "assets/js/build/flow-canvas.js": {
+      "imports": [],
+      "exports": [],
+      "entryPoint": "src/canvas/index.jsx",
+      "cssBundle": "assets/js/build/flow-canvas.css",
+      "inputs": {
+        "src/canvas/shims/react.js": {
+          "bytesInOutput": 1463
+        },
+        "node_modules/use-sync-external-store/cjs/use-sync-external-store-shim.production.js": {
+          "bytesInOutput": 787
+        },
+        "node_modules/use-sync-external-store/shim/index.js": {
+          "bytesInOutput": 51
+        },
+        "node_modules/use-sync-external-store/cjs/use-sync-external-store-shim/with-selector.production.js": {
+          "bytesInOutput": 822
+        },
+        "node_modules/use-sync-external-store/shim/with-selector.js": {
+          "bytesInOutput": 51
+        },
+        "src/canvas/index.jsx": {
+          "bytesInOutput": 10148
+        },
+        "src/canvas/shims/jsx-runtime.js": {
+          "bytesInOutput": 71
+        },
+        "node_modules/@xyflow/react/dist/esm/index.js": {
+          "bytesInOutput": 78332
+        },
+        "node_modules/classcat/index.js": {
+          "bytesInOutput": 212
+        },
+        "node_modules/d3-dispatch/src/dispatch.js": {
+          "bytesInOutput": 1550
+        },
+        "node_modules/d3-dispatch/src/index.js": {
+          "bytesInOutput": 0
+        },
+        "node_modules/d3-selection/src/namespaces.js": {
+          "bytesInOutput": 203
+        },
+        "node_modules/d3-selection/src/namespace.js": {
+          "bytesInOutput": 147
+        },
+        "node_modules/d3-selection/src/creator.js": {
+          "bytesInOutput": 317
+        },
+        "node_modules/d3-selection/src/selector.js": {
+          "bytesInOutput": 89
+        },
+        "node_modules/d3-selection/src/selection/select.js": {
+          "bytesInOutput": 290
+        },
+        "node_modules/d3-selection/src/array.js": {
+          "bytesInOutput": 66
+        },
+        "node_modules/d3-selection/src/selectorAll.js": {
+          "bytesInOutput": 100
+        },
+        "node_modules/d3-selection/src/selection/selectAll.js": {
+          "bytesInOutput": 291
+        },
+        "node_modules/d3-selection/src/matcher.js": {
+          "bytesInOutput": 112
+        },
+        "node_modules/d3-selection/src/selection/selectChild.js": {
+          "bytesInOutput": 217
+        },
+        "node_modules/d3-selection/src/selection/selectChildren.js": {
+          "bytesInOutput": 225
+        },
+        "node_modules/d3-selection/src/selection/filter.js": {
+          "bytesInOutput": 235
+        },
+        "node_modules/d3-selection/src/selection/sparse.js": {
+          "bytesInOutput": 42
+        },
+        "node_modules/d3-selection/src/selection/enter.js": {
+          "bytesInOutput": 511
+        },
+        "node_modules/d3-selection/src/constant.js": {
+          "bytesInOutput": 43
+        },
+        "node_modules/d3-selection/src/selection/data.js": {
+          "bytesInOutput": 1102
+        },
+        "node_modules/d3-selection/src/selection/exit.js": {
+          "bytesInOutput": 76
+        },
+        "node_modules/d3-selection/src/selection/join.js": {
+          "bytesInOutput": 223
+        },
+        "node_modules/d3-selection/src/selection/merge.js": {
+          "bytesInOutput": 291
+        },
+        "node_modules/d3-selection/src/selection/order.js": {
+          "bytesInOutput": 199
+        },
+        "node_modules/d3-selection/src/selection/sort.js": {
+          "bytesInOutput": 322
+        },
+        "node_modules/d3-selection/src/selection/call.js": {
+          "bytesInOutput": 87
+        },
+        "node_modules/d3-selection/src/selection/nodes.js": {
+          "bytesInOutput": 38
+        },
+        "node_modules/d3-selection/src/selection/node.js": {
+          "bytesInOutput": 136
+        },
+        "node_modules/d3-selection/src/selection/size.js": {
+          "bytesInOutput": 53
+        },
+        "node_modules/d3-selection/src/selection/empty.js": {
+          "bytesInOutput": 33
+        },
+        "node_modules/d3-selection/src/selection/each.js": {
+          "bytesInOutput": 148
+        },
+        "node_modules/d3-selection/src/selection/attr.js": {
+          "bytesInOutput": 773
+        },
+        "node_modules/d3-selection/src/window.js": {
+          "bytesInOutput": 97
+        },
+        "node_modules/d3-selection/src/selection/style.js": {
+          "bytesInOutput": 495
+        },
+        "node_modules/d3-selection/src/selection/property.js": {
+          "bytesInOutput": 308
+        },
+        "node_modules/d3-selection/src/selection/classed.js": {
+          "bytesInOutput": 1002
+        },
+        "node_modules/d3-selection/src/selection/text.js": {
+          "bytesInOutput": 291
+        },
+        "node_modules/d3-selection/src/selection/html.js": {
+          "bytesInOutput": 283
+        },
+        "node_modules/d3-selection/src/selection/raise.js": {
+          "bytesInOutput": 101
+        },
+        "node_modules/d3-selection/src/selection/lower.js": {
+          "bytesInOutput": 133
+        },
+        "node_modules/d3-selection/src/selection/append.js": {
+          "bytesInOutput": 131
+        },
+        "node_modules/d3-selection/src/selection/insert.js": {
+          "bytesInOutput": 232
+        },
+        "node_modules/d3-selection/src/selection/remove.js": {
+          "bytesInOutput": 94
+        },
+        "node_modules/d3-selection/src/selection/clone.js": {
+          "bytesInOutput": 249
+        },
+        "node_modules/d3-selection/src/selection/datum.js": {
+          "bytesInOutput": 88
+        },
+        "node_modules/d3-selection/src/selection/on.js": {
+          "bytesInOutput": 1128
+        },
+        "node_modules/d3-selection/src/selection/dispatch.js": {
+          "bytesInOutput": 420
+        },
+        "node_modules/d3-selection/src/selection/iterator.js": {
+          "bytesInOutput": 120
+        },
+        "node_modules/d3-selection/src/selection/index.js": {
+          "bytesInOutput": 551
+        },
+        "node_modules/d3-selection/src/select.js": {
+          "bytesInOutput": 123
+        },
+        "node_modules/d3-selection/src/index.js": {
+          "bytesInOutput": 0
+        },
+        "node_modules/d3-selection/src/sourceEvent.js": {
+          "bytesInOutput": 56
+        },
+        "node_modules/d3-selection/src/pointer.js": {
+          "bytesInOutput": 380
+        },
+        "node_modules/d3-drag/src/noevent.js": {
+          "bytesInOutput": 154
+        },
+        "node_modules/d3-drag/src/nodrag.js": {
+          "bytesInOutput": 471
+        },
+        "node_modules/d3-drag/src/constant.js": {
+          "bytesInOutput": 16
+        },
+        "node_modules/d3-drag/src/event.js": {
+          "bytesInOutput": 698
+        },
+        "node_modules/d3-drag/src/drag.js": {
+          "bytesInOutput": 2349
+        },
+        "node_modules/d3-drag/src/index.js": {
+          "bytesInOutput": 0
+        },
+        "node_modules/d3-color/src/define.js": {
+          "bytesInOutput": 145
+        },
+        "node_modules/d3-color/src/color.js": {
+          "bytesInOutput": 7120
+        },
+        "node_modules/d3-color/src/index.js": {
+          "bytesInOutput": 0
+        },
+        "node_modules/d3-interpolate/src/basis.js": {
+          "bytesInOutput": 284
+        },
+        "node_modules/d3-interpolate/src/basisClosed.js": {
+          "bytesInOutput": 166
+        },
+        "node_modules/d3-interpolate/src/constant.js": {
+          "bytesInOutput": 16
+        },
+        "node_modules/d3-interpolate/src/color.js": {
+          "bytesInOutput": 302
+        },
+        "node_modules/d3-interpolate/src/rgb.js": {
+          "bytesInOutput": 511
+        },
+        "node_modules/d3-interpolate/src/numberArray.js": {
+          "bytesInOutput": 217
+        },
+        "node_modules/d3-interpolate/src/array.js": {
+          "bytesInOutput": 211
+        },
+        "node_modules/d3-interpolate/src/date.js": {
+          "bytesInOutput": 94
+        },
+        "node_modules/d3-interpolate/src/number.js": {
+          "bytesInOutput": 66
+        },
+        "node_modules/d3-interpolate/src/object.js": {
+          "bytesInOutput": 211
+        },
+        "node_modules/d3-interpolate/src/string.js": {
+          "bytesInOutput": 622
+        },
+        "node_modules/d3-interpolate/src/value.js": {
+          "bytesInOutput": 273
+        },
+        "node_modules/d3-interpolate/src/index.js": {
+          "bytesInOutput": 0
+        },
+        "node_modules/d3-interpolate/src/transform/decompose.js": {
+          "bytesInOutput": 357
+        },
+        "node_modules/d3-interpolate/src/transform/parse.js": {
+          "bytesInOutput": 362
+        },
+        "node_modules/d3-interpolate/src/transform/index.js": {
+          "bytesInOutput": 1029
+        },
+        "node_modules/d3-interpolate/src/zoom.js": {
+          "bytesInOutput": 727
+        },
+        "node_modules/d3-timer/src/timer.js": {
+          "bytesInOutput": 1315
+        },
+        "node_modules/d3-timer/src/index.js": {
+          "bytesInOutput": 0
+        },
+        "node_modules/d3-timer/src/timeout.js": {
+          "bytesInOutput": 92
+        },
+        "node_modules/d3-transition/src/transition/schedule.js": {
+          "bytesInOutput": 1689
+        },
+        "node_modules/d3-transition/src/interrupt.js": {
+          "bytesInOutput": 275
+        },
+        "node_modules/d3-transition/src/selection/interrupt.js": {
+          "bytesInOutput": 56
+        },
+        "node_modules/d3-transition/src/transition/tween.js": {
+          "bytesInOutput": 798
+        },
+        "node_modules/d3-transition/src/transition/interpolate.js": {
+          "bytesInOutput": 99
+        },
+        "node_modules/d3-transition/src/transition/attr.js": {
+          "bytesInOutput": 975
+        },
+        "node_modules/d3-transition/src/transition/attrTween.js": {
+          "bytesInOutput": 628
+        },
+        "node_modules/d3-transition/src/transition/delay.js": {
+          "bytesInOutput": 261
+        },
+        "node_modules/d3-transition/src/transition/duration.js": {
+          "bytesInOutput": 270
+        },
+        "node_modules/d3-transition/src/transition/ease.js": {
+          "bytesInOutput": 190
+        },
+        "node_modules/d3-transition/src/transition/easeVarying.js": {
+          "bytesInOutput": 212
+        },
+        "node_modules/d3-transition/src/transition/filter.js": {
+          "bytesInOutput": 255
+        },
+        "node_modules/d3-transition/src/transition/merge.js": {
+          "bytesInOutput": 317
+        },
+        "node_modules/d3-transition/src/transition/on.js": {
+          "bytesInOutput": 365
+        },
+        "node_modules/d3-transition/src/transition/remove.js": {
+          "bytesInOutput": 183
+        },
+        "node_modules/d3-transition/src/transition/select.js": {
+          "bytesInOutput": 347
+        },
+        "node_modules/d3-transition/src/transition/selectAll.js": {
+          "bytesInOutput": 321
+        },
+        "node_modules/d3-transition/src/transition/selection.js": {
+          "bytesInOutput": 88
+        },
+        "node_modules/d3-transition/src/transition/style.js": {
+          "bytesInOutput": 962
+        },
+        "node_modules/d3-transition/src/transition/styleTween.js": {
+          "bytesInOutput": 419
+        },
+        "node_modules/d3-transition/src/transition/text.js": {
+          "bytesInOutput": 228
+        },
+        "node_modules/d3-transition/src/transition/textTween.js": {
+          "bytesInOutput": 374
+        },
+        "node_modules/d3-transition/src/transition/transition.js": {
+          "bytesInOutput": 278
+        },
+        "node_modules/d3-transition/src/transition/end.js": {
+          "bytesInOutput": 277
+        },
+        "node_modules/d3-transition/src/transition/index.js": {
+          "bytesInOutput": 604
+        },
+        "node_modules/d3-ease/src/cubic.js": {
+          "bytesInOutput": 54
+        },
+        "node_modules/d3-ease/src/index.js": {
+          "bytesInOutput": 0
+        },
+        "node_modules/d3-transition/src/selection/transition.js": {
+          "bytesInOutput": 443
+        },
+        "node_modules/d3-transition/src/selection/index.js": {
+          "bytesInOutput": 53
+        },
+        "node_modules/d3-transition/src/index.js": {
+          "bytesInOutput": 0
+        },
+        "node_modules/d3-zoom/src/constant.js": {
+          "bytesInOutput": 16
+        },
+        "node_modules/d3-zoom/src/event.js": {
+          "bytesInOutput": 301
+        },
+        "node_modules/d3-zoom/src/transform.js": {
+          "bytesInOutput": 946
+        },
+        "node_modules/d3-zoom/src/noevent.js": {
+          "bytesInOutput": 107
+        },
+        "node_modules/d3-zoom/src/zoom.js": {
+          "bytesInOutput": 7878
+        },
+        "node_modules/d3-zoom/src/index.js": {
+          "bytesInOutput": 0
+        },
+        "node_modules/@xyflow/system/dist/esm/index.js": {
+          "bytesInOutput": 44403
+        },
+        "node_modules/zustand/esm/traditional.mjs": {
+          "bytesInOutput": 314
+        },
+        "node_modules/zustand/esm/vanilla.mjs": {
+          "bytesInOutput": 607
+        },
+        "node_modules/zustand/esm/shallow.mjs": {
+          "bytesInOutput": 524
+        },
+        "src/canvas/shims/react-dom.js": {
+          "bytesInOutput": 298
+        },
+        "node_modules/@xyflow/react/dist/style.css": {
+          "bytesInOutput": 0
+        },
+        "src/canvas/flow-canvas.css": {
+          "bytesInOutput": 0
+        }
+      },
+      "bytes": 191132
+    },
+    "assets/js/build/flow-canvas.css": {
+      "imports": [],
+      "inputs": {
+        "node_modules/@xyflow/react/dist/style.css": {
+          "bytesInOutput": 15868
+        },
+        "src/canvas/flow-canvas.css": {
+          "bytesInOutput": 3179
+        }
+      },
+      "bytes": 19048
+    }
+  }
+}

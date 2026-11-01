@@ -9,22 +9,45 @@
  */
 
 /* Layout */
+.dialogawp-ai-settings-page {
+    max-width: 1440px;
+    color: #26233A;
+}
+.dialogawp-ai-settings-page .dialogawp-ai-page-header {
+    margin: 20px 0 0;
+    padding: 24px 28px;
+    background: linear-gradient(135deg, #190F4F 0%, #007D75 100%);
+    border-radius: 12px;
+    color: #fff;
+}
+.dialogawp-ai-settings-page .dialogawp-ai-page-header h1 {
+    margin: 0 0 6px;
+    padding: 0;
+    color: #fff;
+}
+.dialogawp-ai-settings-page .dialogawp-ai-page-header .description {
+    margin: 0;
+    color: #E6F7F6;
+    font-size: 14px;
+}
 .dialogawp-ai-settings-page .dialogawp-ai-layout {
-    display: flex;
-    gap: 20px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 360px);
+    gap: 24px;
     align-items: flex-start;
     margin-top: 16px;
 }
-.dialogawp-ai-settings-page .dialogawp-ai-col-main { flex: 1; min-width: 0; }
-.dialogawp-ai-settings-page .dialogawp-ai-col-side { width: 340px; flex-shrink: 0; }
+.dialogawp-ai-settings-page .dialogawp-ai-col-main { min-width: 0; }
+.dialogawp-ai-settings-page .dialogawp-ai-col-side { min-width: 0; }
 
 /* Cards */
 .dialogawp-ai-settings-page .dialogawp-card {
     background: #fff;
     border: 1px solid #E5E7EF;
-    border-radius: 4px;
-    padding: 20px 24px;
-    margin-bottom: 20px;
+    border-radius: 10px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 2px rgba(25, 15, 79, 0.04);
 }
 .dialogawp-ai-settings-page .dialogawp-card h2 {
     margin-top: 0;
@@ -34,6 +57,9 @@
     padding-bottom: 10px;
     margin-bottom: 16px;
 }
+.dialogawp-ai-settings-page .dialogawp-card > :last-child {
+    margin-bottom: 0;
+}
 
 /* Status messages */
 .dialogawp-ai-settings-page .dialogawp-ai-actions {
@@ -42,22 +68,41 @@
     gap: 10px;
     margin-top: 16px;
 }
-.dialogawp-ai-status { font-size: 13px; color: #2ea44f; }
-.dialogawp-ai-status.error { color: #d63638; }
+.dialogawp-ai-settings-page .dialogawp-ai-status { font-size: 13px; color: #16803a; }
+.dialogawp-ai-settings-page .dialogawp-ai-status.error { color: #b32d2e; }
+.dialogawp-ai-settings-page .dialogawp-ai-range-control {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.dialogawp-ai-settings-page .dialogawp-ai-cost-result {
+    margin-top: 16px;
+    padding: 16px;
+    background: #F7F8FC;
+    border: 1px solid #E5E7EF;
+    border-radius: 8px;
+}
+.dialogawp-ai-settings-page .dialogawp-ai-cost-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 12px;
+}
 
 /* Embedding notice */
-.dialogawp-notice {
+.dialogawp-ai-settings-page .dialogawp-notice {
     margin-top: 6px;
     font-size: 12px;
     padding: 6px 10px;
-    border-radius: 3px;
+    border-radius: 6px;
     display: none;
 }
-.dialogawp-notice.info    { background:#f0f6ff; border:1px solid #c3d9f7; color:#190F4F; display:block; }
-.dialogawp-notice.warning { background:#fff8e5; border:1px solid #f0c33c; color:#7a5c00; display:block; }
+.dialogawp-ai-settings-page .dialogawp-notice.info    { background:#f0f6ff; border:1px solid #c3d9f7; color:#190F4F; display:block; }
+.dialogawp-ai-settings-page .dialogawp-notice.warning { background:#fff8e5; border:1px solid #f0c33c; color:#7a5c00; display:block; }
 
 /* Knowledge base toggle */
-.dialogawp-kb-toggle {
+.dialogawp-ai-settings-page .dialogawp-kb-toggle {
     display: flex;
     align-items: center;
     gap: 6px;
@@ -66,21 +111,32 @@
     font-size: 13px;
     color: #190F4F;
     padding: 6px 0;
+    width: 100%;
+    background: none;
+    border: 0;
+    font-family: inherit;
+    text-align: left;
 }
-.dialogawp-kb-toggle:hover { text-decoration: underline; }
-.ki-count { font-weight: 600; }
-.ki-chevron {
+.dialogawp-ai-settings-page .dialogawp-kb-toggle:hover { text-decoration: underline; }
+.dialogawp-ai-settings-page .dialogawp-kb-toggle:focus-visible,
+.dialogawp-ai-settings-page .ki-delete:focus-visible {
+    outline: 2px solid #007D75;
+    outline-offset: 2px;
+}
+.dialogawp-ai-settings-page .ki-count { font-weight: 600; }
+.dialogawp-ai-settings-page .ki-chevron {
+    margin-left: auto;
     font-size: 10px;
     transition: transform 0.15s ease;
     display: inline-block;
 }
-.dialogawp-kb-items {
+.dialogawp-ai-settings-page .dialogawp-kb-items {
     margin-top: 4px;
     border-top: 1px solid #F7F8FC;
 }
 
 /* Knowledge list */
-.dialogawp-knowledge-item {
+.dialogawp-ai-settings-page .dialogawp-knowledge-item {
     display: flex;
     align-items: center;
     gap: 6px;
@@ -88,19 +144,52 @@
     border-bottom: 1px solid #F7F8FC;
     font-size: 12px;
 }
-.dialogawp-knowledge-item:last-child { border-bottom: none; }
-.ki-title  { flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.ki-type   { background:#f0f6ff; color:#190F4F; border-radius:3px; padding:1px 5px; font-size:10px; text-transform:uppercase; font-weight:600; flex-shrink:0; }
-.ki-embed  { font-size:14px; flex-shrink:0; }
-.ki-tokens { color:#787c82; font-size:11px; flex-shrink:0; }
-.ki-delete { background:none; border:none; cursor:pointer; color:#d63638; padding:0 2px; font-size:18px; line-height:1; flex-shrink:0; }
-.ki-delete:hover { color:#a02020; }
+.dialogawp-ai-settings-page .dialogawp-knowledge-item:last-child { border-bottom: none; }
+.dialogawp-ai-settings-page .ki-title  { flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.dialogawp-ai-settings-page .ki-type   { background:#f0f6ff; color:#190F4F; border-radius:3px; padding:1px 5px; font-size:10px; text-transform:uppercase; font-weight:600; flex-shrink:0; }
+.dialogawp-ai-settings-page .ki-embed  { font-size:14px; flex-shrink:0; }
+.dialogawp-ai-settings-page .ki-tokens { color:#787c82; font-size:11px; flex-shrink:0; }
+.dialogawp-ai-settings-page .ki-delete { background:none; border:none; cursor:pointer; color:#d63638; padding:0 2px; font-size:18px; line-height:1; flex-shrink:0; }
+.dialogawp-ai-settings-page .ki-delete:hover { color:#a02020; }
 
 /* Spinner */
 @keyframes dialogawp-spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
 
 /* Responsive */
 @media (max-width:900px) {
-    .dialogawp-ai-settings-page .dialogawp-ai-layout { flex-direction:column; }
-    .dialogawp-ai-settings-page .dialogawp-ai-col-side { width:100%; }
+    .dialogawp-ai-settings-page .dialogawp-ai-layout { grid-template-columns: 1fr; }
+}
+
+@media (max-width:600px) {
+    .dialogawp-ai-settings-page .dialogawp-ai-page-header,
+    .dialogawp-ai-settings-page .dialogawp-card { padding: 18px; }
+    .dialogawp-ai-settings-page .dialogawp-ai-page-header { margin-right: 10px; }
+    .dialogawp-ai-settings-page .dialogawp-ai-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+    .dialogawp-ai-settings-page .dialogawp-ai-actions .button { width: 100%; }
+    .dialogawp-ai-settings-page .form-table th,
+    .dialogawp-ai-settings-page .form-table td { display: block; width: auto !important; padding-left: 0; padding-right: 0; }
+    .dialogawp-ai-settings-page .form-table th { padding-bottom: 4px; }
+    .dialogawp-ai-settings-page input.regular-text,
+    .dialogawp-ai-settings-page select.regular-text { width: 100%; }
+    .dialogawp-ai-settings-page input[type="range"] { max-width: 100%; }
+    .dialogawp-ai-settings-page .dialogawp-ai-range-control {
+        align-items: stretch;
+        flex-direction: column;
+    }
+    .dialogawp-ai-settings-page .dialogawp-ai-range-control input[type="range"],
+    .dialogawp-ai-settings-page .dialogawp-ai-range-control input[type="number"] { width: 100% !important; }
+    .dialogawp-ai-settings-page .dialogawp-ai-cost-summary > div:last-child { text-align: left !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .dialogawp-ai-settings-page *,
+    .dialogawp-ai-settings-page *::before,
+    .dialogawp-ai-settings-page *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
 }

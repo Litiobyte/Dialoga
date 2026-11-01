@@ -82,6 +82,7 @@ function settings_post() {
         'bubble_nudge' => '1', 'include_admin_sessions' => '1', 'bubble_unread_badge' => '1', 'bubble_bounce' => '1',
         'fresh_session_roles' => array('administrator', 'unknown', 'administrator'), 'visible_roles' => array('editor'),
         'visibility_mode' => 'specific_roles', 'primary_color' => '#123456', 'chat_position' => 'bottom-left', 'session_duration' => '14',
+        'chat_header_title' => addslashes("Visitor's \"support\""),
         'welcome_message' => addslashes("Visitor's \"welcome\"\nSecond line \\ path"), 'offline_message' => addslashes("We're offline\nLeave details"),
         'business_hours_enabled' => '1', 'timezone' => 'America/Chicago', 'email_notifications_enabled' => '1',
         'email_notifications_recipient' => 'one@example.com, invalid, two@example.com', 'email_notifications_subject' => addslashes("Lead's \"subject\""),
@@ -117,6 +118,7 @@ function settings_run_tests() {
         i18n_assert($GLOBALS['settings_fixture']['checks'] === array('cap', 'nonce'), 'Capability then nonce before save');
         foreach (array('enabled', 'test_mode', 'bubble_nudge', 'include_admin_sessions', 'bubble_unread_badge', 'bubble_bounce') as $key) i18n_assert($saved[$key] === 1, 'Checkbox: ' . $key);
         foreach (array('visibility_mode', 'primary_color', 'chat_position', 'bubble_size') as $key) i18n_assert($saved[$key] === $_POST[$key], 'Cross-tab scalar: ' . $key);
+        i18n_assert($saved['chat_header_title'] === "Visitor's \"support\"", 'Chat header title sanitized and unslashed');
         i18n_assert($saved['session_duration'] === 14, 'Typed session duration');
         i18n_assert($saved['fresh_session_roles'] === array('administrator') && $saved['visible_roles'] === array('editor'), 'Roles allowlisted/deduplicated');
         foreach (array('welcome_message', 'offline_message') as $key) {
@@ -188,16 +190,16 @@ function settings_run_tests() {
         i18n_assert($html === '' && in_array('dialogawp_settings_license_tab', $GLOBALS['settings_fixture']['actions'], true), 'License delegates to extension without core form');
     });
     i18n_test('hostile stored messages/attributes are escaped and posted HTML is sanitized', static function () {
-        settings_reset(array('welcome_message' => '</textarea><script>alert(1)</script>', 'preview_message' => array('text' => '\" autofocus onfocus=\"alert(1)'),
+        settings_reset(array('chat_header_title' => '<script>Support</script>', 'welcome_message' => '</textarea><script>alert(1)</script>', 'preview_message' => array('text' => '\" autofocus onfocus=\"alert(1)'),
             'email_notifications' => array('subject' => '\"><script>alert(2)</script>')));
         $html = settings_render();
         i18n_assert(strpos($html, '<script>') === false && strpos($html, '&lt;/textarea&gt;&lt;script&gt;') !== false, 'Stored textarea content escaped, not executable');
         $dom = new DOMDocument(); @$dom->loadHTML($html); $xpath = new DOMXPath($dom);
         i18n_assert($xpath->query('//*[@autofocus or @onfocus]')->length === 0, 'Stored values cannot break out of attributes');
-        $_POST = settings_post(); $_POST['welcome_message'] = addslashes("<b>Visitor's text</b>\nSecond line");
+        $_POST = settings_post(); $_POST['chat_header_title'] = '<b>Support team</b>'; $_POST['welcome_message'] = addslashes("<b>Visitor's text</b>\nSecond line");
         $_POST['email_notifications_subject'] = '<b>Subject</b>'; settings_render();
         $saved = $GLOBALS['settings_fixture']['options']['dialogawp_settings'];
-        i18n_assert($saved['welcome_message'] === "Visitor's text\nSecond line" && $saved['email_notifications']['subject'] === 'Subject', 'POST strips markup while preserving textarea lines');
+        i18n_assert($saved['chat_header_title'] === 'Support team' && $saved['welcome_message'] === "Visitor's text\nSecond line" && $saved['email_notifications']['subject'] === 'Subject', 'POST strips markup while preserving textarea lines');
     });
     echo 'RESULT: ' . $GLOBALS['i18n_passed'] . ' passed, ' . $GLOBALS['i18n_failed'] . " failed\n";
     return $GLOBALS['i18n_failed'] ? 1 : 0;

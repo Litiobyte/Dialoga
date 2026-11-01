@@ -30,7 +30,7 @@ propios avisos de licencia.
 
 ## Requisitos e instalacion
 
-- WordPress 5.0 o posterior.
+- WordPress 6.2 o posterior.
 - PHP 7.4 o posterior.
 - Clave propia de OpenAI o Anthropic solo para las funcionalidades de IA.
 
@@ -45,11 +45,27 @@ en `.opencode/skills/`, solo para este proyecto. Las revisiones de origen,
 licencias e instrucciones de uso se documentan en `.opencode/README.md`.
 Cierra y reinicia OpenCode desde esta carpeta para descubrirlas.
 
-## Estado inicial
+## Estado del repositorio
 
-Git inicializado en la rama `main`, sin commits ni remoto configurado.
+Git inicializado en la rama `main`, sin remoto configurado.
 El historial de versiones e instrucciones originales se encuentran en
 `readme.txt`.
+
+## Build del canvas
+
+El canvas usa `@xyflow/react` y se compila con esbuild. La fuente legible esta
+en `src/canvas/`; React y ReactDOM los proporciona WordPress mediante sus
+handles registrados.
+
+```bash
+nvm use
+npm ci
+npm run build
+```
+
+Los artefactos se escriben en `assets/js/build/`. `package-lock.json` fija el
+grafo completo de dependencias y `THIRD-PARTY-LICENSES.txt` conserva sus
+licencias. `node_modules/` no forma parte del plugin distribuible.
 
 ## Mejoras locales (2026-10-31)
 
@@ -76,7 +92,8 @@ El historial de versiones e instrucciones originales se encuentran en
 Los catalogos fuente estan en `languages/*-es.json`; regeneralos con
 `node tools/build-translations.cjs` para actualizar PO, POT y MO.
 
-Pruebas: `php tests/flow-transfer-test.php` y
+Pruebas completas: `npm test`. Pruebas individuales:
+`php tests/flow-transfer-test.php` y
 `node tests/flow-transfer-browser-test.cjs`. Consulta los requisitos del navegador
 en `tests/flow-transfer-browser-test.md`. Las pruebas usan dobles de WordPress;
 no sustituyen una prueba de integracion en una instalacion real.
