@@ -104,7 +104,7 @@ node tools/build-translations.cjs
 
 ## Licencia
 
-DialogaWP se distribuye bajo [GNU GPL v2 o posterior](https://www.gnu.org/licenses/gpl-2.0.html). Se conservan los avisos de autoría y licencia del plugin original.
+DialogaWP se distribuye bajo [GNU GPL v2 o posterior](https://www.gnu.org/licenses/gpl-2.0.html).
 
 ---
 

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: DialogaWP
  * Plugin URI: https://www.litiobyte.com/labs-detalle.php?slug=dialogawp
- * Description: Visual chatbot flow builder for WordPress with smart lead capture
+ * Description: Visual chatbot flow builder for WordPress with easy conversational flows, with or without AI.
  * Version: 1.0.0
  * Author: Litiobyte SpA
  * Author URI: https://www.litiobyte.com
