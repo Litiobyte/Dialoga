@@ -1,0 +1,31 @@
+/*
+ * DialogaWP — leads screen styles.
+ *
+ * Was a nowdoc in templates/admin/leads.php passed to wp_add_inline_style().
+ * That call ran while the page BODY rendered, by which point WP_Styles had
+ * already printed the 'dialogawp-admin' handle and put it in $done — so
+ * print_late_styles() skipped it and none of this CSS ever reached the page.
+ * Enqueued per-screen from DialogaWP::enqueue_admin_assets() instead.
+ */
+
+/* Tag save spinner */
+.dialogawp-tag-spinner { display:inline-flex; align-items:center; gap:6px; padding:2px 8px; border-radius:10px; background:#F7F8FC; border:1px solid #E5E7EF; }
+.dialogawp-spinner-dot {
+    width: 12px; height: 12px; border: 2px solid #E5E7EF; border-top-color: #00ADA1;
+    border-radius: 50%; display: inline-block; animation: dialogawp-spin 0.7s linear infinite;
+}
+@keyframes dialogawp-spin { to { transform: rotate(360deg); } }
+
+.dialogawp-ld-section { margin-bottom: 20px; }
+.dialogawp-ld-section h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; margin: 0 0 8px; font-weight: 700; }
+.dialogawp-ld-grid { display: grid; grid-template-columns: 130px 1fr; gap: 8px 16px; font-size: 14px; }
+.dialogawp-ld-grid dt { color: #6b7280; font-weight: 600; }
+.dialogawp-ld-grid dd { margin: 0; color: #26233A; word-break: break-word; }
+.dialogawp-ld-transcript { background: #F7F8FC; border: 1px solid #E5E7EF; border-radius: 8px; padding: 12px; max-height: 320px; overflow-y: auto; }
+.dialogawp-ld-msg { margin-bottom: 10px; display: flex; }
+.dialogawp-ld-msg.user { justify-content: flex-end; }
+.dialogawp-ld-msg-bubble { max-width: 75%; padding: 8px 12px; border-radius: 14px; font-size: 13px; line-height: 1.4; }
+.dialogawp-ld-msg.bot .dialogawp-ld-msg-bubble { background: #fff; border: 1px solid #E5E7EF; color: #26233A; border-bottom-left-radius: 4px; }
+.dialogawp-ld-msg.user .dialogawp-ld-msg-bubble { background: #190F4F; color: #fff; border-bottom-right-radius: 4px; }
+.dialogawp-ld-msg-time { font-size: 10px; color: #9ca3af; margin-top: 2px; }
+.dialogawp-ld-empty { color: #9ca3af; font-style: italic; padding: 12px; text-align: center; }

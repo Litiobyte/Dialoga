@@ -1,0 +1,106 @@
+/*
+ * DialogaWP — ai-settings screen styles.
+ *
+ * Was a nowdoc in templates/admin/ai-settings.php passed to wp_add_inline_style().
+ * That call ran while the page BODY rendered, by which point WP_Styles had
+ * already printed the 'dialogawp-admin' handle and put it in $done — so
+ * print_late_styles() skipped it and none of this CSS ever reached the page.
+ * Enqueued per-screen from DialogaWP::enqueue_admin_assets() instead.
+ */
+
+/* Layout */
+.dialogawp-ai-settings-page .dialogawp-ai-layout {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    margin-top: 16px;
+}
+.dialogawp-ai-settings-page .dialogawp-ai-col-main { flex: 1; min-width: 0; }
+.dialogawp-ai-settings-page .dialogawp-ai-col-side { width: 340px; flex-shrink: 0; }
+
+/* Cards */
+.dialogawp-ai-settings-page .dialogawp-card {
+    background: #fff;
+    border: 1px solid #E5E7EF;
+    border-radius: 4px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+}
+.dialogawp-ai-settings-page .dialogawp-card h2 {
+    margin-top: 0;
+    padding-top: 0;
+    font-size: 16px;
+    border-bottom: 1px solid #F7F8FC;
+    padding-bottom: 10px;
+    margin-bottom: 16px;
+}
+
+/* Status messages */
+.dialogawp-ai-settings-page .dialogawp-ai-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 16px;
+}
+.dialogawp-ai-status { font-size: 13px; color: #2ea44f; }
+.dialogawp-ai-status.error { color: #d63638; }
+
+/* Embedding notice */
+.dialogawp-notice {
+    margin-top: 6px;
+    font-size: 12px;
+    padding: 6px 10px;
+    border-radius: 3px;
+    display: none;
+}
+.dialogawp-notice.info    { background:#f0f6ff; border:1px solid #c3d9f7; color:#190F4F; display:block; }
+.dialogawp-notice.warning { background:#fff8e5; border:1px solid #f0c33c; color:#7a5c00; display:block; }
+
+/* Knowledge base toggle */
+.dialogawp-kb-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    user-select: none;
+    font-size: 13px;
+    color: #190F4F;
+    padding: 6px 0;
+}
+.dialogawp-kb-toggle:hover { text-decoration: underline; }
+.ki-count { font-weight: 600; }
+.ki-chevron {
+    font-size: 10px;
+    transition: transform 0.15s ease;
+    display: inline-block;
+}
+.dialogawp-kb-items {
+    margin-top: 4px;
+    border-top: 1px solid #F7F8FC;
+}
+
+/* Knowledge list */
+.dialogawp-knowledge-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 0;
+    border-bottom: 1px solid #F7F8FC;
+    font-size: 12px;
+}
+.dialogawp-knowledge-item:last-child { border-bottom: none; }
+.ki-title  { flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.ki-type   { background:#f0f6ff; color:#190F4F; border-radius:3px; padding:1px 5px; font-size:10px; text-transform:uppercase; font-weight:600; flex-shrink:0; }
+.ki-embed  { font-size:14px; flex-shrink:0; }
+.ki-tokens { color:#787c82; font-size:11px; flex-shrink:0; }
+.ki-delete { background:none; border:none; cursor:pointer; color:#d63638; padding:0 2px; font-size:18px; line-height:1; flex-shrink:0; }
+.ki-delete:hover { color:#a02020; }
+
+/* Spinner */
+@keyframes dialogawp-spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
+
+/* Responsive */
+@media (max-width:900px) {
+    .dialogawp-ai-settings-page .dialogawp-ai-layout { flex-direction:column; }
+    .dialogawp-ai-settings-page .dialogawp-ai-col-side { width:100%; }
+}

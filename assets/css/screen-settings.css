@@ -1,0 +1,144 @@
+/* Settings-only layout. Panels remain visible until JavaScript enhances them. */
+.dialogawp-settings-wrap .dialogawp-settings-extension-nav {
+    margin-bottom: 20px;
+}
+
+.dialogawp-settings-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin: 20px 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #E5E7EF;
+}
+
+.dialogawp-settings-tab {
+    padding: 10px 14px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    color: #26233A;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.dialogawp-settings-tab:hover {
+    background: #E6F7F6;
+    color: #26233A;
+}
+
+.dialogawp-settings-tab[aria-selected="true"] {
+    background: #fff;
+    border-color: #E5E7EF;
+    box-shadow: inset 0 -3px #00ADA1;
+    color: #26233A;
+}
+
+.dialogawp-settings-tab:focus-visible,
+.dialogawp-settings-panel:focus-visible {
+    outline: 2px solid #007D75;
+    outline-offset: 2px;
+}
+
+.dialogawp-settings-wrap [hidden] {
+    display: none !important;
+}
+
+.dialogawp-settings-subheading {
+    grid-column: 1 / -1;
+    margin: 24px 0 0;
+}
+
+.dialogawp-settings-wrap .dialogawp-setting-control {
+    min-width: 0;
+}
+
+.dialogawp-settings-wrap .dialogawp-setting-control input[type="text"],
+.dialogawp-settings-wrap .dialogawp-setting-control textarea {
+    width: 100%;
+    max-width: 440px;
+}
+
+.dialogawp-settings-wrap .dialogawp-setting-control select {
+    max-width: 100%;
+}
+
+.dialogawp-settings-wrap .dialogawp-setting-control input[type="number"] {
+    width: 90px;
+}
+
+.dialogawp-settings-wrap .dialogawp-color-picker input[name="primary_color_text"] {
+    width: 100px;
+}
+
+.dialogawp-settings-roles {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.dialogawp-settings-roles label {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.dialogawp-settings-test-notice {
+    padding: 8px 12px;
+    background: #fef9c3;
+    border-left: 3px solid #eab308;
+    color: #713f12;
+}
+
+.dialogawp-settings-retention-status {
+    color: #166534;
+}
+
+.dialogawp-settings-danger {
+    margin-top: 32px;
+    padding: 20px;
+    border: 1px solid #fecaca;
+    border-radius: 6px;
+    background: #fff5f5;
+    color: #7f1d1d;
+}
+
+.dialogawp-settings-danger h2,
+.dialogawp-settings-danger h3 {
+    color: #7f1d1d;
+}
+
+.dialogawp-settings-danger > div + div {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #fecaca;
+}
+
+.dialogawp-settings-danger .button {
+    border-color: #991b1b;
+    background: #b91c1c;
+    color: #fff;
+}
+
+.dialogawp-settings-danger .button:hover,
+.dialogawp-settings-danger .button:focus {
+    background: #7f1d1d;
+    color: #fff;
+}
+
+@media (max-width: 782px) {
+    .dialogawp-settings-tab {
+        padding: 12px;
+    }
+
+    .dialogawp-settings-wrap .dialogawp-setting-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .dialogawp-settings-wrap .dialogawp-setting-label,
+    .dialogawp-settings-wrap .dialogawp-setting-control {
+        width: 100%;
+    }
+}

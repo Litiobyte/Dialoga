@@ -1,0 +1,1145 @@
+/* ==========================================================================
+   DialogaWP Getting Started Wizard
+   ========================================================================== */
+
+:root {
+    --wiz-blue: #190F4F;
+    --wiz-blue-light: #007D75;
+    --wiz-blue-pale: #E6F7F6;
+    --wiz-secondary: #00ADA1;
+    --wiz-accent: #FD6A4D;
+    --wiz-red: #E02020;
+    --wiz-green: #16A34A;
+    --wiz-green-pale: #F0FDF4;
+    --wiz-gray-50: #F7F8FC;
+    --wiz-gray-100: #F1F5F9;
+    --wiz-gray-200: #E5E7EF;
+    --wiz-gray-300: #CBD5E1;
+    --wiz-gray-400: #94A3B8;
+    --wiz-gray-500: #64748B;
+    --wiz-gray-600: #475569;
+    --wiz-gray-700: #26233A;
+    --wiz-gray-800: #26233A;
+    --wiz-gray-900: #0F172A;
+    --wiz-radius: 12px;
+    --wiz-radius-sm: 8px;
+    --wiz-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+    --wiz-shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
+    /* v1.0.0 — System font stack only. The wizard used to load Exo 2 +
+       Inter from Google Fonts, but wp.org guideline 7 prohibits third-party
+       requests without opt-in. Native fonts render instantly and match the
+       host OS. */
+    --wiz-font-heading: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --wiz-font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --wiz-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Reset & full-screen */
+.dialogawp-wizard-body {
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden;
+    background: var(--wiz-gray-50);
+}
+
+.dialogawp-wizard-wrap {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 100000;
+    display: flex;
+    flex-direction: column;
+    background: var(--wiz-gray-50);
+    font-family: var(--wiz-font-body);
+    color: var(--wiz-gray-800);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ==========================================================================
+   Header
+   ========================================================================== */
+
+.dialogawp-wizard-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 32px 16px;
+    background: #fff;
+    border-bottom: 1px solid var(--wiz-gray-200);
+    flex-shrink: 0;
+    z-index: 10;
+}
+
+.dialogawp-wizard-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--wiz-font-heading);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--wiz-blue);
+}
+
+.dialogawp-wizard-brand-logo {
+    height: 56px;
+    width: auto;
+}
+
+.dialogawp-wizard-progress {
+    display: flex;
+    align-items: center;
+    gap: 0;
+}
+
+.dialogawp-wizard-progress-step {
+    display: flex;
+    align-items: center;
+}
+
+.dialogawp-wizard-progress-dot-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 70px;
+}
+
+.dialogawp-wizard-progress-dot {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    border: 2px solid var(--wiz-gray-300);
+    color: var(--wiz-gray-400);
+    background: #fff;
+    transition: var(--wiz-transition);
+    cursor: pointer;
+}
+
+.dialogawp-wizard-progress-dot:hover {
+    border-color: var(--wiz-blue-light);
+    color: var(--wiz-blue-light);
+    transform: scale(1.1);
+}
+
+.dialogawp-wizard-progress-label {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--wiz-gray-400);
+    white-space: nowrap;
+    margin-top: 6px;
+    text-align: center;
+}
+
+.dialogawp-wizard-progress-dot.active {
+    border-color: var(--wiz-blue);
+    color: #fff;
+    background: var(--wiz-blue);
+}
+
+.dialogawp-wizard-progress-dot.completed {
+    border-color: var(--wiz-green);
+    color: #fff;
+    background: var(--wiz-green);
+}
+
+.dialogawp-wizard-progress-line {
+    width: 40px;
+    height: 2px;
+    flex-shrink: 0;
+    margin-top: -20px;
+    background: var(--wiz-gray-300);
+    transition: var(--wiz-transition);
+}
+
+.dialogawp-wizard-progress-line.completed {
+    background: var(--wiz-green);
+}
+
+.dialogawp-wizard-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.dialogawp-wizard-skip-btn,
+.dialogawp-wizard-exit-btn {
+    background: none;
+    border: 1px solid var(--wiz-gray-300);
+    border-radius: var(--wiz-radius-sm);
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--wiz-gray-500);
+    cursor: pointer;
+    transition: var(--wiz-transition);
+    font-family: var(--wiz-font-body);
+    text-decoration: none;
+    line-height: 1.4;
+    display: inline-flex;
+    align-items: center;
+}
+
+.dialogawp-wizard-exit-btn {
+    color: var(--wiz-blue);
+    border-color: var(--wiz-blue);
+}
+
+.dialogawp-wizard-skip-btn:hover {
+    background: var(--wiz-gray-100);
+    color: var(--wiz-gray-700);
+}
+
+.dialogawp-wizard-exit-btn:hover {
+    background: var(--wiz-blue);
+    color: #fff;
+}
+
+/* Auto-save pill — hidden by default; .is-visible fades in for ~1.6s after each save. */
+.dialogawp-wizard-save-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--wiz-green);
+    background: var(--wiz-green-pale);
+    border: 1px solid #bbf7d0;
+    padding: 5px 10px;
+    border-radius: 999px;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    pointer-events: none;
+}
+
+.dialogawp-wizard-save-pill.is-visible {
+    opacity: 1;
+}
+
+.dialogawp-wizard-save-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--wiz-green);
+    display: inline-block;
+}
+
+/* ==========================================================================
+   Content Area
+   ========================================================================== */
+
+.dialogawp-wizard-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 40px 24px;
+}
+
+.dialogawp-wizard-slider {
+    width: 100%;
+    position: relative;
+}
+
+.dialogawp-wizard-step {
+    display: none;
+    justify-content: center;
+    animation: wizardFadeIn 0.35s ease;
+}
+
+.dialogawp-wizard-step.active {
+    display: flex;
+}
+
+@keyframes wizardFadeIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   Loading State
+   ========================================================================== */
+
+.dialogawp-wizard-loading {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ==========================================================================
+   Cards
+   ========================================================================== */
+
+.dialogawp-wizard-card {
+    width: 100%;
+    max-width: 680px;
+    background: #fff;
+    border-radius: var(--wiz-radius);
+    box-shadow: var(--wiz-shadow-lg);
+    padding: 40px;
+}
+
+.dialogawp-wizard-card-wide {
+    max-width: 1100px;
+}
+
+.dialogawp-wizard-card h1 {
+    font-family: var(--wiz-font-heading);
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--wiz-gray-900);
+    margin: 0 0 12px;
+    text-align: center;
+}
+
+.dialogawp-wizard-card h2 {
+    font-family: var(--wiz-font-heading);
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--wiz-gray-900);
+    margin: 0 0 8px;
+}
+
+.dialogawp-wizard-card h3 {
+    font-family: var(--wiz-font-heading);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--wiz-gray-900);
+    margin: 0 0 4px;
+}
+
+.dialogawp-wizard-subtitle {
+    font-size: 16px;
+    color: var(--wiz-gray-500);
+    text-align: center;
+    margin: 0 0 32px;
+    line-height: 1.6;
+}
+
+.dialogawp-wizard-desc {
+    font-size: 15px;
+    color: var(--wiz-gray-500);
+    margin: 0 0 28px;
+    line-height: 1.6;
+}
+
+/* ==========================================================================
+   Welcome Step
+   ========================================================================== */
+
+.dialogawp-wizard-welcome-icon {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.dialogawp-wizard-welcome-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.dialogawp-wizard-welcome-step {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 16px;
+    background: var(--wiz-gray-50);
+    border-radius: var(--wiz-radius-sm);
+    border: 1px solid var(--wiz-gray-200);
+    cursor: pointer;
+    transition: var(--wiz-transition);
+}
+
+.dialogawp-wizard-welcome-step:hover {
+    border-color: var(--wiz-blue-light);
+    background: var(--wiz-blue-pale);
+}
+
+.dialogawp-wizard-welcome-arrow {
+    margin-left: auto;
+    font-size: 20px;
+    color: var(--wiz-gray-300);
+    font-weight: 600;
+    transition: var(--wiz-transition);
+}
+
+.dialogawp-wizard-welcome-step:hover .dialogawp-wizard-welcome-arrow {
+    color: var(--wiz-blue);
+    transform: translateX(3px);
+}
+
+.dialogawp-wizard-welcome-step.completed {
+    border-color: #BBF7D0;
+    background: #F0FDF4;
+}
+
+.dialogawp-wizard-welcome-step.completed .dialogawp-wizard-welcome-num {
+    background: #16A34A;
+}
+
+.dialogawp-wizard-welcome-step.completed strong {
+    color: #166534;
+}
+
+.dialogawp-wizard-welcome-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--wiz-blue);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--wiz-font-heading);
+    font-weight: 700;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.dialogawp-wizard-welcome-step strong {
+    display: block;
+    font-size: 14px;
+    color: var(--wiz-gray-800);
+}
+
+.dialogawp-wizard-welcome-step span {
+    font-size: 13px;
+    color: var(--wiz-gray-500);
+}
+
+/* ==========================================================================
+   Form Fields
+   ========================================================================== */
+
+.dialogawp-wizard-field {
+    margin-bottom: 20px;
+}
+
+.dialogawp-wizard-field label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--wiz-gray-700);
+    margin-bottom: 8px;
+}
+
+.dialogawp-wizard-optional {
+    font-weight: 400;
+    color: var(--wiz-gray-400);
+}
+
+.dialogawp-wizard-field input[type="text"],
+.dialogawp-wizard-field input[type="password"],
+.dialogawp-wizard-field input[type="url"],
+.dialogawp-wizard-field select,
+.dialogawp-wizard-field textarea {
+    width: 100%;
+    padding: 11px 14px;
+    font-size: 15px;
+    font-family: var(--wiz-font-body);
+    border: 1px solid var(--wiz-gray-300);
+    border-radius: var(--wiz-radius-sm);
+    background: #fff;
+    color: var(--wiz-gray-900);
+    box-sizing: border-box;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.dialogawp-wizard-field input:focus,
+.dialogawp-wizard-field select:focus,
+.dialogawp-wizard-field textarea:focus {
+    outline: none;
+    border-color: var(--wiz-blue-light);
+    box-shadow: 0 0 0 3px rgba(0, 173, 161, 0.2);
+}
+
+.dialogawp-wizard-field textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.dialogawp-wizard-hint {
+    font-size: 13px;
+    color: var(--wiz-gray-400);
+    margin-top: 6px;
+}
+
+.dialogawp-wizard-note {
+    font-size: 13px;
+    color: var(--wiz-gray-400);
+    margin-top: 8px;
+}
+
+/* Radio cards */
+.dialogawp-wizard-radio-group {
+    display: flex;
+    gap: 12px;
+}
+
+.dialogawp-wizard-radio-group-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.dialogawp-wizard-radio-card {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border: 2px solid var(--wiz-gray-200);
+    border-radius: var(--wiz-radius-sm);
+    cursor: pointer;
+    transition: var(--wiz-transition);
+}
+
+.dialogawp-wizard-radio-card:hover {
+    border-color: var(--wiz-blue-light);
+}
+
+.dialogawp-wizard-radio-card:has(input:checked) {
+    border-color: var(--wiz-secondary);
+    background: var(--wiz-blue-pale);
+}
+
+.dialogawp-wizard-radio-card input {
+    accent-color: var(--wiz-blue-light);
+}
+
+.dialogawp-wizard-radio-content strong {
+    display: block;
+    font-size: 14px;
+    color: var(--wiz-gray-800);
+}
+
+.dialogawp-wizard-radio-content span {
+    font-size: 12px;
+    color: var(--wiz-gray-500);
+}
+
+.dialogawp-wizard-radio-card-coming-soon {
+    cursor: pointer;
+    position: relative;
+}
+
+.dialogawp-wizard-radio-card-coming-soon:hover {
+    border-color: var(--wiz-blue-light);
+}
+
+.dialogawp-wizard-coming-soon-tag {
+    display: inline-block;
+    background: var(--wiz-gray-200);
+    color: var(--wiz-gray-500);
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* API Key row */
+.dialogawp-wizard-key-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.dialogawp-wizard-key-masked {
+    flex: 1;
+    padding: 11px 14px !important;
+    background: var(--wiz-gray-50) !important;
+    color: var(--wiz-gray-400) !important;
+    letter-spacing: 3px;
+    cursor: default;
+}
+
+/* Key status */
+.dialogawp-wizard-key-status {
+    margin-top: 8px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.dialogawp-wizard-key-status.success {
+    color: var(--wiz-green);
+}
+
+.dialogawp-wizard-key-status.error {
+    color: var(--wiz-red);
+}
+
+/* ==========================================================================
+   AI Instructions Accordion
+   ========================================================================== */
+
+.dialogawp-wizard-accordion {
+    margin-top: 24px;
+    border: 1px solid var(--wiz-gray-200);
+    border-radius: var(--wiz-radius-sm);
+    overflow: hidden;
+}
+
+.dialogawp-wizard-accordion-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: var(--wiz-gray-50);
+    border: none;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--wiz-blue);
+    cursor: pointer;
+    font-family: var(--wiz-font-body);
+}
+
+.dialogawp-wizard-chevron {
+    font-size: 10px;
+    transition: transform 0.2s;
+}
+
+.dialogawp-wizard-accordion.open .dialogawp-wizard-chevron {
+    transform: rotate(180deg);
+}
+
+.dialogawp-wizard-accordion-body {
+    display: none;
+    padding: 16px;
+    border-top: 1px solid var(--wiz-gray-200);
+}
+
+.dialogawp-wizard-accordion.open .dialogawp-wizard-accordion-body {
+    display: block;
+}
+
+.dialogawp-wizard-instructions h4 {
+    font-family: var(--wiz-font-heading);
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0 0 12px;
+    color: var(--wiz-gray-800);
+}
+
+.dialogawp-wizard-instructions ol {
+    margin: 0 0 12px;
+    padding-left: 20px;
+    font-size: 14px;
+    color: var(--wiz-gray-600);
+    line-height: 1.8;
+}
+
+.dialogawp-wizard-instructions code {
+    background: var(--wiz-gray-100);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+}
+
+.dialogawp-wizard-instructions a {
+    color: var(--wiz-blue-light);
+    font-weight: 500;
+}
+
+/* ==========================================================================
+   Site URL Display
+   ========================================================================== */
+
+.dialogawp-wizard-site-url {
+    background: var(--wiz-gray-50);
+    border: 1px solid var(--wiz-gray-200);
+    border-radius: var(--wiz-radius-sm);
+    padding: 12px 16px;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--wiz-blue);
+    word-break: break-all;
+}
+
+/* ==========================================================================
+   Crawl States
+   ========================================================================== */
+
+.dialogawp-wizard-crawl-status,
+.dialogawp-wizard-crawl-progress,
+.dialogawp-wizard-crawl-results {
+    text-align: center;
+    padding: 24px 0;
+}
+
+.dialogawp-wizard-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--wiz-gray-200);
+    border-top-color: var(--wiz-blue);
+    border-radius: 50%;
+    animation: wizardSpin 0.8s linear infinite;
+    margin: 0 auto 16px;
+}
+
+.dialogawp-wizard-spinner-lg {
+    width: 56px;
+    height: 56px;
+    border-width: 5px;
+}
+
+@keyframes wizardSpin {
+    to { transform: rotate(360deg); }
+}
+
+.dialogawp-wizard-success-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+}
+
+.dialogawp-wizard-crawl-results h3 {
+    margin-bottom: 8px;
+}
+
+.dialogawp-wizard-crawl-results p {
+    color: var(--wiz-gray-500);
+    font-size: 14px;
+    margin-bottom: 16px;
+}
+
+/* ==========================================================================
+   Goal Cards
+   ========================================================================== */
+
+.dialogawp-wizard-goal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 8px;
+}
+
+.dialogawp-wizard-goal-grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.dialogawp-wizard-goal-grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.dialogawp-wizard-goal-section-label {
+    font-family: var(--wiz-font-heading);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--wiz-gray-400);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 24px 0 8px;
+    padding-top: 20px;
+    border-top: 1px solid var(--wiz-gray-200);
+}
+
+.dialogawp-wizard-goal-card {
+    background: #fff;
+    border: 2px solid var(--wiz-gray-200);
+    border-radius: var(--wiz-radius);
+    padding: 22px;
+    text-align: left;
+    cursor: pointer;
+    transition: var(--wiz-transition);
+    font-family: var(--wiz-font-body);
+}
+
+.dialogawp-wizard-goal-card:hover {
+    border-color: var(--wiz-blue-light);
+    box-shadow: var(--wiz-shadow);
+}
+
+.dialogawp-wizard-goal-card.selected {
+    border-color: var(--wiz-secondary);
+    background: var(--wiz-blue-pale);
+    box-shadow: 0 0 0 3px rgba(0, 173, 161, 0.2);
+    position: relative;
+}
+
+.dialogawp-wizard-goal-card.selected::after {
+    content: '\2713';
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    width: 24px;
+    height: 24px;
+    background: var(--wiz-secondary);
+    color: #26233A;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.dialogawp-wizard-goal-icon {
+    margin-bottom: 16px;
+}
+
+.dialogawp-wizard-goal-card h3 {
+    font-family: var(--wiz-font-heading);
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0 0 8px;
+    color: var(--wiz-gray-900);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.dialogawp-wizard-pro-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #190F4F 0%, #007D75 100%) !important;
+    color: #fff !important;
+    font-size: 10px;
+    font-weight: 700;
+    font-family: var(--wiz-font-body);
+    padding: 3px 10px;
+    border-radius: 4px;
+    letter-spacing: 0.08em;
+    vertical-align: middle;
+    line-height: 1;
+}
+
+.dialogawp-wizard-pro-badge-sm {
+    font-size: 8px !important;
+    padding: 2px 6px !important;
+}
+
+.dialogawp-wizard-goal-card p {
+    font-size: 14px;
+    color: var(--wiz-gray-500);
+    line-height: 1.5;
+    margin: 0 0 16px;
+}
+
+.dialogawp-wizard-goal-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.dialogawp-wizard-goal-card li {
+    font-size: 13px;
+    color: var(--wiz-gray-600);
+    padding: 4px 0;
+}
+
+.dialogawp-wizard-goal-card li::before {
+    content: '\2713';
+    color: var(--wiz-green);
+    font-weight: 700;
+    margin-right: 8px;
+}
+
+/* ==========================================================================
+   Visibility Step
+   ========================================================================== */
+
+.dialogawp-wizard-visibility-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 8px;
+}
+
+.dialogawp-wizard-visibility-card {
+    background: #fff;
+    border: 2px solid var(--wiz-gray-200);
+    border-radius: var(--wiz-radius);
+    padding: 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--wiz-transition);
+    font-family: var(--wiz-font-body);
+}
+
+.dialogawp-wizard-visibility-card:hover {
+    border-color: var(--wiz-blue-light);
+}
+
+.dialogawp-wizard-visibility-card.selected {
+    border-color: var(--wiz-secondary);
+    background: var(--wiz-blue-pale);
+    box-shadow: 0 0 0 3px rgba(0, 173, 161, 0.2);
+}
+
+.dialogawp-wizard-visibility-icon {
+    margin-bottom: 12px;
+}
+
+.dialogawp-wizard-visibility-card h3 {
+    font-family: var(--wiz-font-heading);
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0 0 6px;
+    color: var(--wiz-gray-900);
+}
+
+.dialogawp-wizard-visibility-card p {
+    font-size: 13px;
+    color: var(--wiz-gray-500);
+    line-height: 1.5;
+    margin: 0;
+}
+
+.dialogawp-wizard-roles-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.dialogawp-wizard-role-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--wiz-gray-700);
+    padding: 8px 12px;
+    background: var(--wiz-gray-50);
+    border: 1px solid var(--wiz-gray-200);
+    border-radius: var(--wiz-radius-sm);
+    cursor: pointer;
+    transition: var(--wiz-transition);
+}
+
+.dialogawp-wizard-role-item:hover {
+    border-color: var(--wiz-blue-light);
+}
+
+.dialogawp-wizard-role-item input {
+    accent-color: var(--wiz-blue);
+}
+
+/* ==========================================================================
+   Review Step
+   ========================================================================== */
+
+.dialogawp-wizard-review-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 28px;
+}
+
+.dialogawp-wizard-review-item {
+    background: var(--wiz-gray-50);
+    border: 1px solid var(--wiz-gray-200);
+    border-radius: var(--wiz-radius-sm);
+    padding: 16px;
+}
+
+.dialogawp-wizard-review-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--wiz-gray-400);
+    margin-bottom: 4px;
+}
+
+.dialogawp-wizard-review-value {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--wiz-gray-800);
+}
+
+/* Creating / Complete / Error states */
+.dialogawp-wizard-creating,
+.dialogawp-wizard-complete,
+.dialogawp-wizard-error {
+    text-align: center;
+    padding: 32px 0;
+}
+
+.dialogawp-wizard-complete-icon,
+.dialogawp-wizard-error-icon {
+    font-size: 56px;
+    margin-bottom: 16px;
+}
+
+.dialogawp-wizard-creating h3,
+.dialogawp-wizard-complete h2,
+.dialogawp-wizard-error h3 {
+    margin-bottom: 12px;
+}
+
+.dialogawp-wizard-creating p,
+.dialogawp-wizard-complete p,
+.dialogawp-wizard-error p {
+    color: var(--wiz-gray-500);
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+
+/* ==========================================================================
+   Buttons
+   ========================================================================== */
+
+.dialogawp-wizard-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 24px;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: var(--wiz-font-body);
+    border-radius: var(--wiz-radius-sm);
+    border: none;
+    cursor: pointer;
+    transition: var(--wiz-transition);
+    text-decoration: none;
+    line-height: 1.4;
+}
+
+.dialogawp-wizard-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.dialogawp-wizard-btn-primary {
+    background: var(--wiz-blue);
+    color: #fff;
+}
+
+.dialogawp-wizard-btn-primary:hover:not(:disabled) {
+    background: #110A38;
+}
+
+.dialogawp-wizard-btn-primary.dialogawp-wizard-btn-lg {
+    background: var(--wiz-accent);
+    color: #26233A;
+}
+
+.dialogawp-wizard-btn-primary.dialogawp-wizard-btn-lg:hover:not(:disabled) {
+    background: #E95539;
+}
+
+.dialogawp-wizard-btn-outline {
+    background: #fff;
+    color: var(--wiz-blue);
+    border: 2px solid var(--wiz-blue);
+}
+
+.dialogawp-wizard-btn-outline:hover:not(:disabled) {
+    background: var(--wiz-blue-pale);
+}
+
+.dialogawp-wizard-btn-ghost {
+    background: none;
+    color: var(--wiz-gray-500);
+    border: none;
+}
+
+.dialogawp-wizard-btn-ghost:hover:not(:disabled) {
+    color: var(--wiz-gray-700);
+}
+
+.dialogawp-wizard-btn-lg {
+    padding: 14px 32px;
+    font-size: 16px;
+}
+
+.dialogawp-wizard-btn-sm {
+    padding: 6px 16px;
+    font-size: 13px;
+}
+
+.dialogawp-wizard-btn-full {
+    width: 100%;
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+
+.dialogawp-wizard-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 32px;
+    background: #fff;
+    border-top: 1px solid var(--wiz-gray-200);
+    flex-shrink: 0;
+}
+
+.dialogawp-wizard-step-label {
+    font-size: 13px;
+    color: var(--wiz-gray-400);
+    font-weight: 500;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    .dialogawp-wizard-header {
+        padding: 12px 16px;
+    }
+
+    .dialogawp-wizard-progress {
+        display: none;
+    }
+
+    .dialogawp-wizard-content {
+        padding: 24px 16px;
+    }
+
+    .dialogawp-wizard-card {
+        padding: 28px 20px;
+    }
+
+    .dialogawp-wizard-card h1 {
+        font-size: 22px;
+    }
+
+    .dialogawp-wizard-radio-group {
+        flex-direction: column;
+    }
+
+    .dialogawp-wizard-radio-group-3 {
+        grid-template-columns: 1fr;
+    }
+
+    .dialogawp-wizard-goal-grid,
+    .dialogawp-wizard-goal-grid-3,
+    .dialogawp-wizard-goal-grid-4 {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .dialogawp-wizard-visibility-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dialogawp-wizard-roles-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .dialogawp-wizard-review-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dialogawp-wizard-footer {
+        padding: 12px 16px;
+    }
+
+    .dialogawp-wizard-welcome-steps {
+        gap: 8px;
+    }
+}

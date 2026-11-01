@@ -1,0 +1,1090 @@
+﻿/**
+ * DIALOGAWP Admin Styles
+ */
+
+:root {
+    --dialogawp-color-primary: #190F4F;
+    --dialogawp-color-secondary: #00ADA1;
+    --dialogawp-color-accent: #FD6A4D;
+    --dialogawp-color-panel: #F7F8FC;
+    --dialogawp-color-surface: #FFFFFF;
+    --dialogawp-color-text: #26233A;
+    --dialogawp-color-border: #E5E7EF;
+    --dialogawp-color-primary-hover: #110A38;
+    --dialogawp-color-secondary-hover: #008C83;
+    --dialogawp-color-accent-hover: #E95539;
+    --dialogawp-color-focus: #007D75;
+}
+
+.dialogawp-builder-wrap,
+.dialogawp-dashboard,
+.dialogawp-analytics-wrap,
+.dialogawp-leads-wrap,
+.dialogawp-settings-wrap,
+.dialogawp-ai-settings-page {
+    color: var(--dialogawp-color-text);
+}
+
+.dialogawp-builder-wrap h1,
+.dialogawp-builder-wrap h2,
+.dialogawp-builder-wrap h3,
+.dialogawp-dashboard h1,
+.dialogawp-dashboard h2,
+.dialogawp-dashboard h3,
+.dialogawp-analytics-wrap h1,
+.dialogawp-analytics-wrap h2,
+.dialogawp-leads-wrap h1,
+.dialogawp-leads-wrap h2,
+.dialogawp-settings-wrap h1,
+.dialogawp-settings-wrap h2,
+.dialogawp-ai-settings-page h1,
+.dialogawp-ai-settings-page h2 {
+    color: var(--dialogawp-color-primary);
+}
+
+.dialogawp-builder-wrap input:focus,
+.dialogawp-builder-wrap select:focus,
+.dialogawp-builder-wrap textarea:focus,
+.dialogawp-settings-wrap input:focus,
+.dialogawp-settings-wrap select:focus,
+.dialogawp-settings-wrap textarea:focus,
+.dialogawp-ai-settings-page input:focus,
+.dialogawp-ai-settings-page select:focus,
+.dialogawp-ai-settings-page textarea:focus {
+    border-color: var(--dialogawp-color-focus) !important;
+    box-shadow: 0 0 0 1px var(--dialogawp-color-focus) !important;
+}
+
+.dialogawp-builder-wrap .button-primary,
+.dialogawp-dashboard .button-primary,
+.dialogawp-analytics-wrap .button-primary,
+.dialogawp-leads-wrap .button-primary,
+.dialogawp-settings-wrap .button-primary,
+.dialogawp-ai-settings-page .button-primary {
+    background: var(--dialogawp-color-primary);
+    border-color: var(--dialogawp-color-primary);
+    color: #FFFFFF;
+}
+
+.dialogawp-builder-wrap .button-primary:hover,
+.dialogawp-dashboard .button-primary:hover,
+.dialogawp-analytics-wrap .button-primary:hover,
+.dialogawp-leads-wrap .button-primary:hover,
+.dialogawp-settings-wrap .button-primary:hover,
+.dialogawp-ai-settings-page .button-primary:hover {
+    background: var(--dialogawp-color-primary-hover);
+    border-color: var(--dialogawp-color-primary-hover);
+}
+
+.dialogawp-new-flow.button-primary,
+.dialogawp-cta.button-primary {
+    background: var(--dialogawp-color-accent);
+    border-color: var(--dialogawp-color-accent);
+    color: var(--dialogawp-color-text);
+}
+
+.dialogawp-new-flow.button-primary:hover,
+.dialogawp-cta.button-primary:hover {
+    background: var(--dialogawp-color-accent-hover);
+    border-color: var(--dialogawp-color-accent-hover);
+    color: var(--dialogawp-color-text);
+}
+
+/* v0.39.7 — force white dashicons on DialogaWP's primary-blue buttons.
+   Some admin themes / block-editor stylesheets set .dashicons to a dark
+   color that gets inherited by button-primary spans, rendering the icons
+   invisible on the blue background. Scoped to DialogaWP-specific button
+   classes so it can't leak into other WP admin buttons. */
+.dialogawp-save-flow .dashicons,
+.dialogawp-preview-flow .dashicons,
+.button-primary.dialogawp-save-flow .dashicons,
+.button-primary .dashicons[class*="plus-alt"] {
+    color: #ffffff !important;
+    vertical-align: middle;
+}
+
+.dialogawp-new-flow .dashicons,
+.button-primary.dialogawp-new-flow .dashicons {
+    color: var(--dialogawp-color-text) !important;
+}
+/* Belt-and-suspenders: any button-primary INSIDE a DialogaWP admin wrapper */
+.dialogawp-builder-wrap .button-primary .dashicons,
+.dialogawp-dashboard   .button-primary .dashicons,
+.dialogawp-analytics   .button-primary .dashicons,
+.dialogawp-leads-wrap  .button-primary .dashicons {
+    color: #ffffff !important;
+    vertical-align: middle;
+}
+
+/* Builder Layout */
+.dialogawp-builder-wrap {
+    min-height: calc(100vh - 90px);
+    display: flex;
+    flex-direction: column;
+}
+.dialogawp-builder-container {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+    flex: 1 1 auto;
+    min-height: 600px;
+}
+
+.dialogawp-flows-sidebar {
+    /* v0.40.0 — bumped from 250px so the three action buttons
+       (Edit / Duplicate / Delete) fit on a single row without
+       clipping "Delete" on the right edge. */
+    width: 280px;
+    background: #fff;
+    border: 1px solid #E5E7EF;
+    border-radius: 4px;
+    padding: 15px;
+    overflow-y: auto;
+    flex-shrink: 0;
+}
+
+.dialogawp-builder-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border: 1px solid #E5E7EF;
+    border-radius: 4px;
+}
+
+.dialogawp-builder-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #E5E7EF;
+}
+
+.dialogawp-node-palette {
+    padding: 15px;
+    border-bottom: 1px solid #E5E7EF;
+}
+
+.dialogawp-node-palette h3 {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+}
+
+.dialogawp-node-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* ReactFlow Canvas Styles */
+.dialogawp-canvas {
+    flex: 1;
+    background: #F7F8FC;
+    position: relative;
+    min-height: 400px !important;
+    overflow: hidden;
+}
+
+/* Node delete button - show on hover */
+.dialogawp-node-container:hover .dialogawp-node-delete {
+    opacity: 1 !important;
+}
+
+.dialogawp-node-delete:hover {
+    background: #b71c1c !important;
+    transform: scale(1.1);
+}
+
+.dialogawp-custom-node {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+.dialogawp-custom-node.selected {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.react-flow__controls {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.react-flow__minimap {
+    border: 1px solid #E5E7EF;
+    border-radius: 4px;
+}
+
+.react-flow__edge-path {
+    stroke-width: 2;
+}
+
+.react-flow__edge.selected .react-flow__edge-path {
+    stroke: #190F4F;
+    stroke-width: 3;
+}
+
+.react-flow__handle {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+}
+
+/* Option Items */
+.dialogawp-option-item,
+.dialogawp-condition-item {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 10px;
+    background: #F7F8FC;
+    border: 1px solid #E5E7EF;
+    border-radius: 4px;
+}
+
+.dialogawp-option-label {
+    flex: 1;
+}
+
+.dialogawp-condition-operator {
+    flex: 0 0 140px;
+}
+
+.dialogawp-condition-value {
+    flex: 1;
+    min-width: 150px;
+}
+
+.dialogawp-remove-option,
+.dialogawp-remove-condition {
+    padding: 4px 8px !important;
+    min-width: auto !important;
+}
+
+/* Buttons */
+.button .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+    margin-right: 4px;
+}
+
+.dialogawp-add-option,
+.dialogawp-add-condition {
+    margin-top: 10px;
+}
+
+/* Question Options Container */
+.dialogawp-question-options,
+.dialogawp-branch-conditions {
+    margin-bottom: 15px;
+}
+
+/* Action Fields */
+.dialogawp-action-fields {
+    margin-top: 20px;
+}
+
+/* Dashboard */
+.dialogawp-dashboard {
+    max-width: 1200px;
+}
+.dialogawp-dash-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+.dialogawp-dash-header h1 {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0;
+}
+.dialogawp-dash-subtitle {
+    color: #64748B;
+    font-size: 14px;
+    margin: 4px 0 0;
+}
+.dialogawp-dash-header-actions {
+    display: flex;
+    gap: 8px;
+}
+.dialogawp-dash-alert {
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+.dialogawp-dash-alert a {
+    font-weight: 600;
+}
+.dialogawp-dash-alert-warning {
+    background: #FFFBEB;
+    border: 1px solid #FDE68A;
+    color: #92400E;
+}
+.dialogawp-dash-alert-info {
+    background: #EFF6FF;
+    border: 1px solid #BFDBFE;
+    color: #1E40AF;
+}
+
+/* Stats Grid */
+.dialogawp-dash-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+.dialogawp-dash-stat {
+    background: #fff;
+    border: 1px solid #E5E7EF;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+.dialogawp-dash-stat-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.dialogawp-dash-stat-icon .dashicons {
+    font-size: 22px;
+    width: 22px;
+    height: 22px;
+}
+.dialogawp-dash-stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #26233A;
+    line-height: 1;
+}
+.dialogawp-dash-stat-label {
+    font-size: 13px;
+    color: #94A3B8;
+    margin-top: 4px;
+}
+
+/* Two Column Grid */
+.dialogawp-dash-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 20px;
+}
+
+/* Cards */
+.dialogawp-dash-card {
+    background: #fff;
+    border: 1px solid #E5E7EF;
+    border-radius: 12px;
+    overflow: hidden;
+}
+.dialogawp-dash-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid #F1F5F9;
+}
+.dialogawp-dash-card-header h3 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: #26233A;
+}
+.dialogawp-dash-card-header a {
+    font-size: 13px;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+/* Recent Leads Table */
+.dialogawp-dash-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.dialogawp-dash-table th {
+    text-align: left;
+    padding: 10px 20px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #94A3B8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: #F7F8FC;
+}
+.dialogawp-dash-table td {
+    padding: 12px 20px;
+    font-size: 13px;
+    color: #26233A;
+    border-bottom: 1px solid #F1F5F9;
+}
+.dialogawp-dash-table tr:last-child td {
+    border-bottom: none;
+}
+.dialogawp-dash-empty {
+    padding: 32px 20px;
+    text-align: center;
+}
+.dialogawp-dash-empty p {
+    color: #94A3B8;
+    font-size: 13px;
+    margin: 0;
+}
+
+/* Quick Links */
+.dialogawp-dash-links {
+    padding: 8px;
+}
+.dialogawp-dash-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.15s;
+}
+.dialogawp-dash-link:hover {
+    background: #F7F8FC;
+}
+.dialogawp-dash-link .dashicons {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+.dialogawp-dash-link strong {
+    display: block;
+    font-size: 13px;
+    color: #26233A;
+    font-weight: 600;
+}
+.dialogawp-dash-link span {
+    font-size: 12px;
+    color: #94A3B8;
+}
+
+/* Responsive */
+@media (max-width: 960px) {
+    .dialogawp-dash-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .dialogawp-dash-grid {
+        grid-template-columns: 1fr;
+    }
+    .dialogawp-dash-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+}
+
+/* Analytics Charts */
+.dialogawp-chart-container {
+    background: #fff;
+    border: 1px solid #E5E7EF;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.dialogawp-chart-container h3 {
+    margin: 0 0 20px 0;
+    font-size: 18px;
+}
+
+/* Leads Table */
+.dialogawp-leads-table {
+    width: 100%;
+    background: #fff;
+    border: 1px solid #E5E7EF;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+.dialogawp-leads-table th,
+.dialogawp-leads-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #E5E7EF;
+}
+
+.dialogawp-leads-table th {
+    background: #F7F8FC;
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+}
+
+.dialogawp-leads-table tr:hover {
+    background: #F7F8FC;
+}
+
+.dialogawp-lead-status {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.dialogawp-lead-status.new {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.dialogawp-lead-status.contacted {
+    background: #fff3e0;
+    color: #f57c00;
+}
+
+.dialogawp-lead-status.converted {
+    background: #e8f5e9;
+    color: #388e3c;
+}
+
+.dialogawp-lead-status.lost {
+    background: #ffebee;
+    color: #d32f2f;
+}
+
+/* Settings */
+.dialogawp-settings-section {
+    background: #fff;
+    border: 1px solid #E5E7EF;
+    border-radius: 4px;
+    padding: 20px;
+    margin: 20px 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 32px;
+    row-gap: 0;
+}
+
+.dialogawp-settings-section h2 {
+    grid-column: 1 / -1;
+    margin: 0 0 20px 0;
+    font-size: 18px;
+    border-bottom: 1px solid #E5E7EF;
+    padding-bottom: 10px;
+}
+
+/* Rows that should span the full width (large controls like textareas
+   or sections that read better full-width). Add class `dialogawp-setting-row--wide`. */
+.dialogawp-setting-row.dialogawp-setting-row--wide {
+    grid-column: 1 / -1;
+}
+
+@media (max-width: 900px) {
+    .dialogawp-settings-section {
+        grid-template-columns: 1fr;
+    }
+}
+
+.dialogawp-settings-top-actions {
+    display: flex;
+    justify-content: flex-start;
+    margin: 0 0 16px 0;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #E5E7EF;
+}
+
+.dialogawp-setting-row {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 18px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.dialogawp-setting-row:last-child {
+    border-bottom: none;
+}
+
+.dialogawp-setting-label h4 {
+    margin: 0 0 5px 0;
+    font-size: 14px;
+}
+
+.dialogawp-setting-label p {
+    margin: 0;
+    font-size: 13px;
+    color: #666;
+}
+
+.dialogawp-setting-control {
+    width: 100%;
+    max-width: 560px;
+}
+
+.dialogawp-setting-control input[type="text"],
+.dialogawp-setting-control input[type="number"],
+.dialogawp-setting-control select,
+.dialogawp-setting-control textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #E5E7EF;
+    border-radius: 4px;
+}
+
+.dialogawp-color-picker {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.dialogawp-color-preview {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #E5E7EF;
+    border-radius: 4px;
+}
+
+/* Builder empty state */
+.dialogawp-builder-empty-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 500px;
+}
+
+.dialogawp-builder-empty-inner {
+    text-align: center;
+    max-width: 440px;
+    padding: 40px;
+}
+
+.dialogawp-builder-empty-inner h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #26233A;
+    margin: 0 0 10px;
+}
+
+.dialogawp-builder-empty-inner p {
+    font-size: 14px;
+    color: #64748B;
+    line-height: 1.6;
+    margin: 0 0 10px;
+}
+
+/* Mobile notice — hidden on desktop */
+.dialogawp-builder-mobile-notice {
+    display: none;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .dialogawp-builder-mobile-notice {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 70vh;
+        padding: 40px 20px;
+    }
+
+    .dialogawp-builder-mobile-inner {
+        text-align: center;
+        max-width: 420px;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        padding: 40px 32px;
+    }
+
+    .dialogawp-builder-mobile-inner h2 {
+        font-size: 22px;
+        font-weight: 700;
+        color: #26233A;
+        margin: 0 0 12px;
+        line-height: 1.4;
+    }
+
+    .dialogawp-builder-mobile-inner p {
+        font-size: 14px;
+        color: #64748B;
+        line-height: 1.6;
+        margin: 0 0 12px;
+    }
+
+    .dialogawp-builder-wrap {
+        display: none !important;
+    }
+}
+
+@media (max-width: 1200px) {
+    .dialogawp-builder-container {
+        flex-direction: column;
+    }
+    
+    .dialogawp-flows-sidebar {
+        width: 100%;
+        max-height: 300px;
+        border-right: none;
+        border-bottom: 1px solid #E5E7EF;
+    }
+    
+    .dialogawp-node-editor {
+        position: fixed;
+        right: 20px;
+        top: 100px;
+    }
+}
+
+@media (max-width: 768px) {
+    .dialogawp-node-buttons {
+        flex-wrap: wrap;
+    }
+    
+    .dialogawp-builder-toolbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .dialogawp-builder-toolbar-left,
+    .dialogawp-builder-toolbar-right {
+        width: 100%;
+    }
+    
+    .dialogawp-flow-name-input {
+        width: 100%;
+    }
+    
+    .dialogawp-node-editor {
+        position: fixed;
+        left: 0;
+        right: 0;
+        top: auto;
+        bottom: 0;
+        width: 100%;
+        max-height: 70vh;
+    }
+    
+    .dialogawp-setting-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .dialogawp-setting-control {
+        flex: 1;
+        width: 100%;
+    }
+}
+
+/* Utility Classes */
+.dialogawp-text-center {
+    text-align: center;
+}
+
+.dialogawp-mb-20 {
+    margin-bottom: 20px;
+}
+
+.dialogawp-mt-20 {
+    margin-top: 20px;
+}
+
+/* Animations */
+@keyframes dialogawp-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dialogawp-node-editor {
+    animation: dialogawp-fade-in 0.2s ease-out;
+}
+
+/* Variable Picker */
+.dialogawp-var-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    background: #ffffff;
+    border: 1px solid #cfe3ff;
+    border-radius: 14px;
+    color: #1565c0;
+    font-family: Consolas, "SF Mono", Menlo, monospace;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    line-height: 1.4;
+}
+
+.dialogawp-var-chip:hover {
+    background: #1565c0;
+    color: #ffffff;
+    border-color: #1565c0;
+    transform: translateY(-1px);
+}
+
+.dialogawp-var-chip:active {
+    transform: translateY(0);
+}
+
+/* Notice Styles */
+.dialogawp-notice {
+    padding: 12px 15px;
+    margin: 20px 0;
+    border-left: 4px solid #190F4F;
+    background: #f0f6fc;
+    border-radius: 0 4px 4px 0;
+}
+
+.dialogawp-notice.success {
+    border-left-color: #00a32a;
+    background: #f0f6f0;
+}
+
+.dialogawp-notice.warning {
+    border-left-color: #dba617;
+    background: #fcf9e8;
+}
+
+.dialogawp-notice.error {
+    border-left-color: #d63638;
+    background: #fcf0f1;
+}
+
+/**
+ * ACTION NODE CONFIGURATION STYLES
+ * Added in v0.12.0
+ */
+
+/* Action Config Container */
+.dialogawp-action-config {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #E5E7EF;
+}
+
+/* Capture Lead Field Rows */
+.dialogawp-capture-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.dialogawp-capture-field-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: #F7F8FC;
+    border: 1px solid #E5E7EF;
+    border-radius: 4px;
+    transition: opacity 0.2s;
+}
+
+.dialogawp-capture-field-row.disabled {
+    opacity: 0.5;
+    background: #f5f5f5;
+}
+
+.dialogawp-capture-field-enable-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 100px;
+    margin: 0;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.dialogawp-capture-field-enable-label input[type="checkbox"] {
+    margin: 0;
+}
+
+.dialogawp-field-label {
+    flex: 1;
+    padding: 6px 10px;
+    border: 1px solid #E5E7EF;
+    border-radius: 4px;
+    font-size: 13px;
+}
+
+.dialogawp-field-label:disabled {
+    background: #f0f0f0;
+    color: #999;
+    cursor: not-allowed;
+}
+
+.dialogawp-field-required-label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    min-width: 90px;
+    margin: 0;
+    font-size: 13px;
+    color: #666;
+}
+
+.dialogawp-field-required-label input[type="checkbox"] {
+    margin: 0;
+}
+
+.dialogawp-field-required:disabled {
+    cursor: not-allowed;
+}
+
+/* Action Config Fields */
+.dialogawp-action-config-field {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #E5E7EF;
+    border-radius: 4px;
+    font-size: 13px;
+}
+
+.dialogawp-action-config-field[type="url"],
+.dialogawp-action-config-field[type="email"] {
+    font-family: monospace;
+}
+
+.dialogawp-action-config-field:focus {
+    border-color: #190F4F;
+    outline: none;
+    box-shadow: 0 0 0 1px #190F4F;
+}
+
+/* Notice Boxes in Action Config */
+.dialogawp-action-config .dialogawp-notice {
+    padding: 12px 15px;
+    margin: 0 0 20px 0;
+    border-left: 4px solid #190F4F;
+    background: #f0f6fc;
+    border-radius: 0 4px 4px 0;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.dialogawp-action-config .dialogawp-notice.warning {
+    border-left-color: #dba617;
+    background: #fcf9e8;
+}
+
+.dialogawp-action-config .dialogawp-notice p {
+    margin: 0;
+}
+
+.dialogawp-action-config .dialogawp-notice strong {
+    display: block;
+    margin-bottom: 4px;
+}
+
+/* Responsive Adjustments for Action Config */
+@media (max-width: 768px) {
+    .dialogawp-capture-field-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .dialogawp-capture-field-enable-label,
+    .dialogawp-field-required-label {
+        width: 100%;
+    }
+    
+    .dialogawp-field-label {
+        width: 100%;
+    }
+}
+
+/* Visibility Modal */
+.dialogawp-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 100000;
+}
+
+.dialogawp-modal-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.dialogawp-modal-content {
+    position: relative;
+    background: #fff;
+    margin: 50px auto;
+    max-width: 600px;
+    border-radius: 8px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    animation: dialogawp-modal-in 0.2s ease-out;
+}
+
+@keyframes dialogawp-modal-in {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.dialogawp-modal-header {
+    padding: 20px;
+    border-bottom: 1px solid #E5E7EF;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dialogawp-modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.dialogawp-modal-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    color: #666;
+}
+
+.dialogawp-modal-close:hover {
+    color: #000;
+}
+
+.dialogawp-modal-body {
+    padding: 20px;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.dialogawp-modal-footer {
+    padding: 15px 20px;
+    border-top: 1px solid #E5E7EF;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}

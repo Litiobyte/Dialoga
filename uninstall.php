@@ -1,0 +1,59 @@
+<?php
+/**
+ * Uninstall DIALOGAWP
+ *
+ * Fired when the plugin is uninstalled (deleted, not just deactivated).
+ *
+ * v0.39.6 — DATA PRESERVATION BY DEFAULT.
+ * Prior to this, uninstall dropped all 4 DialogaWP tables (flows, conversations,
+ * leads, analytics) unconditionally. That's a data-loss trap during routine
+ * plugin updates: uploading a new zip via WP Admin's "Delete → Upload → Activate"
+ * workflow triggers this file and destroys real business data (flows painstakingly
+ * built in the visual builder, thousands of captured leads, months of analytics).
+ *
+ * New behavior: this file NO-OPS unless the admin has explicitly opted in via
+ * the setting `dialogawp_delete_data_on_uninstall = 1`. That option is off by
+ * default; admins who genuinely want a clean wipe (dev cleanup, site
+ * migration, GDPR total-erasure request) can flip it in DialogaWP → Settings →
+ * Advanced before deleting the plugin.
+ */
+
+// If uninstall not called from WordPress, exit
+if (!defined('WP_UNINSTALL_PLUGIN')) {
+    exit;
+}
+
+// v0.39.6: guard rail — preserve all DialogaWP data unless the admin has
+// explicitly opted in. This makes the "Deactivate → Delete → Upload → Activate"
+// update workflow safe by default.
+$settings = get_option('dialogawp_settings', array());
+$opt_in   = isset($settings['delete_data_on_uninstall']) && (int) $settings['delete_data_on_uninstall'] === 1;
+
+if (!$opt_in) {
+    // Bail out — leave every table, option, and transient intact so the next
+    // reinstall/activate finds all flows, leads, conversations, and analytics
+    // exactly as they were.
+    return;
+}
+
+global $wpdb;
+
+// Drop all DIALOGAWP tables — ONLY reached when the admin opted in above.
+$tables = array(
+    $wpdb->prefix . 'dialogawp_flows',
+    $wpdb->prefix . 'dialogawp_conversations',
+    $wpdb->prefix . 'dialogawp_leads',
+    $wpdb->prefix . 'dialogawp_analytics'
+);
+
+foreach ($tables as $table) {
+    $wpdb->query("DROP TABLE IF EXISTS $table");
+}
+
+// Delete all plugin options
+delete_option('dialogawp_settings');
+delete_option('dialogawp_version');
+delete_option('dialogawp_pro_tracking_options'); // Pro settings, if present
+
+// Clear any transients
+delete_transient('dialogawp_cache');

@@ -1,0 +1,19 @@
+{
+  "Dashboard": "Panel",
+  "Flow Builder": "Editor de flujos",
+  "Leads": "Contactos",
+  "Settings": "Ajustes",
+  "AI Settings": "Ajustes de IA",
+  "Analytics": "Estadísticas",
+  "Run Setup Wizard": "Ejecutar asistente de configuración",
+  "Insufficient permissions": "Permisos insuficientes",
+  "Invalid flow data JSON: %s": "JSON de flujo no válido: %s",
+  "Flow updated": "Flujo actualizado",
+  "Flow created": "Flujo creado",
+  "Flow deleted": "Flujo eliminado",
+  "Invalid flow ID": "ID de flujo no válido",
+  "Could not save the flow. Please try again.": "No se pudo guardar el flujo. Inténtalo de nuevo.",
+  "Could not delete the flow. Please try again.": "No se pudo eliminar el flujo. Inténtalo de nuevo.",
+  "You do not have permission to export leads.": "No tienes permiso para exportar contactos.",
+  "Security check failed. Please refresh the Leads page and try the export again.": "La comprobación de seguridad falló. Actualiza la página Contactos e intenta exportar de nuevo."
+}

@@ -1,0 +1,2886 @@
+msgid ""
+msgstr "Project-Id-Version: DialogaWP\nLanguage: es_ES\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "%1$d embeddings generated. %2$d items remaining - run again to continue."
+msgstr "%1$d representaciones vectoriales generadas. Quedan %2$d elementos - ejecuta de nuevo para continuar."
+
+msgid "%1$d pages indexed (%2$d new, %3$d updated)."
+msgstr "%1$d páginas indexadas (%2$d nuevas, %3$d actualizadas)."
+
+msgid "%1$s + %2$s"
+msgstr "%1$s + %2$s"
+
+msgid "%1$s get semantic search (understands meaning). %2$s get keyword search. Both work well for most sites."
+msgstr "%1$s disponen de búsqueda semántica (comprende el significado). %2$s disponen de búsqueda por palabras clave. Ambas funcionan bien para la mayoría de los sitios."
+
+msgid "%1$s visitors reached; %2$s never got here"
+msgstr "%1$s visitantes llegaron; %2$s nunca llegaron aquí"
+
+msgid "%d admin test lead hidden"
+msgid_plural "%d admin test leads hidden"
+msgstr[0] "%d contacto de prueba del administrador oculto"
+msgstr[1] "%d contactos de prueba del administrador ocultos"
+
+msgid "%d embeddings generated for smart retrieval."
+msgstr "%d representaciones vectoriales generadas para la recuperación inteligente."
+
+msgid "%d embeddings generated. All items embedded!"
+msgstr "%d representaciones vectoriales generadas. ¡Todos los elementos están vectorizados!"
+
+msgid "%d item indexed"
+msgstr "%d elemento indexado"
+
+msgid "%d items indexed"
+msgstr "%d elementos indexados"
+
+msgid "%d lead"
+msgid_plural "%d leads"
+msgstr[0] "%d contacto"
+msgstr[1] "%d contactos"
+
+msgid "%d link click"
+msgid_plural "%d link clicks"
+msgstr[0] "%d clic en enlace"
+msgstr[1] "%d clics en enlaces"
+
+msgid "%d pages"
+msgstr "%d páginas"
+
+msgid "%d pages indexed in your knowledge base."
+msgstr "%d páginas indexadas en tu base de conocimiento."
+
+msgid "%s contains HTML or unsafe control characters; use plain text."
+msgstr "%s contiene HTML o caracteres de control no seguros; utiliza texto sin formato."
+
+msgid "%s contains duplicate IDs."
+msgstr "%s contiene ID duplicados."
+
+msgid "%s entries must be objects with string IDs."
+msgstr "Las entradas de %s deben ser objetos con ID de cadena."
+
+msgid "%s entries require string labels."
+msgstr "Las entradas de %s requieren etiquetas de cadena."
+
+msgid "%s flow(s) imported as inactive copies. Select them from the list and review settings before activation."
+msgstr "%s flujo(s) importado(s) como copias inactivas. Selecciónalos en la lista y revisa los ajustes antes de activarlos."
+
+msgid "%s has an invalid condition operator or value."
+msgstr "%s tiene un operador o valor de condición no válido."
+
+msgid "%s must be JSON no larger than 5 MiB."
+msgstr "%s debe ser JSON de un tamaño máximo de 5 MiB."
+
+msgid "%s must be a JSON string."
+msgstr "%s debe ser una cadena JSON."
+
+msgid "%s must be a boolean."
+msgstr "%s debe ser un booleano."
+
+msgid "%s must be a finite nonnegative number."
+msgstr "%s debe ser un número finito no negativo."
+
+msgid "%s must be a nonempty safe string ID."
+msgstr "%s debe ser un ID de cadena seguro y no vacío."
+
+msgid "%s must be a string."
+msgstr "%s debe ser una cadena."
+
+msgid "%s must be an array."
+msgstr "%s debe ser un array."
+
+msgid "%s must be an object."
+msgstr "%s debe ser un objeto."
+
+msgid "%s must contain only finite numbers."
+msgstr "%s debe contener únicamente números finitos."
+
+msgid "%s node"
+msgstr "%s nodo"
+
+msgid "%s nodes"
+msgstr "%s nodos"
+
+msgid "%s nodes, %s connections"
+msgstr "%s nodos, %s conexiones"
+
+msgid "%s role(s)"
+msgstr "%s rol(es)"
+
+msgid "%s role(s) selected"
+msgstr "%s rol(es) seleccionado(s)"
+
+msgid "%s uses an unsupported URL scheme."
+msgstr "%s utiliza un esquema de URL no compatible."
+
+msgid "(drag a wire to set target)"
+msgstr "(arrastra una conexión para establecer el destino)"
+
+msgid "(optional)"
+msgstr "(opcional)"
+
+msgid "(optional, one per line, key:value)"
+msgstr "(opcional, una por línea, key:value)"
+
+msgid "* Estimates are based on ~1,000 input tokens and ~250 output tokens per AI message, using %s as of March 2026. Actual costs vary. Always monitor your API dashboard."
+msgstr "* Las estimaciones se basan en ~1,000 tokens de entrada y ~250 tokens de salida por mensaje de IA, usando %s de marzo de 2026. Los costes reales varían. Revisa siempre el panel de tu API."
+
+msgid "+ New"
+msgstr "+ Nuevo"
+
+msgid "10 or {previous_answer}"
+msgstr "10 o {previous_answer}"
+
+msgid "A \"conversion\" is a chat session where the visitor submitted the Capture Lead form."
+msgstr "Una «conversión» es una sesión de chat en la que el visitante envió el formulario de captación de contactos."
+
+msgid "A basic template flow has been prepared instead. You can create it and customize it in the builder."
+msgstr "Se ha preparado un flujo de plantilla básico en su lugar. Puedes crearlo y personalizarlo en el editor."
+
+msgid "A pulsing ripple plays after a few seconds on pages where the visitor has not started a chat yet."
+msgstr "Después de unos segundos se muestra una onda pulsante en las páginas donde el visitante aún no ha iniciado un chat."
+
+msgid "A selected flow no longer exists."
+msgstr "Uno de los flujos seleccionados ya no existe."
+
+msgid "AI"
+msgstr "IA"
+
+msgid "AI Chat"
+msgstr "Chat con IA"
+
+msgid "AI Chat:"
+msgstr "Chat con IA:"
+
+msgid "AI Flow Wizard"
+msgstr "Asistente de flujos con IA"
+
+msgid "AI Provider"
+msgstr "Proveedor de IA"
+
+msgid "AI Settings"
+msgstr "Ajustes de IA"
+
+msgid "AI Setup"
+msgstr "Configuración de IA"
+
+msgid "AI lead_fields values must be booleans."
+msgstr "Los valores lead_fields de IA deben ser booleanos."
+
+msgid "AI returned an unexpected format."
+msgstr "La IA devolvió un formato inesperado."
+
+msgid "AI-Generated Flow Suggestion"
+msgstr "Sugerencia de flujo generado con IA"
+
+msgid "AI-powered answers with optional escalation."
+msgstr "Respuestas con IA y derivación opcional."
+
+msgid "ALL match (AND)"
+msgstr "Cumplirse TODAS (Y)"
+
+msgid "AND"
+msgstr "Y"
+
+msgid "ANY match (OR)"
+msgstr "Cumplirse ALGUNA (O)"
+
+msgid "API Configuration"
+msgstr "Configuración de API"
+
+msgid "API Key"
+msgstr "Clave de API"
+
+msgid "Abandoned conversations older than this many days are removed during the daily cleanup. This reduces stored visitor-typed text without a business justification."
+msgstr "Las conversaciones abandonadas con más de esta cantidad de días se eliminan durante la limpieza diaria. Esto reduce el texto almacenado escrito por visitantes sin una justificación comercial."
+
+msgid "Action"
+msgstr "Acción"
+
+msgid "Action (choose type)"
+msgstr "Acción (elige un tipo)"
+
+msgid "Action Buttons (Optional)"
+msgstr "Botones de acción (opcional)"
+
+msgid "Action Type"
+msgstr "Tipo de acción"
+
+msgid "Action:"
+msgstr "Acción:"
+
+msgid "Actions"
+msgstr "Acciones"
+
+msgid "Active"
+msgstr "Activo"
+
+msgid "Active - next cleanup in %s."
+msgstr "Activo - próxima limpieza en %s."
+
+msgid "Active - scheduled."
+msgstr "Activo - programado."
+
+msgid "Active Flows"
+msgstr "Flujos activos"
+
+msgid "Active flow:"
+msgstr "Flujo activo:"
+
+msgid "Add"
+msgstr "Añadir"
+
+msgid "Add Button"
+msgstr "Añadir botón"
+
+msgid "Add Condition"
+msgstr "Añadir condición"
+
+msgid "Add Output Group"
+msgstr "Añadir grupo de salida"
+
+msgid "Add billing: Go to <strong>Plans & Billing</strong> and add a payment method"
+msgstr "Configura la facturación: ve a <strong>Planes y facturación</strong> y añade un método de pago"
+
+msgid "Add billing: Go to <strong>Settings → Billing</strong> and add a payment method"
+msgstr "Configura la facturación: ve a <strong>Ajustes → Facturación</strong> y añade un método de pago"
+
+msgid "Add clickable buttons that link to pages or trigger actions."
+msgstr "Añade botones que enlacen a páginas o ejecuten acciones."
+
+msgid "Add personality and instructions for your chatbot"
+msgstr "Añade personalidad e instrucciones para tu chatbot"
+
+msgid "Additional Intro (Optional)"
+msgstr "Introducción adicional (opcional)"
+
+msgid "Additional context for this specific AI chat node..."
+msgstr "Contexto adicional para este nodo de chat con IA..."
+
+msgid "Adds extra context to the AI for this node only. Global instructions are set in %s."
+msgstr "Añade contexto adicional a la IA solo para este nodo. Las instrucciones globales se establecen en %s."
+
+msgid "Admin test sessions only"
+msgstr "Solo sesiones de prueba del administrador"
+
+msgid "Advanced Analytics"
+msgstr "Estadísticas avanzadas"
+
+msgid "Agency / Consultancy"
+msgstr "Agencia / Consultoría"
+
+msgid "All"
+msgstr "Todos"
+
+msgid "All changes saved"
+msgstr "Todos los cambios guardados"
+
+msgid "All items already have embeddings."
+msgstr "Todos los elementos ya tienen representaciones vectoriales."
+
+msgid "All time"
+msgstr "Desde el inicio"
+
+msgid "All website visitors can see and interact with the chatbot. Best for most use cases."
+msgstr "Todos los visitantes del sitio web pueden ver e interactuar con el chatbot. Ideal para la mayoría de los casos."
+
+msgid "Allow multiple selections"
+msgstr "Permitir varias selecciones"
+
+msgid "Analytics"
+msgstr "Estadísticas"
+
+msgid "Analyzing your website and generating a personalized flow..."
+msgstr "Analizando tu sitio web y generando un flujo personalizado..."
+
+msgid "Another active flow \"%s\" has the same visibility. Visitors will see the newest flow. Continue anyway?"
+msgstr "Otro flujo activo, «%s», tiene la misma visibilidad. Los visitantes verán el flujo más reciente. ¿Continuar de todos modos?"
+
+msgid "Answers from knowledge base"
+msgstr "Respuestas de la base de conocimiento"
+
+msgid "Anthropic key:"
+msgstr "Clave de Anthropic:"
+
+msgid "Anthropic users"
+msgstr "Los usuarios de Anthropic"
+
+msgid "Any extra context for the AI at this point in the flow..."
+msgstr "Contexto adicional para la IA en este punto del flujo..."
+
+msgid "Appearance"
+msgstr "Apariencia"
+
+msgid "Apply"
+msgstr "Aplicar"
+
+msgid "Approx. $%s per conversation"
+msgstr "Aprox. $%s por conversación"
+
+msgid "Are you sure you want to delete this flow?"
+msgstr "¿Seguro que quieres eliminar este flujo?"
+
+msgid "Are you sure you want to delete this node?"
+msgstr "¿Seguro que quieres eliminar este nodo?"
+
+msgid "Auto-continue (Display only)"
+msgstr "Continuar automáticamente (solo mostrar)"
+
+msgid "Auto-delete abandoned conversations"
+msgstr "Eliminar automáticamente conversaciones abandonadas"
+
+msgid "Auto-delete old leads"
+msgstr "Eliminar automáticamente contactos antiguos"
+
+msgid "Auto-extract lead from conversation"
+msgstr "Extraer automáticamente el contacto de la conversación"
+
+msgid "Auto-save failed"
+msgstr "Error al guardar automáticamente"
+
+msgid "Automatically delete abandoned chat sessions from visitors who never submitted contact information. Conversations that captured a lead use the Lead Data Retention setting. Runs once a day."
+msgstr "Elimina automáticamente las sesiones de chat abandonadas de visitantes que nunca enviaron información de contacto. Las conversaciones que capturaron un contacto usan el ajuste de conservación de datos de contactos. Se ejecuta una vez al día."
+
+msgid "Automatically delete old leads and their conversations to satisfy data-retention policies (GDPR, CCPA, business policy). Runs once a day."
+msgstr "Elimina automáticamente contactos antiguos y sus conversaciones para cumplir las políticas de conservación de datos (RGPD, CCPA y políticas de la empresa). Se ejecuta una vez al día."
+
+msgid "Availability questions"
+msgstr "Preguntas sobre disponibilidad"
+
+msgid "Available Buttons:"
+msgstr "Botones disponibles:"
+
+msgid "Available Variables"
+msgstr "Variables disponibles"
+
+msgid "Avg Messages per Conversation"
+msgstr "Media de mensajes por conversación"
+
+msgid "BCC (Optional)"
+msgstr "CCO (opcional)"
+
+msgid "Back to Dashboard"
+msgstr "Volver al panel de control"
+
+msgid "Back to public leads"
+msgstr "Volver a los contactos públicos"
+
+msgid "Balanced"
+msgstr "Equilibrado"
+
+msgid "Best for: education, FAQ"
+msgstr "Ideal para: educación y preguntas frecuentes"
+
+msgid "Best for: helpdesk, FAQ"
+msgstr "Ideal para: soporte y preguntas frecuentes"
+
+msgid "Best for: sales, inquiries"
+msgstr "Ideal para: ventas y consultas"
+
+msgid "Best for: services, consults"
+msgstr "Ideal para: servicios y consultas"
+
+msgid "Bigger bubbles get noticed. Medium is the recommended default; use Large on image-heavy sites where the widget can get lost."
+msgstr "Las burbujas más grandes llaman la atención. Mediano es el tamaño recomendado; usa Grande en sitios con muchas imágenes donde el widget pueda pasar desapercibido."
+
+msgid "Body (Optional)"
+msgstr "Cuerpo (opcional)"
+
+msgid "Book Appointments"
+msgstr "Reservar citas"
+
+msgid "Book Massage"
+msgstr "Reservar masaje"
+
+msgid "Booking inquiry"
+msgstr "Consulta sobre una reserva"
+
+msgid "Bot bubble shown above the button."
+msgstr "Burbuja del bot mostrada encima del botón."
+
+msgid "Bottom Left"
+msgstr "Abajo a la izquierda"
+
+msgid "Bottom Right"
+msgstr "Abajo a la derecha"
+
+msgid "Branch"
+msgstr "Bifurcación"
+
+msgid "Branch %d"
+msgstr "Rama %d"
+
+msgid "Branch Logic"
+msgstr "Lógica de bifurcación"
+
+msgid "Branch: route visitors based on their answer"
+msgstr "Ramificación: dirige a los visitantes según su respuesta"
+
+msgid "Bubble Nudge"
+msgstr "Animación de atención de la burbuja"
+
+msgid "Bubble Shown"
+msgstr "Burbuja mostrada"
+
+msgid "Bubble size"
+msgstr "Tamaño de la burbuja"
+
+msgid "Building Your Chatbot..."
+msgstr "Creando tu chatbot..."
+
+msgid "Business Hours"
+msgstr "Horario comercial"
+
+msgid "Business Name"
+msgstr "Nombre del negocio"
+
+msgid "Business detected:"
+msgstr "Negocio detectado:"
+
+msgid "Button Label"
+msgstr "Etiqueta del botón"
+
+msgid "Button URL"
+msgstr "URL del botón"
+
+msgid "Button text"
+msgstr "Texto del botón"
+
+msgid "By default, sessions started by users with the manage_options capability are hidden from every analytics view, including leads, conversations, dashboard tiles, conversion rate, funnel, heatmap, path flow, time-of-day chart, top pages, and daily trend. Enable this to include admin testing in real-visitor numbers."
+msgstr "De forma predeterminada, las sesiones iniciadas por usuarios con la capacidad manage_options se ocultan en todas las vistas de estadísticas, incluidos contactos, conversaciones, tarjetas del panel, tasa de conversión, embudo, mapa de calor, flujo de rutas, gráfico por hora del día, páginas principales y tendencia diaria. Activa esta opción para incluir las pruebas de administradores en las cifras de visitantes reales."
+
+msgid "CC (Optional)"
+msgstr "CC (opcional)"
+
+msgid "Calendar link or booking"
+msgstr "Enlace al calendario o reserva"
+
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgid "Cannot save empty flow! Please add at least one node."
+msgstr "¡No se puede guardar un flujo vacío! Añade al menos un nodo."
+
+msgid "Capture Lead"
+msgstr "Capturar contacto"
+
+msgid "Capture Leads"
+msgstr "Captar contactos"
+
+msgid "Capture fields require enabled, label and required values."
+msgstr "Los campos de captura requieren valores enabled, label y required."
+
+msgid "Capture lead:"
+msgstr "Captar contacto:"
+
+msgid "Captured"
+msgstr "Captado"
+
+msgid "Central Time"
+msgstr "Hora central"
+
+msgid "Change Key"
+msgstr "Cambiar clave"
+
+msgid "Chat Customization"
+msgstr "Personalización del chat"
+
+msgid "Chat Goals"
+msgstr "Objetivos del chat"
+
+msgid "Chat Position"
+msgstr "Posición del chat"
+
+msgid "Chat Widget Active"
+msgstr "Widget de chat activo"
+
+msgid "Chat Widget Disabled"
+msgstr "Widget de chat desactivado"
+
+msgid "Chat Widget Enabled But No Active Flow"
+msgstr "Widget de chat activado sin ningún flujo activo"
+
+msgid "Chat starts here"
+msgstr "El chat empieza aquí"
+
+msgid "Chatbot Customization"
+msgstr "Personalización del chatbot"
+
+msgid "Chatbot Goals"
+msgstr "Objetivos del chatbot"
+
+msgid "Chatbot Visibility"
+msgstr "Visibilidad del chatbot"
+
+msgid "Chats that converted"
+msgstr "Chats que generaron conversiones"
+
+msgid "Choose a JSON file no larger than 5 MiB."
+msgstr "Elige un archivo JSON de hasta 5 MiB."
+
+msgid "Choose an action type above to get started."
+msgstr "Elige un tipo de acción arriba para empezar."
+
+msgid "Choose what action to perform when this node is reached."
+msgstr "Elige qué acción ejecutar cuando se llegue a este nodo."
+
+msgid "Choose which fields to collect from visitors."
+msgstr "Elige qué campos recopilar de los visitantes."
+
+msgid "Choose which user roles can see this chatbot flow:"
+msgstr "Elige qué perfiles de usuario pueden ver este flujo del chatbot:"
+
+msgid "Choose who can see your chatbot"
+msgstr "Elige quién puede ver tu chatbot"
+
+msgid "Claude Haiku (recommended — fast & affordable)"
+msgstr "Claude Haiku (recomendado, rápido y económico)"
+
+msgid "Claude Model"
+msgstr "Modelo de Claude"
+
+msgid "Claude Sonnet (more capable)"
+msgstr "Claude Sonnet (más potente)"
+
+msgid "Click"
+msgstr "Clic"
+
+msgid "Click %s to create a connector without leaving the builder."
+msgstr "Haz clic en %s para crear un conector sin salir del editor."
+
+msgid "Click <strong>\"Create Key\"</strong>"
+msgstr "Haz clic en <strong>\"Crear clave\"</strong>"
+
+msgid "Click <strong>\"Create new secret key\"</strong>"
+msgstr "Haz clic en <strong>\"Crear nueva clave secreta\"</strong>"
+
+msgid "Click again to cancel"
+msgstr "Haz clic de nuevo para cancelar"
+
+msgid "Click input to connect"
+msgstr "Haz clic en una entrada para conectar"
+
+msgid "Click to complete connection"
+msgstr "Haz clic para completar la conexión"
+
+msgid "Click to connect to first node"
+msgstr "Haz clic para conectar al primer nodo"
+
+msgid "Click to start connection"
+msgstr "Haz clic para iniciar la conexión"
+
+msgid "Clicks on this button will count toward your Conversions metric on the dashboard and fire the %s dataLayer event for GTM / GA4 tracking. Enable for high-intent CTAs like booking links; leave off for social or resource links."
+msgstr "Los clics en este botón contarán en la métrica de conversiones del panel y activarán el evento %s de dataLayer para el seguimiento de GTM / GA4. Actívalo para acciones de alta intención, como enlaces de reserva; déjalo desactivado para enlaces sociales o de recursos."
+
+msgid "Close"
+msgstr "Cerrar"
+
+msgid "Closed"
+msgstr "Cerrado"
+
+msgid "Collect visitor contact info with a conversational lead form."
+msgstr "Recopila los datos de contacto de los visitantes con un formulario conversacional."
+
+msgid "Coming Soon"
+msgstr "Próximamente"
+
+msgid "Comma-separated email addresses. Where to send the lead notification for THIS node."
+msgstr "Direcciones de correo separadas por comas. Destino de la notificación de contacto de ESTE nodo."
+
+msgid "Comma-separated tags to apply when this node is reached (e.g., %s)."
+msgstr "Etiquetas separadas por comas que se aplicarán al llegar a este nodo (p. ej., %s)."
+
+msgid "Company"
+msgstr "Empresa"
+
+msgid "Conditions must:"
+msgstr "Las condiciones deben:"
+
+msgid "Configure Roles"
+msgstr "Configurar perfiles"
+
+msgid "Confirm"
+msgstr "Confirmar"
+
+msgid "Confirmation did not match. Nothing was deleted."
+msgstr "La confirmación no coincide. No se ha eliminado nada."
+
+msgid "Connect Your AI Provider"
+msgstr "Conecta tu proveedor de IA"
+
+msgid "Connect an AI provider to power conversational responses in your chatbot flows."
+msgstr "Conecta un proveedor de IA para generar respuestas conversacionales en los flujos de tu chatbot."
+
+msgid "Connect an Output node (with buttons configured) to this Click node to detect button clicks."
+msgstr "Conecta un nodo de salida (con botones configurados) a este nodo de clic para detectar clics en botones."
+
+msgid "Connect an Output node (with buttons) to this Click node. Each button creates a path that can be routed differently."
+msgstr "Conecta un nodo de salida (con botones) a este nodo de clic. Cada botón crea una ruta que puede dirigirse de forma diferente."
+
+msgid "Connect from left"
+msgstr "Conectar desde la izquierda"
+
+msgid "Connect from right"
+msgstr "Conectar desde la derecha"
+
+msgid "Connect this Click node to different paths based on which button is clicked."
+msgstr "Conecta este nodo de clic a distintas rutas según el botón pulsado."
+
+msgid "Connect your AI provider (OpenAI or Anthropic)"
+msgstr "Conecta tu proveedor de IA (OpenAI o Anthropic)"
+
+msgid "Connected Question Options:"
+msgstr "Opciones de la pregunta conectada:"
+
+msgid "Connection failed. Check your API key."
+msgstr "La conexión ha fallado. Comprueba tu clave de API."
+
+msgid "Connection successful! Your AI is ready."
+msgstr "¡Conexión correcta! Tu IA está lista."
+
+msgid "Connection verified. You're all set!"
+msgstr "¡Conexión verificada! Todo está listo."
+
+msgid "Contact"
+msgstr "Contacto"
+
+msgid "Contact Type"
+msgstr "Tipo de contacto"
+
+msgid "Contacted"
+msgstr "Contactado"
+
+msgid "Contains"
+msgstr "Contiene"
+
+msgid "Continue"
+msgstr "Continuar"
+
+msgid "Continue Flow"
+msgstr "Continuar flujo"
+
+msgid "Continue Setup"
+msgstr "Continuar configuración"
+
+msgid "Control who can see the chatbot. Perfect for testing before going live!"
+msgstr "Controla quién puede ver el chatbot. Ideal para probarlo antes de publicarlo."
+
+msgid "Controls how long AI responses can be. 500 is a good default for chat."
+msgstr "Controla la longitud de las respuestas de IA. 500 es un buen valor predeterminado para el chat."
+
+msgid "Conversation"
+msgstr "Conversación"
+
+msgid "Conversation Retention"
+msgstr "Conservación de conversaciones"
+
+msgid "Conversation not found"
+msgstr "Conversación no encontrada"
+
+msgid "Conversation trends and stats"
+msgstr "Tendencias y estadísticas de conversaciones"
+
+msgid "Conversations"
+msgstr "Conversaciones"
+
+msgid "Conversations - Last 30 Days"
+msgstr "Conversaciones - Últimos 30 días"
+
+msgid "Conversations that captured a lead or triggered a marked Link Button click"
+msgstr "Conversaciones que captaron un contacto o registraron un clic en un botón de enlace marcado"
+
+msgid "Conversations with lead data"
+msgstr "Conversaciones con datos de contacto"
+
+msgid "Conversion Rate"
+msgstr "Tasa de conversión"
+
+msgid "Conversion Split"
+msgstr "Distribución de conversiones"
+
+msgid "Conversion rate = (Leads Captured + Link Conversions) / Conversations x 100."
+msgstr "Tasa de conversión = (Contactos captados + Conversiones por enlace) / Conversaciones x 100."
+
+msgid "Conversions"
+msgstr "Conversiones"
+
+msgid "Converted"
+msgstr "Convertido"
+
+msgid "Copy the key (starts with <code>sk-</code>) and paste it below"
+msgstr "Copia la clave (empieza por <code>sk-</code>) y pégala abajo"
+
+msgid "Copy the key (starts with <code>sk-ant-</code>) and paste it below"
+msgstr "Copia la clave (empieza por <code>sk-ant-</code>) y pégala abajo"
+
+msgid "Cost Estimator"
+msgstr "Estimador de costes"
+
+msgid "Could Not Generate Flow"
+msgstr "No se pudo generar el flujo"
+
+msgid "Could not create flow"
+msgstr "No se pudo crear el flujo"
+
+msgid "Could not delete lead."
+msgstr "No se pudo eliminar el contacto."
+
+msgid "Could not delete the flow. Please try again."
+msgstr "No se pudo eliminar el flujo. Inténtalo de nuevo."
+
+msgid "Could not load lead details."
+msgstr "No se pudieron cargar los detalles del contacto."
+
+msgid "Could not read flows."
+msgstr "No se pudieron leer los flujos."
+
+msgid "Could not save flow."
+msgstr "No se pudo guardar el flujo."
+
+msgid "Could not save the flow. Please try again."
+msgstr "No se pudo guardar el flujo. Inténtalo de nuevo."
+
+msgid "Count as conversion"
+msgstr "Contar como conversión"
+
+msgid "Crawl Website"
+msgstr "Rastrear sitio web"
+
+msgid "Crawl Your Website"
+msgstr "Rastrea tu sitio web"
+
+msgid "Crawl complete. %1$d items indexed (%2$d new, %3$d updated, %4$d skipped). %5$s"
+msgstr "Rastreo completado. %1$d elementos indexados (%2$d nuevos, %3$d actualizados, %4$d omitidos). %5$s"
+
+msgid "Crawl failed. Please try again."
+msgstr "El rastreo ha fallado. Vuelve a intentarlo."
+
+msgid "Crawling..."
+msgstr "Rastreando..."
+
+msgid "Create My Chatbot"
+msgstr "Crear mi chatbot"
+
+msgid "Create New Flow"
+msgstr "Crear nuevo flujo"
+
+msgid "Create This Flow"
+msgstr "Crear este flujo"
+
+msgid "Create a Flow"
+msgstr "Crear un flujo"
+
+msgid "Create and edit chatbot flows"
+msgstr "Crea y edita flujos del chatbot"
+
+msgid "Create conversational chatbot flows with our visual drag-and-drop editor."
+msgstr "Crea flujos de conversación para tu chatbot con nuestro editor visual de arrastrar y soltar."
+
+msgid "Create your first flow"
+msgstr "Crea tu primer flujo"
+
+msgid "Created"
+msgstr "Creado"
+
+msgid "Creating flow..."
+msgstr "Creando flujo..."
+
+msgid "Creating flow…"
+msgstr "Creando flujo…"
+
+msgid "Credential fields and all custom headers were removed."
+msgstr "Se eliminaron los campos de credenciales y todas las cabeceras personalizadas."
+
+msgid "Credentials are managed centrally on the %s."
+msgstr "Las credenciales se gestionan de forma centralizada en la %s."
+
+msgid "Current: %s - leave blank to keep"
+msgstr "Actual: %s - deja el campo vacío para conservarla"
+
+msgid "Custom Headers"
+msgstr "Cabeceras personalizadas"
+
+msgid "Custom Instructions"
+msgstr "Instrucciones personalizadas"
+
+msgid "Custom Instructions & Memory"
+msgstr "Instrucciones personalizadas y memoria"
+
+msgid "Custom URL"
+msgstr "URL personalizada"
+
+msgid "Customer Support"
+msgstr "Atención al cliente"
+
+msgid "Customize Your Chatbot"
+msgstr "Personaliza tu chatbot"
+
+msgid "DIALOGAWP - AI Settings"
+msgstr "DIALOGAWP - Ajustes de IA"
+
+msgid "DIALOGAWP - Flow Builder"
+msgstr "DIALOGAWP - Editor de flujos"
+
+msgid "DIALOGAWP AI connection successful!"
+msgstr "¡Conexión con la IA de DIALOGAWP establecida correctamente!"
+
+msgid "DIALOGAWP Settings"
+msgstr "Ajustes de DIALOGAWP"
+
+msgid "Danger Zone"
+msgstr "Zona de peligro"
+
+msgid "Dangling legacy loop target_node_id reference."
+msgstr "Referencia target_node_id de bucle heredado sin destino válido."
+
+msgid "Dashboard"
+msgstr "Panel"
+
+msgid "Data & Privacy"
+msgstr "Datos y privacidad"
+
+msgid "Data Quality"
+msgstr "Calidad de los datos"
+
+msgid "Date"
+msgstr "Fecha"
+
+msgid "Delay (ms)"
+msgstr "Retardo (ms)"
+
+msgid "Delay (seconds)"
+msgstr "Espera (segundos)"
+
+msgid "Delay before continuing:"
+msgstr "Retardo antes de continuar:"
+
+msgid "Delete"
+msgstr "Eliminar"
+
+msgid "Delete %s?\n\nThis removes the lead, its conversation, and clears it from your conversion rate. This cannot be undone."
+msgstr "¿Eliminar %s?\n\nSe eliminarán el contacto y su conversación, y se excluirán de la tasa de conversión. Esta acción no se puede deshacer."
+
+msgid "Delete ALL analytics events?\n\nThis cannot be undone."
+msgstr "¿Eliminar TODOS los eventos de estadísticas?\n\nEsta acción no se puede deshacer."
+
+msgid "Delete ALL conversations?\n\nThis cannot be undone."
+msgstr "¿Eliminar TODAS las conversaciones?\n\nEsta acción no se puede deshacer."
+
+msgid "Delete ALL leads?\n\nThis cannot be undone."
+msgstr "¿Eliminar TODOS los contactos?\n\nEsta acción no se puede deshacer."
+
+msgid "Delete All Conversations"
+msgstr "Eliminar todas las conversaciones"
+
+msgid "Delete All Leads"
+msgstr "Eliminar todos los contactos"
+
+msgid "Delete Connection"
+msgstr "Eliminar conexión"
+
+msgid "Delete Flow"
+msgstr "Eliminar flujo"
+
+msgid "Delete Node"
+msgstr "Eliminar nodo"
+
+msgid "Delete abandoned conversations after"
+msgstr "Eliminar conversaciones abandonadas después de"
+
+msgid "Delete failed"
+msgstr "Error al eliminar"
+
+msgid "Delete failed."
+msgstr "No se pudo eliminar."
+
+msgid "Delete leads after"
+msgstr "Eliminar contactos después de"
+
+msgid "Delete node"
+msgstr "Eliminar nodo"
+
+msgid "Delete this connection?"
+msgstr "¿Eliminar esta conexión?"
+
+msgid "Deleted"
+msgstr "Eliminado"
+
+msgid "Deleted %d analytics event(s)."
+msgstr "Se han eliminado %d evento(s) de estadísticas."
+
+msgid "Deleted %d conversation(s)."
+msgstr "Se han eliminado %d conversación(es)."
+
+msgid "Deleted %d lead(s)."
+msgstr "Se han eliminado %d contacto(s)."
+
+msgid "Deletes every conversation, every lead, and every analytics event. This is a full reset, useful for wiping test data."
+msgstr "Elimina todas las conversaciones, todos los contactos y todos los eventos de estadísticas. Es un reinicio completo, útil para borrar datos de prueba."
+
+msgid "Deletes only the event log: bubble impressions, node views, path data, and drop-off events. Conversations and leads are kept. Use this after cleaning up test data to avoid inflated Engagement Funnel impression counts."
+msgstr "Elimina solo el registro de eventos: impresiones de la burbuja, vistas de nodos, datos de rutas y eventos de abandono. Se conservan las conversaciones y los contactos. Úsalo después de limpiar los datos de prueba para evitar cifras de impresiones infladas en el embudo de interacción."
+
+msgid "Deleting..."
+msgstr "Eliminando..."
+
+msgid "Desktop Mode"
+msgstr "Modo de escritorio"
+
+msgid "Detected Clicks"
+msgstr "Clics detectados"
+
+msgid "DialogaWP Leads"
+msgstr "Contactos de DialogaWP"
+
+msgid "DialogaWP Pro is a separate plugin that adds further reporting on top of everything here - a per-node conversation funnel, full chat transcripts by session, A/B test comparisons, time-to-lead, and analytics CSV export."
+msgstr "DialogaWP Pro es un plugin independiente que añade informes adicionales: un embudo de conversación por nodo, transcripciones completas por sesión, comparaciones de pruebas A/B, tiempo hasta la captación del contacto y exportación de estadísticas en CSV."
+
+msgid "DialogaWP uses AI to power your chatbot conversations. You'll need an API key from OpenAI or Anthropic."
+msgstr "DialogaWP utiliza IA para las conversaciones de tu chatbot. Necesitarás una clave de API de OpenAI o Anthropic."
+
+msgid "Discard saved wizard progress"
+msgstr "Descartar el progreso guardado del asistente"
+
+msgid "Dismiss"
+msgstr "Descartar"
+
+msgid "Dismissing..."
+msgstr "Descartando..."
+
+msgid "Don't wait for response"
+msgstr "No esperar una respuesta"
+
+msgid "Download JSON"
+msgstr "Descargar JSON"
+
+msgid "Drag a connection from this Loop node to the target step. The flow will end if no wire is connected."
+msgstr "Arrastra una conexión desde este nodo de bucle al paso de destino. El flujo terminará si no hay ninguna conexión."
+
+msgid "Drag nodes from palette above or click buttons to add"
+msgstr "Arrastra nodos desde la paleta de arriba o pulsa los botones para añadirlos"
+
+msgid "Drag nodes onto canvas or click to add"
+msgstr "Arrastra nodos al lienzo o haz clic para añadirlos"
+
+msgid "Drop multiple Webhook nodes in a flow to fan data out to different integrations."
+msgstr "Añade varios nodos Webhook a un flujo para enviar datos a distintas integraciones."
+
+msgid "Duplicate"
+msgstr "Duplicar"
+
+msgid "Duplicate edge ID or dangling edge reference (only edge sources may use __start__)."
+msgstr "ID de conexión duplicado o referencia de conexión sin destino válido (solo los orígenes de las conexiones pueden usar __start__)."
+
+msgid "Duplicate feature coming soon!"
+msgstr "¡La función de duplicar estará disponible próximamente!"
+
+msgid "Duplicate or reserved node ID."
+msgstr "ID de nodo duplicado o reservado."
+
+msgid "E-commerce / Retail"
+msgstr "Comercio electrónico / Venta minorista"
+
+msgid "Each action type does something different when a visitor reaches this node: capture their contact info, show a booking link, redirect to a page, send an email, tag them, or set a variable."
+msgstr "Cada tipo de acción hace algo distinto cuando un visitante llega a este nodo: recopilar sus datos de contacto, mostrar un enlace de reserva, redirigir a una página, enviar un correo, añadir etiquetas o establecer una variable."
+
+msgid "Each flow requires a name (1-255 bytes), valid visibility, roles array and flow_data with nodes/edges arrays."
+msgstr "Cada flujo requiere un nombre (1-255 bytes), una visibilidad válida, un array de roles y flow_data con arrays de nodos y conexiones."
+
+msgid "Each group creates one output handle. Define conditions within each group."
+msgstr "Cada grupo crea un conector de salida. Define las condiciones dentro de cada grupo."
+
+msgid "Eastern Time"
+msgstr "Hora del este"
+
+msgid "Edges require string id, source and target."
+msgstr "Las conexiones requieren id, source y target de cadena."
+
+msgid "Edit"
+msgstr "Editar"
+
+msgid "Edit Node"
+msgstr "Editar nodo"
+
+msgid "Edit any message above before creating the flow."
+msgstr "Edita cualquiera de los mensajes anteriores antes de crear el flujo."
+
+msgid "Education"
+msgstr "Educación"
+
+msgid "Email"
+msgstr "Correo electrónico"
+
+msgid "Email Address"
+msgstr "Dirección de correo electrónico"
+
+msgid "Email Body"
+msgstr "Cuerpo del correo"
+
+msgid "Email Notifications"
+msgstr "Notificaciones por correo"
+
+msgid "Email Subject"
+msgstr "Asunto del correo"
+
+msgid "Email content. Use {variable_name} for captured data."
+msgstr "Contenido del correo. Usa {variable_name} para los datos recopilados."
+
+msgid "Email is sent with WordPress's built-in mailer. If your host blocks outgoing mail, install an SMTP plugin so these notifications deliver reliably."
+msgstr "El correo se envía con el sistema integrado de WordPress. Si tu alojamiento bloquea el correo saliente, instala un plugin SMTP para que estas notificaciones se entreguen de forma fiable."
+
+msgid "Email: %s"
+msgstr "Correo: %s"
+
+msgid "Embeddings require an OpenAI API key. Switch the provider to OpenAI, or use keyword search (works automatically for Anthropic users)."
+msgstr "Las representaciones vectoriales requieren una clave de API de OpenAI. Cambia el proveedor a OpenAI o utiliza la búsqueda por palabras clave (funciona automáticamente para los usuarios de Anthropic)."
+
+msgid "Enable Business Hours"
+msgstr "Activar horario comercial"
+
+msgid "Enable Chatbot"
+msgstr "Activar chatbot"
+
+msgid "Enable Notifications"
+msgstr "Activar notificaciones"
+
+msgid "Enable chatbot on frontend"
+msgstr "Activar el chatbot en el sitio público"
+
+msgid "Enable conversation retention"
+msgstr "Activar conservación de conversaciones"
+
+msgid "Enable lead data retention"
+msgstr "Activar conservación de datos de contactos"
+
+msgid "Enable nudge animation"
+msgstr "Activar animación para llamar la atención"
+
+msgid "Enable periodic bounce"
+msgstr "Activar rebote periódico"
+
+msgid "Enable preview message bubble"
+msgstr "Activar burbuja de mensaje de vista previa"
+
+msgid "Enable test mode"
+msgstr "Activar modo de prueba"
+
+msgid "Enable unread notification badge"
+msgstr "Activar indicador de notificación sin leer"
+
+msgid "Engagement"
+msgstr "Interacción"
+
+msgid "Enter the message to display to the user..."
+msgstr "Escribe el mensaje que se mostrará al usuario..."
+
+msgid "Enter value"
+msgstr "Introduce un valor"
+
+msgid "Enter your message..."
+msgstr "Escribe tu mensaje..."
+
+msgid "Equals"
+msgstr "Es igual a"
+
+msgid "Error"
+msgstr "Error"
+
+msgid "Error deleting flow."
+msgstr "Error al eliminar el flujo."
+
+msgid "Error saving flow. Check browser console for details."
+msgstr "Error al guardar el flujo. Consulta la consola del navegador para ver los detalles."
+
+msgid "Error saving flow: %s"
+msgstr "Error al guardar el flujo: %s"
+
+msgid "Error: %s"
+msgstr "Error: %s"
+
+msgid "Escalate to email/ticket"
+msgstr "Derivar a correo o ticket"
+
+msgid "Estimate your monthly AI spend based on expected usage."
+msgstr "Estima tu gasto mensual de IA según el uso previsto."
+
+msgid "Estimated monthly cost"
+msgstr "Coste mensual estimado"
+
+msgid "Every 30 seconds, if the visitor has not opened the chat, the bubble does a small hop without interrupting them."
+msgstr "Cada 30 segundos, si el visitante no ha abierto el chat, la burbuja da un pequeño salto sin interrumpirlo."
+
+msgid "Every click on a Link Button marked 'Count as conversion' - one visitor clicking multiple buttons contributes to each"
+msgstr "Cada clic en un botón de enlace marcado como «Contar como conversión»: si un visitante hace clic en varios botones, se cuenta cada clic"
+
+msgid "Everyone"
+msgstr "Todos"
+
+msgid "Everyone (Public)"
+msgstr "Todos (público)"
+
+msgid "Examples:\n- We are a mental health practice in Austin, TX.\n- Our services include therapy, couples counseling, and psychiatry.\n- Always be warm and empathetic. Never diagnose or give medical advice.\n- If someone seems in crisis, immediately share the 988 Suicide Hotline.\n- Our intake coordinator is Sarah — hello@example.com.\n- We accept Aetna, BCBS, and Cigna insurance."
+msgstr "Ejemplos:\n- Somos una consulta de salud mental en Austin, TX.\n- Nuestros servicios incluyen terapia, terapia de pareja y psiquiatría.\n- Mantén siempre un tono cálido y empático. Nunca diagnostiques ni des consejos médicos.\n- Si alguien parece estar en crisis, comparte de inmediato la línea de prevención del suicidio 988.\n- Nuestra coordinadora de admisión es Sarah — hello@example.com.\n- Aceptamos seguros de Aetna, BCBS y Cigna."
+
+msgid "Existing flows will not be replaced. Imported copies remain inactive until you explicitly activate them."
+msgstr "Los flujos existentes no se reemplazarán. Las copias importadas permanecerán inactivas hasta que las actives expresamente."
+
+msgid "Exit full screen"
+msgstr "Salir de pantalla completa"
+
+msgid "Expand canvas within this browser tab"
+msgstr "Amplía el lienzo dentro de esta pestaña del navegador"
+
+msgid "Expected dialogawp-flows version 1 with 1-100 flows."
+msgstr "Se esperaba dialogawp-flows versión 1 con 1-100 flujos."
+
+msgid "Export"
+msgstr "Exportar"
+
+msgid "Export CSV"
+msgstr "Exportar CSV"
+
+msgid "Export flows"
+msgstr "Exportar flujos"
+
+msgid "Export package exceeds 5 MiB; select fewer flows."
+msgstr "El paquete de exportación supera los 5 MiB; selecciona menos flujos."
+
+msgid "Export up to 100 flows per package."
+msgstr "Exporta hasta 100 flujos por paquete."
+
+msgid "Export warnings"
+msgstr "Avisos de exportación"
+
+msgid "Extra text prepended to the standard \"A new lead was captured...\" body. Chat transcript + lead details still included below. Supports the same variables as the subject line."
+msgstr "Texto adicional que se añade antes del cuerpo habitual «Se ha capturado un nuevo contacto...». La transcripción del chat y los datos del contacto se incluyen debajo. Admite las mismas variables que el asunto."
+
+msgid "Facebook Page Username"
+msgstr "Nombre de usuario de la página de Facebook"
+
+msgid "Failed to delete flow."
+msgstr "No se pudo eliminar el flujo."
+
+msgid "Failed to save tags. Please try again."
+msgstr "No se pudieron guardar las etiquetas. Inténtalo de nuevo."
+
+msgid "Failed: %s"
+msgstr "Error: %s"
+
+msgid "Fast & affordable"
+msgstr "Rápido y económico"
+
+msgid "Field label"
+msgstr "Etiqueta del campo"
+
+msgid "Fields to Capture"
+msgstr "Campos que recopilar"
+
+msgid "Filter by tag:"
+msgstr "Filtrar por etiqueta:"
+
+msgid "Finance / Insurance"
+msgstr "Finanzas / Seguros"
+
+msgid "Fires %s so any downstream Webhook nodes fire too."
+msgstr "Activa %s para que también se ejecuten los nodos Webhook posteriores."
+
+msgid "First message visitors see when opening the chat."
+msgstr "Primer mensaje que ven los visitantes al abrir el chat."
+
+msgid "Flow"
+msgstr "Flujo"
+
+msgid "Flow Builder"
+msgstr "Editor de flujos"
+
+msgid "Flow IDs: %s."
+msgstr "IDs de flujo: %s."
+
+msgid "Flow Name"
+msgstr "Nombre del flujo"
+
+msgid "Flow created"
+msgstr "Flujo creado"
+
+msgid "Flow created! Opening builder..."
+msgstr "¡Flujo creado! Abriendo el editor..."
+
+msgid "Flow data is nested too deeply."
+msgstr "Los datos del flujo tienen demasiados niveles de anidación."
+
+msgid "Flow deleted"
+msgstr "Flujo eliminado"
+
+msgid "Flow deleted successfully."
+msgstr "Flujo eliminado correctamente."
+
+msgid "Flow generation failed."
+msgstr "No se pudo generar el flujo."
+
+msgid "Flow saved successfully!"
+msgstr "¡Flujo guardado correctamente!"
+
+msgid "Flow transfer failed. Please try again."
+msgstr "Error al transferir flujos. Inténtalo de nuevo."
+
+msgid "Flow updated"
+msgstr "Flujo actualizado"
+
+msgid "For HMAC-SHA256 signing"
+msgstr "Para firmar con HMAC-SHA256"
+
+msgid "Forbidden"
+msgstr "Acceso denegado"
+
+msgid "Fresh Session for Roles"
+msgstr "Sesión nueva por perfil"
+
+msgid "From"
+msgstr "Desde"
+
+msgid "From: %s"
+msgstr "De: %s"
+
+msgid "Full URL including https:// where the button links."
+msgstr "URL completa, incluido https://, a la que enlaza el botón."
+
+msgid "Full URL including https:// where visitors will be redirected."
+msgstr "URL completa, incluido https://, a la que se redirigirá a los visitantes."
+
+msgid "Full phone number with country code. Opens the visitor's native SMS app."
+msgstr "Número de teléfono completo con código de país. Abre la aplicación de SMS del visitante."
+
+msgid "Full screen"
+msgstr "Pantalla completa"
+
+msgid "Funnel, heatmap, flow performance"
+msgstr "Embudo, mapa de calor y rendimiento de los flujos"
+
+msgid "GPT Model"
+msgstr "Modelo de GPT"
+
+msgid "GPT-4o (more capable, higher cost)"
+msgstr "GPT-4o (más potente, mayor coste)"
+
+msgid "GPT-4o Mini (recommended — fast & affordable)"
+msgstr "GPT-4o Mini (recomendado, rápido y económico)"
+
+msgid "General"
+msgstr "General"
+
+msgid "Generate Suggested Flow"
+msgstr "Generar flujo sugerido"
+
+msgid "Get Started →"
+msgstr "Comenzar →"
+
+msgid "Getting Started - DialogaWP"
+msgstr "Primeros pasos - DialogaWP"
+
+msgid "Getting Started — DialogaWP"
+msgstr "Primeros pasos — DialogaWP"
+
+msgid "Getting an Anthropic API Key"
+msgstr "Obtener una clave de API de Anthropic"
+
+msgid "Getting an OpenAI API Key"
+msgstr "Obtener una clave de API de OpenAI"
+
+msgid "Give your chatbot a personality and context so it represents your business accurately."
+msgstr "Dale personalidad y contexto a tu chatbot para que represente fielmente tu negocio."
+
+msgid "Go Back"
+msgstr "Volver"
+
+msgid "Go to <a href=\"https://console.anthropic.com/\" target=\"_blank\">console.anthropic.com</a> and create an account"
+msgstr "Ve a <a href=\"https://console.anthropic.com/\" target=\"_blank\">console.anthropic.com</a> y crea una cuenta"
+
+msgid "Go to <a href=\"https://platform.openai.com/signup\" target=\"_blank\">platform.openai.com</a> and create an account"
+msgstr "Ve a <a href=\"https://platform.openai.com/signup\" target=\"_blank\">platform.openai.com</a> y crea una cuenta"
+
+msgid "Goals"
+msgstr "Objetivos"
+
+msgid "Great! Book your session below."
+msgstr "¡Perfecto! Reserva tu sesión a continuación."
+
+msgid "Greeting Message"
+msgstr "Mensaje de bienvenida"
+
+msgid "Guide visitors to schedule a call or consultation."
+msgstr "Guía a los visitantes para programar una llamada o consulta."
+
+msgid "Guided chatbot setup"
+msgstr "Configuración guiada del chatbot"
+
+msgid "HTTP Method"
+msgstr "Método HTTP"
+
+msgid "Healthcare / Medical"
+msgstr "Salud / Medicina"
+
+msgid "Here's a summary of your chatbot setup. Click \"Create My Chatbot\" to build your flow."
+msgstr "Este es un resumen de la configuración de tu chatbot. Haz clic en \"Crear mi chatbot\" para crear tu flujo."
+
+msgid "Hi! How can I help you today?"
+msgstr "¡Hola! ¿Cómo puedo ayudarte hoy?"
+
+msgid "Hi! I'd like to book a massage."
+msgstr "¡Hola! Me gustaría reservar un masaje."
+
+msgid "Hi! I'd like to book a session."
+msgstr "¡Hola! Me gustaría reservar una sesión."
+
+msgid "Hi! 👋 Got a question?"
+msgstr "¡Hola! 👋 ¿Tienes alguna pregunta?"
+
+msgid "Hi, I'd like to book a session."
+msgstr "Hola, me gustaría reservar una sesión."
+
+msgid "Home"
+msgstr "Inicio"
+
+msgid "Hospitality / Restaurant"
+msgstr "Hostelería / Restauración"
+
+msgid "How conversions are counted:"
+msgstr "Cómo se cuentan las conversiones:"
+
+msgid "How do I get an API key?"
+msgstr "¿Cómo obtengo una clave de API?"
+
+msgid "How it works:"
+msgstr "Cómo funciona:"
+
+msgid "How long to remember a conversation (in days)."
+msgstr "Cuánto tiempo se conserva una conversación (en días)."
+
+msgid "How retrieval works"
+msgstr "Cómo funciona la recuperación de información"
+
+msgid "If a mobile device is your only option, switch your browser to %s (found in your browser's menu) to access the builder, though the experience may not be the same as using a laptop or desktop."
+msgstr "Si solo dispones de un dispositivo móvil, activa el %s en el menú de tu navegador para acceder al editor, aunque la experiencia puede no ser la misma que en un portátil o equipo de escritorio."
+
+msgid "Import"
+msgstr "Importar"
+
+msgid "Import %s flow(s)"
+msgstr "Importar %s flujo(s)"
+
+msgid "Import failed and cleanup was incomplete. These newly created inactive flows require manual removal."
+msgstr "La importación falló y la limpieza quedó incompleta. Estos flujos inactivos recién creados deben eliminarse manualmente."
+
+msgid "Import failed. All flows created by this request were removed."
+msgstr "La importación falló. Se eliminaron todos los flujos creados por esta solicitud."
+
+msgid "Import inactive copies"
+msgstr "Importar copias inactivas"
+
+msgid "Inactive"
+msgstr "Inactivo"
+
+msgid "Include admin sessions in analytics"
+msgstr "Incluir sesiones de administradores en las estadísticas"
+
+msgid "Include admin testing in analytics"
+msgstr "Incluir pruebas de administradores en las estadísticas"
+
+msgid "Include flow data (flow name, variables, session)"
+msgstr "Incluir datos del flujo (nombre del flujo, variables, sesión)"
+
+msgid "Include lead data (name, email, phone, tags)"
+msgstr "Incluir datos del contacto (nombre, correo, teléfono, etiquetas)"
+
+msgid "Index your pages and posts so the AI can answer questions about your business. Only the most relevant content is sent per message - not everything at once."
+msgstr "Indexa tus páginas y entradas para que la IA pueda responder preguntas sobre tu negocio. Solo se envía el contenido más relevante por mensaje, no todo a la vez."
+
+msgid "Industry"
+msgstr "Sector"
+
+msgid "Industry / Business Type"
+msgstr "Sector / Tipo de negocio"
+
+msgid "Info Chatbot"
+msgstr "Chatbot informativo"
+
+msgid "Input"
+msgstr "Entrada"
+
+msgid "Input Placeholder"
+msgstr "Texto de ejemplo del campo de entrada"
+
+msgid "Instagram DM"
+msgstr "Mensaje directo de Instagram"
+
+msgid "Instagram Username"
+msgstr "Nombre de usuario de Instagram"
+
+msgid "Instagram handle without %s. Business account recommended for DM support."
+msgstr "Nombre de usuario de Instagram sin %s. Se recomienda una cuenta de empresa para admitir mensajes directos."
+
+msgid "Instant AI answers based on your website content."
+msgstr "Respuestas instantáneas con IA basadas en el contenido de tu sitio web."
+
+msgid "Insufficient permissions"
+msgstr "Permisos insuficientes"
+
+msgid "Insufficient permissions."
+msgstr "Permisos insuficientes."
+
+msgid "Integrations page"
+msgstr "página de integraciones"
+
+msgid "International format with country code (e.g., %s). Digits only, plus optional leading +."
+msgstr "Formato internacional con código de país (p. ej., %s). Solo dígitos y un + inicial opcional."
+
+msgid "Intro Message"
+msgstr "Mensaje introductorio"
+
+msgid "Invalid %s JSON."
+msgstr "JSON de %s no válido."
+
+msgid "Invalid ID"
+msgstr "ID no válido"
+
+msgid "Invalid action."
+msgstr "Acción no válida."
+
+msgid "Invalid conversation id"
+msgstr "ID de conversación no válido"
+
+msgid "Invalid flow ID"
+msgstr "ID de flujo no válido"
+
+msgid "Invalid flow data JSON: %s"
+msgstr "JSON de flujo no válido: %s"
+
+msgid "Invalid lead id"
+msgstr "ID de contacto no válido"
+
+msgid "Invalid settings request. Please reload the page and try again."
+msgstr "Solicitud de ajustes no válida. Recarga la página e inténtalo de nuevo."
+
+msgid "JavaScript is required for these destructive actions. All settings above can be saved without JavaScript."
+msgstr "Estas acciones destructivas requieren JavaScript. Todos los ajustes anteriores se pueden guardar sin JavaScript."
+
+msgid "Join Waitlist"
+msgstr "Unirse a la lista de espera"
+
+msgid "Keyword search will be used for retrieval."
+msgstr "Se utilizará la búsqueda por palabras clave para la recuperación."
+
+msgid "Knowledge Base"
+msgstr "Base de conocimiento"
+
+msgid "Knowledge base and AI config"
+msgstr "Base de conocimiento y configuración de IA"
+
+msgid "Laptop or Desktop Required"
+msgstr "Se requiere un portátil o equipo de escritorio"
+
+msgid "Large"
+msgstr "Grande"
+
+msgid "Last 30 days"
+msgstr "Últimos 30 días"
+
+msgid "Last 7 days"
+msgstr "Últimos 7 días"
+
+msgid "Last 90 days"
+msgstr "Últimos 90 días"
+
+msgid "Last month"
+msgstr "Mes pasado"
+
+msgid "Launch"
+msgstr "Lanzamiento"
+
+msgid "Launch Chatbot"
+msgstr "Lanzar chatbot"
+
+msgid "Lead #%d"
+msgstr "Contacto n.º %d"
+
+msgid "Lead Data Retention"
+msgstr "Conservación de datos de contactos"
+
+msgid "Lead Details"
+msgstr "Detalles del contacto"
+
+msgid "Lead not found"
+msgstr "Contacto no encontrado"
+
+msgid "Lead status updated!"
+msgstr "¡Estado del contacto actualizado!"
+
+msgid "Leads"
+msgstr "Contactos"
+
+msgid "Leads Captured"
+msgstr "Contactos captados"
+
+msgid "Leads older than this many days are removed during the daily cleanup."
+msgstr "Los contactos con más de esta cantidad de días se eliminan durante la limpieza diaria."
+
+msgid "Learn more about DialogaWP Pro"
+msgstr "Más información sobre DialogaWP Pro"
+
+msgid "Leave all unchecked to let every user's session persist normally, except when Test Mode is enabled."
+msgstr "Deja todos sin marcar para que las sesiones se conserven normalmente, excepto cuando el modo de prueba esté activado."
+
+msgid "Legal / Law Firm"
+msgstr "Servicios jurídicos / Bufete de abogados"
+
+msgid "Let's build your first chatbot in just a few minutes. This wizard will walk you through everything — no coding required."
+msgstr "Creemos tu primer chatbot en unos minutos. Este asistente te guiará en cada paso, sin necesidad de programar."
+
+msgid "Link Button"
+msgstr "Botón de enlace"
+
+msgid "Link Button (label needed)"
+msgstr "Botón de enlace (falta la etiqueta)"
+
+msgid "Link Conversions = clicks on Link Button nodes with \"Count as conversion\" enabled."
+msgstr "Conversiones por enlace = clics en nodos de botón de enlace con «Contar como conversión» activado."
+
+msgid "Loading analytics..."
+msgstr "Cargando estadísticas..."
+
+msgid "Loading flows..."
+msgstr "Cargando flujos..."
+
+msgid "Loading knowledge base..."
+msgstr "Cargando base de conocimiento..."
+
+msgid "Loading wizard..."
+msgstr "Cargando asistente..."
+
+msgid "Loading..."
+msgstr "Cargando..."
+
+msgid "Logged-in Users"
+msgstr "Usuarios con sesión iniciada"
+
+msgid "Logged-in Users Only"
+msgstr "Solo usuarios que hayan iniciado sesión"
+
+msgid "Logged-in users"
+msgstr "Usuarios conectados"
+
+msgid "Loop"
+msgstr "Bucle"
+
+msgid "Loop Back"
+msgstr "Volver atrás"
+
+msgid "Loops back to:"
+msgstr "Vuelve a:"
+
+msgid "Loving DialogaWP?"
+msgstr "¿Te gusta DialogaWP?"
+
+msgid "Main color for the chat widget buttons and header."
+msgstr "Color principal de los botones y el encabezado del widget de chat."
+
+msgid "Make sure you have configured your AI provider in %s before activating this flow."
+msgstr "Asegúrate de haber configurado tu proveedor de IA en %s antes de activar este flujo."
+
+msgid "Manage Flows"
+msgstr "Gestionar flujos"
+
+msgid "Managed AI is coming soon to DialogaWP Pro. We handle the AI infrastructure so you don't need your own API key — just plug in and go.\n\nIncludes:\n- No API key setup required\n- Pay-as-you-go usage billing\n- Automatic model updates\n- Priority AI response times\n\nWant to be notified when it launches?"
+msgstr "La IA gestionada llegará pronto a DialogaWP Pro. Nos encargamos de la infraestructura de IA para que no necesites tu propia clave de API: conecta y empieza.\n\nIncluye:\n- Sin configuración de claves de API\n- Facturación según el uso\n- Actualizaciones automáticas de modelos\n- Tiempos de respuesta de IA prioritarios\n\n¿Quieres recibir un aviso cuando se lance?"
+
+msgid "Managed AI — Coming Soon"
+msgstr "IA gestionada — Próximamente"
+
+msgid "Max Response Tokens"
+msgstr "Máximo de tokens de respuesta"
+
+msgid "Maybe later"
+msgstr "Quizás más tarde"
+
+msgid "Medium (default)"
+msgstr "Mediano (predeterminado)"
+
+msgid "Message"
+msgstr "Mensaje"
+
+msgid "Message / Question"
+msgstr "Mensaje / Pregunta"
+
+msgid "Message Before Redirect (Optional)"
+msgstr "Mensaje antes de redirigir (opcional)"
+
+msgid "Message Text"
+msgstr "Texto del mensaje"
+
+msgid "Message displayed after the visitor submits their information."
+msgstr "Mensaje mostrado después de que el visitante envíe sus datos."
+
+msgid "Message shown after form submission"
+msgstr "Mensaje mostrado tras enviar el formulario"
+
+msgid "Message shown when outside business hours."
+msgstr "Mensaje que se muestra fuera del horario comercial."
+
+msgid "Messages"
+msgstr "Mensajes"
+
+msgid "Messages x conversations:"
+msgstr "Mensajes x conversaciones:"
+
+msgid "Model"
+msgstr "Modelo"
+
+msgid "Model:"
+msgstr "Modelo:"
+
+msgid "Month to date"
+msgstr "Mes hasta la fecha"
+
+msgid "Monthly Conversations"
+msgstr "Conversaciones mensuales"
+
+msgid "Most capable"
+msgstr "Más potente"
+
+msgid "Mountain Time"
+msgstr "Hora de las montañas"
+
+msgid "Name"
+msgstr "Nombre"
+
+msgid "Name and URL are required."
+msgstr "El nombre y la URL son obligatorios."
+
+msgid "Name, email, phone form"
+msgstr "Formulario de nombre, correo y teléfono"
+
+msgid "Name: {user_name}..."
+msgstr "Nombre: {user_name}..."
+
+msgid "Navigate to <strong>API Keys</strong>"
+msgstr "Ve a <strong>Claves de API</strong>"
+
+msgid "Navigate to <strong>API Keys</strong> in the left sidebar"
+msgstr "Ve a <strong>Claves de API</strong> en la barra lateral izquierda"
+
+msgid "Need free-form answers? Use the %s node instead - it's designed for open-ended questions."
+msgstr "¿Necesitas respuestas libres? Utiliza el nodo %s: está diseñado para preguntas abiertas."
+
+msgid "Network error"
+msgstr "Error de red"
+
+msgid "Network error deleting lead. Please try again."
+msgstr "Error de red al eliminar el contacto. Inténtalo de nuevo."
+
+msgid "Network error during crawl. Please try again."
+msgstr "Error de red durante el rastreo. Vuelve a intentarlo."
+
+msgid "Network error during delete."
+msgstr "Error de red durante la eliminación."
+
+msgid "Network error loading lead details."
+msgstr "Error de red al cargar los detalles del contacto."
+
+msgid "Network error saving tags. Please try again."
+msgstr "Error de red al guardar las etiquetas. Inténtalo de nuevo."
+
+msgid "Network error. Please try again."
+msgstr "Error de red. Vuelve a intentarlo."
+
+msgid "Network error: %s"
+msgstr "Error de red: %s"
+
+msgid "New"
+msgstr "Nuevo"
+
+msgid "New Flow"
+msgstr "Nuevo flujo"
+
+msgid "New Lead from DIALOGAWP"
+msgstr "Nuevo contacto de DIALOGAWP"
+
+msgid "New Tab"
+msgstr "Nueva pestaña"
+
+msgid "New Tab (recommended)"
+msgstr "Nueva pestaña (recomendado)"
+
+msgid "New Tab keeps the chat open so visitors can return."
+msgstr "Una nueva pestaña mantiene el chat abierto para que los visitantes puedan volver."
+
+msgid "New Wellness Lead - {user_name}"
+msgstr "Nuevo contacto de bienestar - {user_name}"
+
+msgid "Next →"
+msgstr "Siguiente →"
+
+msgid "No API key configured. Save your AI settings first."
+msgstr "No hay ninguna clave de API configurada. Guarda primero la configuración de IA."
+
+msgid "No API key saved. Save your settings first."
+msgstr "No hay ninguna clave de API guardada. Guarda primero la configuración."
+
+msgid "No Lead"
+msgstr "Sin contacto"
+
+msgid "No active flows. Your chatbot won't appear on your website until you activate a flow."
+msgstr "No hay flujos activos. Tu chatbot no aparecerá en tu sitio web hasta que actives un flujo."
+
+msgid "No buttons detected"
+msgstr "No se detectaron botones"
+
+msgid "No content in the knowledge base. Click \"Crawl Website\" first."
+msgstr "No hay contenido en la base de conocimientos. Haz clic primero en «Rastrear sitio web»."
+
+msgid "No content indexed yet. Click \"Crawl Website\" to get started."
+msgstr "Todavía no hay contenido indexado. Haz clic en «Rastrear sitio web» para comenzar."
+
+msgid "No conversation data yet."
+msgstr "Todavía no hay datos de conversaciones."
+
+msgid "No conversation recorded."
+msgstr "No hay ninguna conversación registrada."
+
+msgid "No data yet"
+msgstr "Todavía no hay datos"
+
+msgid "No flows yet. Create your first flow!"
+msgstr "Todavía no hay flujos. ¡Crea tu primer flujo!"
+
+msgid "No leads captured yet."
+msgstr "Todavía no se han captado contactos."
+
+msgid "No leads captured yet. Once visitors fill out your chatbot forms, they'll appear here."
+msgstr "Todavía no se han captado contactos. Aparecerán aquí cuando los visitantes completen los formularios de tu chatbot."
+
+msgid "No leads with tag %s."
+msgstr "No hay contactos con la etiqueta %s."
+
+msgid "No loop target connected"
+msgstr "No hay destino de retorno conectado"
+
+msgid "No source data yet - start a chat on your site to begin tracking."
+msgstr "Todavía no hay datos de origen: inicia un chat en tu sitio para comenzar el seguimiento."
+
+msgid "No tags"
+msgstr "Sin etiquetas"
+
+msgid "No thanks"
+msgstr "No, gracias"
+
+msgid "Node"
+msgstr "Nodo"
+
+msgid "Node-Specific Instructions"
+msgstr "Instrucciones específicas del nodo"
+
+msgid "Nodes require string id/type/nodeType, a data object and finite numeric x/y positions."
+msgstr "Los nodos requieren id/type/nodeType de cadena, un objeto data y posiciones x/y numéricas finitas."
+
+msgid "Nonprofit"
+msgstr "Organización sin fines de lucro"
+
+msgid "Not configured"
+msgstr "Sin configurar"
+
+msgid "Not empty"
+msgstr "No está vacío"
+
+msgid "Note: \"Total Leads\" is an all-time count and may not match the Leads Captured number inside the selected date range."
+msgstr "Nota: «Contactos totales» cuenta los contactos desde el inicio y puede no coincidir con los contactos captados dentro del intervalo de fechas seleccionado."
+
+msgid "Notifications"
+msgstr "Notificaciones"
+
+msgid "OK"
+msgstr "Aceptar"
+
+msgid "OR"
+msgstr "O"
+
+msgid "Of %1$s conversations in this range, %2$s submitted a lead and %3$s did not."
+msgstr "De %1$s conversaciones en este intervalo, %2$s enviaron un contacto y %3$s no lo hicieron."
+
+msgid "Offline Message"
+msgstr "Mensaje fuera de horario"
+
+msgid "On marked conversion buttons"
+msgstr "En botones marcados como conversión"
+
+msgid "On mobile, taps to call. On desktop, opens the default phone app (FaceTime, Skype, etc.)."
+msgstr "En el móvil, permite llamar con un toque. En el ordenador, abre la aplicación de llamadas predeterminada (FaceTime, Skype, etc.)."
+
+msgid "Once crawled, an %s will appear to automatically generate a custom chatbot flow from your site's content."
+msgstr "Una vez rastreado el sitio, aparecerá un %s para generar automáticamente un flujo personalizado del chatbot a partir de su contenido."
+
+msgid "Only users who are logged into your WordPress site can see the chatbot."
+msgstr "Solo los usuarios que hayan iniciado sesión en tu sitio de WordPress pueden ver el chatbot."
+
+msgid "Only users with selected WordPress roles can see the chatbot."
+msgstr "Solo los usuarios con los roles de WordPress seleccionados pueden ver el chatbot."
+
+msgid "Open AI conversation"
+msgstr "Abrir conversación con IA"
+
+msgid "Open Flow Builder"
+msgstr "Abrir editor de flujos"
+
+msgid "Open In"
+msgstr "Abrir en"
+
+msgid "Open Link"
+msgstr "Abrir enlace"
+
+msgid "Open the setup wizard to build a flow from your site content"
+msgstr "Abre el asistente de configuración para crear un flujo a partir del contenido de tu sitio"
+
+msgid "Open-ended AI conversation"
+msgstr "Conversación abierta con IA"
+
+msgid "OpenAI key:"
+msgstr "Clave de OpenAI:"
+
+msgid "OpenAI users"
+msgstr "Los usuarios de OpenAI"
+
+msgid "Option %s"
+msgstr "Opción %s"
+
+msgid "Optional Delay Before Loop"
+msgstr "Espera opcional antes de volver"
+
+msgid "Optional Loopback Message"
+msgstr "Mensaje de retorno opcional"
+
+msgid "Optional delay before redirect (0-10 seconds)."
+msgstr "Espera opcional antes de redirigir (0-10 segundos)."
+
+msgid "Optional delay before showing this message (to simulate typing)."
+msgstr "Retardo opcional antes de mostrar este mensaje (para simular la escritura)."
+
+msgid "Optional message shown during the delay period."
+msgstr "Mensaje opcional mostrado durante la espera."
+
+msgid "Optional starting message. WhatsApp opens with this text pre-typed, ready to send."
+msgstr "Mensaje inicial opcional. WhatsApp se abre con este texto ya escrito, listo para enviar."
+
+msgid "Optional starting text."
+msgstr "Texto inicial opcional."
+
+msgid "Optional: Redirect to a thank-you page after form submission."
+msgstr "Opcional: redirige a una página de agradecimiento tras enviar el formulario."
+
+msgid "Options:"
+msgstr "Opciones:"
+
+msgid "Or select an existing flow from the sidebar to edit it."
+msgstr "O selecciona un flujo existente en la barra lateral para editarlo."
+
+msgid "Other"
+msgstr "Otro"
+
+msgid "Our AI is designing a custom conversational flow for your business. This takes about 15-30 seconds."
+msgstr "Nuestra IA está diseñando un flujo conversacional personalizado para tu negocio. Esto tarda entre 15 y 30 segundos."
+
+msgid "Output"
+msgstr "Salida"
+
+msgid "Output %s"
+msgstr "Salida %s"
+
+msgid "Output Groups"
+msgstr "Grupos de salida"
+
+msgid "Output Message"
+msgstr "Mensaje de salida"
+
+msgid "Output groups require conditions arrays and and/or logic."
+msgstr "Los grupos de salida requieren arrays de condiciones y lógica and/or."
+
+msgid "Override global email notification settings"
+msgstr "Reemplazar los ajustes globales de notificaciones por correo"
+
+msgid "Pacific Time"
+msgstr "Hora del Pacífico"
+
+msgid "Page"
+msgstr "Página"
+
+msgid "Paste your API key here"
+msgstr "Pega aquí tu clave de API"
+
+msgid "Paste your API key here..."
+msgstr "Pega aquí tu clave de API..."
+
+msgid "Per message:"
+msgstr "Por mensaje:"
+
+msgid "Periodic bounce"
+msgstr "Rebote periódico"
+
+msgid "Phone"
+msgstr "Teléfono"
+
+msgid "Phone Call"
+msgstr "Llamada telefónica"
+
+msgid "Phone Number"
+msgstr "Número de teléfono"
+
+msgid "Pick a preset for common contact channels; we'll build the correct link format for you."
+msgstr "Elige una opción predefinida para los canales de contacto habituales; crearemos el enlace con el formato correcto."
+
+msgid "Please enter a flow name!"
+msgstr "¡Introduce un nombre para el flujo!"
+
+msgid "Please enter your API key."
+msgstr "Introduce tu clave de API."
+
+msgid "Please select your industry or business type."
+msgstr "Selecciona tu sector o tipo de negocio."
+
+msgid "Please specify your industry *"
+msgstr "Especifica tu sector *"
+
+msgid "Please specify your industry."
+msgstr "Especifica tu sector."
+
+msgid "Please switch to a device with a screen width of at least 1024px for the full experience."
+msgstr "Utiliza un dispositivo con una pantalla de al menos 1024px de ancho para disfrutar de todas las funciones."
+
+msgid "Please test your connection before proceeding."
+msgstr "Prueba tu conexión antes de continuar."
+
+msgid "Post"
+msgstr "Entrada"
+
+msgid "Pre-filled Message (Optional)"
+msgstr "Mensaje predefinido (opcional)"
+
+msgid "Prepended above the standard lead details and chat transcript."
+msgstr "Se añade antes de los datos habituales del contacto y la transcripción del chat."
+
+msgid "Preview"
+msgstr "Vista previa"
+
+msgid "Preview message bubble"
+msgstr "Burbuja de mensaje de vista previa"
+
+msgid "Preview message text"
+msgstr "Texto del mensaje de vista previa"
+
+msgid "Primary Color"
+msgstr "Color principal"
+
+msgid "Primary color hex value"
+msgstr "Valor hexadecimal del color principal"
+
+msgid "Progress saved"
+msgstr "Progreso guardado"
+
+msgid "Public (Everyone)"
+msgstr "Público (todos)"
+
+msgid "Qualified"
+msgstr "Cualificado"
+
+msgid "Qualify Leads"
+msgstr "Calificar contactos"
+
+msgid "Qualifying questions"
+msgstr "Preguntas de calificación"
+
+msgid "Question"
+msgstr "Pregunta"
+
+msgid "Quick Links"
+msgstr "Enlaces rápidos"
+
+msgid "Quick-Reply Buttons"
+msgstr "Botones de respuesta rápida"
+
+msgid "Read every chat your visitors had"
+msgstr "Lee cada conversación de tus visitantes"
+
+msgid "Reading pages, extracting content, and building your knowledge base."
+msgstr "Leyendo páginas, extrayendo contenido y creando tu base de conocimiento."
+
+msgid "Real Estate"
+msgstr "Sector inmobiliario"
+
+msgid "Recent Leads"
+msgstr "Contactos recientes"
+
+msgid "Recipient Email"
+msgstr "Correo del destinatario"
+
+msgid "Recipient Email(s)"
+msgstr "Correo(s) del destinatario"
+
+msgid "Recipient(s)"
+msgstr "Destinatario(s)"
+
+msgid "Redirect"
+msgstr "Redirigir"
+
+msgid "Redirect (URL needed)"
+msgstr "Redirección (falta la URL)"
+
+msgid "Redirect After Capture (Optional)"
+msgstr "Redirigir tras la captura (opcional)"
+
+msgid "Redirect URL"
+msgstr "URL de redirección"
+
+msgid "Redirect to %s"
+msgstr "Redirigir a %s"
+
+msgid "Redirect to:"
+msgstr "Redirigir a:"
+
+msgid "Reference Previous Answer"
+msgstr "Referencia a una respuesta anterior"
+
+msgid "Reference this answer later using %s in any message text."
+msgstr "Haz referencia a esta respuesta más adelante usando %s en el texto de cualquier mensaje."
+
+msgid "Remove"
+msgstr "Eliminar"
+
+msgid "Remove Group"
+msgstr "Eliminar grupo"
+
+msgid "Remove Output"
+msgstr "Eliminar salida"
+
+msgid "Remove embedded URL credentials before transferring this flow."
+msgstr "Elimina las credenciales incrustadas en las URL antes de transferir este flujo."
+
+msgid "Remove tag"
+msgstr "Eliminar etiqueta"
+
+msgid "Remove this item from the knowledge base?"
+msgstr "¿Eliminar este elemento de la base de conocimiento?"
+
+msgid "Remove this output group?"
+msgstr "¿Eliminar este grupo de salida?"
+
+msgid "Removes every lead, clears each conversation's lead_data snapshot, and deletes every lead_captured analytics event. Conversation transcripts are kept."
+msgstr "Elimina todos los contactos, borra la instantánea lead_data de cada conversación y elimina todos los eventos de estadísticas lead_captured. Se conservan las transcripciones de las conversaciones."
+
+msgid "Required"
+msgstr "Obligatorio"
+
+msgid "Required fields"
+msgstr "Campos obligatorios"
+
+msgid "Reset Analytics Events"
+msgstr "Restablecer eventos de estadísticas"
+
+msgid "Reset view"
+msgstr "Restablecer vista"
+
+msgid "Response Type"
+msgstr "Tipo de respuesta"
+
+msgid "Resume Setup"
+msgstr "Continuar configuración"
+
+msgid "Resuming from %1$s (step %2$d of %3$d)"
+msgstr "Continuando desde %1$s (paso %2$d de %3$d)"
+
+msgid "Review & Create"
+msgstr "Revisar y crear"
+
+msgid "Review & Launch →"
+msgstr "Revisar y lanzar →"
+
+msgid "Review and create your chatbot"
+msgstr "Revisa y crea tu chatbot"
+
+msgid "Review external URLs, email recipients, AI settings and other site dependencies before activating imported flows. Secrets in free-form text must be removed manually."
+msgstr "Revisa las URL externas, los destinatarios de correo electrónico, la configuración de IA y otras dependencias del sitio antes de activar los flujos importados. Los secretos en texto libre deben eliminarse manualmente."
+
+msgid "Run Setup Wizard"
+msgstr "Ejecutar asistente de configuración"
+
+msgid "SaaS / Software"
+msgstr "SaaS / Software"
+
+msgid "Same Window"
+msgstr "La misma ventana"
+
+msgid "Save"
+msgstr "Guardar"
+
+msgid "Save & Exit"
+msgstr "Guardar y salir"
+
+msgid "Save Connector"
+msgstr "Guardar conector"
+
+msgid "Save Flow"
+msgstr "Guardar flujo"
+
+msgid "Save Instructions"
+msgstr "Guardar instrucciones"
+
+msgid "Save Roles"
+msgstr "Guardar perfiles"
+
+msgid "Save Settings"
+msgstr "Guardar ajustes"
+
+msgid "Save answer as variable"
+msgstr "Guardar respuesta como variable"
+
+msgid "Save failed"
+msgstr "No se pudo guardar"
+
+msgid "Saved flow contains roles absent from this site; import requires those roles to exist."
+msgstr "El flujo guardado contiene roles que no existen en este sitio; deben existir para poder importar."
+
+msgid "Saved flow contains unsupported node types; enable the required extension before importing."
+msgstr "El flujo guardado contiene tipos de nodo no compatibles; activa la extensión necesaria antes de importar."
+
+msgid "Saved!"
+msgstr "¡Guardado!"
+
+msgid "Saving & activating…"
+msgstr "Guardando y activando…"
+
+msgid "Saving..."
+msgstr "Guardando..."
+
+msgid "Saving…"
+msgstr "Guardando…"
+
+msgid "Scan Again"
+msgstr "Volver a analizar"
+
+msgid "Scan My Website"
+msgstr "Analizar mi sitio web"
+
+msgid "Scanning your website..."
+msgstr "Analizando tu sitio web..."
+
+msgid "Seconds to wait before the preview bubble appears."
+msgstr "Segundos de espera antes de que aparezca la burbuja de vista previa."
+
+msgid "Security check failed."
+msgstr "La comprobación de seguridad ha fallado."
+
+msgid "Security check failed. Please refresh the Leads page and try the export again."
+msgstr "La comprobación de seguridad falló. Actualiza la página Contactos e intenta exportar de nuevo."
+
+msgid "See full funnel breakdown"
+msgstr "Ver el desglose completo del embudo"
+
+msgid "Select"
+msgstr "Seleccionar"
+
+msgid "Select Roles"
+msgstr "Seleccionar roles"
+
+msgid "Select Visible Roles"
+msgstr "Seleccionar perfiles con acceso"
+
+msgid "Select a connector"
+msgstr "Selecciona un conector"
+
+msgid "Select all"
+msgstr "Seleccionar todos"
+
+msgid "Select all that apply — we'll build a flow that covers everything you need."
+msgstr "Selecciona todas las opciones que correspondan. Crearemos un flujo que cubra todo lo que necesitas."
+
+msgid "Select an action type"
+msgstr "Selecciona un tipo de acción"
+
+msgid "Select an option"
+msgstr "Selecciona una opción"
+
+msgid "Select at least one flow."
+msgstr "Selecciona al menos un flujo."
+
+msgid "Select up to 100 flows. The open flow includes current editor changes. Credentials and connector bindings are excluded."
+msgstr "Selecciona hasta 100 flujos. El flujo abierto incluye los cambios actuales del editor. Se excluyen las credenciales y las vinculaciones de conectores."
+
+msgid "Select what you want your chatbot to do"
+msgstr "Selecciona qué quieres que haga tu chatbot"
+
+msgid "Select which roles can see the chatbot."
+msgstr "Selecciona qué perfiles pueden ver el chatbot."
+
+msgid "Select your industry..."
+msgstr "Selecciona tu sector..."
+
+msgid "Send Email"
+msgstr "Enviar correo electrónico"
+
+msgid "Send an email whenever a new lead is captured."
+msgstr "Envía un correo cada vez que se capture un nuevo contacto."
+
+msgid "Send email on new lead"
+msgstr "Enviar correo al capturar un nuevo contacto"
+
+msgid "Session Duration"
+msgstr "Duración de la sesión"
+
+msgid "Set %s"
+msgstr "Establecer %s"
+
+msgid "Set Variable"
+msgstr "Asignar variable"
+
+msgid "Settings"
+msgstr "Ajustes"
+
+msgid "Settings pages"
+msgstr "Páginas de ajustes"
+
+msgid "Settings saved"
+msgstr "Configuración guardada"
+
+msgid "Settings saved successfully!"
+msgstr "¡Ajustes guardados correctamente!"
+
+msgid "Settings sections"
+msgstr "Secciones de ajustes"
+
+msgid "Settings were not saved because the request contained invalid fields. Please reload the page and try again."
+msgstr "Los ajustes no se guardaron porque la solicitud contenía campos no válidos. Recarga la página e inténtalo de nuevo."
+
+msgid "Setup Wizard"
+msgstr "Asistente de configuración"
+
+msgid "Setup Wizard in progress"
+msgstr "Asistente de configuración en curso"
+
+msgid "Shared Secret"
+msgstr "Secreto compartido"
+
+msgid "Short, friendly, conversational. Emojis help."
+msgstr "Breve, amable y conversacional. Los emojis ayudan."
+
+msgid "Show a red \"1\" badge on the bubble when the visitor first lands. It disappears once they open the chat."
+msgstr "Muestra un indicador rojo con un «1» en la burbuja cuando el visitante llega por primera vez. Desaparece cuando abre el chat."
+
+msgid "Show a small floating text bubble above the chat icon after a delay to help visitors notice the chatbot."
+msgstr "Muestra una pequeña burbuja de texto flotante sobre el icono del chat tras una espera para llamar la atención de los visitantes."
+
+msgid "Show after"
+msgstr "Mostrar después de"
+
+msgid "Show checkboxes instead of buttons. The visitor can pick more than one; the answer is saved as a comma-separated list (e.g. %1$s). Works with the Branch node's %2$s operator."
+msgstr "Muestra casillas en lugar de botones. El visitante puede elegir más de una opción; la respuesta se guarda como una lista separada por comas (p. ej., %1$s). Funciona con el operador %2$s del nodo de ramificación."
+
+msgid "Show different messages during and after business hours."
+msgstr "Muestra mensajes diferentes dentro y fuera del horario comercial."
+
+msgid "Show this message before looping back. Leave blank to skip."
+msgstr "Muestra este mensaje antes de volver. Déjalo vacío para omitirlo."
+
+msgid "Site-local connector bindings were cleared; configure connectors on the destination site."
+msgstr "Se borraron las vinculaciones de conectores locales del sitio; configura los conectores en el sitio de destino."
+
+msgid "Skip"
+msgstr "Omitir"
+
+msgid "Skip Setup"
+msgstr "Omitir configuración"
+
+msgid "Skip the setup wizard? You can always set things up manually later."
+msgstr "¿Omitir el asistente de configuración? Puedes configurar todo manualmente más adelante."
+
+msgid "Small"
+msgstr "Pequeño"
+
+msgid "Something Went Wrong"
+msgstr "Algo salió mal"
+
+msgid "Something went wrong."
+msgstr "Algo salió mal."
+
+msgid "Specific Roles"
+msgstr "Roles específicos"
+
+msgid "Specific User Roles"
+msgstr "Perfiles de usuario específicos"
+
+msgid "Specific roles"
+msgstr "Roles específicos"
+
+msgid "Started"
+msgstr "Iniciada"
+
+msgid "Starts with"
+msgstr "Empieza por"
+
+msgid "State saved."
+msgstr "Estado guardado."
+
+msgid "Static Value"
+msgstr "Valor fijo"
+
+msgid "Static value (e.g., \"10\") or reference like {previous_answer}."
+msgstr "Valor fijo (p. ej., «10») o referencia como {previous_answer}."
+
+msgid "Status"
+msgstr "Estado"
+
+msgid "Step %1$d of %2$d"
+msgstr "Paso %1$d de %2$d"
+
+msgid "Step %d"
+msgstr "Paso %d"
+
+msgid "Store a value here, then reference it later in any message with %s."
+msgstr "Guarda un valor aquí y úsalo después en cualquier mensaje con %s."
+
+msgid "Store values to use in Branch conditions later. Example: Set \"score\" based on answers, then branch if score > 50."
+msgstr "Guarda valores para usarlos después en condiciones de bifurcación. Ejemplo: establece «score» según las respuestas y luego bifurca si score > 50."
+
+msgid "Subject (Optional)"
+msgstr "Asunto (opcional)"
+
+msgid "Subject Line"
+msgstr "Asunto"
+
+msgid "Subject line for notification emails."
+msgstr "Asunto de los correos de notificación."
+
+msgid "Success"
+msgstr "Correcto"
+
+msgid "Success Message"
+msgstr "Mensaje de confirmación"
+
+msgid "Suggested Flow Steps"
+msgstr "Pasos del flujo sugerido"
+
+msgid "Sure, happy to"
+msgstr "Claro, con gusto"
+
+msgid "Survey / Feedback"
+msgstr "Encuesta / Opiniones"
+
+msgid "Tag Lead"
+msgstr "Etiquetar contacto"
+
+msgid "Tag: %s"
+msgstr "Etiqueta: %s"
+
+msgid "Tags"
+msgstr "Etiquetas"
+
+msgid "Tags are applied to the lead when it is captured later in the flow. Place this node %s a Capture Lead node. You can use multiple Tag Lead nodes to accumulate tags."
+msgstr "Las etiquetas se aplican al contacto cuando se captura más adelante en el flujo. Coloca este nodo %s de un nodo de captura de contactos. Puedes usar varios nodos de etiquetado para acumular etiquetas."
+
+msgid "Tags must be strings."
+msgstr "Las etiquetas deben ser cadenas."
+
+msgid "Tags to Apply"
+msgstr "Etiquetas que aplicar"
+
+msgid "Taking you there now..."
+msgstr "Te llevamos allí ahora..."
+
+msgid "Telegram Username"
+msgstr "Nombre de usuario de Telegram"
+
+msgid "Tell the AI about your business, services, tone of voice, and how to handle common questions. This is included in every AI conversation."
+msgstr "Cuéntale a la IA sobre tu negocio, servicios, tono de voz y cómo responder a las preguntas frecuentes. Esto se incluye en cada conversación con IA."
+
+msgid "Tell the AI how to behave. For example:\n\n- You are a friendly assistant for our therapy practice\n- Focus on helping visitors book a consultation\n- Never discuss specific medical advice\n- Our office hours are Mon-Fri 9am-5pm"
+msgstr "Indica a la IA cómo debe comportarse. Por ejemplo:\n\n- Eres un asistente amable de nuestra consulta de terapia\n- Céntrate en ayudar a los visitantes a reservar una consulta\n- Nunca des consejos médicos específicos\n- Nuestro horario es de lunes a viernes, de 9:00 a 17:00"
+
+msgid "Test Connection"
+msgstr "Probar conexión"
+
+msgid "Test Mode"
+msgstr "Modo de prueba"
+
+msgid "Test mode is active. Sessions reset on page refresh for all visitors. Turn off before going live."
+msgstr "El modo de prueba está activo. Las sesiones se reinician al recargar la página para todos los visitantes. Desactívalo antes de publicar."
+
+msgid "Testing workflow: select Specific User Roles and Administrator, test while logged in, then switch to Everyone when ready to go live."
+msgstr "Proceso de prueba: selecciona Perfiles de usuario específicos y Administrador, realiza las pruebas con la sesión iniciada y cambia a Todos cuando esté listo para publicarse."
+
+msgid "Testing..."
+msgstr "Probando..."
+
+msgid "Text shown on the CTA button."
+msgstr "Texto mostrado en el botón de llamada a la acción."
+
+msgid "The AI won't save the lead until all checked fields are collected AND the visitor confirms."
+msgstr "La IA no guardará el contacto hasta recopilar todos los campos marcados Y recibir la confirmación del visitante."
+
+msgid "The Flow Builder is a visual drag-and-drop tool that works best on a desktop or laptop computer with a larger screen."
+msgstr "El editor de flujos es una herramienta visual de arrastrar y soltar que funciona mejor en un equipo de escritorio o portátil con una pantalla más grande."
+
+msgid "The chat widget is enabled with active flows. Visit your site to see it in action!"
+msgstr "El widget de chat está activado y tiene flujos activos. Visita tu sitio para verlo en acción."
+
+msgid "The chat widget is enabled, but you do not have any active flows. Visitors will not see the chat bubble until you create and activate a flow."
+msgstr "El widget de chat está activado, pero no tienes ningún flujo activo. Los visitantes no verán la burbuja de chat hasta que crees y actives un flujo."
+
+msgid "The connection wire from this Loop node determines where the flow jumps back to. Drag a connection from this node to any earlier step."
+msgstr "La conexión de este nodo de bucle determina a dónde vuelve el flujo. Arrastra una conexión desde este nodo a cualquier paso anterior."
+
+msgid "The file does not contain valid JSON."
+msgstr "El archivo no contiene JSON válido."
+
+msgid "The first message the AI sends to open the conversation."
+msgstr "El primer mensaje que envía la IA para abrir la conversación."
+
+msgid "The first message the AI sends to start the conversation."
+msgstr "El primer mensaje que envía la IA para iniciar la conversación."
+
+msgid "The flow will open in the builder where you can customize every node before activating it."
+msgstr "El flujo se abrirá en el editor, donde podrás personalizar cada nodo antes de activarlo."
+
+msgid "The message shown to the visitor"
+msgstr "El mensaje que se muestra al visitante"
+
+msgid "The options visitors can click to answer this question."
+msgstr "Las opciones en las que los visitantes pueden hacer clic para responder a esta pregunta."
+
+msgid "The selected node no longer exists. Close its editor and try again."
+msgstr "El nodo seleccionado ya no existe. Cierra su editor e inténtalo de nuevo."
+
+msgid "The server returned an invalid response. Check the upload limit and try again."
+msgstr "El servidor devolvió una respuesta no válida. Comprueba el límite de subida e inténtalo de nuevo."
+
+msgid "There are no flows to export."
+msgstr "No hay flujos para exportar."
+
+msgid "These instructions shape how the AI responds. You can always change them later."
+msgstr "Estas instrucciones determinan cómo responde la IA. Puedes cambiarlas más adelante."
+
+msgid "This message will be displayed to the visitor."
+msgstr "Este mensaje se mostrará al visitante."
+
+msgid "This message will be shown to the visitor when this path is taken."
+msgstr "Este mensaje se mostrará al visitante cuando siga esta ruta."
+
+msgid "This node detects which button or link was clicked by the user. Connect from an Output node with buttons."
+msgstr "Este nodo detecta en qué botón o enlace hizo clic el usuario. Conéctalo desde un nodo de salida con botones."
+
+msgid "This usually takes 10-20 seconds."
+msgstr "Esto suele tardar entre 10-20 segundos."
+
+msgid "This usually takes 10-30 seconds depending on your site size."
+msgstr "Esto suele tardar entre 10 y 30 segundos, según el tamaño de tu sitio."
+
+msgid "Times the chat bubble was shown to real visitors on your site"
+msgstr "Veces que se mostró la burbuja del chat a visitantes reales de tu sitio"
+
+msgid "Timezone"
+msgstr "Zona horaria"
+
+msgid "Tip:"
+msgstr "Consejo:"
+
+msgid "Tip: Be specific. The more context you give, the better the AI represents your business."
+msgstr "Consejo: sé específico. Cuanto más contexto proporciones, mejor representará la IA a tu negocio."
+
+msgid "To"
+msgstr "Hasta"
+
+msgid "Today"
+msgstr "Hoy"
+
+msgid "Top Drop-off Point"
+msgstr "Principal punto de abandono"
+
+msgid "Top Pages Starting Conversations"
+msgstr "Principales páginas donde se inician conversaciones"
+
+msgid "Total Conversions"
+msgstr "Conversiones totales"
+
+msgid "Total Leads"
+msgstr "Contactos totales"
+
+msgid "Total Link Clicks"
+msgstr "Clics totales en enlaces"
+
+msgid "Total chats started"
+msgstr "Total de chats iniciados"
+
+msgid "Try Again"
+msgstr "Volver a intentar"
+
+msgid "Turn the chatbot on or off on your website."
+msgstr "Activa o desactiva el chatbot en tu sitio web."
+
+msgid "Type DELETE (in caps) to confirm:"
+msgstr "Escribe DELETE (en mayúsculas) para confirmar:"
+
+msgid "Type DELETE to confirm"
+msgstr "Escribe DELETE para confirmar"
+
+msgid "Type your message..."
+msgstr "Escribe tu mensaje..."
+
+msgid "Typical cost: $0.01-0.03 per chatbot conversation with Claude Haiku."
+msgstr "Coste habitual: $0.01-0.03 por conversación del chatbot con Claude Haiku."
+
+msgid "Typical cost: $0.01-0.05 per chatbot conversation with GPT-4o Mini."
+msgstr "Coste habitual: $0.01-0.05 por conversación del chatbot con GPT-4o Mini."
+
+msgid "Unauthorized"
+msgstr "No autorizado"
+
+msgid "Unknown error"
+msgstr "Error desconocido"
+
+msgid "Unknown node"
+msgstr "Nodo desconocido"
+
+msgid "Unknown node type: %s"
+msgstr "Tipo de nodo desconocido: %s"
+
+msgid "Unknown visibility role: %s. Install or map this role before importing."
+msgstr "Rol de visibilidad desconocido: %s. Instala o asigna este rol antes de importar."
+
+msgid "Unnamed option"
+msgstr "Opción sin nombre"
+
+msgid "Unread notification badge"
+msgstr "Indicador de notificación sin leer"
+
+msgid "Unsafe JSON object key."
+msgstr "Clave de objeto JSON no segura."
+
+msgid "Unsaved changes"
+msgstr "Cambios sin guardar"
+
+msgid "Unsupported node type: %s. Enable its extension or register runtime support via dialogawp_import_node_types."
+msgstr "Tipo de nodo no compatible: %s. Activa su extensión o registra la compatibilidad de ejecución mediante dialogawp_import_node_types."
+
+msgid "Untitled"
+msgstr "Sin título"
+
+msgid "Untitled Flow"
+msgstr "Flujo sin título"
+
+msgid "Untitled node"
+msgstr "Nodo sin título"
+
+msgid "Updated:"
+msgstr "Actualizado:"
+
+msgid "Use Case:"
+msgstr "Ejemplo de uso:"
+
+msgid "Use Starter Template"
+msgstr "Usar plantilla inicial"
+
+msgid "Use Template Flow Instead"
+msgstr "Usar el flujo de plantilla en su lugar"
+
+msgid "Use business hours"
+msgstr "Usar horario comercial"
+
+msgid "Use lowercase letters and underscores only (e.g., user_score, interest_level)."
+msgstr "Usa solo letras minúsculas y guiones bajos (p. ej., user_score, interest_level)."
+
+msgid "Use these values in your conditions below to route based on the user's answer."
+msgstr "Usa estos valores en las condiciones de abajo para dirigir el flujo según la respuesta del usuario."
+
+msgid "Use variables like {user_name}, {user_email}, {user_phone}."
+msgstr "Usa variables como {user_name}, {user_email}, {user_phone}."
+
+msgid "Username without the %s (e.g., just %s)."
+msgstr "Nombre de usuario sin %s (p. ej., solo %s)."
+
+msgid "Users with any of the selected roles will always start with a fresh chat on every page load. Useful for flow designers who need to test without residual sessions."
+msgstr "Los usuarios con cualquiera de los perfiles seleccionados siempre iniciarán un chat nuevo cada vez que se cargue una página. Es útil para quienes diseñan flujos y necesitan probarlos sin sesiones anteriores."
+
+msgid "Value Type"
+msgstr "Tipo de valor"
+
+msgid "Variable Name"
+msgstr "Nombre de la variable"
+
+msgid "Variable Value"
+msgstr "Valor de la variable"
+
+msgid "Variables: %s, or any flow variable set by a Question node's \"Save As\"."
+msgstr "Variables: %s, o cualquier variable del flujo establecida con «Guardar como» en un nodo de pregunta."
+
+msgid "View"
+msgstr "Ver"
+
+msgid "View All"
+msgstr "Ver todos"
+
+msgid "View and export captured leads"
+msgstr "Consulta y exporta los contactos captados"
+
+msgid "View the %s conversations that started on this page"
+msgstr "Ver las %s conversaciones que se iniciaron en esta página"
+
+msgid "Visibility"
+msgstr "Visibilidad"
+
+msgid "Visibility Conflict"
+msgstr "Conflicto de visibilidad"
+
+msgid "Visibility Mode"
+msgstr "Modo de visibilidad"
+
+msgid "Visible Roles"
+msgstr "Perfiles con acceso"
+
+msgid "Visible to:"
+msgstr "Visible para:"
+
+msgid "Wait this many seconds before looping back. 0 = instant."
+msgstr "Espera esta cantidad de segundos antes de volver. 0 = inmediato."
+
+msgid "Want a higher conversion rate? Try making your Capture Lead form shorter or adding a clearer value proposition before asking for contact info."
+msgstr "¿Quieres una tasa de conversión mayor? Prueba a acortar el formulario de captación de contactos o a añadir una propuesta de valor más clara antes de pedir los datos de contacto."
+
+msgid "We'll learn about your business from your website"
+msgstr "Conoceremos tu negocio a partir de tu sitio web"
+
+msgid "We'll scan your website to learn about your business, services, and content. This helps the AI give accurate, relevant answers to your visitors."
+msgstr "Analizaremos tu sitio web para conocer tu negocio, tus servicios y tu contenido. Esto ayuda a la IA a dar respuestas precisas y relevantes a tus visitantes."
+
+msgid "We've created a custom flow based on your business. You can preview it, customize it further, or go live right away."
+msgstr "Hemos creado un flujo personalizado para tu negocio. Puedes previsualizarlo, seguir personalizándolo o publicarlo ahora mismo."
+
+msgid "Webhook"
+msgstr "Webhook"
+
+msgid "Webhook Connector"
+msgstr "Conector Webhook"
+
+msgid "Webhook URL"
+msgstr "URL del Webhook"
+
+msgid "Webhooks"
+msgstr "Webhooks"
+
+msgid "Website Knowledge Base"
+msgstr "Base de conocimiento del sitio web"
+
+msgid "Website Scanned Successfully!"
+msgstr "¡Sitio web analizado correctamente!"
+
+msgid "Welcome"
+msgstr "Bienvenido"
+
+msgid "Welcome Message"
+msgstr "Mensaje de bienvenida"
+
+msgid "Welcome to DialogaWP"
+msgstr "Bienvenido a DialogaWP"
+
+msgid "Welcome to DialogaWP. Here's how your chatbot is performing."
+msgstr "Bienvenido a DialogaWP. Así está funcionando tu chatbot."
+
+msgid "Welcome to the Flow Builder"
+msgstr "Bienvenido al editor de flujos"
+
+msgid "What Are Your Goals?"
+msgstr "¿Cuáles son tus objetivos?"
+
+msgid "What do you want to say or ask?"
+msgstr "¿Qué quieres decir o preguntar?"
+
+msgid "WhatsApp Number"
+msgstr "Número de WhatsApp"
+
+msgid "When a visitor sends a message, DIALOGAWP finds the most relevant pages from your knowledge base and sends only those to the AI - keeping costs low and responses focused."
+msgstr "Cuando un visitante envía un mensaje, DIALOGAWP busca las páginas más relevantes en tu base de conocimiento y envía solo esas a la IA, para mantener los costes bajos y las respuestas centradas."
+
+msgid "When enabled, chat history carries over as you navigate between pages, but clears automatically on page refresh. Use this to test flows without residual sessions interfering."
+msgstr "Cuando está activado, el historial del chat se conserva al navegar entre páginas, pero se borra automáticamente al recargar la página. Úsalo para probar flujos sin interferencias de sesiones anteriores."
+
+msgid "When enabled, the AI gathers contact fields naturally in chat, confirms them with the visitor, and saves a lead on confirmation. No separate form needed."
+msgstr "Cuando se activa, la IA recopila los datos de contacto de forma natural en el chat, los confirma con el visitante y guarda el contacto tras la confirmación. No hace falta un formulario aparte."
+
+msgid "When on, this Capture Lead node uses its own recipient / subject / intro for the lead notification email instead of the global settings under %s. Useful when different flows (wellness / therapy) should notify different people."
+msgstr "Cuando se activa, este nodo de captura de contactos usa su propio destinatario, asunto e introducción para el correo de notificación en lugar de los ajustes globales de %s. Útil cuando distintos flujos (bienestar / terapia) deben avisar a distintas personas."
+
+msgid "Where most visitors stop engaging in the active flow."
+msgstr "Donde la mayoría de los visitantes deja de interactuar con el flujo activo."
+
+msgid "Where the chat widget appears on your site."
+msgstr "Dónde aparece el widget de chat en tu sitio."
+
+msgid "Where to send lead notifications. Separate multiple addresses with commas."
+msgstr "Dónde enviar las notificaciones de contactos. Separa las direcciones con comas."
+
+msgid "Where to send the notification email."
+msgstr "Dónde enviar el correo de notificación."
+
+msgid "Where visitors are dropping off"
+msgstr "Dónde abandonan los visitantes"
+
+msgid "Who should see your chatbot? You can change this anytime in the flow builder."
+msgstr "¿Quién debería ver tu chatbot? Puedes cambiarlo en cualquier momento en el editor de flujos."
+
+msgid "Widget appearance and behavior"
+msgstr "Apariencia y comportamiento del widget"
+
+msgid "Wizard"
+msgstr "Asistente"
+
+msgid "Working..."
+msgstr "Procesando..."
+
+msgid "Would you take 30 seconds to leave a review on WordPress.org? It genuinely helps us reach more small businesses."
+msgstr "¿Dedicarías 30 segundos a dejar una reseña en WordPress.org? Nos ayuda de verdad a llegar a más pequeñas empresas."
+
+msgid "Year to date"
+msgstr "Año hasta la fecha"
+
+msgid "Yes"
+msgstr "Sí"
+
+msgid "You are billed directly by Anthropic or OpenAI - DIALOGAWP does not charge for AI usage."
+msgstr "Anthropic u OpenAI te facturan directamente: DIALOGAWP no cobra por el uso de IA."
+
+msgid "You do not have permission to export leads."
+msgstr "No tienes permiso para exportar contactos."
+
+msgid "You do not have permission to manage these settings."
+msgstr "No tienes permiso para administrar estos ajustes."
+
+msgid "You have active flows, but the chat widget is disabled. Enable it below to show the chat bubble on your website."
+msgstr "Tienes flujos activos, pero el widget de chat está desactivado. Actívalo a continuación para mostrar la burbuja de chat en tu sitio web."
+
+msgid "You haven't created any flows yet. %1$s or %2$s to get started."
+msgstr "Todavía no has creado ningún flujo. %1$s o %2$s para comenzar."
+
+msgid "You've handled %s visitor conversation so far!"
+msgid_plural "You've handled %s visitor conversations so far!"
+msgstr[0] "¡Hasta ahora has gestionado %s conversación con visitantes!"
+msgstr[1] "¡Hasta ahora has gestionado %s conversaciones con visitantes!"
+
+msgid "Your Chatbot is Ready!"
+msgstr "¡Tu chatbot está listo!"
+
+msgid "Your Facebook Page username (the part after %s)."
+msgstr "El nombre de usuario de tu página de Facebook (la parte después de %s)."
+
+msgid "Your Flows"
+msgstr "Tus flujos"
+
+msgid "Your Website"
+msgstr "Tu sitio web"
+
+msgid "Your business timezone."
+msgstr "Zona horaria de tu negocio."
+
+msgid "Your progress is auto-saved. Resume anytime from the Dashboard."
+msgstr "Tu progreso se guarda automáticamente. Puedes continuar en cualquier momento desde el panel de control."
+
+msgid "Your site has been indexed. Let the AI analyze your content and automatically generate a customized intake flow for your business."
+msgstr "Tu sitio ha sido indexado. Deja que la IA analice tu contenido y genere automáticamente un flujo de admisión personalizado para tu negocio."
+
+msgid "Zapier - Lead Notifier"
+msgstr "Zapier - Notificador de contactos"
+
+msgid "Zoom in"
+msgstr "Acercar"
+
+msgid "Zoom out"
+msgstr "Alejar"
+
+msgid "[free text]"
+msgstr "[texto libre]"
+
+msgid "across %1$d visitor (%2$s avg)"
+msgid_plural "across %1$d visitors (%2$s avg)"
+msgstr[0] "entre %1$d visitante (%2$s de media)"
+msgstr[1] "entre %1$d visitantes (%2$s de media)"
+
+msgid "across %d visitor"
+msgid_plural "across %d visitors"
+msgstr[0] "entre %d visitante"
+msgstr[1] "entre %d visitantes"
+
+msgid "before"
+msgstr "antes"
+
+msgid "change in Settings"
+msgstr "cambiar en Ajustes"
+
+msgid "click to insert into the last focused field"
+msgstr "haz clic para insertar en el último campo seleccionado"
+
+msgid "collect %s"
+msgstr "recopilar %s"
+
+msgid "current_flow.id must be an integer in the selected flow_ids."
+msgstr "current_flow.id debe ser un entero incluido en los flow_ids seleccionados."
+
+msgid "days"
+msgstr "días"
+
+msgid "e.g. %s"
+msgstr "p. ej., %s"
+
+msgid "e.g. Anything else I can help with?"
+msgstr "p. ej., ¿Puedo ayudarte en algo más?"
+
+msgid "e.g. Austin Therapy Group"
+msgstr "p. ej., Grupo de Terapia Austin"
+
+msgid "e.g. Pet Services, Construction, Travel..."
+msgstr "p. ej., servicios para mascotas, construcción, viajes..."
+
+msgid "flow_ids must contain 1-100 positive integer IDs."
+msgstr "flow_ids debe contener entre 1 y 100 ID enteros positivos."
+
+msgid "flow_ids must contain positive integers."
+msgstr "flow_ids debe contener enteros positivos."
+
+msgid "last saved %s ago"
+msgstr "guardado por última vez hace %s"
+
+msgid "none"
+msgstr "ninguna"
+
+msgid "of visitors drop off at:"
+msgstr "de los visitantes abandona en:"
+
+msgid "publicly listed pricing"
+msgstr "los precios publicados"
+
+msgid "run the Setup Wizard"
+msgstr "ejecuta el asistente de configuración"
+
+msgid "seconds"
+msgstr "segundos"
+
+msgid "specific_roles visibility requires at least one role."
+msgstr "La visibilidad specific_roles requiere al menos un rol."
+
+msgid "tag"
+msgstr "etiqueta"
+
+msgid "tag name"
+msgstr "nombre de la etiqueta"
+
+msgid "variable"
+msgstr "variable"
+
+msgid "view"
+msgstr "ver"
+
+msgid "~%d tokens - estimated AI context size for this page"
+msgstr "~%d tokens - tamaño estimado del contexto de IA para esta página"
+
+msgid "← Back"
+msgstr "← Atrás"
+
