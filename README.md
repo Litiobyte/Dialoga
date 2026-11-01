@@ -1,101 +1,113 @@
-# DialogaWP: base para desarrollo
+<p align="center">
+  <img src="assets/images/dialogawp-logo.png" alt="DialogaWP" width="220">
+</p>
 
-Repositorio local para desarrollar mejoras sobre el plugin de WordPress DialogaWP.
-Basado en el codigo original del plugin, con las mejoras locales descritas abajo.
+<h1 align="center">Convierte conversaciones en oportunidades</h1>
 
-## Origen
+<p align="center">
+  <strong>DialogaWP</strong> es el constructor visual de chatbots para WordPress que ayuda a captar, calificar y acompañar a tus visitantes con conversaciones útiles.
+</p>
 
-- Plugin: DialogaWP - Chatbot & Conversational Lead Capture Forms.
-- Version base: 1.0.5.
-- Autor declarado: Litiobyte SpA.
-- SVN oficial: https://plugins.svn.wordpress.org/dialogawp/
-- Version estable: https://plugins.svn.wordpress.org/dialogawp/tags/1.0.5/
-- Descarga utilizada: https://downloads.wordpress.org/plugin/dialogawp.1.0.5.zip
-- Metodo: extraccion del ZIP oficial, sin metadatos SVN.
+<p align="center">
+  <a href="#empieza-en-minutos">Empezar</a> · <a href="#lo-que-puedes-crear">Funciones</a> · <a href="#ia-con-control">IA y privacidad</a> · <a href="#desarrollo">Desarrollo</a>
+</p>
 
-## Licencia
+---
 
-El plugin declara **GNU GPL version 2 o posterior** en `dialogawp.php` y
-`readme.txt`. Se conservan los avisos originales de autoria y licencia.
+## Tu sitio puede conversar y convertir
 
-La GPL permite modificar y redistribuir el codigo bajo sus condiciones.
-Al distribuir modificaciones, conserva los avisos, identifica los cambios
-y sus fechas, incluye la licencia y proporciona el codigo fuente segun
-corresponda. Consulta el texto completo:
-https://www.gnu.org/licenses/gpl-2.0.html
+Los formularios estáticos piden demasiado antes de ofrecer valor. DialogaWP transforma esa primera interacción en una conversación guiada: responde preguntas, descubre necesidades y captura los datos que importan para tu negocio.
 
-La descarga contiene el plugin gratuito. El complemento DialogaWP Pro no esta
-incluido. Las bibliotecas incluidas en `assets/js/vendor/` conservan sus
-propios avisos de licencia.
+Todo ocurre dentro de WordPress, con un widget preparado para móvil y un builder visual que tu equipo puede usar sin escribir código.
 
-## Requisitos e instalacion
+## Lo que puedes crear
 
-- WordPress 6.2 o posterior.
-- PHP 7.4 o posterior.
-- Clave propia de OpenAI o Anthropic solo para las funcionalidades de IA.
+| Para tu objetivo | DialogaWP te ayuda a |
+| --- | --- |
+| Generar más leads | Capturar nombre, correo, teléfono y respuestas dentro de una conversación. |
+| Atender preguntas | Crear rutas guiadas o conectar OpenAI y Anthropic para conversaciones abiertas. |
+| Calificar contactos | Ramificar el flujo según las respuestas y etiquetar cada oportunidad. |
+| Reservar reuniones | Guiar al visitante a la acción correcta con mensajes, redirecciones y cuenta regresiva. |
+| Mejorar conversiones | Revisar conversaciones, fuentes, embudos y tasas de conversión desde WordPress. |
 
-Para probarlo, instala esta carpeta como `wp-content/plugins/dialogawp` en una
-instancia de WordPress de desarrollo y activa el plugin desde el administrador.
-No incluyas claves API ni datos de visitantes en el repositorio.
+## Una experiencia pensada para convertir
 
-## Skills de desarrollo
+### Flujos visuales, sin código
 
-Se instalaron 46 skills de desarrollo y seguridad de WordPress para OpenCode
-en `.opencode/skills/`, solo para este proyecto. Las revisiones de origen,
-licencias e instrucciones de uso se documentan en `.opencode/README.md`.
-Cierra y reinicia OpenCode desde esta carpeta para descubrirlas.
+Diseña conversaciones con un canvas de arrastrar y soltar. Combina nodos de mensaje, pregunta, condición, acción, IA y bucle para construir experiencias que se adaptan a cada visitante.
 
-## Estado del repositorio
+### Captura datos con contexto
 
-Git inicializado en la rama `main`, sin remoto configurado.
-El historial de versiones e instrucciones originales se encuentran en
-`readme.txt`.
+Obtén información cuando el visitante está listo para compartirla. Guarda respuestas como variables, etiqueta leads y exporta los contactos a CSV para continuar el trabajo en tu CRM.
 
-## Build del canvas
+### IA que conoce tu negocio
 
-El canvas usa `@xyflow/react` y se compila con esbuild. La fuente legible esta
-en `src/canvas/`; React y ReactDOM los proporciona WordPress mediante sus
-handles registrados.
+Conecta tu propia clave de OpenAI o Anthropic. DialogaWP puede usar el contenido de tu sitio como base de conocimiento para responder con información relevante sobre tu oferta.
+
+### Decide con datos
+
+Consulta conversaciones, leads, conversiones, páginas de origen y puntos de abandono. Identifica qué preguntas funcionan y dónde ajustar tu flujo.
+
+### Control desde WordPress
+
+Configura horarios, visibilidad, roles, posición y estilo del widget. El asistente de configuración te acompaña para publicar el primer chatbot rápidamente.
+
+## Lo que incluye
+
+- Constructor visual de flujos con nodos de mensaje, pregunta, condición, acción, IA y bucle.
+- Chat con IA opcional mediante OpenAI o Anthropic.
+- Formularios conversacionales de captura de leads, etiquetas y variables.
+- Importación y exportación JSON de uno o varios flujos.
+- Analítica de conversaciones, leads y conversiones.
+- Historial de conversaciones, filtros y exportación CSV de leads.
+- Widget responsive con persistencia de sesión entre páginas.
+- Asistente de configuración y administración en español e inglés.
+- Configuración accesible, navegación por teclado y soporte para movimiento reducido.
+
+## Empieza en minutos
+
+1. Instala DialogaWP en `wp-content/plugins/dialogawp` y actívalo desde WordPress.
+2. Abre **DialogaWP > Setup Wizard** para crear tu primer flujo guiado.
+3. Si usarás IA, añade tu propia clave en **DialogaWP > AI Settings**.
+4. Activa el flujo y empieza a convertir conversaciones en oportunidades.
+
+## IA con control
+
+Las funciones de IA son opcionales. DialogaWP no realiza llamadas externas si no configuras una clave de proveedor y no utilizas nodos de IA.
+
+Cuando habilitas OpenAI o Anthropic, las solicitudes se envían con la clave que tú proporcionas para responder en un nodo de IA, generar el flujo inicial o crear la base de conocimiento. Revisa las políticas de tu proveedor antes de activar estas funciones y no incluyas claves API ni datos de visitantes en el repositorio.
+
+## Requisitos
+
+- WordPress 6.2 o superior.
+- PHP 7.4 o superior.
+- Una clave propia de OpenAI o Anthropic solo para las funciones de IA.
+
+## Desarrollo
+
+El canvas se construye con `@xyflow/react` y esbuild. El código fuente está en `src/canvas/` y WordPress proporciona React y ReactDOM mediante sus handles registrados.
 
 ```bash
 nvm use
 npm ci
 npm run build
+npm test
 ```
 
-Los artefactos se escriben en `assets/js/build/`. `package-lock.json` fija el
-grafo completo de dependencias y `THIRD-PARTY-LICENSES.txt` conserva sus
-licencias. `node_modules/` no forma parte del plugin distribuible.
+Los archivos generados se escriben en `assets/js/build/`. `package-lock.json` fija las dependencias y `THIRD-PARTY-LICENSES.txt` conserva los avisos de terceros.
 
-## Mejoras locales (2026-10-31)
+Las traducciones administrativas se gestionan desde `languages/*-es.json`:
 
-- Importacion y exportacion JSON individual o masiva desde Flow Builder.
-- Exportar el flujo abierto incluye cambios actuales del editor; exportar varios
-  utiliza las versiones guardadas del resto. Limite: 100 flujos y 5 MiB por paquete.
-- La importacion muestra un resumen, valida todos los flujos y crea copias nuevas
-  e inactivas. No reemplaza flujos ni incluye conversaciones o estadisticas.
-- Credenciales y cabeceras se excluyen; los conectores locales se desvinculan.
-  Revisa URLs, destinatarios y dependencias antes de activar copias importadas.
-  Los roles inexistentes y tipos de nodo no disponibles impiden importar.
-- Las extensiones pueden registrar tipos soportados con `dialogawp_import_node_types`.
-- El boton Full screen amplia el lienzo dentro de la pestana, oculta WordPress
-  y la lista de flujos y mantiene herramientas y panel de nodos. Salida con boton
-  o Escape; los dialogos abiertos tienen prioridad.
-- Escape de campos dinamicos del editor para tratar el JSON importado como no confiable.
-- Settings organizado en siete pestanas accesibles, con un solo formulario y
-  conservacion de cambios entre pestanas, incluidas las opciones de extensiones.
-- Administracion traducida al espanol mediante gettext: sigue el idioma del
-  usuario de WordPress, con el idioma del sitio como respaldo. Incluye variantes
-  regionales de espanol; el ingles sigue siendo el idioma original.
-- No se traducen contenidos guardados ni la interfaz publica del chatbot.
+```bash
+node tools/build-translations.cjs
+```
 
-Los catalogos fuente estan en `languages/*-es.json`; regeneralos con
-`node tools/build-translations.cjs` para actualizar PO, POT y MO.
+## Licencia
 
-Pruebas completas: `npm test`. Pruebas individuales:
-`php tests/flow-transfer-test.php` y
-`node tests/flow-transfer-browser-test.cjs`. Consulta los requisitos del navegador
-en `tests/flow-transfer-browser-test.md`. Las pruebas usan dobles de WordPress;
-no sustituyen una prueba de integracion en una instalacion real.
-Pruebas de ajustes e idiomas: `php tests/settings-test.php`,
-`php tests/i18n-test.php` y `node tests/settings-browser-test.cjs`.
+DialogaWP se distribuye bajo [GNU GPL v2 o posterior](https://www.gnu.org/licenses/gpl-2.0.html). Se conservan los avisos de autoría y licencia del plugin original.
+
+---
+
+<p align="center">
+  <strong>Haz que cada visita tenga una conversación que valga la pena.</strong>
+</p>
