@@ -29,26 +29,28 @@
         edges: [],
         selectedNode: null,
         nodeIdCounter: 1,
+        isEditor: false,
         
         init: function() {
+            this.isEditor = dialogawpAdmin && dialogawpAdmin.builderMode === 'editor';
             this.bindEvents();
+
+            // The list view is server-rendered and intentionally avoids loading React.
+            if (!this.isEditor) return;
+
+            // Keep the canvas out of view until its requested flow is loaded.
+            $('#dialogawp-canvas').hide();
+
             this.bindDragDropEvents();
             this.bindWebhookNodeEvents();
             this.bindAIChatNodeEvents();
-            this.loadFlows();
-
-            // Hide canvas until a flow is loaded (but keep it in DOM for React)
-            $('#dialogawp-canvas').hide();
-
             // Wait a bit for React to be available, then initialize canvas
             setTimeout(() => {
                 this.initCanvas();
 
-                // Auto-load a specific flow if redirected from the AI wizard
-                const params    = new URLSearchParams(window.location.search);
-                const autoLoad  = params.get('flow_id');
-                if (autoLoad) {
-                    setTimeout(() => this.loadFlow(parseInt(autoLoad)), 300);
+                const flowId = Number(dialogawpAdmin.flowId);
+                if (Number.isInteger(flowId) && flowId > 0) {
+                    setTimeout(() => this.loadFlow(flowId), 300);
                 }
             }, 500);
 
@@ -270,6 +272,10 @@
             $('.dialogawp-new-flow').on('click', function(e) {
                 e.preventDefault();
                 self.createNewFlow();
+            });
+
+            $(document).on('click', '.dialogawp-back-to-flows', function() {
+                if (self.isDirty) self.performAutoSave(true);
             });
             
             // Save flow button
@@ -621,13 +627,11 @@
         },
         
         showBuilder: function() {
-            $('#dialogawp-builder-empty-state').hide();
             $('#dialogawp-builder-active').show();
             $('#dialogawp-canvas').show();
         },
 
         hideBuilder: function() {
-            $('#dialogawp-builder-empty-state').show();
             $('#dialogawp-builder-active').hide();
             $('#dialogawp-canvas').hide();
             $('#dialogawp-node-editor').hide();
@@ -636,8 +640,8 @@
         createNewFlow: function() {
             const self = this;
 
-            // Auto-name: ChatFlow N based on existing flow count
-            var flowCount = $('#dialogawp-flows-list .dialogawp-flow-item').length;
+            // This comes from the database, not from the currently rendered list.
+            var flowCount = Number(dialogawpAdmin.flowCount) || 0;
             var flowName = 'ChatFlow ' + (flowCount + 1);
 
             this.currentFlowId = null;
@@ -650,10 +654,12 @@
                 is_active: 0  // New flows are inactive by default — user must explicitly activate
             };
 
-            $('#dialogawp-flow-name').val(flowName);
-            $('#dialogawp-flow-active').prop('checked', false);
-            $('#dialogawp-flow-visibility').val('everyone');
-            this.showBuilder();
+            if (this.isEditor) {
+                $('#dialogawp-flow-name').val(flowName);
+                $('#dialogawp-flow-active').prop('checked', false);
+                $('#dialogawp-flow-visibility').val('everyone');
+                this.showBuilder();
+            }
 
             // Clear local state
             this.nodes = [];
@@ -689,10 +695,13 @@
                 if (response.success) {
                     self.currentFlowId = response.data.flow_id;
                     self.currentFlow.id = response.data.flow_id;
+                    if (!self.isEditor) {
+                        window.location.assign(dialogawpAdmin.builderUrl + '&flow_id=' + encodeURIComponent(response.data.flow_id));
+                        return;
+                    }
                     self.isDirty = false;
                     self.updateSaveStatus('saved');
                     self.lastSnapshot = self.getCanvasSnapshot();
-                    self.loadFlows();
                     if (!self.changeDetectionTimer) self.startChangeDetection();
                     _log('✅ New flow created with ID:', response.data.flow_id);
                 } else {
@@ -3309,6 +3318,7 @@
         
         renderFlowList: function(flows) {
             const $list = $('#dialogawp-flows-list');
+            if (!$list.length || !$list.closest('.dialogawp-flows-sidebar').length) return;
             
             if (flows.length === 0) {
                 $list.html('<p class="dialogawp-loading">' + this.escapeEditorHtml(t('No flows yet. Create your first flow!')) + '</p>');
@@ -3502,9 +3512,6 @@
 
                             _log('✅ Flow loaded successfully!');
 
-                            // Re-render flow list to highlight the currently-editing flow
-                            self.renderFlowList(response.data);
-
                             // Reset dirty state (just loaded fresh from DB) and start change detection
                             self.isDirty = false;
                             self.updateSaveStatus('saved');
@@ -3528,9 +3535,9 @@
         },
         
         deleteFlow: function(flowId) {
-            // Show loading state on the card being deleted
-            const $card = $(`.dialogawp-flow-item[data-flow-id="${flowId}"]`);
-            $card.addClass('loading');
+            // Work for both the legacy card markup and the server-rendered table row.
+            const $card = $(`.dialogawp-flow-item[data-flow-id="${flowId}"], .dialogawp-flows-table tr[data-flow-id="${flowId}"]`);
+            $card.addClass('loading is-deleting');
 
             $.ajax({
                 url: dialogawpAdmin.ajaxUrl,
@@ -3543,19 +3550,23 @@
                 success: (response) => {
                     if (response.success) {
                         dialogawpModal.success(t('Flow deleted successfully.'));
+                        if (!this.isEditor) {
+                            window.location.reload();
+                            return;
+                        }
                         this.loadFlows();
 
                         if (parseInt(this.currentFlowId) === parseInt(flowId)) {
                             this.currentFlowId = null;
-                            this.hideBuilder();
+                            window.location.assign(dialogawpAdmin.builderUrl);
                         }
                     } else {
-                        $card.removeClass('loading');
+                        $card.removeClass('loading is-deleting');
                         dialogawpModal.error(t('Failed to delete flow.'));
                     }
                 },
                 error: () => {
-                    $card.removeClass('loading');
+                    $card.removeClass('loading is-deleting');
                     dialogawpModal.error(t('Error deleting flow.'));
                 }
             });

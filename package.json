@@ -6,12 +6,18 @@
   "scripts": {
     "build": "node tools/build-canvas.mjs",
     "watch": "node tools/build-canvas.mjs --watch",
-    "test": "npm run build && php tests/flow-transfer-test.php && php tests/i18n-test.php && php tests/settings-test.php && node tests/canvas-build-test.cjs && node tests/canvas-browser-test.cjs"
+    "test": "npm run build && php tests/flow-transfer-test.php && php tests/i18n-test.php && php tests/settings-test.php && node tests/canvas-build-test.cjs && node tests/canvas-browser-test.cjs",
+    "env:start": "wp-env start",
+    "env:stop": "wp-env stop",
+    "env:status": "wp-env status",
+    "env:logs": "wp-env logs",
+    "env:cli": "wp-env run cli"
   },
   "dependencies": {
     "@xyflow/react": "12.12.0"
   },
   "devDependencies": {
+    "@wordpress/env": "12.0.0",
     "esbuild": "0.28.2",
     "react": "18.2.0",
     "react-dom": "18.2.0"

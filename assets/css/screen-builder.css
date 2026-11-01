@@ -17,7 +17,7 @@
 .dialogawp-builder-wrap .button-primary:focus .dashicons {
     color: #ffffff !important;
 }
-.dialogawp-builder-wrap .button-primary .dashicons {
+.wp-core-ui .dialogawp-builder-wrap .button-primary .dashicons {
     vertical-align: middle;
     line-height: 1.2;
 }
@@ -53,6 +53,80 @@
 
 .dialogawp-builder-page-header {
     margin-bottom: 12px;
+}
+
+.dialogawp-back-to-flows {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.dialogawp-builder-list-view {
+    overflow: hidden;
+    border: 1px solid #E5E7EF;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.dialogawp-builder-list-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 16px;
+    border-bottom: 1px solid #E5E7EF;
+    background: #F7F8FC;
+}
+
+.dialogawp-builder-list-actions .dashicons {
+    vertical-align: middle;
+}
+
+.dialogawp-builder-list-table-wrap {
+    overflow-x: auto;
+}
+
+.dialogawp-flows-table {
+    margin: 0;
+    border: 0;
+    box-shadow: none;
+}
+
+.dialogawp-flows-table th,
+.dialogawp-flows-table td {
+    padding: 14px 16px;
+    vertical-align: middle;
+}
+
+.dialogawp-flows-table .column-primary {
+    width: 46%;
+}
+
+.dialogawp-flows-table .row-title {
+    color: #190F4F;
+}
+
+.dialogawp-flows-table .row-title:hover {
+    color: #007D75;
+}
+
+.dialogawp-flows-table .button-link-delete {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    font-size: inherit;
+    cursor: pointer;
+}
+
+.dialogawp-flows-table .dialogawp-flow-status {
+    display: inline-flex;
+    min-width: 58px;
+    justify-content: center;
+}
+
+.dialogawp-flows-table tr.is-deleting {
+    opacity: 0.58;
+    pointer-events: none;
 }
 
 .dialogawp-builder-empty-actions {
@@ -392,15 +466,70 @@ body.dialogawp-canvas-fullscreen .dialogawp-node-editor {
     padding: 15px 20px;
     border-bottom: 1px solid #E5E7EF;
     background: #F7F8FC;
-    flex-wrap: wrap; /* v0.42.8 — wrap Preview/Export/Save to next row on narrow screens instead of getting clipped by parent overflow:hidden */
-    gap: 10px;
+    flex-wrap: nowrap;
+    gap: 12px;
+    overflow-x: auto;
 }
 
 .dialogawp-builder-toolbar-left {
     display: flex;
-    gap: 15px;
+    min-width: 0;
+    gap: 12px;
     align-items: center;
-    flex-wrap: wrap; /* v0.42.8 — allow flow-name + visibility to wrap when the toolbar is squeezed */
+    flex: 1 1 auto;
+    flex-wrap: nowrap;
+}
+
+.dialogawp-builder-toolbar-right .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+/* v0.42.x — WP core's .wp-core-ui .button .dashicons rule (buttons.css) sets
+   line-height:1.9 and vertical-align:top with 3 classes, which outranks a
+   plain two-class selector and breaks the toolbar icon centering. Scope with
+   the wp-core-ui body class + wrapper so our 18px box wins. */
+.wp-core-ui .dialogawp-builder-wrap .dialogawp-builder-toolbar .button .dashicons {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    line-height: 18px;
+    vertical-align: middle;
+}
+
+.dialogawp-export-current,
+.dialogawp-import-flows {
+    border-color: #9DDCD7 !important;
+    background: #F1FBFA !important;
+    color: #007D75 !important;
+}
+
+.dialogawp-export-current:hover,
+.dialogawp-import-flows:hover,
+.dialogawp-export-current:focus,
+.dialogawp-import-flows:focus {
+    border-color: #00ADA1 !important;
+    background: #E0F5F3 !important;
+    color: #005E58 !important;
+}
+
+.dialogawp-fullscreen-toggle {
+    border-color: #190F4F !important;
+    background: #190F4F !important;
+    color: #fff !important;
+}
+
+.dialogawp-fullscreen-toggle:hover,
+.dialogawp-fullscreen-toggle:focus {
+    border-color: #31246F !important;
+    background: #31246F !important;
+    color: #fff !important;
+}
+
+.dialogawp-fullscreen-toggle .dashicons {
+    color: currentColor;
 }
 
 .dialogawp-flow-name-input {
@@ -409,14 +538,16 @@ body.dialogawp-canvas-fullscreen .dialogawp-node-editor {
     padding: 6px 12px;
     border: 1px solid #E5E7EF;
     border-radius: 4px;
-    min-width: 250px;
+    width: 250px;
+    min-width: 0;
 }
 
 .dialogawp-visibility-controls {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    margin-left: 12px;
+    min-width: 0;
+    margin-left: 4px;
     padding-left: 12px;
     border-left: 1px solid #E5E7EF;
 }
@@ -430,7 +561,8 @@ body.dialogawp-canvas-fullscreen .dialogawp-node-editor {
 }
 
 .dialogawp-visibility-controls select {
-    min-width: 170px;
+    width: 170px;
+    min-width: 0;
     padding: 5px 10px;
     font-size: 13px;
 }
@@ -444,7 +576,70 @@ body.dialogawp-canvas-fullscreen .dialogawp-node-editor {
 
 .dialogawp-builder-toolbar-right {
     display: flex;
-    gap: 10px;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: nowrap;
+}
+
+@media (max-width: 1500px) {
+    .dialogawp-builder-toolbar {
+        padding: 12px;
+        gap: 8px;
+    }
+
+    .dialogawp-builder-toolbar-left {
+        gap: 8px;
+    }
+
+    .dialogawp-flow-name-input {
+        width: 120px;
+    }
+
+    .dialogawp-visibility-controls {
+        gap: 5px;
+        margin-left: 0;
+        padding-left: 8px;
+    }
+
+    .dialogawp-visibility-controls select {
+        width: 135px;
+    }
+
+    .dialogawp-builder-toolbar-right {
+        gap: 5px;
+    }
+
+    .dialogawp-builder-toolbar-right .button,
+    #dialogawp-visibility-settings {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 32px;
+        min-height: 32px;
+        padding: 0 6px;
+    }
+
+    .dialogawp-export-current .dialogawp-toolbar-label,
+    .dialogawp-import-flows .dialogawp-toolbar-label,
+    #dialogawp-visibility-settings .dialogawp-toolbar-label,
+    .dialogawp-fullscreen-label,
+    .dialogawp-save-status-text {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+
+    .dialogawp-builder-toolbar-right .dashicons,
+    #dialogawp-visibility-settings .dashicons {
+        margin: 0;
+    }
 }
 
 .dialogawp-node-palette {
@@ -526,11 +721,11 @@ body.dialogawp-canvas-fullscreen .dialogawp-node-editor {
        stays put, only the middle scrolls. */
     position: fixed;
     right: 30px;
-    top: 80px;
+    top: 270px;
     bottom: 30px;
     width: 500px;
     max-width: calc(100vw - 60px);
-    max-height: calc(100vh - 110px);
+    max-height: calc(100vh - 300px);
     background: #fff;
     border: 1px solid #E5E7EF;
     border-radius: 12px;
@@ -677,6 +872,14 @@ body.dialogawp-canvas-fullscreen .dialogawp-node-editor {
 }
 
 @media (max-width: 782px) {
+    .dialogawp-builder-list-actions {
+        flex-wrap: wrap;
+    }
+
+    .dialogawp-flows-table {
+        min-width: 640px;
+    }
+
     .dialogawp-visibility-controls {
         width: 100%;
         margin-left: 0;

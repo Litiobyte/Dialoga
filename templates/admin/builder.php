@@ -6,8 +6,28 @@
 if (!defined('ABSPATH')) {
     exit;
 }
+
+global $wpdb;
+
+$dialogawp_flow_id = isset($_GET['flow_id']) ? absint(wp_unslash($_GET['flow_id'])) : 0;
+$dialogawp_flows_table = $wpdb->prefix . 'dialogawp_flows';
+$dialogawp_selected_flow = null;
+
+if ($dialogawp_flow_id) {
+    $dialogawp_selected_flow = $wpdb->get_row(
+        $wpdb->prepare("SELECT id FROM {$dialogawp_flows_table} WHERE id = %d", $dialogawp_flow_id)
+    );
+}
+
+$dialogawp_is_editor = (bool) $dialogawp_selected_flow;
+$dialogawp_flows = array();
+if (!$dialogawp_flow_id) {
+    $dialogawp_flows = $wpdb->get_results("SELECT id, flow_name, is_active, visibility_mode, updated_at FROM {$dialogawp_flows_table} ORDER BY updated_at DESC");
+}
+$dialogawp_builder_url = admin_url('admin.php?page=dialogawp-builder');
 ?>
 
+<?php if ($dialogawp_is_editor) : ?>
 <div class="dialogawp-builder-mobile-notice">
     <div class="dialogawp-builder-mobile-inner">
         <img src="<?php echo esc_url(DIALOGAWP_LOGO_URL); ?>" alt="DialogaWP" style="height:80px;width:auto;margin-bottom:20px;" onerror="this.style.display='none'" />
@@ -23,61 +43,85 @@ if (!defined('ABSPATH')) {
         </div>
     </div>
 </div>
-<div class="wrap dialogawp-builder-wrap">
+<?php endif; ?>
+<div class="wrap dialogawp-builder-wrap <?php echo $dialogawp_is_editor ? 'dialogawp-builder-wrap--editor' : 'dialogawp-builder-wrap--list'; ?>">
         <div class="dialogawp-screen-header dialogawp-builder-page-header">
             <div>
                 <h1><?php echo esc_html__('Flow Builder', 'dialogawp'); ?></h1>
-                <p><?php echo esc_html__('Design conversation paths, capture leads, and publish when your flow is ready.', 'dialogawp'); ?></p>
+                <p><?php echo $dialogawp_is_editor ? esc_html__('Design conversation paths, capture leads, and publish when your flow is ready.', 'dialogawp') : esc_html__('Create, review, and manage your conversational flows.', 'dialogawp'); ?></p>
             </div>
+            <?php if ($dialogawp_is_editor) : ?>
+            <a href="<?php echo esc_url($dialogawp_builder_url); ?>" class="button dialogawp-back-to-flows">
+                <span class="dashicons dashicons-arrow-left-alt"></span> <?php echo esc_html__('Back to flows', 'dialogawp'); ?>
+            </a>
+            <?php else : ?>
             <button class="button button-primary dialogawp-new-flow">
                 <span class="dashicons dashicons-plus-alt"></span> <?php echo esc_html__('New Flow', 'dialogawp'); ?>
             </button>
+            <?php endif; ?>
         </div>
-    
+
+    <?php if ($dialogawp_flow_id && !$dialogawp_is_editor) : ?>
+        <div class="notice notice-error" role="alert">
+            <p><?php echo esc_html__('The selected flow could not be found.', 'dialogawp'); ?> <a href="<?php echo esc_url($dialogawp_builder_url); ?>"><?php echo esc_html__('Back to flows', 'dialogawp'); ?></a></p>
+        </div>
+    <?php elseif (!$dialogawp_is_editor) : ?>
+        <div class="dialogawp-builder-list-view">
+            <div class="dialogawp-builder-list-actions">
+                <a href="<?php echo esc_url(admin_url('admin.php?page=dialogawp-wizard')); ?>" class="button">
+                    <span class="dashicons dashicons-admin-tools"></span> <?php echo esc_html__('Setup Wizard', 'dialogawp'); ?>
+                </a>
+                <button type="button" class="button dialogawp-import-flows"><span class="dashicons dashicons-upload"></span> <?php echo esc_html__('Import', 'dialogawp'); ?></button>
+                <button type="button" class="button dialogawp-export-flows"><span class="dashicons dashicons-download"></span> <?php echo esc_html__('Export flows', 'dialogawp'); ?></button>
+                <input type="file" id="dialogawp-import-file" accept=".json,application/json" hidden />
+            </div>
+            <div class="dialogawp-builder-list-table-wrap">
+                <table class="wp-list-table widefat fixed striped table-view-list dialogawp-flows-table">
+                    <caption class="screen-reader-text"><?php echo esc_html__('Your Flows', 'dialogawp'); ?></caption>
+                    <thead>
+                        <tr>
+                            <th scope="col" class="column-primary"><?php echo esc_html__('Flow Name', 'dialogawp'); ?></th>
+                            <th scope="col"><?php echo esc_html__('Status', 'dialogawp'); ?></th>
+                            <th scope="col"><?php echo esc_html__('Visibility', 'dialogawp'); ?></th>
+                            <th scope="col"><?php echo esc_html__('Updated', 'dialogawp'); ?></th>
+                        </tr>
+                    </thead>
+                    <tbody id="dialogawp-flows-list">
+                    <?php if (empty($dialogawp_flows)) : ?>
+                        <tr class="no-items"><td class="colspanchange" colspan="4"><?php echo esc_html__('No flows yet. Create your first flow!', 'dialogawp'); ?></td></tr>
+                    <?php else : ?>
+                        <?php foreach ($dialogawp_flows as $dialogawp_flow) : ?>
+                            <?php
+                            $dialogawp_edit_url = add_query_arg('flow_id', absint($dialogawp_flow->id), $dialogawp_builder_url);
+                            $dialogawp_visibility = $dialogawp_flow->visibility_mode ?: 'everyone';
+                            $dialogawp_visibility_label = 'logged_in' === $dialogawp_visibility
+                                ? __('Logged-in users', 'dialogawp')
+                                : ('specific_roles' === $dialogawp_visibility ? __('Specific roles', 'dialogawp') : __('Everyone', 'dialogawp'));
+                            ?>
+                            <tr data-flow-id="<?php echo esc_attr($dialogawp_flow->id); ?>">
+                                <td class="column-primary" data-colname="<?php echo esc_attr__('Flow Name', 'dialogawp'); ?>">
+                                    <strong><a class="row-title" href="<?php echo esc_url($dialogawp_edit_url); ?>"><?php echo esc_html($dialogawp_flow->flow_name ?: __('Untitled Flow', 'dialogawp')); ?></a></strong>
+                                    <div class="row-actions">
+                                        <span class="edit"><a href="<?php echo esc_url($dialogawp_edit_url); ?>"><?php echo esc_html__('Edit', 'dialogawp'); ?></a> | </span>
+                                        <span class="trash"><button type="button" class="button-link-delete dialogawp-delete-flow" data-flow-id="<?php echo esc_attr($dialogawp_flow->id); ?>"><?php echo esc_html__('Delete', 'dialogawp'); ?></button></span>
+                                    </div>
+                                    <button type="button" class="toggle-row"><span class="screen-reader-text"><?php echo esc_html__('Show more details', 'dialogawp'); ?></span></button>
+                                </td>
+                                <td data-colname="<?php echo esc_attr__('Status', 'dialogawp'); ?>"><span class="dialogawp-flow-status <?php echo $dialogawp_flow->is_active ? 'active' : 'inactive'; ?>"><?php echo $dialogawp_flow->is_active ? esc_html__('Active', 'dialogawp') : esc_html__('Inactive', 'dialogawp'); ?></span></td>
+                                <td data-colname="<?php echo esc_attr__('Visibility', 'dialogawp'); ?>"><?php echo esc_html($dialogawp_visibility_label); ?></td>
+                                <td data-colname="<?php echo esc_attr__('Updated', 'dialogawp'); ?>"><?php echo esc_html(wp_date(get_option('date_format'), strtotime($dialogawp_flow->updated_at . ' UTC'))); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    <?php else : ?>
     <div class="dialogawp-builder-container">
-        <!-- Flow List Sidebar -->
-        <div class="dialogawp-flows-sidebar">
-            <div class="dialogawp-flows-sidebar-header">
-                <h2><?php echo esc_html__('Your Flows', 'dialogawp'); ?></h2>
-                <div class="dialogawp-flows-sidebar-actions">
-                    <button class="button button-primary dialogawp-new-flow dialogawp-new-flow-sidebar" title="<?php echo esc_attr__('Create New Flow', 'dialogawp'); ?>">
-                        <span class="dashicons dashicons-plus-alt2"></span> <?php echo esc_html__('New Flow', 'dialogawp'); ?>
-                    </button>
-                    <a href="<?php echo esc_url(admin_url('admin.php?page=dialogawp-wizard')); ?>" class="button dialogawp-wizard-sidebar" title="<?php echo esc_attr__('Open the setup wizard to build a flow from your site content', 'dialogawp'); ?>">
-                        <span class="dashicons dashicons-admin-tools"></span> <?php echo esc_html__('Wizard', 'dialogawp'); ?>
-                    </a>
-                    <button type="button" class="button dialogawp-import-flows"><span class="dashicons dashicons-upload"></span> <?php echo esc_html__('Import', 'dialogawp'); ?></button>
-                    <button type="button" class="button dialogawp-export-flows"><span class="dashicons dashicons-download"></span> <?php echo esc_html__('Export flows', 'dialogawp'); ?></button>
-                    <input type="file" id="dialogawp-import-file" accept=".json,application/json" hidden />
-                </div>
-            </div>
-            <div id="dialogawp-flows-list">
-                <p class="dialogawp-loading"><?php echo esc_html__('Loading flows...', 'dialogawp'); ?></p>
-            </div>
-        </div>
-        
         <!-- Flow Builder Canvas -->
         <div class="dialogawp-builder-main">
-            <!-- Empty state — shown when no flow is selected -->
-            <div class="dialogawp-builder-empty-state" id="dialogawp-builder-empty-state">
-                <div class="dialogawp-builder-empty-inner">
-                    <img src="<?php echo esc_url(DIALOGAWP_LOGO_URL); ?>" alt="DialogaWP" style="height:80px;width:auto;margin-bottom:20px;opacity:0.5;" onerror="this.style.display='none'" />
-                    <h2><?php echo esc_html__('Welcome to the Flow Builder', 'dialogawp'); ?></h2>
-                    <p><?php echo esc_html__('Create conversational chatbot flows with our visual drag-and-drop editor.', 'dialogawp'); ?></p>
-                    <div class="dialogawp-builder-empty-actions">
-                        <button class="button button-primary dialogawp-new-flow" style="padding:8px 24px;font-size:14px;">
-                            <span class="dashicons dashicons-plus-alt" style="margin-top:3px;"></span> <?php echo esc_html__('Create New Flow', 'dialogawp'); ?>
-                        </button>
-                        <a href="<?php echo esc_url(admin_url('admin.php?page=dialogawp-wizard')); ?>" class="button" style="padding:8px 24px;font-size:14px;">
-                            <span class="dashicons dashicons-admin-tools" style="margin-top:3px;"></span> <?php echo esc_html__('Setup Wizard', 'dialogawp'); ?>
-                        </a>
-                    </div>
-                    <p class="dialogawp-builder-empty-note"><?php echo esc_html__('Or select an existing flow from the sidebar to edit it.', 'dialogawp'); ?></p>
-                </div>
-            </div>
-
-            <!-- Builder UI — hidden until flow selected -->
-            <div class="dialogawp-builder-active" id="dialogawp-builder-active" style="display:none;">
+            <div class="dialogawp-builder-active" id="dialogawp-builder-active">
             <div class="dialogawp-builder-toolbar">
                 <div class="dialogawp-builder-toolbar-left">
                     <label class="screen-reader-text" for="dialogawp-flow-name"><?php echo esc_html__('Flow Name', 'dialogawp'); ?></label>
@@ -102,20 +146,22 @@ if (!defined('ABSPATH')) {
                             <option value="specific_roles"><?php echo esc_html__('Specific Roles', 'dialogawp'); ?></option>
                         </select>
                         <button type="button" class="button button-small" id="dialogawp-visibility-settings" style="display: none;">
-                            <?php echo esc_html__('Configure Roles', 'dialogawp'); ?>
+                            <span class="dashicons dashicons-admin-users"></span><span class="dialogawp-toolbar-label"><?php echo esc_html__('Configure Roles', 'dialogawp'); ?></span>
                         </button>
                     </div>
 
                 </div>
                 <div class="dialogawp-builder-toolbar-right">
-                    <button type="button" class="button dialogawp-export-current"><span class="dashicons dashicons-download"></span> <?php echo esc_html__('Export', 'dialogawp'); ?></button>
-                    <button type="button" class="button dialogawp-fullscreen-toggle" aria-pressed="false" title="<?php echo esc_attr__('Expand canvas within this browser tab', 'dialogawp'); ?>"><span class="dashicons dashicons-editor-expand"></span> <span class="dialogawp-fullscreen-label"><?php echo esc_html__('Full screen', 'dialogawp'); ?></span></button>
+                    <button type="button" class="button dialogawp-export-current" title="<?php echo esc_attr__('Export', 'dialogawp'); ?>" aria-label="<?php echo esc_attr__('Export', 'dialogawp'); ?>"><span class="dashicons dashicons-download"></span><span class="dialogawp-toolbar-label"> <?php echo esc_html__('Export', 'dialogawp'); ?></span></button>
+                    <button type="button" class="button dialogawp-import-flows" title="<?php echo esc_attr__('Import', 'dialogawp'); ?>" aria-label="<?php echo esc_attr__('Import', 'dialogawp'); ?>"><span class="dashicons dashicons-upload"></span><span class="dialogawp-toolbar-label"> <?php echo esc_html__('Import', 'dialogawp'); ?></span></button>
+                    <input type="file" id="dialogawp-import-file" accept=".json,application/json" hidden />
+                    <button type="button" class="button dialogawp-fullscreen-toggle" aria-pressed="false" title="<?php echo esc_attr__('Expand canvas within this browser tab', 'dialogawp'); ?>"><span class="dashicons dashicons-editor-expand"></span><span class="dialogawp-fullscreen-label"> <?php echo esc_html__('Full screen', 'dialogawp'); ?></span></button>
                     <span id="dialogawp-save-status" class="dialogawp-save-status dialogawp-save-status--saved" role="status" aria-live="polite" title="<?php echo esc_attr__('All changes saved', 'dialogawp'); ?>">
                         <span class="dialogawp-save-status-dot"></span>
                         <span class="dialogawp-save-status-text"><?php echo esc_html__('All changes saved', 'dialogawp'); ?></span>
                     </span>
-                    <button class="button button-primary dialogawp-save-flow" id="dialogawp-save-flow">
-                        <span class="dashicons dashicons-saved"></span> <?php echo esc_html__('Save Flow', 'dialogawp'); ?>
+                    <button class="button button-primary dialogawp-save-flow" id="dialogawp-save-flow" title="<?php echo esc_attr__('Save', 'dialogawp'); ?>" aria-label="<?php echo esc_attr__('Save', 'dialogawp'); ?>">
+                        <span class="dashicons dashicons-saved"></span><span class="dialogawp-toolbar-label"> <?php echo esc_html__('Save', 'dialogawp'); ?></span>
                     </button>
                 </div>
             </div>
@@ -185,9 +231,12 @@ if (!defined('ABSPATH')) {
                     <button class="button button-primary dialogawp-save-node"><?php echo esc_html__('Save', 'dialogawp'); ?></button>
                 </div>
             </aside>
+        </div>
     </div>
+    <?php endif; ?>
 
     <!-- Visibility Role Selection Modal -->
+    <?php if ($dialogawp_is_editor) : ?>
     <div id="dialogawp-visibility-modal" class="dialogawp-modal" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="dialogawp-visibility-modal-title" tabindex="-1">
         <div class="dialogawp-modal-backdrop"></div>
         <div class="dialogawp-modal-content" style="max-width: 500px;">
@@ -218,6 +267,7 @@ if (!defined('ABSPATH')) {
             </div>
         </div>
     </div>
+    <?php endif; ?>
 </div>
 
 <!-- v1.0.1 — <script type="text/template"> blocks moved to templates/admin/builder-templates.php

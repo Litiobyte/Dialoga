@@ -2269,7 +2269,7 @@
       "imports": []
     },
     "src/canvas/index.jsx": {
-      "bytes": 19820,
+      "bytes": 20120,
       "imports": [
         {
           "path": "src/canvas/shims/react.js",
@@ -2324,7 +2324,7 @@
           "bytesInOutput": 51
         },
         "src/canvas/index.jsx": {
-          "bytesInOutput": 10148
+          "bytesInOutput": 10250
         },
         "src/canvas/shims/jsx-runtime.js": {
           "bytesInOutput": 71
@@ -2705,7 +2705,7 @@
           "bytesInOutput": 0
         }
       },
-      "bytes": 191132
+      "bytes": 191234
     },
     "assets/js/build/flow-canvas.css": {
       "imports": [],

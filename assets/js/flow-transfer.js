@@ -185,7 +185,7 @@
             }
         });
 
-        $('.dialogawp-export-flows').on('click', async function() {
+        $(document).on('click', '.dialogawp-export-flows', async function() {
             if (busy) return;
             setBusy(true);
             try {
@@ -220,11 +220,11 @@
             }
         });
 
-        $('.dialogawp-import-flows').on('click', function() {
+        $(document).on('click', '.dialogawp-import-flows', function() {
             if (!busy) $('#dialogawp-import-file').val('').trigger('click');
         });
 
-        $('#dialogawp-import-file').on('change', async function() {
+        $(document).on('change', '#dialogawp-import-file', async function() {
             const file = this.files[0];
             if (!file || busy) return;
             setBusy(true);
@@ -240,8 +240,9 @@
                 setBusy(false);
                 const content = openDialog(t('Import %s flow(s)').replace('%s', preview.flows.length), t('Import inactive copies'), async () => {
                     const result = await request('dialogawp_import_flows', { package: pkg });
-                    // Keep the current editor mounted and selected: existing saves cannot target imported copies.
-                    builder.loadFlows();
+                    // The list is server-rendered; refresh it after import. The editor stays mounted.
+                    if (builder.isEditor) builder.loadFlows();
+                    else window.location.reload();
                     setTimeout(() => dialogawpModal.success(t('%s flow(s) imported as inactive copies. Select them from the list and review settings before activation.').replace('%s', result.flow_ids.length)), 0);
                 });
                 addText(content, t('Existing flows will not be replaced. Imported copies remain inactive until you explicitly activate them.'));
@@ -300,9 +301,12 @@
         }, true);
 
         // If the active flow is deleted, its toolbar disappears. Do not leave the user trapped.
-        const observer = new MutationObserver(() => {
-            if (fullscreen && !$('#dialogawp-builder-active').is(':visible')) toggleFullscreen(false);
-        });
-        observer.observe(document.getElementById('dialogawp-builder-active'), { attributes: true, attributeFilter: ['style'] });
+        const activeBuilder = document.getElementById('dialogawp-builder-active');
+        if (activeBuilder) {
+            const observer = new MutationObserver(() => {
+                if (fullscreen && !$('#dialogawp-builder-active').is(':visible')) toggleFullscreen(false);
+            });
+            observer.observe(activeBuilder, { attributes: true, attributeFilter: ['style'] });
+        }
     });
 })(jQuery);

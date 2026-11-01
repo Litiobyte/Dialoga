@@ -253,8 +253,8 @@ class DialogaWP {
         
         add_submenu_page(
             'DialogaWP',
-            __('Flow Builder', 'dialogawp'),
-            __('Flow Builder', 'dialogawp'),
+            __('Flows', 'dialogawp'),
+            __('Flows', 'dialogawp'),
             'manage_options',
             'dialogawp-builder',
             array($this, 'render_builder')
@@ -308,6 +308,21 @@ class DialogaWP {
 
         $dialogawp_screen_key = strtolower($hook);
         $dialogawp_is_builder = 'dialogawp_page_dialogawp-builder' === $dialogawp_screen_key;
+        $dialogawp_builder_flow_id = $dialogawp_is_builder && isset($_GET['flow_id']) ? absint(wp_unslash($_GET['flow_id'])) : 0;
+        $dialogawp_is_builder_editor = false;
+
+        if ($dialogawp_is_builder) {
+            global $wpdb;
+        }
+
+        if ($dialogawp_builder_flow_id) {
+            $dialogawp_is_builder_editor = (bool) $wpdb->get_var(
+                $wpdb->prepare(
+                    "SELECT id FROM {$wpdb->prefix}dialogawp_flows WHERE id = %d",
+                    $dialogawp_builder_flow_id
+                )
+            );
+        }
         
         // DialogaWP Modal (global — used by all admin JS)
         wp_enqueue_script('dialogawp-modal', DIALOGAWP_URL . 'assets/js/modal.js', array(), DIALOGAWP_VERSION, true);
@@ -315,7 +330,7 @@ class DialogaWP {
         $dialogawp_admin_dependencies = array('jquery', 'dialogawp-modal');
         $dialogawp_use_xyflow = false;
 
-        if ($dialogawp_is_builder) {
+        if ($dialogawp_is_builder_editor) {
             // Temporary development switch. Remove with the legacy canvas before release.
             $dialogawp_use_xyflow = (bool) apply_filters('dialogawp_use_xyflow_canvas', true);
             $dialogawp_canvas_file = $dialogawp_use_xyflow
@@ -339,7 +354,7 @@ class DialogaWP {
             'dialogawp-admin',
             DIALOGAWP_URL . 'assets/js/admin.js',
             $dialogawp_admin_dependencies,
-            DIALOGAWP_VERSION,
+            (string) filemtime(DIALOGAWP_PATH . 'assets/js/admin.js'),
             true
         );
         
@@ -351,7 +366,7 @@ class DialogaWP {
             DIALOGAWP_VERSION
         );
 
-        if ($dialogawp_use_xyflow) {
+        if ($dialogawp_is_builder_editor && $dialogawp_use_xyflow) {
             wp_enqueue_style(
                 'dialogawp-flow-canvas',
                 DIALOGAWP_URL . 'assets/js/build/flow-canvas.css',
@@ -392,12 +407,12 @@ class DialogaWP {
                 'dialogawp-screen-' . basename($dialogawp_screen_file, '.css'),
                 DIALOGAWP_URL . 'assets/css/' . $dialogawp_screen_file,
                 array('dialogawp-admin'),
-                DIALOGAWP_VERSION
+                (string) filemtime(DIALOGAWP_PATH . 'assets/css/' . $dialogawp_screen_file)
             );
         }
         
         // Localize script for AJAX
-        wp_localize_script('dialogawp-admin', 'dialogawpAdmin', array(
+        $dialogawp_admin_data = array(
             'ajaxUrl'  => admin_url('admin-ajax.php'),
             'adminUrl' => admin_url(''),
             'nonce'    => wp_create_nonce('dialogawp_nonce'),
@@ -405,7 +420,16 @@ class DialogaWP {
             'isPro'    => dialogawp_is_pro(),
             'debug'    => defined('WP_DEBUG') && WP_DEBUG,
             'i18n'     => DialogaWP_I18n::script_messages(),
-        ));
+        );
+
+        if ($dialogawp_is_builder) {
+            $dialogawp_admin_data['builderMode'] = $dialogawp_is_builder_editor ? 'editor' : 'list';
+            $dialogawp_admin_data['builderUrl'] = admin_url('admin.php?page=dialogawp-builder');
+            $dialogawp_admin_data['flowId'] = $dialogawp_builder_flow_id;
+            $dialogawp_admin_data['flowCount'] = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}dialogawp_flows");
+        }
+
+        wp_localize_script('dialogawp-admin', 'dialogawpAdmin', $dialogawp_admin_data);
 
         if ($dialogawp_screen_key === 'dialogawp_page_dialogawp-settings') {
             wp_enqueue_script('dialogawp-settings', DIALOGAWP_URL . 'assets/js/settings.js', array('dialogawp-admin'), DIALOGAWP_VERSION, true);
@@ -416,10 +440,12 @@ class DialogaWP {
         // wp_localize_script for wp.org compliance. Loaded only on the
         // builder screen since that's the only page admin.js uses them.
         if ($hook === 'dialogawp_page_dialogawp-builder') {
-            wp_enqueue_script('dialogawp-flow-transfer', DIALOGAWP_URL . 'assets/js/flow-transfer.js', array('dialogawp-admin', 'dialogawp-modal'), DIALOGAWP_VERSION, true);
-            require_once DIALOGAWP_PATH . 'templates/admin/builder-templates.php';
-            // Unlike wp_localize_script, JSON transport preserves context-specific HTML escaping.
-            wp_add_inline_script('dialogawp-admin', 'window.dialogawpTemplates = ' . wp_json_encode(dialogawp_builder_templates(), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) . ';', 'before');
+            wp_enqueue_script('dialogawp-flow-transfer', DIALOGAWP_URL . 'assets/js/flow-transfer.js', array('dialogawp-admin', 'dialogawp-modal'), (string) filemtime(DIALOGAWP_PATH . 'assets/js/flow-transfer.js'), true);
+            if ($dialogawp_is_builder_editor) {
+                require_once DIALOGAWP_PATH . 'templates/admin/builder-templates.php';
+                // Unlike wp_localize_script, JSON transport preserves context-specific HTML escaping.
+                wp_add_inline_script('dialogawp-admin', 'window.dialogawpTemplates = ' . wp_json_encode(dialogawp_builder_templates(), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) . ';', 'before');
+            }
         }
 
         // Chart.js + analytics charts — loaded only on the free Analytics page
