@@ -17,6 +17,7 @@
 
     const dialogawpWidget = {
         sessionId: null,
+        sessionToken: null,
         conversationId: null,
         flowId: null,
         currentNode: null,
@@ -109,6 +110,7 @@
                     _log('⚠️ Stale session detected (empty history) — starting fresh conversation');
                     localStorage.removeItem('dialogawp_session');
                     this.sessionId = null;
+                    this.sessionToken = null;
                     this.conversationId = null;
                     this.flowId = null;
                     this.currentNode = null;
@@ -280,6 +282,8 @@
                 action: 'dialogawp_save_transcript',
                 nonce: dialogawpConfig.nonce,
                 session_id: this.sessionId,
+                session_token: this.sessionToken || '',
+                flow_id: this.flowId || 0,
                 history: JSON.stringify(this.conversationHistory)
             };
             if (useBeacon && navigator.sendBeacon) {
@@ -312,6 +316,7 @@
                         _log('✅ Conversation started:', response.data);
 
                         self.sessionId      = response.data.session_id;
+                        self.sessionToken   = response.data.session_token || null;
                         self.conversationId = response.data.conversation_id || 0;
                         self.flowId         = response.data.flow_id;
                         self.currentNode    = response.data.current_node;
@@ -365,6 +370,7 @@
                     action: 'dialogawp_process_response',
                     nonce: dialogawpConfig.nonce,
                     session_id: this.sessionId,
+                    session_token: this.sessionToken || '',
                     conversation_id: this.conversationId || 0,
                     flow_id: this.flowId,
                     current_node: this.currentNode,
@@ -716,6 +722,7 @@
                         action: 'dialogawp_submit_survey',
                         nonce: dialogawpConfig.nonce,
                         session_id: self.sessionId || '',
+                        session_token: self.sessionToken || '',
                         flow_id: self.flowId || 0,
                         responses: JSON.stringify(responses)
                     },
@@ -907,9 +914,9 @@
                     action: 'dialogawp_ai_chat',
                     nonce: dialogawpConfig.nonce,
                     session_id: this.sessionId || '',
+                    session_token: this.sessionToken || '',
                     message: text,
                     history: JSON.stringify(this.aiChatHistory.slice(-10)),
-                    node_config: JSON.stringify(this.aiChatConfig || {}),
                     lead_draft: JSON.stringify(this.aiLeadDraft || {}),
                     node_id: this.currentNode || '',
                     flow_id: this.flowId || 0,
@@ -1190,6 +1197,7 @@
                     action: 'dialogawp_submit_lead',
                     nonce: dialogawpConfig.nonce,
                     session_id: this.sessionId,
+                    session_token: this.sessionToken || '',
                     flow_id: this.flowId,
                     lead_data: leadData,
                     pending_tags: JSON.stringify(this.pendingTags),
@@ -1722,6 +1730,7 @@
         saveSession: function() {
             const session = {
                 sessionId:      this.sessionId,
+                sessionToken:   this.sessionToken || null,
                 conversationId: this.conversationId,
                 flowId:         this.flowId,
                 currentNode:    this.currentNode,
@@ -1742,6 +1751,7 @@
             if (saved) {
                 const session = JSON.parse(saved);
                 this.sessionId      = session.sessionId;
+                this.sessionToken   = session.sessionToken || null;
                 this.conversationId = session.conversationId || 0;
                 this.flowId         = session.flowId;
                 this.currentNode    = session.currentNode;
@@ -1875,6 +1885,7 @@
                     action: 'dialogawp_process_response',
                     nonce: dialogawpConfig.nonce,
                     session_id: this.sessionId,
+                    session_token: this.sessionToken || '',
                     conversation_id: this.conversationId || 0,
                     flow_id: this.flowId,
                     current_node: this.currentNode,
@@ -1931,6 +1942,7 @@
         endConversation: function() {
             localStorage.removeItem('dialogawp_session');
             this.sessionId = null;
+            this.sessionToken = null;
             this.flowId = null;
             this.currentNode = null;
             this.conversationHistory = [];
@@ -1975,6 +1987,7 @@
             // but we re-run to ensure clean slate if called from elsewhere)
             localStorage.removeItem('dialogawp_session');
             this.sessionId = null;
+            this.sessionToken = null;
             this.flowId = null;
             this.currentNode = null;
             this.conversationHistory = [];

@@ -55,11 +55,13 @@ class DialogaWP_AI {
         check_ajax_referer('dialogawp_widget', 'nonce');
 
         $user_message = isset($_POST['message']) ? sanitize_text_field(wp_unslash($_POST['message'])) : '';
-        // v1.0.0 — history/node_config are JSON strings; unslash + decode +
-        // recursively sanitize each string value before passing along.
+        // v1.0.0 — history is a JSON string; unslash + decode + recursively
+        // sanitize each string value before passing along.
         $history_raw = isset($_POST['history']) ? wp_unslash($_POST['history']) : '[]';
-        $node_config = isset($_POST['node_config']) ? wp_unslash($_POST['node_config']) : '{}';
         $session_id  = isset($_POST['session_id']) ? sanitize_text_field(wp_unslash($_POST['session_id'])) : '';
+        $flow_id     = isset($_POST['flow_id']) ? absint($_POST['flow_id']) : 0;
+        $node_id     = isset($_POST['node_id']) ? sanitize_text_field(wp_unslash($_POST['node_id'])) : '';
+        $session_token = isset($_POST['session_token']) ? sanitize_text_field(wp_unslash($_POST['session_token'])) : '';
         $honeypot    = isset($_POST['_h']) ? sanitize_text_field(wp_unslash($_POST['_h'])) : null;
 
         if (empty($user_message)) {
@@ -71,6 +73,25 @@ class DialogaWP_AI {
         if (!empty($honeypot)) {
             wp_send_json_error('Invalid request.');
             return;
+        }
+
+        if (!class_exists('DialogaWP_Frontend')
+            || !DialogaWP_Frontend::verify_widget_session($session_id, $session_token, $flow_id)) {
+            wp_send_json_error('Invalid session.');
+            return;
+        }
+
+        // Resolve the AI node config from the stored flow. The client used to
+        // send `node_config` and the server trusted it, which let any visitor
+        // rewrite the system prompt and use the site's API key as a free LLM.
+        $node_config = self::resolve_node_config($flow_id, $node_id);
+        if (null === $node_config) {
+            wp_send_json_error('Invalid chat context.');
+            return;
+        }
+        $node_config = dialogawp_sanitize_json($node_config);
+        if (!is_array($node_config)) {
+            $node_config = array();
         }
 
         // --- Bot protection: IP rate limiting ---
@@ -97,19 +118,23 @@ class DialogaWP_AI {
         }
 
         // --- Message limit: max AI replies per session ---
-        // v1.0.0 — decode then recursively sanitize each string. wp_unslash
-        // was already applied above so no stripslashes needed here.
-        $history     = dialogawp_sanitize_json(json_decode($history_raw, true) ?: array());
-        $node_config = dialogawp_sanitize_json(json_decode($node_config, true) ?: array());
-
-        $ai_turns    = count(array_filter($history, function($m) { return isset($m['role']) && $m['role'] === 'assistant'; }));
-        $msg_limit   = apply_filters('dialogawp_ai_message_limit', self::AI_MSG_LIMIT);
+        // Counted server-side. The old implementation counted assistant turns
+        // in client-supplied history, so a visitor could send an empty history
+        // and bypass the ceiling, spending the site owner's API credit.
+        $history    = dialogawp_sanitize_json(json_decode($history_raw, true) ?: array());
+        $msg_limit  = (int) apply_filters('dialogawp_ai_message_limit', self::AI_MSG_LIMIT);
+        $turn_key   = 'dialogawp_ai_turns_' . md5(($session_id !== '' ? $session_id : $ip) . '|' . $flow_id);
+        $ai_turns   = (int) get_transient($turn_key);
         if ($ai_turns >= $msg_limit) {
             wp_send_json_error(array('limit' => true, 'message' => 'limit_reached'));
             return;
         }
+        // Reserve this turn before calling the provider so parallel requests
+        // cannot race past the ceiling.
+        set_transient($turn_key, $ai_turns + 1, DAY_IN_SECONDS);
 
-        $settings = get_option('dialogawp_ai_settings', array());
+        $settings = self::get_ai_settings();
+        $settings['max_tokens'] = self::clamp_public_max_tokens($settings);
         $provider = isset($settings['provider']) ? $settings['provider'] : 'anthropic';
         $api_key  = isset($settings['api_key'])  ? $settings['api_key']  : '';
 
@@ -417,16 +442,158 @@ class DialogaWP_AI {
     }
 
     /**
-     * Get the real client IP, respecting common proxy headers.
+     * Resolve an AI node's config from the stored flow.
+     *
+     * The visitor only supplies flow_id + node_id; everything that shapes the
+     * prompt (instructions, auto_extract_lead, lead_fields) is read back from
+     * the database. This stops a visitor from rewriting the system prompt and
+     * using the operator's API key as a general-purpose LLM.
+     *
+     * @return array|null Node config, or null when the flow/node is not valid
+     *                    for the current visitor.
      */
-    private static function get_client_ip() {
-        foreach (array('HTTP_CF_CONNECTING_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_REAL_IP', 'REMOTE_ADDR') as $key) {
-            if (!empty($_SERVER[$key])) {
-                $ip = trim(explode(',', $_SERVER[$key])[0]);
-                if (filter_var($ip, FILTER_VALIDATE_IP)) return $ip;
+    private static function resolve_node_config($flow_id, $node_id) {
+        $flow_id = absint($flow_id);
+        $node_id = is_string($node_id) ? sanitize_text_field($node_id) : '';
+        if (!$flow_id || '' === $node_id) {
+            return null;
+        }
+        if (!class_exists('DialogaWP_Frontend') || !method_exists('DialogaWP_Frontend', 'get_flow_by_id_cached')) {
+            return null;
+        }
+
+        // Only flows this visitor is actually eligible for may be driven.
+        $eligible = DialogaWP_Frontend::get_eligible_active_flows();
+        $allowed  = false;
+        foreach ($eligible as $candidate) {
+            if ((int) $candidate->id === $flow_id) {
+                $allowed = true;
+                break;
             }
         }
-        return '0.0.0.0';
+        if (!$allowed) {
+            return null;
+        }
+
+        $flow = DialogaWP_Frontend::get_flow_by_id_cached($flow_id);
+        if (!$flow || empty($flow->flow_data)) {
+            return null;
+        }
+
+        $flow_data = json_decode($flow->flow_data, true);
+        if (!is_array($flow_data) || empty($flow_data['nodes']) || !is_array($flow_data['nodes'])) {
+            return null;
+        }
+
+        foreach ($flow_data['nodes'] as $node) {
+            if (isset($node['id']) && (string) $node['id'] === $node_id) {
+                return isset($node['data']['config']) && is_array($node['data']['config'])
+                    ? $node['data']['config']
+                    : array();
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Hard ceiling for tokens spent on public chat requests.
+     */
+    private static function clamp_public_max_tokens($settings) {
+        $cap        = (int) apply_filters('dialogawp_ai_max_tokens_cap', 1000);
+        $configured = !empty($settings['max_tokens']) ? (int) $settings['max_tokens'] : 500;
+        return max(1, min($configured, $cap));
+    }
+
+    /**
+     * Read AI settings with the stored API key decrypted.
+     */
+    private static function get_ai_settings() {
+        $settings = get_option('dialogawp_ai_settings', array());
+        if (!is_array($settings)) {
+            return array();
+        }
+        if (!empty($settings['api_key'])) {
+            if (!self::is_encrypted_secret($settings['api_key'])) {
+                // One-time migration of legacy plaintext keys.
+                $settings['api_key'] = self::encrypt_secret($settings['api_key']);
+                update_option('dialogawp_ai_settings', $settings);
+            }
+            $settings['api_key'] = self::decrypt_secret($settings['api_key']);
+        }
+        return $settings;
+    }
+
+    private static function is_encrypted_secret($value) {
+        return is_string($value) && 0 === strpos($value, 'dgwp:v1:');
+    }
+
+    private static function secret_cipher_key() {
+        return hash('sha256', wp_salt('auth'), true);
+    }
+
+    private static function encrypt_secret($plain) {
+        if (!is_string($plain) || '' === $plain) {
+            return '';
+        }
+        if (!function_exists('openssl_encrypt')) {
+            return $plain;
+        }
+        $iv     = random_bytes(12);
+        $tag    = '';
+        $cipher = openssl_encrypt($plain, 'aes-256-gcm', self::secret_cipher_key(), OPENSSL_RAW_DATA, $iv, $tag);
+        if (false === $cipher) {
+            return $plain;
+        }
+        return 'dgwp:v1:' . base64_encode($iv . $tag . $cipher);
+    }
+
+    private static function decrypt_secret($stored) {
+        if (!is_string($stored) || '' === $stored) {
+            return '';
+        }
+        if (!self::is_encrypted_secret($stored)) {
+            return $stored;
+        }
+        if (!function_exists('openssl_decrypt')) {
+            return '';
+        }
+        $raw = base64_decode(substr($stored, 8), true);
+        if (false === $raw || strlen($raw) < 28) {
+            return '';
+        }
+        $iv     = substr($raw, 0, 12);
+        $tag    = substr($raw, 12, 16);
+        $cipher = substr($raw, 28);
+        $plain  = openssl_decrypt($cipher, 'aes-256-gcm', self::secret_cipher_key(), OPENSSL_RAW_DATA, $iv, $tag);
+        return false === $plain ? '' : $plain;
+    }
+
+    /**
+     * Get the real client IP.
+     *
+     * Proxy headers are spoofable, so they are only trusted when the site
+     * explicitly opts in via the `dialogawp_trusted_proxies` filter. Without
+     * that, REMOTE_ADDR is authoritative.
+     */
+    private static function get_client_ip() {
+        $remote = isset($_SERVER['REMOTE_ADDR']) ? trim((string) $_SERVER['REMOTE_ADDR']) : '';
+
+        if (apply_filters('dialogawp_trusted_proxies', false)) {
+            foreach (array('HTTP_CF_CONNECTING_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_REAL_IP') as $key) {
+                if (empty($_SERVER[$key])) {
+                    continue;
+                }
+                foreach (explode(',', (string) $_SERVER[$key]) as $candidate) {
+                    $candidate = trim($candidate);
+                    if (filter_var($candidate, FILTER_VALIDATE_IP)) {
+                        return $candidate;
+                    }
+                }
+            }
+        }
+
+        return filter_var($remote, FILTER_VALIDATE_IP) ? $remote : '0.0.0.0';
     }
 
     // -------------------------------------------------------------------------
@@ -761,7 +928,7 @@ class DialogaWP_AI {
 
         $settings = array(
             'provider'     => isset($_POST['provider'])     ? sanitize_text_field(wp_unslash($_POST['provider']))        : 'anthropic',
-            'api_key'      => !empty($api_key) ? $api_key  : ($existing['api_key'] ?? ''),
+            'api_key'      => !empty($api_key) ? self::encrypt_secret($api_key) : (isset($existing['api_key']) ? $existing['api_key'] : ''),
             'model'        => isset($_POST['model'])        ? sanitize_text_field(wp_unslash($_POST['model']))            : '',
             'max_tokens'   => isset($_POST['max_tokens'])   ? absint($_POST['max_tokens'])                   : 500,
             'instructions' => isset($_POST['instructions']) ? sanitize_textarea_field($_POST['instructions']) : '',
@@ -778,7 +945,7 @@ class DialogaWP_AI {
             return;
         }
 
-        $settings = get_option('dialogawp_ai_settings', array());
+        $settings = self::get_ai_settings();
 
         // Mask key for display — never send the actual key to the browser
         $key = isset($settings['api_key']) ? $settings['api_key'] : '';
@@ -1005,7 +1172,7 @@ class DialogaWP_AI {
 
         global $wpdb;
         $table    = $wpdb->prefix . 'dialogawp_ai_knowledge';
-        $settings = get_option('dialogawp_ai_settings', array());
+        $settings = self::get_ai_settings();
 
         $posts = get_posts(array(
             'post_type'      => array('page', 'post'),
@@ -1098,7 +1265,7 @@ class DialogaWP_AI {
 
         global $wpdb;
         $table    = $wpdb->prefix . 'dialogawp_ai_knowledge';
-        $settings = get_option('dialogawp_ai_settings', array());
+        $settings = self::get_ai_settings();
 
         if (empty(self::get_embedding_key($settings))) {
             wp_send_json_error(__('Embeddings require an OpenAI API key. Switch the provider to OpenAI, or use keyword search (works automatically for Anthropic users).', 'dialogawp'));
@@ -1199,7 +1366,7 @@ class DialogaWP_AI {
             return;
         }
 
-        $settings = get_option('dialogawp_ai_settings', array());
+        $settings = self::get_ai_settings();
         $provider = isset($settings['provider']) ? $settings['provider'] : 'anthropic';
         $api_key  = isset($settings['api_key'])  ? $settings['api_key']  : '';
 
@@ -1240,7 +1407,7 @@ class DialogaWP_AI {
 
         @set_time_limit(120);
 
-        $settings = get_option('dialogawp_ai_settings', array());
+        $settings = self::get_ai_settings();
         $provider = isset($settings['provider']) ? $settings['provider'] : 'anthropic';
         $api_key  = isset($settings['api_key'])  ? $settings['api_key']  : '';
 

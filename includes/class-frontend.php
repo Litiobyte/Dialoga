@@ -49,6 +49,60 @@ class DialogaWP_Frontend {
         // Lead retention cron handler
         add_action('dialogawp_lead_retention_cleanup', array(__CLASS__, 'cron_apply_retention_policy'));
     }
+
+    /**
+     * Deterministic per-session token. The salt is server-side, so a visitor
+     * cannot forge a token for a session_id they do not own.
+     */
+    private static function session_token($session_id) {
+        return hash_hmac('sha256', (string) $session_id, wp_salt('auth'));
+    }
+
+    private static function verify_session_token($session_id, $token) {
+        if (!is_string($session_id) || '' === $session_id || !is_string($token) || '' === $token) {
+            return false;
+        }
+        return hash_equals(self::session_token($session_id), $token);
+    }
+
+    /**
+     * Confirm a session actually exists for the claimed flow. This prevents a
+     * visitor from overwriting another conversation by guessing a session id.
+     */
+    private static function session_belongs_to_flow($session_id, $flow_id) {
+        if (!is_string($session_id) || '' === $session_id || !$flow_id) {
+            return false;
+        }
+        global $wpdb;
+        return (bool) $wpdb->get_var($wpdb->prepare(
+            "SELECT 1 FROM {$wpdb->prefix}dialogawp_conversations WHERE session_id = %s AND flow_id = %d LIMIT 1",
+            $session_id,
+            (int) $flow_id
+        ));
+    }
+
+    private static function flow_is_eligible($flow_id) {
+        $flow_id = (int) $flow_id;
+        if (!$flow_id) {
+            return false;
+        }
+        foreach (self::get_eligible_active_flows() as $candidate) {
+            if ((int) $candidate->id === $flow_id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Public guard used by the AI chat endpoint (a separate class).
+     */
+    public static function verify_widget_session($session_id, $token, $flow_id = 0) {
+        if (!self::verify_session_token($session_id, $token)) {
+            return false;
+        }
+        return $flow_id ? self::session_belongs_to_flow($session_id, $flow_id) : true;
+    }
     
     /**
      * Enqueue frontend scripts and styles
@@ -571,6 +625,7 @@ JS;
 
         wp_send_json_success(array(
             'session_id'      => $session_id,
+            'session_token'   => self::session_token($session_id),
             'conversation_id' => $conversation_id,
             'flow_id'         => $flow->id,
             'current_node'    => $start_node_id,
@@ -589,6 +644,14 @@ JS;
         $user_response   = isset($_POST['response'])     ? sanitize_text_field(wp_unslash($_POST['response']))     : '';
         $flow_id         = isset($_POST['flow_id'])      ? intval($_POST['flow_id'])                               : 0;
         $conversation_id = isset($_POST['conversation_id']) ? intval($_POST['conversation_id']) : 0;
+        $session_token   = isset($_POST['session_token']) ? sanitize_text_field(wp_unslash($_POST['session_token'])) : '';
+
+        if (!self::verify_session_token($session_id, $session_token)
+            || !self::session_belongs_to_flow($session_id, $flow_id)
+            || !self::flow_is_eligible($flow_id)) {
+            wp_send_json_error(array('message' => 'Invalid session'));
+            return;
+        }
 
         // Load variables from JS session state — decode + recursively sanitize
         $variables_json = isset($_POST['variables']) ? wp_unslash($_POST['variables']) : '{}';
@@ -929,8 +992,15 @@ JS;
 
         global $wpdb;
 
-        $session_id = sanitize_text_field(wp_unslash($_POST['session_id']));
-        $flow_id = intval($_POST['flow_id']);
+        $session_id    = isset($_POST['session_id'])    ? sanitize_text_field(wp_unslash($_POST['session_id']))    : '';
+        $flow_id       = isset($_POST['flow_id'])       ? intval($_POST['flow_id'])                                : 0;
+        $session_token = isset($_POST['session_token']) ? sanitize_text_field(wp_unslash($_POST['session_token'])) : '';
+
+        if (!self::verify_session_token($session_id, $session_token)
+            || !self::session_belongs_to_flow($session_id, $flow_id)) {
+            wp_send_json_error(array('message' => 'Invalid session'));
+            return;
+        }
 
         // Sanitize lead data
         $lead_data = array();
@@ -1184,11 +1254,19 @@ JS;
     public static function ajax_save_transcript() {
         check_ajax_referer('dialogawp_widget', 'nonce');
 
-        $session_id   = isset($_POST['session_id']) ? sanitize_text_field(wp_unslash($_POST['session_id'])) : '';
-        $history_json = isset($_POST['history'])    ? wp_unslash($_POST['history'])             : '';
+        $session_id    = isset($_POST['session_id'])    ? sanitize_text_field(wp_unslash($_POST['session_id']))    : '';
+        $history_json  = isset($_POST['history'])       ? wp_unslash($_POST['history'])                           : '';
+        $flow_id       = isset($_POST['flow_id'])       ? intval($_POST['flow_id'])                                : 0;
+        $session_token = isset($_POST['session_token']) ? sanitize_text_field(wp_unslash($_POST['session_token'])) : '';
 
         if (!$session_id || !$history_json) {
             wp_send_json_error('Missing data');
+            return;
+        }
+
+        if (!self::verify_session_token($session_id, $session_token)
+            || !self::session_belongs_to_flow($session_id, $flow_id)) {
+            wp_send_json_error('Invalid session');
             return;
         }
 
@@ -1582,8 +1660,15 @@ JS;
     public static function ajax_submit_survey() {
         check_ajax_referer('dialogawp_widget', 'nonce');
 
-        $session_id = sanitize_text_field(wp_unslash($_POST['session_id'] ?? ''));
-        $flow_id    = intval($_POST['flow_id'] ?? 0);
+        $session_id    = sanitize_text_field(wp_unslash($_POST['session_id'] ?? ''));
+        $flow_id       = intval($_POST['flow_id'] ?? 0);
+        $session_token = isset($_POST['session_token']) ? sanitize_text_field(wp_unslash($_POST['session_token'])) : '';
+
+        if (!self::verify_session_token($session_id, $session_token)
+            || !self::session_belongs_to_flow($session_id, $flow_id)) {
+            wp_send_json_error(array('message' => 'Invalid session'));
+            return;
+        }
 
         $responses_raw = isset($_POST['responses']) ? wp_unslash($_POST['responses']) : '{}';
         $decoded_responses = json_decode($responses_raw, true);
@@ -1592,6 +1677,7 @@ JS;
 
         if (empty($responses)) {
             wp_send_json_error(array('message' => 'No responses provided.'));
+            return;
         }
 
         // Save as a lead with type 'survey'
@@ -1604,14 +1690,16 @@ JS;
 
         $lead_id = DialogaWP_Database::save_lead($lead_data, array('survey'));
 
-        if ($lead_id) {
-            // Track the event
-            if (class_exists('DialogaWP_Analytics')) {
-                DialogaWP_Analytics::track_event('survey_submitted', $flow_id, array(
-                    'session_id' => $session_id,
-                    'response_count' => count($responses),
-                ));
-            }
+        if ($lead_id && class_exists('DialogaWP_Analytics')) {
+            global $wpdb;
+            $conversation_id = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT id FROM {$wpdb->prefix}dialogawp_conversations WHERE session_id = %s LIMIT 1",
+                $session_id
+            ));
+            DialogaWP_Analytics::track_event($conversation_id, 'survey_submitted', array(
+                'session_id'     => $session_id,
+                'response_count' => count($responses),
+            ), $flow_id);
         }
 
         wp_send_json_success(array('message' => 'Survey submitted.'));
