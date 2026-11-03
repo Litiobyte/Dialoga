@@ -1,4 +1,8 @@
 <?php
+if (!defined('ABSPATH')) {
+    if (PHP_SAPI !== 'cli') { http_response_code(403); exit('CLI only.'); }
+    define('ABSPATH', dirname(__DIR__) . '/');
+}
 /** Run: php tests/settings-test.php. Browser JSON bridge: php tests/settings-test.php --bridge.
  * Includes the actual settings template with isolated, typed WordPress stubs and real MO translations.
  */
@@ -22,6 +26,11 @@ function sanitize_text_field($value) {
 function sanitize_textarea_field($value) { return trim(preg_replace('/%[a-f0-9]{2}/i', '', strip_tags($value))); }
 function sanitize_email($value) { return filter_var($value, FILTER_VALIDATE_EMAIL) ? $value : ''; }
 function get_option($key, $default = false) { return $GLOBALS['settings_fixture']['options'][$key] ?? $default; }
+// Object-cache stubs matching wp_cache_* semantics used by dialoga_query_cached().
+function wp_cache_get($key, $group = '', $force = false) { return false; }
+function wp_cache_set($key, $value, $group = '', $expire = 0) { return true; }
+function wp_cache_delete($key, $group = '') { return true; }
+function wp_cache_flush_group($group = '') { return true; }
 function update_option($key, $value) {
     $GLOBALS['settings_fixture']['options'][$key] = $value;
     $GLOBALS['settings_fixture']['writes']++;
@@ -33,16 +42,16 @@ function do_action($hook, ...$args) {
     $GLOBALS['settings_fixture']['actions'][] = $hook;
     foreach ($GLOBALS['i18n_fixture']['hooks'][$hook] ?? array() as $callbacks) foreach ($callbacks as $callback) $callback(...$args);
 }
-function apply_filters($hook, $value) { return $hook === 'dialogawp_settings_tabs' ? $GLOBALS['settings_fixture']['tabs'] : $value; }
+function apply_filters($hook, $value) { return $hook === 'dialoga_settings_tabs' ? $GLOBALS['settings_fixture']['tabs'] : $value; }
 function check_admin_referer($action) {
-    i18n_assert($action === 'dialogawp_settings', 'Unexpected nonce action');
+    i18n_assert($action === 'dialoga_settings', 'Unexpected nonce action');
     $GLOBALS['settings_fixture']['checks'][] = 'nonce';
     if (($_POST['_wpnonce'] ?? null) !== 'settings-test-nonce') wp_die('Invalid nonce');
     return 1;
 }
 function wp_nonce_field($action) {
-    i18n_assert($action === 'dialogawp_settings', 'Rendered nonce action');
-    echo '<input type="hidden" name="_wpnonce" value="settings-test-nonce"><input type="hidden" name="_wp_http_referer" value="/wp-admin/admin.php?page=dialogawp-settings">';
+    i18n_assert($action === 'dialoga_settings', 'Rendered nonce action');
+    echo '<input type="hidden" name="_wpnonce" value="settings-test-nonce"><input type="hidden" name="_wp_http_referer" value="/wp-admin/admin.php?page=dialoga-settings">';
 }
 function wp_next_scheduled($hook) { return $GLOBALS['settings_fixture']['scheduled'][$hook] ?? false; }
 function wp_schedule_event($timestamp, $frequency, $hook) {
@@ -61,14 +70,29 @@ function admin_url($path) { return '/wp-admin/' . $path; }
 function human_time_diff($from, $to) { return '1 hour'; }
 $wpdb = new class {
     public $prefix = 'wp_';
+    // Faithful-enough $wpdb->prepare(): %i substitutes the raw table name,
+    // %d/%s substitute their args; get_var() then asserts on the result SQL.
+    public function prepare($sql, ...$args) {
+        $parts = preg_split('/(%[ilds])/', $sql, -1, PREG_SPLIT_DELIM_CAPTURE);
+        $out = '';
+        $i = -1;
+        foreach ($parts as $part) {
+            if (preg_match('/^%(i|d|s)$/', $part)) {
+                $out .= (string) $args[++$i];
+            } else {
+                $out .= $part;
+            }
+        }
+        return $out;
+    }
     public function get_var($sql) {
-        i18n_assert($sql === 'SELECT COUNT(*) FROM wp_dialogawp_flows WHERE is_active = 1', 'Unexpected settings SQL');
+        i18n_assert(strpos($sql, 'SELECT COUNT(*) FROM wp_dialoga_flows WHERE is_active =') === 0, 'Unexpected settings SQL');
         return $GLOBALS['settings_fixture']['flows'];
     }
 };
 function settings_reset($options = array()) {
     $_GET = $_POST = array();
-    $GLOBALS['settings_fixture'] = array('permission' => true, 'options' => array('admin_email' => 'admin@example.com', 'dialogawp_settings' => $options),
+    $GLOBALS['settings_fixture'] = array('permission' => true, 'options' => array('admin_email' => 'admin@example.com', 'dialoga_settings' => $options),
         'checks' => array(), 'writes' => 0, 'scheduled' => array(), 'cron' => array(), 'actions' => array(), 'tabs' => array(), 'flows' => 0);
     i18n_locale('en_US');
 }
@@ -78,7 +102,7 @@ function settings_render() {
     catch (Throwable $error) { ob_end_clean(); throw $error; }
 }
 function settings_post() {
-    return array('dialogawp_save_settings' => '1', '_wpnonce' => 'settings-test-nonce', 'enabled' => '1', 'test_mode' => '1',
+    return array('dialoga_save_settings' => '1', '_wpnonce' => 'settings-test-nonce', 'enabled' => '1', 'test_mode' => '1',
         'bubble_nudge' => '1', 'include_admin_sessions' => '1', 'bubble_unread_badge' => '1', 'bubble_bounce' => '1',
         'fresh_session_roles' => array('administrator', 'unknown', 'administrator'), 'visible_roles' => array('editor'),
         'visibility_mode' => 'specific_roles', 'primary_color' => '#123456', 'chat_position' => 'bottom-left', 'session_duration' => '14',
@@ -98,10 +122,10 @@ function settings_run_tests() {
         i18n_assert($xpath->query('//form')->length === 1, 'Exactly one form');
         i18n_assert($xpath->query('//form//section')->length === 7, 'All seven settings panels belong to the form');
         i18n_assert($xpath->query('//form//nav/a')->length === 8, 'Eight fragment links');
-        i18n_assert($xpath->query('//*[@id="dialogawp-settings-danger-zone" and not(ancestor::form)]')->length === 1, 'Danger Zone is a tab panel outside the save form');
+        i18n_assert($xpath->query('//*[@id="dialoga-settings-danger-zone" and not(ancestor::form)]')->length === 1, 'Danger Zone is a tab panel outside the save form');
         i18n_assert($xpath->query('//*[@hidden]')->length === 0, 'No-JS must expose every panel and role selector');
-        i18n_assert($xpath->query('//form//*[@id="dialogawp-clear-all-leads-btn" or @id="dialogawp-clear-all-convs-btn" or @id="dialogawp-reset-analytics-btn"]')->length === 0, 'Destructive controls outside save form');
-        i18n_assert($xpath->query('//form//button[@type="submit" and @name="dialogawp_save_settings"]')->length === 2, 'Both save buttons submit same form');
+        i18n_assert($xpath->query('//form//*[@id="dialoga-clear-all-leads-btn" or @id="dialoga-clear-all-convs-btn" or @id="dialoga-reset-analytics-btn"]')->length === 0, 'Destructive controls outside save form');
+        i18n_assert($xpath->query('//form//button[@type="submit" and @name="dialoga_save_settings"]')->length === 2, 'Both save buttons submit same form');
         foreach (array_keys(settings_post()) as $name) {
             if (in_array($name, array('fresh_session_roles', 'visible_roles'), true)) $name .= '[]';
             i18n_assert($xpath->query('//form//*[@name="' . $name . '"]')->length > 0, 'Missing form field: ' . $name);
@@ -115,7 +139,7 @@ function settings_run_tests() {
             'business_hours' => array('extension_hours' => 'keep'), 'preview_message' => array('extension_preview' => 'keep'),
             'email_notifications' => array('extension_email' => 'keep'), 'lead_retention' => array('extension_retention' => 'keep')));
         i18n_locale('es_MX'); $_POST = settings_post(); $_POST['extension_token'] = 'overwrite';
-        $html = settings_render(); $saved = $GLOBALS['settings_fixture']['options']['dialogawp_settings'];
+        $html = settings_render(); $saved = $GLOBALS['settings_fixture']['options']['dialoga_settings'];
         i18n_assert($GLOBALS['settings_fixture']['checks'] === array('cap', 'nonce'), 'Capability then nonce before save');
         foreach (array('enabled', 'test_mode', 'bubble_nudge', 'include_admin_sessions', 'bubble_unread_badge', 'bubble_bounce') as $key) i18n_assert($saved[$key] === 1, 'Checkbox: ' . $key);
         foreach (array('visibility_mode', 'primary_color', 'chat_position', 'bubble_size') as $key) i18n_assert($saved[$key] === $_POST[$key], 'Cross-tab scalar: ' . $key);
@@ -135,14 +159,14 @@ function settings_run_tests() {
         foreach ($GLOBALS['settings_fixture']['cron'] as $event) i18n_assert($event[0] === 'schedule' && $event[2] === 'daily' && abs($event[1] - time() - HOUR_IN_SECONDS) <= 2, 'Daily cron starts in one hour');
         $scheduled = $GLOBALS['settings_fixture']['scheduled']; settings_render();
         i18n_assert($GLOBALS['settings_fixture']['scheduled'] === $scheduled && count($GLOBALS['settings_fixture']['cron']) === 2, 'Repeated save never duplicates cron');
-        $_POST = array('dialogawp_save_settings' => '1', '_wpnonce' => 'settings-test-nonce'); settings_render();
+        $_POST = array('dialoga_save_settings' => '1', '_wpnonce' => 'settings-test-nonce'); settings_render();
         i18n_assert(!$GLOBALS['settings_fixture']['scheduled'] && count($GLOBALS['settings_fixture']['cron']) === 4, 'Disabling unschedules both jobs');
-        $saved = $GLOBALS['settings_fixture']['options']['dialogawp_settings'];
+        $saved = $GLOBALS['settings_fixture']['options']['dialoga_settings'];
         i18n_assert($saved['welcome_message'] === "Visitor's \"welcome\"\nSecond line \\ path" && $saved['multi_flow_strategy'] === 'ab', 'Absent message/extension fields preserved');
         i18n_assert($saved['enabled'] === 0 && $saved['visible_roles'] === array(), 'Unchecked checkboxes/roles reset');
     });
     foreach (array_merge(array_keys(settings_post()), array('multi_flow_strategy')) as $key) {
-        if (in_array($key, array('dialogawp_save_settings', '_wpnonce'), true)) continue;
+        if (in_array($key, array('dialoga_save_settings', '_wpnonce'), true)) continue;
         foreach (array(array('attack'), 42, false) as $bad) {
             if (in_array($key, array('fresh_session_roles', 'visible_roles'), true)) $bad = is_array($bad) ? array(array('attack')) : $bad;
             i18n_test('typed malicious POST rejected atomically: ' . $key . ' / ' . gettype($bad), static function () use ($key, $bad) {
@@ -169,7 +193,7 @@ function settings_run_tests() {
         $_POST = settings_post();
         foreach (array('visibility_mode', 'primary_color', 'chat_position', 'bubble_size', 'multi_flow_strategy', 'timezone') as $key) $_POST[$key] = '<script>alert(1)</script>';
         $_POST['session_duration'] = '1e9'; $_POST['lead_retention_days'] = '999999'; $_POST['conversation_retention_days'] = '0'; $_POST['preview_message_delay'] = '999';
-        settings_render(); $saved = $GLOBALS['settings_fixture']['options']['dialogawp_settings'];
+        settings_render(); $saved = $GLOBALS['settings_fixture']['options']['dialoga_settings'];
         i18n_assert($saved['visibility_mode'] === 'logged_in' && $saved['primary_color'] === '#abcdef' && $saved['chat_position'] === 'bottom-left' && $saved['bubble_size'] === 'sm' && $saved['multi_flow_strategy'] === 'newest', 'Invalid enums/color must preserve safe stored values');
         i18n_assert($saved['business_hours']['timezone'] === 'America/New_York' && $saved['session_duration'] === 7, 'Invalid timezone/numeric notation rejected');
         i18n_assert($saved['lead_retention']['days'] === 3650 && $saved['conversation_retention']['days'] === 1 && $saved['preview_message']['delay'] === 60, 'Numeric bounds');
@@ -188,7 +212,7 @@ function settings_run_tests() {
         settings_reset(); $GLOBALS['settings_fixture']['tabs'] = array('license' => '<script>Extension</script>');
         $html = settings_render(); i18n_assert(strpos($html, '&lt;script&gt;Extension&lt;/script&gt;') !== false, 'Extension label escaped');
         $_GET['tab'] = 'license'; $html = settings_render();
-        i18n_assert($html === '' && in_array('dialogawp_settings_license_tab', $GLOBALS['settings_fixture']['actions'], true), 'License delegates to extension without core form');
+        i18n_assert($html === '' && in_array('dialoga_settings_license_tab', $GLOBALS['settings_fixture']['actions'], true), 'License delegates to extension without core form');
     });
     i18n_test('hostile stored messages/attributes are escaped and posted HTML is sanitized', static function () {
         settings_reset(array('chat_header_title' => '<script>Support</script>', 'welcome_message' => '</textarea><script>alert(1)</script>', 'preview_message' => array('text' => '\" autofocus onfocus=\"alert(1)'),
@@ -199,7 +223,7 @@ function settings_run_tests() {
         i18n_assert($xpath->query('//*[@autofocus or @onfocus]')->length === 0, 'Stored values cannot break out of attributes');
         $_POST = settings_post(); $_POST['chat_header_title'] = '<b>Support team</b>'; $_POST['welcome_message'] = addslashes("<b>Visitor's text</b>\nSecond line");
         $_POST['email_notifications_subject'] = '<b>Subject</b>'; settings_render();
-        $saved = $GLOBALS['settings_fixture']['options']['dialogawp_settings'];
+        $saved = $GLOBALS['settings_fixture']['options']['dialoga_settings'];
         i18n_assert($saved['chat_header_title'] === 'Support team' && $saved['welcome_message'] === "Visitor's text\nSecond line" && $saved['email_notifications']['subject'] === 'Subject', 'POST strips markup while preserving textarea lines');
     });
     echo 'RESULT: ' . $GLOBALS['i18n_passed'] . ' passed, ' . $GLOBALS['i18n_failed'] . " failed\n";
@@ -217,7 +241,7 @@ if (realpath($_SERVER['SCRIPT_FILENAME'] ?? '') === __FILE__) {
             $slash = static function ($value) use (&$slash) { return is_array($value) ? array_map($slash, $value) : (is_string($value) ? addslashes($value) : $value); };
             $_POST = $slash($_POST);
             $html = settings_render();
-            echo json_encode(array('html' => $html, 'dictionary' => DialogaWP_I18n::script_messages(), 'settings' => $GLOBALS['settings_fixture']['options']['dialogawp_settings'],
+            echo json_encode(array('html' => $html, 'dictionary' => Dialoga_I18n::script_messages(), 'settings' => $GLOBALS['settings_fixture']['options']['dialoga_settings'],
                 'writes' => $GLOBALS['settings_fixture']['writes'], 'cron' => $GLOBALS['settings_fixture']['cron']), JSON_THROW_ON_ERROR);
         } catch (Throwable $error) { fwrite(STDERR, $error->getMessage() . "\n"); exit(1); }
     } else exit(settings_run_tests());

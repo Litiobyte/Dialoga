@@ -3,15 +3,15 @@
     'use strict';
 
     function t(msgid) {
-        var dictionary = (window.dialogawpAdmin && window.dialogawpAdmin.i18n) || {};
+        var dictionary = (window.dialogaAdmin && window.dialogaAdmin.i18n) || {};
         return Object.prototype.hasOwnProperty.call(dictionary, msgid) ? dictionary[msgid] : msgid;
     }
 
     function init() {
-        var form = document.getElementById('dialogawp-settings-form');
+        var form = document.getElementById('dialoga-settings-form');
         if (!form) return;
-        var nav = form.querySelector('.dialogawp-settings-tabs');
-        var tabs = Array.from(nav.querySelectorAll('.dialogawp-settings-tab'));
+        var nav = form.querySelector('.dialoga-settings-tabs');
+        var tabs = Array.from(nav.querySelectorAll('.dialoga-settings-tab'));
         var panels = tabs.map(function (tab) { return document.getElementById(tab.hash.slice(1)); });
         var active = 0;
 
@@ -23,7 +23,7 @@
                 panels[i].hidden = i !== index;
             });
             if (focus) tabs[index].focus();
-            form.classList.toggle('dialogawp-settings-form--danger', tabs[index].hash === '#dialogawp-settings-danger-zone');
+            form.classList.toggle('dialoga-settings-form--danger', tabs[index].hash === '#dialoga-settings-danger-zone');
             // The fragment also travels with the native form POST action.
             if (persist) {
                 try {
@@ -76,7 +76,7 @@
         form.addEventListener('invalid', function (event) {
             if (invalidPending) return;
             invalidPending = true;
-            var panel = event.target.closest('.dialogawp-settings-panel');
+            var panel = event.target.closest('.dialoga-settings-panel');
             var index = panels.indexOf(panel);
             if (index !== -1) activate(index, false, true);
             event.target.focus();
@@ -90,7 +90,7 @@
             color.addEventListener('change', function () { colorText.value = color.value; });
         }
         var visibility = form.querySelector('[name="visibility_mode"]');
-        var roles = document.getElementById('dialogawp-roles-selector');
+        var roles = document.getElementById('dialoga-roles-selector');
         function updateRoles() {
             if (visibility && roles) roles.hidden = visibility.value !== 'specific_roles';
         }
@@ -106,7 +106,7 @@
                     // Keep fields operable so native validation and no-JS form semantics
                     // remain intact; the visual state communicates the dependency.
                     control.removeAttribute('aria-disabled');
-                    var row = control.closest('.dialogawp-setting-row');
+                    var row = control.closest('.dialoga-setting-row');
                     if (row) row.classList.toggle('is-dependent-disabled', !toggle.checked);
                 });
             }
@@ -118,7 +118,7 @@
         wireDependentControl('conversation_retention_enabled', ['conversation_retention_days']);
         wireDependentControl('preview_message_enabled', ['preview_message_text', 'preview_message_delay']);
 
-        var config = window.dialogawpAdmin || {};
+        var config = window.dialogaAdmin || {};
         function wireBulkDelete(id, action, confirmation, result) {
             var button = document.getElementById(id);
             if (!button) return;
@@ -157,9 +157,9 @@
                     });
             });
         }
-        wireBulkDelete('dialogawp-clear-all-leads-btn', 'dialogawp_delete_all_leads', 'Delete ALL leads?\n\nThis cannot be undone.', 'Deleted %d lead(s).');
-        wireBulkDelete('dialogawp-clear-all-convs-btn', 'dialogawp_delete_all_conversations', 'Delete ALL conversations?\n\nThis cannot be undone.', 'Deleted %d conversation(s).');
-        wireBulkDelete('dialogawp-reset-analytics-btn', 'dialogawp_reset_analytics_events', 'Delete ALL analytics events?\n\nThis cannot be undone.', 'Deleted %d analytics event(s).');
+        wireBulkDelete('dialoga-clear-all-leads-btn', 'dialoga_delete_all_leads', 'Delete ALL leads?\n\nThis cannot be undone.', 'Deleted %d lead(s).');
+        wireBulkDelete('dialoga-clear-all-convs-btn', 'dialoga_delete_all_conversations', 'Delete ALL conversations?\n\nThis cannot be undone.', 'Deleted %d conversation(s).');
+        wireBulkDelete('dialoga-reset-analytics-btn', 'dialoga_reset_analytics_events', 'Delete ALL analytics events?\n\nThis cannot be undone.', 'Deleted %d analytics event(s).');
     }
 
     if (document.readyState === 'loading') {

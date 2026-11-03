@@ -1,7 +1,7 @@
 {
   "inputs": {
     "src/canvas/shims/react.js": {
-      "bytes": 1654,
+      "bytes": 1652,
       "imports": [],
       "format": "esm"
     },
@@ -2210,7 +2210,7 @@
       "format": "esm"
     },
     "src/canvas/shims/react-dom.js": {
-      "bytes": 667,
+      "bytes": 665,
       "imports": [],
       "format": "esm"
     },
@@ -2265,11 +2265,11 @@
       "imports": []
     },
     "src/canvas/flow-canvas.css": {
-      "bytes": 4119,
+      "bytes": 4055,
       "imports": []
     },
     "src/canvas/index.jsx": {
-      "bytes": 20120,
+      "bytes": 20030,
       "imports": [
         {
           "path": "src/canvas/shims/react.js",
@@ -2309,7 +2309,7 @@
       "cssBundle": "assets/js/build/flow-canvas.css",
       "inputs": {
         "src/canvas/shims/react.js": {
-          "bytesInOutput": 1463
+          "bytesInOutput": 1461
         },
         "node_modules/use-sync-external-store/cjs/use-sync-external-store-shim.production.js": {
           "bytesInOutput": 787
@@ -2324,7 +2324,7 @@
           "bytesInOutput": 51
         },
         "src/canvas/index.jsx": {
-          "bytesInOutput": 10250
+          "bytesInOutput": 10170
         },
         "src/canvas/shims/jsx-runtime.js": {
           "bytesInOutput": 71
@@ -2696,7 +2696,7 @@
           "bytesInOutput": 524
         },
         "src/canvas/shims/react-dom.js": {
-          "bytesInOutput": 298
+          "bytesInOutput": 296
         },
         "node_modules/@xyflow/react/dist/style.css": {
           "bytesInOutput": 0
@@ -2705,7 +2705,7 @@
           "bytesInOutput": 0
         }
       },
-      "bytes": 191234
+      "bytes": 191150
     },
     "assets/js/build/flow-canvas.css": {
       "imports": [],
@@ -2714,10 +2714,10 @@
           "bytesInOutput": 15868
         },
         "src/canvas/flow-canvas.css": {
-          "bytesInOutput": 3179
+          "bytesInOutput": 3115
         }
       },
-      "bytes": 19048
+      "bytes": 18984
     }
   }
 }

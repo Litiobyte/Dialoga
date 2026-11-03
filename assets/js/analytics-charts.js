@@ -1,23 +1,23 @@
 /**
- * DialogaWP Analytics Charts
+ * Dialoga Analytics Charts
  * Initializes Chart.js visualizations on the Analytics admin page.
- * Reads data from window.dialogawpAnalytics (set inline in analytics.php template).
+ * Reads data from window.dialogaAnalytics (set inline in analytics.php template).
  */
 (function () {
     function t(message) {
-        var i18n = window.dialogawpAdmin && window.dialogawpAdmin.i18n;
+        var i18n = window.dialogaAdmin && window.dialogaAdmin.i18n;
         return i18n && Object.prototype.hasOwnProperty.call(i18n, message) ? i18n[message] : message;
     }
 
     if (typeof Chart === 'undefined') return;
-    var data = window.dialogawpAnalytics || {};
+    var data = window.dialogaAnalytics || {};
 
     Chart.defaults.font.family = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
     Chart.defaults.color = '#64748B';
     Chart.defaults.borderColor = '#E5E7EF';
 
     // 1. Daily conversation trend — line chart
-    var trendEl = document.getElementById('dialogawp-chart-trend');
+    var trendEl = document.getElementById('dialoga-chart-trend');
     if (trendEl && data.trend && data.trend.labels && data.trend.labels.length) {
         new Chart(trendEl, {
             type: 'line',
@@ -52,7 +52,7 @@
     }
 
     // 2. Conversion split — doughnut chart
-    var donutEl = document.getElementById('dialogawp-chart-conversion');
+    var donutEl = document.getElementById('dialoga-chart-conversion');
     if (donutEl && data.conversion) {
         var total = (data.conversion.converted || 0) + (data.conversion.not_converted || 0);
         new Chart(donutEl, {
@@ -89,7 +89,7 @@
     }
 
     // 3. Top source pages — horizontal bar
-    var sourcesEl = document.getElementById('dialogawp-chart-sources');
+    var sourcesEl = document.getElementById('dialoga-chart-sources');
     if (sourcesEl && data.sources && data.sources.labels && data.sources.labels.length) {
         new Chart(sourcesEl, {
             type: 'bar',

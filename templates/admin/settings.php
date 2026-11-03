@@ -7,13 +7,13 @@ if (!defined('ABSPATH')) {
 }
 
 if (!current_user_can('manage_options')) {
-    wp_die(esc_html__('You do not have permission to manage these settings.', 'dialogawp'));
+    wp_die(esc_html__('You do not have permission to manage these settings.', 'dialoga'));
 }
 
 $current_tab = isset($_GET['tab']) && is_string($_GET['tab']) ? sanitize_key(wp_unslash($_GET['tab'])) : 'general';
 // License rendering remains owned by the extension.
 if ($current_tab === 'license') {
-    do_action('dialogawp_settings_license_tab');
+    do_action('dialoga_settings_license_tab');
     return;
 }
 
@@ -33,7 +33,7 @@ $defaults = array(
     'welcome_message' => 'Hi! How can we help you today?',
     'offline_message' => 'We\'re currently offline. Please leave your contact information and we\'ll get back to you.',
     'business_hours' => array('enabled' => false, 'timezone' => 'America/New_York'),
-    'email_notifications' => array('enabled' => false, 'recipient' => get_option('admin_email'), 'subject' => 'New Lead from DialogaWP'),
+    'email_notifications' => array('enabled' => false, 'recipient' => get_option('admin_email'), 'subject' => 'New Lead from Dialoga'),
     'lead_retention' => array('enabled' => false, 'days' => 30),
     'conversation_retention' => array('enabled' => false, 'days' => 30),
     'include_admin_sessions' => false,
@@ -42,7 +42,7 @@ $defaults = array(
     'bubble_unread_badge' => true,
     'bubble_bounce' => true,
 );
-$stored_settings = get_option('dialogawp_settings', array());
+$stored_settings = get_option('dialoga_settings', array());
 $settings = array_replace($defaults, is_array($stored_settings) ? $stored_settings : array());
 foreach ($defaults as $key => $default) {
     if (is_array($default) && !in_array($key, array('fresh_session_roles', 'visible_roles'), true)) {
@@ -53,12 +53,12 @@ foreach ($defaults as $key => $default) {
 $all_roles = wp_roles()->roles;
 $saved = false;
 $save_error = false;
-if (isset($_POST['dialogawp_save_settings'])) {
+if (isset($_POST['dialoga_save_settings'])) {
     // Reject unexpected shapes before unslashing or invoking any sanitizers.
     if (!isset($_POST['_wpnonce']) || !is_string($_POST['_wpnonce'])) {
-        wp_die(esc_html__('Invalid settings request. Please reload the page and try again.', 'dialogawp'));
+        wp_die(esc_html__('Invalid settings request. Please reload the page and try again.', 'dialoga'));
     }
-    check_admin_referer('dialogawp_settings');
+    check_admin_referer('dialoga_settings');
     $scalar_fields = array(
         'enabled', 'test_mode', 'bubble_nudge', 'visibility_mode', 'multi_flow_strategy',
         'primary_color', 'chat_position', 'session_duration', 'chat_header_title', 'welcome_message', 'offline_message',
@@ -75,7 +75,10 @@ if (isset($_POST['dialogawp_save_settings'])) {
                 $save_error = true;
                 break;
             }
-            $posted[$key] = wp_unslash($_POST[$key]);
+            // sanitize_textarea_field strips tags but preserves the newlines
+            // that the offline/welcome multiline inputs legitimately contain;
+            // type-specific sanitizers below narrow each field further.
+            $posted[$key] = sanitize_textarea_field(wp_unslash($_POST[$key]));
         }
     }
     foreach (array('fresh_session_roles', 'visible_roles') as $key) {
@@ -166,11 +169,11 @@ if (isset($_POST['dialogawp_save_settings'])) {
         if (isset($posted['preview_message_delay']) && preg_match('/^\d+$/', $posted['preview_message_delay'])) {
             $settings['preview_message']['delay'] = min(60, max(0, intval($posted['preview_message_delay'])));
         }
-        update_option('dialogawp_settings', $settings);
+        update_option('dialoga_settings', $settings);
 
         // Keep the existing daily retention scheduling behavior.
         foreach (array('lead_retention', 'conversation_retention') as $key) {
-            $hook = 'dialogawp_' . $key . '_cleanup';
+            $hook = 'dialoga_' . $key . '_cleanup';
             $next = wp_next_scheduled($hook);
             if (!empty($settings[$key]['enabled'])) {
                 if (!$next) {
@@ -186,57 +189,57 @@ if (isset($_POST['dialogawp_save_settings'])) {
 
 // Interface strings are literal gettext msgids; escape them in their output context below.
 $tabs = array(
-    'general' => __('General', 'dialogawp'),
-    'appearance' => __('Appearance', 'dialogawp'),
-    'messages' => __('Messages', 'dialogawp'),
-    'business-hours' => __('Business Hours', 'dialogawp'),
-    'notifications' => __('Notifications', 'dialogawp'),
-    'engagement' => __('Engagement', 'dialogawp'),
-    'data-privacy' => __('Data & Privacy', 'dialogawp'),
-    'danger-zone' => __('Danger Zone', 'dialogawp'),
+    'general' => __('General', 'dialoga'),
+    'appearance' => __('Appearance', 'dialoga'),
+    'messages' => __('Messages', 'dialoga'),
+    'business-hours' => __('Business Hours', 'dialoga'),
+    'notifications' => __('Notifications', 'dialoga'),
+    'engagement' => __('Engagement', 'dialoga'),
+    'data-privacy' => __('Data & Privacy', 'dialoga'),
+    'danger-zone' => __('Danger Zone', 'dialoga'),
 );
 $sections = array(
     'general' => array(
-        array('enabled', __('Enable Chatbot', 'dialogawp'), __('Turn the chatbot on or off on your website.', 'dialogawp'), 'checkbox', __('Enable chatbot on frontend', 'dialogawp')),
-        array('test_mode', __('Test Mode', 'dialogawp'), __('When enabled, chat history carries over as you navigate between pages, but clears automatically on page refresh. Use this to test flows without residual sessions interfering.', 'dialogawp'), 'checkbox', __('Enable test mode', 'dialogawp')),
-        array('fresh_session_roles', __('Fresh Session for Roles', 'dialogawp'), __('Users with any of the selected roles will always start with a fresh chat on every page load. Useful for flow designers who need to test without residual sessions.', 'dialogawp'), 'roles', __('Leave all unchecked to let every user\'s session persist normally, except when Test Mode is enabled.', 'dialogawp')),
-        array('visibility_mode', __('Visibility Mode', 'dialogawp'), __('Control who can see the chatbot. Perfect for testing before going live!', 'dialogawp'), 'select', array('everyone' => __('Everyone (Public)', 'dialogawp'), 'logged_in' => __('Logged-in Users Only', 'dialogawp'), 'specific_roles' => __('Specific User Roles', 'dialogawp'))),
-        array('visible_roles', __('Visible Roles', 'dialogawp'), __('Select which roles can see the chatbot.', 'dialogawp'), 'roles', __('Testing workflow: select Specific User Roles and Administrator, test while logged in, then switch to Everyone when ready to go live.', 'dialogawp')),
-        array('session_duration', __('Session Duration', 'dialogawp'), __('How long to remember a conversation (in days).', 'dialogawp'), 'number', array(1, 90)),
+        array('enabled', __('Enable Chatbot', 'dialoga'), __('Turn the chatbot on or off on your website.', 'dialoga'), 'checkbox', __('Enable chatbot on frontend', 'dialoga')),
+        array('test_mode', __('Test Mode', 'dialoga'), __('When enabled, chat history carries over as you navigate between pages, but clears automatically on page refresh. Use this to test flows without residual sessions interfering.', 'dialoga'), 'checkbox', __('Enable test mode', 'dialoga')),
+        array('fresh_session_roles', __('Fresh Session for Roles', 'dialoga'), __('Users with any of the selected roles will always start with a fresh chat on every page load. Useful for flow designers who need to test without residual sessions.', 'dialoga'), 'roles', __('Leave all unchecked to let every user\'s session persist normally, except when Test Mode is enabled.', 'dialoga')),
+        array('visibility_mode', __('Visibility Mode', 'dialoga'), __('Control who can see the chatbot. Perfect for testing before going live!', 'dialoga'), 'select', array('everyone' => __('Everyone (Public)', 'dialoga'), 'logged_in' => __('Logged-in Users Only', 'dialoga'), 'specific_roles' => __('Specific User Roles', 'dialoga'))),
+        array('visible_roles', __('Visible Roles', 'dialoga'), __('Select which roles can see the chatbot.', 'dialoga'), 'roles', __('Testing workflow: select Specific User Roles and Administrator, test while logged in, then switch to Everyone when ready to go live.', 'dialoga')),
+        array('session_duration', __('Session Duration', 'dialoga'), __('How long to remember a conversation (in days).', 'dialoga'), 'number', array(1, 90)),
     ),
     'appearance' => array(
-        array('chat_position', __('Chat Position', 'dialogawp'), __('Where the chat widget appears on your site.', 'dialogawp'), 'select', array('bottom-right' => __('Bottom Right', 'dialogawp'), 'bottom-left' => __('Bottom Left', 'dialogawp'))),
-        array('primary_color', __('Primary Color', 'dialogawp'), __('Main color for the chat widget buttons and header.', 'dialogawp'), 'color'),
+        array('chat_position', __('Chat Position', 'dialoga'), __('Where the chat widget appears on your site.', 'dialoga'), 'select', array('bottom-right' => __('Bottom Right', 'dialoga'), 'bottom-left' => __('Bottom Left', 'dialoga'))),
+        array('primary_color', __('Primary Color', 'dialoga'), __('Main color for the chat widget buttons and header.', 'dialoga'), 'color'),
     ),
     'messages' => array(
-        array('chat_header_title', __('Chat Header Title', 'dialogawp'), __('Text displayed at the top of the open chat window.', 'dialogawp'), 'text'),
-        array('welcome_message', __('Welcome Message', 'dialogawp'), __('First message visitors see when opening the chat.', 'dialogawp'), 'textarea'),
-        array('offline_message', __('Offline Message', 'dialogawp'), __('Message shown when outside business hours.', 'dialogawp'), 'textarea'),
+        array('chat_header_title', __('Chat Header Title', 'dialoga'), __('Text displayed at the top of the open chat window.', 'dialoga'), 'text'),
+        array('welcome_message', __('Welcome Message', 'dialoga'), __('First message visitors see when opening the chat.', 'dialoga'), 'textarea'),
+        array('offline_message', __('Offline Message', 'dialoga'), __('Message shown when outside business hours.', 'dialoga'), 'textarea'),
     ),
     'business-hours' => array(
-        array('business_hours_enabled', __('Enable Business Hours', 'dialogawp'), __('Show different messages during and after business hours.', 'dialogawp'), 'checkbox', __('Use business hours', 'dialogawp')),
-        array('timezone', __('Timezone', 'dialogawp'), __('Your business timezone.', 'dialogawp'), 'select', array('America/New_York' => __('Eastern Time', 'dialogawp'), 'America/Chicago' => __('Central Time', 'dialogawp'), 'America/Denver' => __('Mountain Time', 'dialogawp'), 'America/Los_Angeles' => __('Pacific Time', 'dialogawp'))),
+        array('business_hours_enabled', __('Enable Business Hours', 'dialoga'), __('Show different messages during and after business hours.', 'dialoga'), 'checkbox', __('Use business hours', 'dialoga')),
+        array('timezone', __('Timezone', 'dialoga'), __('Your business timezone.', 'dialoga'), 'select', array('America/New_York' => __('Eastern Time', 'dialoga'), 'America/Chicago' => __('Central Time', 'dialoga'), 'America/Denver' => __('Mountain Time', 'dialoga'), 'America/Los_Angeles' => __('Pacific Time', 'dialoga'))),
     ),
     'notifications' => array(
-        array('email_notifications_enabled', __('Enable Notifications', 'dialogawp'), __('Send an email whenever a new lead is captured.', 'dialogawp'), 'checkbox', __('Send email on new lead', 'dialogawp')),
-        array('email_notifications_recipient', __('Recipient Email(s)', 'dialogawp'), __('Where to send lead notifications. Separate multiple addresses with commas.', 'dialogawp'), 'text'),
-        array('email_notifications_subject', __('Email Subject', 'dialogawp'), __('Subject line for notification emails.', 'dialogawp'), 'text'),
+        array('email_notifications_enabled', __('Enable Notifications', 'dialoga'), __('Send an email whenever a new lead is captured.', 'dialoga'), 'checkbox', __('Send email on new lead', 'dialoga')),
+        array('email_notifications_recipient', __('Recipient Email(s)', 'dialoga'), __('Where to send lead notifications. Separate multiple addresses with commas.', 'dialoga'), 'text'),
+        array('email_notifications_subject', __('Email Subject', 'dialoga'), __('Subject line for notification emails.', 'dialoga'), 'text'),
     ),
     'engagement' => array(
-        array('bubble_nudge', __('Bubble Nudge', 'dialogawp'), __('A pulsing ripple plays after a few seconds on pages where the visitor has not started a chat yet.', 'dialogawp'), 'checkbox', __('Enable nudge animation', 'dialogawp')),
-        array('preview_message_enabled', __('Preview message bubble', 'dialogawp'), __('Show a small floating text bubble above the chat icon after a delay to help visitors notice the chatbot.', 'dialogawp'), 'checkbox', __('Enable preview message bubble', 'dialogawp')),
-        array('preview_message_text', __('Preview message text', 'dialogawp'), __('Short, friendly, conversational. Emojis help.', 'dialogawp'), 'text'),
-        array('preview_message_delay', __('Show after', 'dialogawp'), __('Seconds to wait before the preview bubble appears.', 'dialogawp'), 'number', array(0, 60)),
-        array('bubble_size', __('Bubble size', 'dialogawp'), __('Bigger bubbles get noticed. Medium is the recommended default; use Large on image-heavy sites where the widget can get lost.', 'dialogawp'), 'select', array('sm' => __('Small', 'dialogawp'), 'md' => __('Medium (default)', 'dialogawp'), 'lg' => __('Large', 'dialogawp'))),
-        array('bubble_unread_badge', __('Unread notification badge', 'dialogawp'), __('Show a red "1" badge on the bubble when the visitor first lands. It disappears once they open the chat.', 'dialogawp'), 'checkbox', __('Enable unread notification badge', 'dialogawp')),
-        array('bubble_bounce', __('Periodic bounce', 'dialogawp'), __('Every 30 seconds, if the visitor has not opened the chat, the bubble does a small hop without interrupting them.', 'dialogawp'), 'checkbox', __('Enable periodic bounce', 'dialogawp')),
+        array('bubble_nudge', __('Bubble Nudge', 'dialoga'), __('A pulsing ripple plays after a few seconds on pages where the visitor has not started a chat yet.', 'dialoga'), 'checkbox', __('Enable nudge animation', 'dialoga')),
+        array('preview_message_enabled', __('Preview message bubble', 'dialoga'), __('Show a small floating text bubble above the chat icon after a delay to help visitors notice the chatbot.', 'dialoga'), 'checkbox', __('Enable preview message bubble', 'dialoga')),
+        array('preview_message_text', __('Preview message text', 'dialoga'), __('Short, friendly, conversational. Emojis help.', 'dialoga'), 'text'),
+        array('preview_message_delay', __('Show after', 'dialoga'), __('Seconds to wait before the preview bubble appears.', 'dialoga'), 'number', array(0, 60)),
+        array('bubble_size', __('Bubble size', 'dialoga'), __('Bigger bubbles get noticed. Medium is the recommended default; use Large on image-heavy sites where the widget can get lost.', 'dialoga'), 'select', array('sm' => __('Small', 'dialoga'), 'md' => __('Medium (default)', 'dialoga'), 'lg' => __('Large', 'dialoga'))),
+        array('bubble_unread_badge', __('Unread notification badge', 'dialoga'), __('Show a red "1" badge on the bubble when the visitor first lands. It disappears once they open the chat.', 'dialoga'), 'checkbox', __('Enable unread notification badge', 'dialoga')),
+        array('bubble_bounce', __('Periodic bounce', 'dialoga'), __('Every 30 seconds, if the visitor has not opened the chat, the bubble does a small hop without interrupting them.', 'dialoga'), 'checkbox', __('Enable periodic bounce', 'dialoga')),
     ),
     'data-privacy' => array(
-        array('include_admin_sessions', __('Include admin sessions in analytics', 'dialogawp'), __('By default, sessions started by users with the manage_options capability are hidden from every analytics view, including leads, conversations, dashboard tiles, conversion rate, funnel, heatmap, path flow, time-of-day chart, top pages, and daily trend. Enable this to include admin testing in real-visitor numbers.', 'dialogawp'), 'checkbox', __('Include admin testing in analytics', 'dialogawp')),
-        array('lead_retention_enabled', __('Auto-delete old leads', 'dialogawp'), __('Automatically delete old leads and their conversations to satisfy data-retention policies (GDPR, CCPA, business policy). Runs once a day.', 'dialogawp'), 'checkbox', __('Enable lead data retention', 'dialogawp')),
-        array('lead_retention_days', __('Delete leads after', 'dialogawp'), __('Leads older than this many days are removed during the daily cleanup.', 'dialogawp'), 'number', array(1, 3650)),
-        array('conversation_retention_enabled', __('Auto-delete abandoned conversations', 'dialogawp'), __('Automatically delete abandoned chat sessions from visitors who never submitted contact information. Conversations that captured a lead use the Lead Data Retention setting. Runs once a day.', 'dialogawp'), 'checkbox', __('Enable conversation retention', 'dialogawp')),
-        array('conversation_retention_days', __('Delete abandoned conversations after', 'dialogawp'), __('Abandoned conversations older than this many days are removed during the daily cleanup. This reduces stored visitor-typed text without a business justification.', 'dialogawp'), 'number', array(1, 3650)),
+        array('include_admin_sessions', __('Include admin sessions in analytics', 'dialoga'), __('By default, sessions started by users with the manage_options capability are hidden from every analytics view, including leads, conversations, dashboard tiles, conversion rate, funnel, heatmap, path flow, time-of-day chart, top pages, and daily trend. Enable this to include admin testing in real-visitor numbers.', 'dialoga'), 'checkbox', __('Include admin testing in analytics', 'dialoga')),
+        array('lead_retention_enabled', __('Auto-delete old leads', 'dialoga'), __('Automatically delete old leads and their conversations to satisfy data-retention policies (GDPR, CCPA, business policy). Runs once a day.', 'dialoga'), 'checkbox', __('Enable lead data retention', 'dialoga')),
+        array('lead_retention_days', __('Delete leads after', 'dialoga'), __('Leads older than this many days are removed during the daily cleanup.', 'dialoga'), 'number', array(1, 3650)),
+        array('conversation_retention_enabled', __('Auto-delete abandoned conversations', 'dialoga'), __('Automatically delete abandoned chat sessions from visitors who never submitted contact information. Conversations that captured a lead use the Lead Data Retention setting. Runs once a day.', 'dialoga'), 'checkbox', __('Enable conversation retention', 'dialoga')),
+        array('conversation_retention_days', __('Delete abandoned conversations after', 'dialoga'), __('Abandoned conversations older than this many days are removed during the daily cleanup. This reduces stored visitor-typed text without a business justification.', 'dialoga'), 'number', array(1, 3650)),
     ),
 );
 $values = $settings;
@@ -252,81 +255,85 @@ if (is_string($current_timezone) && in_array($current_timezone, timezone_identif
     $sections['business-hours'][1][4][$current_timezone] = $sections['business-hours'][1][4][$current_timezone] ?? $current_timezone;
 }
 global $wpdb;
-$active_flows_count = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}dialogawp_flows WHERE is_active = 1");
+$active_flows_count = (int) dialoga_query_cached('settings_active_flows', static function () {
+    global $wpdb;
+    return (int) $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %i WHERE is_active = 1", $wpdb->prefix . 'dialoga_flows'));
+}, 120);
 $widget_enabled = !empty($settings['enabled']);
 ?>
-<div class="wrap dialogawp-settings-wrap">
-    <div class="dialogawp-screen-header">
+<div class="wrap dialoga-settings-wrap">
+    <div class="dialoga-screen-header">
         <div>
-            <h1><?php echo esc_html__('Settings', 'dialogawp'); ?></h1>
-            <p><?php echo esc_html__('Control your widget appearance, messaging, visibility, and data preferences.', 'dialogawp'); ?></p>
+            <h1><?php echo esc_html__('Settings', 'dialoga'); ?></h1>
+            <p><?php echo esc_html__('Control your widget appearance, messaging, visibility, and data preferences.', 'dialoga'); ?></p>
         </div>
-        <div class="dialogawp-settings-summary" role="status">
-            <strong><?php echo $widget_enabled ? esc_html__('Widget active', 'dialogawp') : esc_html__('Widget paused', 'dialogawp'); ?></strong>
-            <span><?php echo esc_html(sprintf(_n('%d active flow', '%d active flows', $active_flows_count, 'dialogawp'), $active_flows_count)); ?></span>
+        <div class="dialoga-settings-summary" role="status">
+            <strong><?php echo $widget_enabled ? esc_html__('Widget active', 'dialoga') : esc_html__('Widget paused', 'dialoga'); ?></strong>
+            <?php // translators: %d: number of active flows. ?>
+            <span><?php echo esc_html(sprintf(_n('%d active flow', '%d active flows', $active_flows_count, 'dialoga'), $active_flows_count)); ?></span>
         </div>
     </div>
-    <?php $extra_tabs = apply_filters('dialogawp_settings_tabs', array()); ?>
+    <?php $extra_tabs = apply_filters('dialoga_settings_tabs', array()); ?>
     <?php if (!empty($extra_tabs) && is_array($extra_tabs)) : ?>
-        <nav class="nav-tab-wrapper dialogawp-settings-extension-nav" aria-label="<?php echo esc_attr__('Settings pages', 'dialogawp'); ?>">
-            <a href="<?php echo esc_url(admin_url('admin.php?page=dialogawp-settings&tab=general')); ?>" class="nav-tab <?php echo $current_tab === 'general' ? 'nav-tab-active' : ''; ?>"><?php echo esc_html__('General', 'dialogawp'); ?></a>
+        <nav class="nav-tab-wrapper dialoga-settings-extension-nav" aria-label="<?php echo esc_attr__('Settings pages', 'dialoga'); ?>">
+            <a href="<?php echo esc_url(admin_url('admin.php?page=dialoga-settings&tab=general')); ?>" class="nav-tab <?php echo $current_tab === 'general' ? 'nav-tab-active' : ''; ?>"><?php echo esc_html__('General', 'dialoga'); ?></a>
             <?php foreach ($extra_tabs as $tab_slug => $tab_label) : ?>
-                <a href="<?php echo esc_url(admin_url('admin.php?page=dialogawp-settings&tab=' . urlencode($tab_slug))); ?>" class="nav-tab <?php echo $current_tab === $tab_slug ? 'nav-tab-active' : ''; ?>"><?php echo esc_html($tab_label); ?></a>
+                <a href="<?php echo esc_url(admin_url('admin.php?page=dialoga-settings&tab=' . urlencode($tab_slug))); ?>" class="nav-tab <?php echo $current_tab === $tab_slug ? 'nav-tab-active' : ''; ?>"><?php echo esc_html($tab_label); ?></a>
             <?php endforeach; ?>
         </nav>
     <?php endif; ?>
 
     <?php if ($saved) : ?>
-        <div class="notice notice-success" role="status"><p><?php echo esc_html__('Settings saved successfully!', 'dialogawp'); ?></p></div>
+        <div class="notice notice-success" role="status"><p><?php echo esc_html__('Settings saved successfully!', 'dialoga'); ?></p></div>
     <?php elseif ($save_error) : ?>
-        <div class="notice notice-error" role="alert"><p><?php echo esc_html__('Settings were not saved because the request contained invalid fields. Please reload the page and try again.', 'dialogawp'); ?></p></div>
+        <div class="notice notice-error" role="alert"><p><?php echo esc_html__('Settings were not saved because the request contained invalid fields. Please reload the page and try again.', 'dialoga'); ?></p></div>
     <?php endif; ?>
     <?php if ($widget_enabled && $active_flows_count === 0) : ?>
         <div class="notice notice-warning">
-            <p><strong><?php echo esc_html__('Chat Widget Enabled But No Active Flow', 'dialogawp'); ?></strong></p>
-            <p><?php echo esc_html__('The chat widget is enabled, but you do not have any active flows. Visitors will not see the chat bubble until you create and activate a flow.', 'dialogawp'); ?></p>
-            <p><a href="<?php echo esc_url(admin_url('admin.php?page=dialogawp-builder')); ?>" class="button"><?php echo esc_html__('Create a Flow', 'dialogawp'); ?></a></p>
+            <p><strong><?php echo esc_html__('Chat Widget Enabled But No Active Flow', 'dialoga'); ?></strong></p>
+            <p><?php echo esc_html__('The chat widget is enabled, but you do not have any active flows. Visitors will not see the chat bubble until you create and activate a flow.', 'dialoga'); ?></p>
+            <p><a href="<?php echo esc_url(admin_url('admin.php?page=dialoga-builder')); ?>" class="button"><?php echo esc_html__('Create a Flow', 'dialoga'); ?></a></p>
         </div>
     <?php elseif (!$widget_enabled && $active_flows_count > 0) : ?>
         <div class="notice notice-info">
-            <p><strong><?php echo esc_html__('Chat Widget Disabled', 'dialogawp'); ?></strong></p>
-            <p><?php echo esc_html__('You have active flows, but the chat widget is disabled. Enable it below to show the chat bubble on your website.', 'dialogawp'); ?></p>
+            <p><strong><?php echo esc_html__('Chat Widget Disabled', 'dialoga'); ?></strong></p>
+            <p><?php echo esc_html__('You have active flows, but the chat widget is disabled. Enable it below to show the chat bubble on your website.', 'dialoga'); ?></p>
         </div>
     <?php elseif ($widget_enabled && $active_flows_count > 0) : ?>
         <div class="notice notice-success">
-            <p><strong><?php echo esc_html__('Chat Widget Active', 'dialogawp'); ?></strong></p>
-            <p><?php echo esc_html__('The chat widget is enabled with active flows. Visit your site to see it in action!', 'dialogawp'); ?></p>
+            <p><strong><?php echo esc_html__('Chat Widget Active', 'dialoga'); ?></strong></p>
+            <p><?php echo esc_html__('The chat widget is enabled with active flows. Visit your site to see it in action!', 'dialoga'); ?></p>
         </div>
     <?php endif; ?>
 
-    <form method="post" action="" id="dialogawp-settings-form">
-        <?php wp_nonce_field('dialogawp_settings'); ?>
-        <div class="dialogawp-settings-top-actions">
-            <button type="submit" name="dialogawp_save_settings" value="1" class="button button-primary button-large"><?php echo esc_html__('Save Settings', 'dialogawp'); ?></button>
+    <form method="post" action="" id="dialoga-settings-form">
+        <?php wp_nonce_field('dialoga_settings'); ?>
+        <div class="dialoga-settings-top-actions">
+            <button type="submit" name="dialoga_save_settings" value="1" class="button button-primary button-large"><?php echo esc_html__('Save Settings', 'dialoga'); ?></button>
         </div>
-        <nav class="dialogawp-settings-tabs" aria-label="<?php echo esc_attr__('Settings sections', 'dialogawp'); ?>">
+        <nav class="dialoga-settings-tabs" aria-label="<?php echo esc_attr__('Settings sections', 'dialoga'); ?>">
             <?php foreach ($tabs as $slug => $label) : ?>
-                <a id="dialogawp-settings-tab-<?php echo esc_attr($slug); ?>" href="#dialogawp-settings-<?php echo esc_attr($slug); ?>" class="dialogawp-settings-tab"><?php echo esc_html($label); ?></a>
+                <a id="dialoga-settings-tab-<?php echo esc_attr($slug); ?>" href="#dialoga-settings-<?php echo esc_attr($slug); ?>" class="dialoga-settings-tab"><?php echo esc_html($label); ?></a>
             <?php endforeach; ?>
         </nav>
 
         <?php foreach ($sections as $slug => $fields) : ?>
-            <section id="dialogawp-settings-<?php echo esc_attr($slug); ?>" class="dialogawp-settings-section dialogawp-settings-panel" aria-labelledby="dialogawp-settings-heading-<?php echo esc_attr($slug); ?>">
-                <h2 id="dialogawp-settings-heading-<?php echo esc_attr($slug); ?>"><?php echo esc_html($tabs[$slug]); ?></h2>
+            <section id="dialoga-settings-<?php echo esc_attr($slug); ?>" class="dialoga-settings-section dialoga-settings-panel" aria-labelledby="dialoga-settings-heading-<?php echo esc_attr($slug); ?>">
+                <h2 id="dialoga-settings-heading-<?php echo esc_attr($slug); ?>"><?php echo esc_html($tabs[$slug]); ?></h2>
                 <?php foreach ($fields as $field) :
                     list($name, $label, $help, $type) = $field;
                     $value = $values[$name] ?? '';
-                    $id = 'dialogawp-setting-' . $name;
+                    $id = 'dialoga-setting-' . $name;
                     ?>
                     <?php if ($name === 'include_admin_sessions') : ?>
-                        <h3 class="dialogawp-settings-subheading"><?php echo esc_html__('Data Quality', 'dialogawp'); ?></h3>
+                        <h3 class="dialoga-settings-subheading"><?php echo esc_html__('Data Quality', 'dialoga'); ?></h3>
                     <?php elseif ($name === 'lead_retention_enabled') : ?>
-                        <h3 class="dialogawp-settings-subheading"><?php echo esc_html__('Lead Data Retention', 'dialogawp'); ?></h3>
+                        <h3 class="dialoga-settings-subheading"><?php echo esc_html__('Lead Data Retention', 'dialoga'); ?></h3>
                     <?php elseif ($name === 'conversation_retention_enabled') : ?>
-                        <h3 class="dialogawp-settings-subheading"><?php echo esc_html__('Conversation Retention', 'dialogawp'); ?></h3>
+                        <h3 class="dialoga-settings-subheading"><?php echo esc_html__('Conversation Retention', 'dialoga'); ?></h3>
                     <?php endif; ?>
-                    <div class="dialogawp-setting-row"<?php if ($name === 'visible_roles') : ?> id="dialogawp-roles-selector"<?php endif; ?>>
-                        <div class="dialogawp-setting-label">
+                    <div class="dialoga-setting-row"<?php if ($name === 'visible_roles') : ?> id="dialoga-roles-selector"<?php endif; ?>>
+                        <div class="dialoga-setting-label">
                             <?php if ($type === 'roles') : ?>
                                 <h4 id="<?php echo esc_attr($id); ?>-label"><?php echo esc_html($label); ?></h4>
                             <?php else : ?>
@@ -334,11 +341,11 @@ $widget_enabled = !empty($settings['enabled']);
                             <?php endif; ?>
                             <p id="<?php echo esc_attr($id); ?>-help"><?php echo esc_html($help); ?></p>
                         </div>
-                        <div class="dialogawp-setting-control">
+                        <div class="dialoga-setting-control">
                             <?php if ($type === 'checkbox') : ?>
                                 <label><input type="checkbox" id="<?php echo esc_attr($id); ?>" name="<?php echo esc_attr($name); ?>" value="1" aria-describedby="<?php echo esc_attr($id); ?>-help" <?php checked(!empty($value)); ?> /> <?php echo esc_html($field[4]); ?></label>
                             <?php elseif ($type === 'roles') : ?>
-                                <div class="dialogawp-settings-roles" role="group" aria-labelledby="<?php echo esc_attr($id); ?>-label" aria-describedby="<?php echo esc_attr($id); ?>-help">
+                                <div class="dialoga-settings-roles" role="group" aria-labelledby="<?php echo esc_attr($id); ?>-label" aria-describedby="<?php echo esc_attr($id); ?>-help">
                                     <?php foreach ($all_roles as $role_slug => $role_info) : ?>
                                         <label><input type="checkbox" name="<?php echo esc_attr($name); ?>[]" value="<?php echo esc_attr($role_slug); ?>" <?php checked(in_array($role_slug, is_array($value) ? $value : array(), true)); ?> /> <span><?php echo esc_html(translate_user_role($role_info['name'])); ?></span> <code><?php echo esc_html($role_slug); ?></code></label>
                                     <?php endforeach; ?>
@@ -353,33 +360,33 @@ $widget_enabled = !empty($settings['enabled']);
                             <?php elseif ($type === 'textarea') : ?>
                                 <textarea id="<?php echo esc_attr($id); ?>" name="<?php echo esc_attr($name); ?>" rows="3" aria-describedby="<?php echo esc_attr($id); ?>-help"><?php echo esc_textarea(is_scalar($value) ? $value : ''); ?></textarea>
                             <?php elseif ($type === 'color') : ?>
-                                <div class="dialogawp-color-picker">
+                                <div class="dialoga-color-picker">
                                     <input type="color" id="<?php echo esc_attr($id); ?>" name="primary_color" value="<?php echo esc_attr(is_scalar($value) ? $value : $defaults['primary_color']); ?>" aria-describedby="<?php echo esc_attr($id); ?>-help" />
-                                    <input type="text" name="primary_color_text" value="<?php echo esc_attr(is_scalar($value) ? $value : $defaults['primary_color']); ?>" readonly aria-label="<?php echo esc_attr__('Primary color hex value', 'dialogawp'); ?>" />
+                                    <input type="text" name="primary_color_text" value="<?php echo esc_attr(is_scalar($value) ? $value : $defaults['primary_color']); ?>" readonly aria-label="<?php echo esc_attr__('Primary color hex value', 'dialoga'); ?>" />
                                 </div>
                             <?php else : ?>
                                 <input type="<?php echo esc_attr($type); ?>" id="<?php echo esc_attr($id); ?>" name="<?php echo esc_attr($name); ?>" value="<?php echo esc_attr(is_scalar($value) ? $value : ''); ?>" aria-describedby="<?php echo esc_attr($id); ?>-help"
                                     <?php if ($type === 'number') : ?> min="<?php echo esc_attr($field[4][0]); ?>" max="<?php echo esc_attr($field[4][1]); ?>" step="1"<?php endif; ?>
                                     <?php if ($name === 'chat_header_title') : ?> maxlength="80"<?php endif; ?>
-                                    <?php if ($name === 'preview_message_text') : ?> maxlength="120" placeholder="<?php echo esc_attr__('Hi! 👋 Got a question?', 'dialogawp'); ?>"<?php endif; ?> />
+                                    <?php if ($name === 'preview_message_text') : ?> maxlength="120" placeholder="<?php echo esc_attr__('Hi! 👋 Got a question?', 'dialoga'); ?>"<?php endif; ?> />
                                 <?php if ($type === 'number') : ?>
-                                    <span><?php echo $name === 'preview_message_delay' ? esc_html__('seconds', 'dialogawp') : esc_html__('days', 'dialogawp'); ?></span>
+                                    <span><?php echo $name === 'preview_message_delay' ? esc_html__('seconds', 'dialoga') : esc_html__('days', 'dialoga'); ?></span>
                                 <?php endif; ?>
                             <?php endif; ?>
                             <?php if ($name === 'test_mode' && !empty($settings['test_mode'])) : ?>
-                                <p class="dialogawp-settings-test-notice"><?php echo esc_html__('Test mode is active. Sessions reset on page refresh for all visitors. Turn off before going live.', 'dialogawp'); ?></p>
+                                <p class="dialoga-settings-test-notice"><?php echo esc_html__('Test mode is active. Sessions reset on page refresh for all visitors. Turn off before going live.', 'dialoga'); ?></p>
                             <?php endif; ?>
                             <?php if (in_array($name, array('lead_retention_days', 'conversation_retention_days'), true)) :
                                 $retention_key = substr($name, 0, -5);
                                 if (!empty($settings[$retention_key]['enabled'])) :
-                                    $next = wp_next_scheduled('dialogawp_' . $retention_key . '_cleanup');
+                                    $next = wp_next_scheduled('dialoga_' . $retention_key . '_cleanup');
                                     ?>
-                                    <p class="dialogawp-settings-retention-status">
+                                    <p class="dialoga-settings-retention-status">
                                         <?php if ($next) : ?>
                                             <?php /* translators: %s: time until the next scheduled cleanup. */ ?>
-                                            <?php echo esc_html(sprintf(__('Active - next cleanup in %s.', 'dialogawp'), human_time_diff(time(), $next))); ?>
+                                            <?php echo esc_html(sprintf(__('Active - next cleanup in %s.', 'dialoga'), human_time_diff(time(), $next))); ?>
                                         <?php else : ?>
-                                            <?php echo esc_html__('Active - scheduled.', 'dialogawp'); ?>
+                                            <?php echo esc_html__('Active - scheduled.', 'dialoga'); ?>
                                         <?php endif; ?>
                                     </p>
                                 <?php endif; ?>
@@ -389,33 +396,33 @@ $widget_enabled = !empty($settings['enabled']);
                 <?php endforeach; ?>
                 <?php
                 if ($slug === 'general') {
-                    do_action('dialogawp_settings_multi_flow_row', $settings);
+                    do_action('dialoga_settings_multi_flow_row', $settings);
                 } elseif ($slug === 'appearance') {
-                    do_action('dialogawp_settings_widget_extra_rows', $settings);
+                    do_action('dialoga_settings_widget_extra_rows', $settings);
                 }
                 ?>
             </section>
         <?php endforeach; ?>
-        <p class="submit"><button type="submit" name="dialogawp_save_settings" value="1" class="button button-primary button-large"><?php echo esc_html__('Save Settings', 'dialogawp'); ?></button></p>
+        <p class="submit"><button type="submit" name="dialoga_save_settings" value="1" class="button button-primary button-large"><?php echo esc_html__('Save Settings', 'dialoga'); ?></button></p>
     </form>
 
-    <section id="dialogawp-settings-danger-zone" class="dialogawp-settings-panel dialogawp-settings-danger" aria-labelledby="dialogawp-settings-danger-heading">
-        <h2 id="dialogawp-settings-danger-heading"><?php echo esc_html__('Danger Zone', 'dialogawp'); ?></h2>
+    <section id="dialoga-settings-danger-zone" class="dialoga-settings-panel dialoga-settings-danger" aria-labelledby="dialoga-settings-danger-heading">
+        <h2 id="dialoga-settings-danger-heading"><?php echo esc_html__('Danger Zone', 'dialoga'); ?></h2>
         <div>
-            <h3><?php echo esc_html__('Delete All Leads', 'dialogawp'); ?></h3>
-            <p><?php echo esc_html__('Removes every lead, clears each conversation\'s lead_data snapshot, and deletes every lead_captured analytics event. Conversation transcripts are kept.', 'dialogawp'); ?></p>
-            <button type="button" id="dialogawp-clear-all-leads-btn" class="button"><?php echo esc_html__('Delete All Leads', 'dialogawp'); ?></button>
+            <h3><?php echo esc_html__('Delete All Leads', 'dialoga'); ?></h3>
+            <p><?php echo esc_html__('Removes every lead, clears each conversation\'s lead_data snapshot, and deletes every lead_captured analytics event. Conversation transcripts are kept.', 'dialoga'); ?></p>
+            <button type="button" id="dialoga-clear-all-leads-btn" class="button"><?php echo esc_html__('Delete All Leads', 'dialoga'); ?></button>
         </div>
         <div>
-            <h3><?php echo esc_html__('Delete All Conversations', 'dialogawp'); ?></h3>
-            <p><?php echo esc_html__('Deletes every conversation, every lead, and every analytics event. This is a full reset, useful for wiping test data.', 'dialogawp'); ?></p>
-            <button type="button" id="dialogawp-clear-all-convs-btn" class="button"><?php echo esc_html__('Delete All Conversations', 'dialogawp'); ?></button>
+            <h3><?php echo esc_html__('Delete All Conversations', 'dialoga'); ?></h3>
+            <p><?php echo esc_html__('Deletes every conversation, every lead, and every analytics event. This is a full reset, useful for wiping test data.', 'dialoga'); ?></p>
+            <button type="button" id="dialoga-clear-all-convs-btn" class="button"><?php echo esc_html__('Delete All Conversations', 'dialoga'); ?></button>
         </div>
         <div>
-            <h3><?php echo esc_html__('Reset Analytics Events', 'dialogawp'); ?></h3>
-            <p><?php echo esc_html__('Deletes only the event log: bubble impressions, node views, path data, and drop-off events. Conversations and leads are kept. Use this after cleaning up test data to avoid inflated Engagement Funnel impression counts.', 'dialogawp'); ?></p>
-            <button type="button" id="dialogawp-reset-analytics-btn" class="button"><?php echo esc_html__('Reset Analytics Events', 'dialogawp'); ?></button>
+            <h3><?php echo esc_html__('Reset Analytics Events', 'dialoga'); ?></h3>
+            <p><?php echo esc_html__('Deletes only the event log: bubble impressions, node views, path data, and drop-off events. Conversations and leads are kept. Use this after cleaning up test data to avoid inflated Engagement Funnel impression counts.', 'dialoga'); ?></p>
+            <button type="button" id="dialoga-reset-analytics-btn" class="button"><?php echo esc_html__('Reset Analytics Events', 'dialoga'); ?></button>
         </div>
-        <noscript><p><?php echo esc_html__('JavaScript is required for these destructive actions. All settings above can be saved without JavaScript.', 'dialogawp'); ?></p></noscript>
+        <noscript><p><?php echo esc_html__('JavaScript is required for these destructive actions. All settings above can be saved without JavaScript.', 'dialoga'); ?></p></noscript>
     </section>
 </div>

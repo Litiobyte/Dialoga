@@ -6,6 +6,7 @@
 node_modules/
 *.log
 .opencode/
-DialogaWP/
-DialogaWP.zip
+Dialoga/
+Dialoga.zip
 .wp-env.override.json
+plugin-check-report.json

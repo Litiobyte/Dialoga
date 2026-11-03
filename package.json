@@ -1,8 +1,8 @@
 {
-  "name": "dialogawp",
+  "name": "dialoga",
   "version": "1.0.0",
   "private": true,
-  "description": "Build tooling for the DialogaWP WordPress plugin.",
+  "description": "Build tooling for the Dialoga WordPress plugin.",
   "scripts": {
     "build": "node tools/build-canvas.mjs",
     "watch": "node tools/build-canvas.mjs --watch",

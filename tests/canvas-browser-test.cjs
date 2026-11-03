@@ -9,7 +9,7 @@ const root = path.resolve(__dirname, '..');
 const temporaryTools = '/var/folders/2w/_41g_m7s1b3ds8bs1w06m15r0000gp/T/opencode/flow-transfer-browser-tooling';
 
 function dependency(name) {
-    for (const base of [process.env.DIALOGAWP_BROWSER_TOOLING, root, temporaryTools].filter(Boolean)) {
+    for (const base of [process.env.DIALOGA_BROWSER_TOOLING, root, temporaryTools].filter(Boolean)) {
         try { return createRequire(path.join(base, 'package.json')).resolve(name); } catch {}
     }
     return null;
@@ -18,18 +18,18 @@ function dependency(name) {
 async function run() {
     const playwrightPath = dependency('playwright') || dependency('playwright-core');
     if (!playwrightPath) {
-        if (process.env.DIALOGAWP_BROWSER_REQUIRE === '1') throw new Error('Playwright is required');
+        if (process.env.DIALOGA_BROWSER_REQUIRE === '1') throw new Error('Playwright is required');
         console.log('SKIP: canvas browser test (Playwright unavailable)');
         return;
     }
     const { chromium } = require(playwrightPath);
     let browser;
     try {
-        browser = await chromium.launch(process.env.DIALOGAWP_BROWSER_EXECUTABLE
-            ? { headless: true, executablePath: process.env.DIALOGAWP_BROWSER_EXECUTABLE }
+        browser = await chromium.launch(process.env.DIALOGA_BROWSER_EXECUTABLE
+            ? { headless: true, executablePath: process.env.DIALOGA_BROWSER_EXECUTABLE }
             : (fs.existsSync('/Applications/Google Chrome.app') ? { headless: true, channel: 'chrome' } : { headless: true }));
     } catch (error) {
-        if (process.env.DIALOGAWP_BROWSER_REQUIRE === '1') throw error;
+        if (process.env.DIALOGA_BROWSER_REQUIRE === '1') throw error;
         console.log('SKIP: canvas browser test (Chrome unavailable): ' + error.message);
         return;
     }
@@ -37,14 +37,14 @@ async function run() {
     const errors = [];
     page.on('pageerror', error => errors.push(error.message));
 
-    await page.setContent('<div class="dialogawp-builder-wrap"><div id="dialogawp-canvas" style="width:1100px;height:700px"></div></div>');
+    await page.setContent('<div class="dialoga-builder-wrap"><div id="dialoga-canvas" style="width:1100px;height:700px"></div></div>');
     await page.addStyleTag({ path: path.join(root, 'assets/js/build/flow-canvas.css') });
     await page.addScriptTag({ path: path.join(root, 'node_modules/react/umd/react.production.min.js') });
     await page.addScriptTag({ path: path.join(root, 'node_modules/react-dom/umd/react-dom.production.min.js') });
     await page.evaluate(() => {
-        window.dialogawpAdmin = { i18n: {}, logoUrl: '' };
-        window.dialogawpModal = { confirm(message, callback) { callback(); } };
-        window.dialogawpBuilder = {
+        window.dialogaAdmin = { i18n: {}, logoUrl: '' };
+        window.dialogaModal = { confirm(message, callback) { callback(); } };
+        window.dialogaBuilder = {
             selectedNode: null,
             dropped: null,
             addNodeAtPosition(type, x, y, isStart) { this.dropped = { type, x, y, isStart }; },
@@ -71,16 +71,16 @@ async function run() {
     };
 
     await page.evaluate(initialFlow => {
-        const root = ReactDOM.createRoot(document.getElementById('dialogawp-canvas'));
-        root.render(React.createElement(window.dialogawpCanvasComponent, {
+        const root = ReactDOM.createRoot(document.getElementById('dialoga-canvas'));
+        root.render(React.createElement(window.dialogaCanvasComponent, {
             initialNodes: initialFlow.nodes,
             initialEdges: initialFlow.edges,
-            onNodeClick(node) { window.dialogawpBuilder.selectNode(node); },
+            onNodeClick(node) { window.dialogaBuilder.selectNode(node); },
         }));
     }, initial);
-    await page.waitForFunction(() => window.dialogawpReactInstance && document.querySelectorAll('.react-flow__node').length === 4);
+    await page.waitForFunction(() => window.dialogaReactInstance && document.querySelectorAll('.react-flow__node').length === 4);
 
-    const flow = await page.evaluate(() => window.dialogawpReactInstance.getFlow());
+    const flow = await page.evaluate(() => window.dialogaReactInstance.getFlow());
     assert.deepEqual(flow, initial, 'portable graph remains unchanged and excludes transient start node');
     assert.equal(await page.locator('.react-flow__node[data-id="branch"] .react-flow__handle.source').count(), 2, 'branch exposes one source handle per output group');
     assert.equal(await page.locator('.react-flow__node[data-id="question"] .react-flow__handle.source').count(), 1, 'question keeps one generic output');
@@ -94,22 +94,22 @@ async function run() {
         edges: [{ id: 'fresh-start', source: '__start__', sourceHandle: null, target: 'fresh', type: 'smoothstep', animated: true }],
     };
     const immediate = await page.evaluate(next => {
-        window.dialogawpReactInstance.setFlow(next);
-        return window.dialogawpReactInstance.getFlow();
+        window.dialogaReactInstance.setFlow(next);
+        return window.dialogaReactInstance.getFlow();
     }, replacement);
     assert.deepEqual(immediate, replacement, 'setFlow followed by getFlow is synchronous');
     await page.waitForFunction(() => document.querySelector('.react-flow__node[data-id="fresh"]'));
 
     await page.locator('.react-flow__node[data-id="fresh"]').click();
-    assert.equal(await page.evaluate(() => window.dialogawpBuilder.selectedNode.id), 'fresh', 'node click preserves callback contract');
+    assert.equal(await page.evaluate(() => window.dialogaBuilder.selectedNode.id), 'fresh', 'node click preserves callback contract');
 
-    const beforeDrag = await page.evaluate(() => window.dialogawpReactInstance.getFlow().nodes.find(node => node.id === 'fresh').position);
+    const beforeDrag = await page.evaluate(() => window.dialogaReactInstance.getFlow().nodes.find(node => node.id === 'fresh').position);
     const nodeBox = await page.locator('.react-flow__node[data-id="fresh"]').boundingBox();
     await page.mouse.move(nodeBox.x + 80, nodeBox.y + 30);
     await page.mouse.down();
     await page.mouse.move(nodeBox.x + 140, nodeBox.y + 70, { steps: 5 });
     await page.mouse.up();
-    const afterDrag = await page.evaluate(() => window.dialogawpReactInstance.getFlow().nodes.find(node => node.id === 'fresh').position);
+    const afterDrag = await page.evaluate(() => window.dialogaReactInstance.getFlow().nodes.find(node => node.id === 'fresh').position);
     assert.notDeepEqual(afterDrag, beforeDrag, 'node dragging updates the portable position');
 
     const sourceBox = await page.locator('.react-flow__node[data-id="fresh"] .react-flow__handle.source').boundingBox();
@@ -118,15 +118,15 @@ async function run() {
     await page.mouse.down();
     await page.mouse.move(targetBox.x + targetBox.width / 2, targetBox.y + targetBox.height / 2, { steps: 8 });
     await page.mouse.up();
-    await page.waitForFunction(() => window.dialogawpReactInstance.getFlow().edges.length === 2);
-    const connected = await page.evaluate(() => window.dialogawpReactInstance.getFlow().edges[1]);
+    await page.waitForFunction(() => window.dialogaReactInstance.getFlow().edges.length === 2);
+    const connected = await page.evaluate(() => window.dialogaReactInstance.getFlow().edges[1]);
     assert.equal(connected.source, 'fresh');
     assert.equal(connected.target, 'target');
     assert.equal(connected.type, 'smoothstep');
 
     await page.locator('.react-flow__edge').last().hover();
-    await page.locator('.dialogawp-rf-edge-delete').click();
-    await page.waitForFunction(() => window.dialogawpReactInstance.getFlow().edges.length === 1);
+    await page.locator('.dialoga-rf-edge-delete').click();
+    await page.waitForFunction(() => window.dialogaReactInstance.getFlow().edges.length === 1);
 
     const largeFlow = {
         nodes: Array.from({ length: 100 }, (_, index) => ({
@@ -137,17 +137,17 @@ async function run() {
         })),
         edges: [],
     };
-    await page.evaluate(next => window.dialogawpReactInstance.setFlow(next), largeFlow);
+    await page.evaluate(next => window.dialogaReactInstance.setFlow(next), largeFlow);
     await page.waitForFunction(() => document.querySelectorAll('.react-flow__node').length === 101);
-    assert.equal((await page.evaluate(() => window.dialogawpReactInstance.getFlow().nodes.length)), 100, '100-node graph remains portable');
+    assert.equal((await page.evaluate(() => window.dialogaReactInstance.getFlow().nodes.length)), 100, '100-node graph remains portable');
 
-    await page.evaluate(next => window.dialogawpReactInstance.setFlow(next), replacement);
+    await page.evaluate(next => window.dialogaReactInstance.setFlow(next), replacement);
     await page.waitForFunction(() => document.querySelector('.react-flow__node[data-id="fresh"]'));
 
     await page.evaluate(() => {
         const dataTransfer = new DataTransfer();
-        dataTransfer.setData('dialogawp/node-type', 'question');
-        document.querySelector('.dialogawp-rf-canvas').dispatchEvent(new DragEvent('drop', {
+        dataTransfer.setData('dialoga/node-type', 'question');
+        document.querySelector('.dialoga-rf-canvas').dispatchEvent(new DragEvent('drop', {
             bubbles: true,
             cancelable: true,
             clientX: 500,
@@ -155,11 +155,11 @@ async function run() {
             dataTransfer,
         }));
     });
-    const dropped = await page.evaluate(() => window.dialogawpBuilder.dropped);
+    const dropped = await page.evaluate(() => window.dialogaBuilder.dropped);
     assert.equal(dropped.type, 'question', 'palette drop delegates to the existing builder');
     assert.equal(dropped.isStart, false, 'palette drop preserves addNodeAtPosition contract');
 
-    const state = await page.evaluate(() => window.dialogawpReactInstance.getState());
+    const state = await page.evaluate(() => window.dialogaReactInstance.getState());
     assert.equal(typeof state.zoom, 'number');
     assert.equal(typeof state.panOffset.x, 'number');
     assert.deepEqual(errors, [], 'real bundle executes without browser errors');

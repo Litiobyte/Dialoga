@@ -7,7 +7,7 @@ const messages = {};
 for (const part of ['scripts', 'settings', 'templates', 'backend', 'core', 'wizard', 'fixes', 'admin-ui']) {
     Object.assign(messages, JSON.parse(fs.readFileSync(path.join(directory, part + '-es.json'), 'utf8')));
 }
-const header = 'Project-Id-Version: DialogaWP\nLanguage: es_ES\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n != 1);\n';
+const header = 'Project-Id-Version: Dialoga\nLanguage: es_ES\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n != 1);\n';
 const pairs = [
     ["You've handled %s visitor conversation so far!", "You've handled %s visitor conversations so far!"],
     ['%d admin test lead hidden', '%d admin test leads hidden'],
@@ -39,7 +39,7 @@ buffers.forEach((buffer, index) => {
     buffer.copy(output, cursor);
     cursor += buffer.length + 1;
 });
-fs.writeFileSync(path.join(directory, 'dialogawp-es_ES.mo'), output);
+fs.writeFileSync(path.join(directory, 'dialoga-es_ES.mo'), output);
 function quote(value) { return JSON.stringify(value); }
 let po = 'msgid ""\nmsgstr ' + quote(header) + '\n\n';
 let pot = 'msgid ""\nmsgstr ' + quote(header.replace('Language: es_ES\n', 'Language: \n')) + '\n\n';
@@ -50,6 +50,6 @@ for (const [key, value] of entries.slice(1)) {
     po += prefix + (ids.length === 2 ? 'msgstr[0] ' + quote(values[0]) + '\nmsgstr[1] ' + quote(values[1]) : 'msgstr ' + quote(value)) + '\n\n';
     pot += prefix + (ids.length === 2 ? 'msgstr[0] ""\nmsgstr[1] ""' : 'msgstr ""') + '\n\n';
 }
-fs.writeFileSync(path.join(directory, 'dialogawp-es_ES.po'), po);
-fs.writeFileSync(path.join(directory, 'dialogawp.pot'), pot);
+fs.writeFileSync(path.join(directory, 'dialoga-es_ES.po'), po);
+fs.writeFileSync(path.join(directory, 'dialoga.pot'), pot);
 console.log('Compiled ' + count + ' gettext entries.');

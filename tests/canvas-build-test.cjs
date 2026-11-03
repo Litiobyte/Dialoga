@@ -8,7 +8,7 @@ const root = path.resolve(__dirname, '..');
 const jsPath = path.join(root, 'assets/js/build/flow-canvas.js');
 const cssPath = path.join(root, 'assets/js/build/flow-canvas.css');
 const metaPath = path.join(root, 'assets/js/build/flow-canvas.meta.json');
-const pluginPath = path.join(root, 'dialogawp.php');
+const pluginPath = path.join(root, 'dialoga.php');
 
 for (const file of [jsPath, cssPath, metaPath]) {
     assert.ok(fs.existsSync(file), `Missing build artifact: ${path.relative(root, file)}`);
@@ -20,12 +20,12 @@ const meta = JSON.parse(fs.readFileSync(metaPath, 'utf8'));
 const plugin = fs.readFileSync(pluginPath, 'utf8');
 const inputs = Object.keys(meta.inputs);
 
-assert.match(js, /dialogawpCanvasComponent/, 'bundle exposes the canvas component');
-assert.match(js, /dialogawpReactInstance/, 'bundle exposes the compatibility API');
+assert.match(js, /dialogaCanvasComponent/, 'bundle exposes the canvas component');
+assert.match(js, /dialogaReactInstance/, 'bundle exposes the compatibility API');
 assert.doesNotMatch(js, /require\(["']react(?:-dom)?["']\)/, 'bundle has no unresolved React require');
 assert.ok(!inputs.some(file => /node_modules\/react(?:-dom)?\//.test(file)), 'bundle excludes React and ReactDOM implementations');
 assert.ok(inputs.some(file => file.includes('@xyflow/react')), 'bundle includes @xyflow/react');
-assert.match(css, /\.dialogawp-rf-node/, 'bundle includes scoped DialogaWP canvas styles');
+assert.match(css, /\.dialoga-rf-node/, 'bundle includes scoped Dialoga canvas styles');
 assert.match(css, /\.react-flow/, 'bundle includes React Flow base styles');
 assert.match(plugin, /Requires at least:\s*6\.2/, 'plugin requires WordPress with React 18');
 assert.match(plugin, /array\('react', 'react-dom'\)/, 'canvas depends on WordPress React handles');

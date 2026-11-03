@@ -1,6 +1,6 @@
 <?php
 /**
- * AI integration for DIALOGAWP
+ * AI integration for DIALOGA
  * Handles AI chat, website crawling, and knowledge base management
  *
  * Retrieval strategy:
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class DialogaWP_AI {
+class Dialoga_AI {
 
     // -------------------------------------------------------------------------
     // Init
@@ -22,18 +22,18 @@ class DialogaWP_AI {
 
     public static function init() {
         // Widget-facing (public)
-        add_action('wp_ajax_dialogawp_ai_chat',        array(__CLASS__, 'ajax_ai_chat'));
-        add_action('wp_ajax_nopriv_dialogawp_ai_chat', array(__CLASS__, 'ajax_ai_chat'));
+        add_action('wp_ajax_dialoga_ai_chat',        array(__CLASS__, 'ajax_ai_chat'));
+        add_action('wp_ajax_nopriv_dialoga_ai_chat', array(__CLASS__, 'ajax_ai_chat'));
 
         // Admin-only
-        add_action('wp_ajax_dialogawp_save_ai_settings',      array(__CLASS__, 'ajax_save_ai_settings'));
-        add_action('wp_ajax_dialogawp_get_ai_settings',       array(__CLASS__, 'ajax_get_ai_settings'));
-        add_action('wp_ajax_dialogawp_crawl_website',         array(__CLASS__, 'ajax_crawl_website'));
-        add_action('wp_ajax_dialogawp_generate_embeddings',   array(__CLASS__, 'ajax_generate_embeddings'));
-        add_action('wp_ajax_dialogawp_generate_flow',         array(__CLASS__, 'ajax_generate_flow'));
-        add_action('wp_ajax_dialogawp_get_ai_knowledge',      array(__CLASS__, 'ajax_get_ai_knowledge'));
-        add_action('wp_ajax_dialogawp_delete_knowledge_item', array(__CLASS__, 'ajax_delete_knowledge_item'));
-        add_action('wp_ajax_dialogawp_test_ai',               array(__CLASS__, 'ajax_test_ai'));
+        add_action('wp_ajax_dialoga_save_ai_settings',      array(__CLASS__, 'ajax_save_ai_settings'));
+        add_action('wp_ajax_dialoga_get_ai_settings',       array(__CLASS__, 'ajax_get_ai_settings'));
+        add_action('wp_ajax_dialoga_crawl_website',         array(__CLASS__, 'ajax_crawl_website'));
+        add_action('wp_ajax_dialoga_generate_embeddings',   array(__CLASS__, 'ajax_generate_embeddings'));
+        add_action('wp_ajax_dialoga_generate_flow',         array(__CLASS__, 'ajax_generate_flow'));
+        add_action('wp_ajax_dialoga_get_ai_knowledge',      array(__CLASS__, 'ajax_get_ai_knowledge'));
+        add_action('wp_ajax_dialoga_delete_knowledge_item', array(__CLASS__, 'ajax_delete_knowledge_item'));
+        add_action('wp_ajax_dialoga_test_ai',               array(__CLASS__, 'ajax_test_ai'));
     }
 
     // -------------------------------------------------------------------------
@@ -52,12 +52,12 @@ class DialogaWP_AI {
     const AI_MIN_INTERVAL_MS = 800;  // Min ms between messages (bots are instant)
 
     public static function ajax_ai_chat() {
-        check_ajax_referer('dialogawp_widget', 'nonce');
+        check_ajax_referer('dialoga_widget', 'nonce');
 
         $user_message = isset($_POST['message']) ? sanitize_text_field(wp_unslash($_POST['message'])) : '';
         // v1.0.0 — history is a JSON string; unslash + decode + recursively
         // sanitize each string value before passing along.
-        $history_raw = isset($_POST['history']) ? wp_unslash($_POST['history']) : '[]';
+        $history_raw = isset($_POST['history']) ? sanitize_textarea_field(wp_unslash($_POST['history'])) : '[]';
         $session_id  = isset($_POST['session_id']) ? sanitize_text_field(wp_unslash($_POST['session_id'])) : '';
         $flow_id     = isset($_POST['flow_id']) ? absint($_POST['flow_id']) : 0;
         $node_id     = isset($_POST['node_id']) ? sanitize_text_field(wp_unslash($_POST['node_id'])) : '';
@@ -75,8 +75,8 @@ class DialogaWP_AI {
             return;
         }
 
-        if (!class_exists('DialogaWP_Frontend')
-            || !DialogaWP_Frontend::verify_widget_session($session_id, $session_token, $flow_id)) {
+        if (!class_exists('Dialoga_Frontend')
+            || !Dialoga_Frontend::verify_widget_session($session_id, $session_token, $flow_id)) {
             wp_send_json_error('Invalid session.');
             return;
         }
@@ -89,16 +89,16 @@ class DialogaWP_AI {
             wp_send_json_error('Invalid chat context.');
             return;
         }
-        $node_config = dialogawp_sanitize_json($node_config);
+        $node_config = dialoga_sanitize_json($node_config);
         if (!is_array($node_config)) {
             $node_config = array();
         }
 
         // --- Bot protection: IP rate limiting ---
         $ip          = self::get_client_ip();
-        $ip_key      = 'dialogawp_ai_ip_' . md5($ip);
+        $ip_key      = 'dialoga_ai_ip_' . md5($ip);
         $ip_count    = (int) get_transient($ip_key);
-        if ($ip_count >= apply_filters('dialogawp_ai_ip_limit', self::AI_IP_LIMIT)) {
+        if ($ip_count >= apply_filters('dialoga_ai_ip_limit', self::AI_IP_LIMIT)) {
             wp_send_json_error(array('limit' => true, 'message' => 'Too many requests. Please try again later.'));
             return;
         }
@@ -106,10 +106,10 @@ class DialogaWP_AI {
 
         // --- Bot protection: minimum timing between messages ---
         if (!empty($session_id)) {
-            $timing_key  = 'dialogawp_ai_ts_' . sanitize_key($session_id);
+            $timing_key  = 'dialoga_ai_ts_' . sanitize_key($session_id);
             $last_ts     = (int) get_transient($timing_key);
             $now_ms      = (int) (microtime(true) * 1000);
-            $min_ms      = apply_filters('dialogawp_ai_min_interval_ms', self::AI_MIN_INTERVAL_MS);
+            $min_ms      = apply_filters('dialoga_ai_min_interval_ms', self::AI_MIN_INTERVAL_MS);
             if ($last_ts && ($now_ms - $last_ts) < $min_ms) {
                 wp_send_json_error(array('limit' => true, 'message' => 'Please slow down.'));
                 return;
@@ -121,9 +121,9 @@ class DialogaWP_AI {
         // Counted server-side. The old implementation counted assistant turns
         // in client-supplied history, so a visitor could send an empty history
         // and bypass the ceiling, spending the site owner's API credit.
-        $history    = dialogawp_sanitize_json(json_decode($history_raw, true) ?: array());
-        $msg_limit  = (int) apply_filters('dialogawp_ai_message_limit', self::AI_MSG_LIMIT);
-        $turn_key   = 'dialogawp_ai_turns_' . md5(($session_id !== '' ? $session_id : $ip) . '|' . $flow_id);
+        $history    = dialoga_sanitize_json(json_decode($history_raw, true) ?: array());
+        $msg_limit  = (int) apply_filters('dialoga_ai_message_limit', self::AI_MSG_LIMIT);
+        $turn_key   = 'dialoga_ai_turns_' . md5(($session_id !== '' ? $session_id : $ip) . '|' . $flow_id);
         $ai_turns   = (int) get_transient($turn_key);
         if ($ai_turns >= $msg_limit) {
             wp_send_json_error(array('limit' => true, 'message' => 'limit_reached'));
@@ -139,7 +139,7 @@ class DialogaWP_AI {
         $api_key  = isset($settings['api_key'])  ? $settings['api_key']  : '';
 
         if (empty($api_key)) {
-            wp_send_json_error('AI not configured. Please add an API key in DIALOGAWP > AI Settings.');
+            wp_send_json_error('AI not configured. Please add an API key in DIALOGA > AI Settings.');
             return;
         }
 
@@ -151,10 +151,10 @@ class DialogaWP_AI {
                 ? $node_config['lead_fields']
                 : array('name' => true, 'email' => true, 'phone' => false);
 
-            $lead_draft_raw = isset($_POST['lead_draft']) ? wp_unslash($_POST['lead_draft']) : '{}';
+            $lead_draft_raw = isset($_POST['lead_draft']) ? sanitize_textarea_field(wp_unslash($_POST['lead_draft'])) : '{}';
             // v1.0.0 — recursively sanitize decoded lead draft (each string
             // gets sanitize_text_field'd) before we reason about it.
-            $lead_draft     = dialogawp_sanitize_json(json_decode($lead_draft_raw, true) ?: array());
+            $lead_draft     = dialoga_sanitize_json(json_decode($lead_draft_raw, true) ?: array());
             if (!is_array($lead_draft)) $lead_draft = array();
 
             $awaiting_confirm = !empty($lead_draft['_awaiting_confirm']);
@@ -168,7 +168,7 @@ class DialogaWP_AI {
             }
 
             if (is_wp_error($raw)) {
-                error_log('DIALOGAWP AI extraction error: ' . $raw->get_error_message());
+                error_log('DIALOGA AI extraction error: ' . $raw->get_error_message());
                 wp_send_json_error('AI service error. Please try again.');
                 return;
             }
@@ -220,24 +220,24 @@ class DialogaWP_AI {
                 if ($flow_id) {
                     global $wpdb;
                     $flow_name = $wpdb->get_var($wpdb->prepare(
-                        "SELECT flow_name FROM {$wpdb->prefix}dialogawp_flows WHERE id = %d",
+                        "SELECT flow_name FROM {$wpdb->prefix}dialoga_flows WHERE id = %d",
                         $flow_id
                     ));
                     if ($flow_name) $auto_tags[] = sanitize_title($flow_name);
                 }
 
-                $lead_id = DialogaWP_Database::save_lead($lead_data, $auto_tags);
+                $lead_id = Dialoga_Database::save_lead($lead_data, $auto_tags);
 
                 if ($lead_id) {
                     // Update conversation with lead data
                     if (!empty($session_id)) {
-                        DialogaWP_Database::update_conversation_lead($session_id, $lead_data);
+                        Dialoga_Database::update_conversation_lead($session_id, $lead_data);
                     }
 
                     // Fire the post-lead hook with source_node_id so webhook walker
                     // starts from this AI Chat node instead of looking for capture_lead
                     $variables = isset($lead_draft) ? $lead_draft : array();
-                    do_action('dialogawp_lead_captured', $lead_id, $lead_data, $flow_id, $variables, $auto_tags, $source_node_id);
+                    do_action('dialoga_lead_captured', $lead_id, $lead_data, $flow_id, $variables, $auto_tags, $source_node_id);
 
                     $lead_captured = true;
                     $lead_draft = array(); // clear draft; it's saved now
@@ -255,7 +255,7 @@ class DialogaWP_AI {
 
             // v0.39.0: when a lead was just captured via AI extract, attach the same
             // tracking payload as the form-capture path so the widget fires dataLayer.push
-            // + `dialogawp:lead-captured` DOM event regardless of which route captured it.
+            // + `dialoga:lead-captured` DOM event regardless of which route captured it.
             $response_data = array(
                 'reply'         => $reply_msg,
                 'lead_draft'    => $lead_draft,
@@ -264,8 +264,8 @@ class DialogaWP_AI {
                 'lead_captured' => $lead_captured,
                 'remaining'     => $msg_limit - ($ai_turns + 1),
             );
-            if ($lead_captured && !empty($lead_id) && class_exists('DialogaWP_Frontend')) {
-                $response_data['tracking'] = DialogaWP_Frontend::build_tracking_payload(
+            if ($lead_captured && !empty($lead_id) && class_exists('Dialoga_Frontend')) {
+                $response_data['tracking'] = Dialoga_Frontend::build_tracking_payload(
                     $lead_id, $lead_data, $flow_id, $source_node_id ?: 'ai_chat'
                 );
             }
@@ -283,7 +283,7 @@ class DialogaWP_AI {
         }
 
         if (is_wp_error($reply)) {
-            error_log('DIALOGAWP AI error: ' . $reply->get_error_message());
+            error_log('DIALOGA AI error: ' . $reply->get_error_message());
             wp_send_json_error('AI service error. Please try again.');
             return;
         }
@@ -458,12 +458,12 @@ class DialogaWP_AI {
         if (!$flow_id || '' === $node_id) {
             return null;
         }
-        if (!class_exists('DialogaWP_Frontend') || !method_exists('DialogaWP_Frontend', 'get_flow_by_id_cached')) {
+        if (!class_exists('Dialoga_Frontend') || !method_exists('Dialoga_Frontend', 'get_flow_by_id_cached')) {
             return null;
         }
 
         // Only flows this visitor is actually eligible for may be driven.
-        $eligible = DialogaWP_Frontend::get_eligible_active_flows();
+        $eligible = Dialoga_Frontend::get_eligible_active_flows();
         $allowed  = false;
         foreach ($eligible as $candidate) {
             if ((int) $candidate->id === $flow_id) {
@@ -475,7 +475,7 @@ class DialogaWP_AI {
             return null;
         }
 
-        $flow = DialogaWP_Frontend::get_flow_by_id_cached($flow_id);
+        $flow = Dialoga_Frontend::get_flow_by_id_cached($flow_id);
         if (!$flow || empty($flow->flow_data)) {
             return null;
         }
@@ -500,7 +500,7 @@ class DialogaWP_AI {
      * Hard ceiling for tokens spent on public chat requests.
      */
     private static function clamp_public_max_tokens($settings) {
-        $cap        = (int) apply_filters('dialogawp_ai_max_tokens_cap', 1000);
+        $cap        = (int) apply_filters('dialoga_ai_max_tokens_cap', 1000);
         $configured = !empty($settings['max_tokens']) ? (int) $settings['max_tokens'] : 500;
         return max(1, min($configured, $cap));
     }
@@ -509,7 +509,7 @@ class DialogaWP_AI {
      * Read AI settings with the stored API key decrypted.
      */
     private static function get_ai_settings() {
-        $settings = get_option('dialogawp_ai_settings', array());
+        $settings = get_option('dialoga_ai_settings', array());
         if (!is_array($settings)) {
             return array();
         }
@@ -517,7 +517,7 @@ class DialogaWP_AI {
             if (!self::is_encrypted_secret($settings['api_key'])) {
                 // One-time migration of legacy plaintext keys.
                 $settings['api_key'] = self::encrypt_secret($settings['api_key']);
-                update_option('dialogawp_ai_settings', $settings);
+                update_option('dialoga_ai_settings', $settings);
             }
             $settings['api_key'] = self::decrypt_secret($settings['api_key']);
         }
@@ -573,18 +573,18 @@ class DialogaWP_AI {
      * Get the real client IP.
      *
      * Proxy headers are spoofable, so they are only trusted when the site
-     * explicitly opts in via the `dialogawp_trusted_proxies` filter. Without
+     * explicitly opts in via the `dialoga_trusted_proxies` filter. Without
      * that, REMOTE_ADDR is authoritative.
      */
     private static function get_client_ip() {
-        $remote = isset($_SERVER['REMOTE_ADDR']) ? trim((string) $_SERVER['REMOTE_ADDR']) : '';
+        $remote = isset($_SERVER['REMOTE_ADDR']) ? sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'])) : '';
 
-        if (apply_filters('dialogawp_trusted_proxies', false)) {
+        if (apply_filters('dialoga_trusted_proxies', false)) {
             foreach (array('HTTP_CF_CONNECTING_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_REAL_IP') as $key) {
                 if (empty($_SERVER[$key])) {
                     continue;
                 }
-                foreach (explode(',', (string) $_SERVER[$key]) as $candidate) {
+                foreach (explode(',', (string) wp_unslash($_SERVER[$key])) as $candidate) {
                     $candidate = trim($candidate);
                     if (filter_var($candidate, FILTER_VALIDATE_IP)) {
                         return $candidate;
@@ -648,7 +648,7 @@ class DialogaWP_AI {
      */
     private static function get_relevant_knowledge($query, $settings, $top_k = 4, $max_chars = 3000) {
         global $wpdb;
-        $table = $wpdb->prefix . 'dialogawp_ai_knowledge';
+        $table = $wpdb->prefix . 'dialoga_ai_knowledge';
 
         if (empty($query)) {
             // No query — return nothing rather than dumping everything
@@ -656,7 +656,10 @@ class DialogaWP_AI {
         }
 
         $items = $wpdb->get_results(
-            "SELECT title, url, content, embedding FROM {$table} ORDER BY created_at DESC LIMIT 100",
+            $wpdb->prepare(
+                "SELECT title, url, content, embedding FROM %i ORDER BY created_at DESC LIMIT 100",
+                $table
+            ),
             ARRAY_A
         );
 
@@ -754,7 +757,7 @@ class DialogaWP_AI {
         ));
 
         if (is_wp_error($response)) {
-            error_log('DIALOGAWP embedding error: ' . $response->get_error_message());
+            error_log('DIALOGA embedding error: ' . $response->get_error_message());
             return null;
         }
 
@@ -763,7 +766,7 @@ class DialogaWP_AI {
 
         if ($code !== 200 || !isset($data['data'][0]['embedding'])) {
             $msg = isset($data['error']['message']) ? $data['error']['message'] : 'Unknown';
-            error_log('DIALOGAWP embedding API error: ' . $msg);
+            error_log('DIALOGA embedding API error: ' . $msg);
             return null;
         }
 
@@ -915,13 +918,13 @@ class DialogaWP_AI {
     // -------------------------------------------------------------------------
 
     public static function ajax_save_ai_settings() {
-        check_ajax_referer('dialogawp_nonce', 'nonce');
+        check_ajax_referer('dialoga_nonce', 'nonce');
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Insufficient permissions', 'dialogawp'));
+            wp_send_json_error(__('Insufficient permissions', 'dialoga'));
             return;
         }
 
-        $existing = get_option('dialogawp_ai_settings', array());
+        $existing = get_option('dialoga_ai_settings', array());
 
         // Preserve stored key if the field was left blank (masked display)
         $api_key = isset($_POST['api_key']) ? sanitize_text_field(wp_unslash($_POST['api_key'])) : '';
@@ -931,17 +934,17 @@ class DialogaWP_AI {
             'api_key'      => !empty($api_key) ? self::encrypt_secret($api_key) : (isset($existing['api_key']) ? $existing['api_key'] : ''),
             'model'        => isset($_POST['model'])        ? sanitize_text_field(wp_unslash($_POST['model']))            : '',
             'max_tokens'   => isset($_POST['max_tokens'])   ? absint($_POST['max_tokens'])                   : 500,
-            'instructions' => isset($_POST['instructions']) ? sanitize_textarea_field($_POST['instructions']) : '',
+            'instructions' => isset($_POST['instructions']) ? sanitize_textarea_field(wp_unslash($_POST['instructions'])) : '',
         );
 
-        update_option('dialogawp_ai_settings', $settings);
-        wp_send_json_success(__('Settings saved', 'dialogawp'));
+        update_option('dialoga_ai_settings', $settings);
+        wp_send_json_success(__('Settings saved', 'dialoga'));
     }
 
     public static function ajax_get_ai_settings() {
-        check_ajax_referer('dialogawp_nonce', 'nonce');
+        check_ajax_referer('dialoga_nonce', 'nonce');
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Insufficient permissions', 'dialogawp'));
+            wp_send_json_error(__('Insufficient permissions', 'dialoga'));
             return;
         }
 
@@ -1161,9 +1164,9 @@ class DialogaWP_AI {
     // -------------------------------------------------------------------------
 
     public static function ajax_crawl_website() {
-        check_ajax_referer('dialogawp_nonce', 'nonce');
+        check_ajax_referer('dialoga_nonce', 'nonce');
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Insufficient permissions', 'dialogawp'));
+            wp_send_json_error(__('Insufficient permissions', 'dialoga'));
             return;
         }
 
@@ -1171,7 +1174,7 @@ class DialogaWP_AI {
         @set_time_limit(120);
 
         global $wpdb;
-        $table    = $wpdb->prefix . 'dialogawp_ai_knowledge';
+        $table    = $wpdb->prefix . 'dialoga_ai_knowledge';
         $settings = self::get_ai_settings();
 
         $posts = get_posts(array(
@@ -1202,8 +1205,8 @@ class DialogaWP_AI {
 
             $token_estimate = (int) (strlen($content) / 4);
             $existing_id    = $wpdb->get_var($wpdb->prepare(
-                "SELECT id FROM {$table} WHERE content_type = %s AND content_id = %d",
-                $post->post_type, $post->ID
+                "SELECT id FROM %i WHERE content_type = %s AND content_id = %d",
+                $table, $post->post_type, $post->ID
             ));
 
             $row = array(
@@ -1237,15 +1240,15 @@ class DialogaWP_AI {
             'embedded' => $embedded,
             'message'  => sprintf(
                 /* translators: 1: indexed count, 2: new count, 3: updated count, 4: skipped count, 5: retrieval status. */
-                __('Crawl complete. %1$d items indexed (%2$d new, %3$d updated, %4$d skipped). %5$s', 'dialogawp'),
+                __('Crawl complete. %1$d items indexed (%2$d new, %3$d updated, %4$d skipped). %5$s', 'dialoga'),
                 $saved + $updated,
                 $saved,
                 $updated,
                 $skipped,
                 $provider === 'openai'
                     /* translators: %d: number of embeddings generated. */
-                    ? sprintf(__('%d embeddings generated for smart retrieval.', 'dialogawp'), $embedded)
-                    : __('Keyword search will be used for retrieval.', 'dialogawp')
+                    ? sprintf(__('%d embeddings generated for smart retrieval.', 'dialoga'), $embedded)
+                    : __('Keyword search will be used for retrieval.', 'dialoga')
             ),
         ));
     }
@@ -1255,31 +1258,34 @@ class DialogaWP_AI {
      * Called separately so crawl doesn't time out on large sites.
      */
     public static function ajax_generate_embeddings() {
-        check_ajax_referer('dialogawp_nonce', 'nonce');
+        check_ajax_referer('dialoga_nonce', 'nonce');
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Insufficient permissions', 'dialogawp'));
+            wp_send_json_error(__('Insufficient permissions', 'dialoga'));
             return;
         }
 
         @set_time_limit(120);
 
         global $wpdb;
-        $table    = $wpdb->prefix . 'dialogawp_ai_knowledge';
+        $table    = $wpdb->prefix . 'dialoga_ai_knowledge';
         $settings = self::get_ai_settings();
 
         if (empty(self::get_embedding_key($settings))) {
-            wp_send_json_error(__('Embeddings require an OpenAI API key. Switch the provider to OpenAI, or use keyword search (works automatically for Anthropic users).', 'dialogawp'));
+            wp_send_json_error(__('Embeddings require an OpenAI API key. Switch the provider to OpenAI, or use keyword search (works automatically for Anthropic users).', 'dialoga'));
             return;
         }
 
         // Process items missing embeddings
         $items = $wpdb->get_results(
-            "SELECT id, content FROM {$table} WHERE embedding IS NULL OR embedding = '' LIMIT 50",
+            $wpdb->prepare(
+                "SELECT id, content FROM %i WHERE embedding IS NULL OR embedding = '' LIMIT 50",
+                $table
+            ),
             ARRAY_A
         );
 
         if (empty($items)) {
-            wp_send_json_success(array('embedded' => 0, 'message' => __('All items already have embeddings.', 'dialogawp')));
+            wp_send_json_success(array('embedded' => 0, 'message' => __('All items already have embeddings.', 'dialoga')));
             return;
         }
 
@@ -1298,16 +1304,20 @@ class DialogaWP_AI {
             }
         }
 
-        $remaining = $wpdb->get_var("SELECT COUNT(*) FROM {$table} WHERE embedding IS NULL OR embedding = ''");
+        $remaining = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM %i WHERE embedding IS NULL OR embedding = ''",
+            $table
+        ));
 
         wp_send_json_success(array(
             'embedded'  => $count,
             'remaining' => (int) $remaining,
             // translators: 1: generated embeddings count, 2: remaining knowledge items count.
             'message'   => $remaining > 0
-                ? sprintf(__('%1$d embeddings generated. %2$d items remaining - run again to continue.', 'dialogawp'), $count, $remaining)
-                /* translators: %d: number of embeddings generated. */
-                : sprintf(__('%d embeddings generated. All items embedded!', 'dialogawp'), $count),
+                // translators: 1: generated embeddings count, 2: remaining knowledge items count.
+                ? sprintf(__('%1$d embeddings generated. %2$d items remaining - run again to continue.', 'dialoga'), $count, $remaining)
+                // translators: %d: number of embeddings generated in this batch.
+                : sprintf(__('%d embeddings generated. All items embedded!', 'dialoga'), $count),
         ));
     }
 
@@ -1316,20 +1326,23 @@ class DialogaWP_AI {
     // -------------------------------------------------------------------------
 
     public static function ajax_get_ai_knowledge() {
-        check_ajax_referer('dialogawp_nonce', 'nonce');
+        check_ajax_referer('dialoga_nonce', 'nonce');
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Insufficient permissions', 'dialogawp'));
+            wp_send_json_error(__('Insufficient permissions', 'dialoga'));
             return;
         }
 
         global $wpdb;
-        $table = $wpdb->prefix . 'dialogawp_ai_knowledge';
+        $table = $wpdb->prefix . 'dialoga_ai_knowledge';
 
         $items = $wpdb->get_results(
-            "SELECT id, content_type, title, url, token_estimate,
-                    (embedding IS NOT NULL AND embedding != '') AS has_embedding,
-                    created_at
-             FROM {$table} ORDER BY created_at DESC",
+            $wpdb->prepare(
+                "SELECT id, content_type, title, url, token_estimate,
+                       (embedding IS NOT NULL AND embedding != '') AS has_embedding,
+                       created_at
+                FROM %i ORDER BY created_at DESC",
+                $table
+            ),
             ARRAY_A
         );
 
@@ -1337,22 +1350,22 @@ class DialogaWP_AI {
     }
 
     public static function ajax_delete_knowledge_item() {
-        check_ajax_referer('dialogawp_nonce', 'nonce');
+        check_ajax_referer('dialoga_nonce', 'nonce');
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Insufficient permissions', 'dialogawp'));
+            wp_send_json_error(__('Insufficient permissions', 'dialoga'));
             return;
         }
 
         $id = isset($_POST['id']) ? absint($_POST['id']) : 0;
         if (!$id) {
-            wp_send_json_error(__('Invalid ID', 'dialogawp'));
+            wp_send_json_error(__('Invalid ID', 'dialoga'));
             return;
         }
 
         global $wpdb;
-        $result = $wpdb->delete($wpdb->prefix . 'dialogawp_ai_knowledge', array('id' => $id), array('%d'));
+        $result = $wpdb->delete($wpdb->prefix . 'dialoga_ai_knowledge', array('id' => $id), array('%d'));
 
-        $result === false ? wp_send_json_error(__('Delete failed', 'dialogawp')) : wp_send_json_success(__('Deleted', 'dialogawp'));
+        $result === false ? wp_send_json_error(__('Delete failed', 'dialoga')) : wp_send_json_success(__('Deleted', 'dialoga'));
     }
 
     // -------------------------------------------------------------------------
@@ -1360,9 +1373,9 @@ class DialogaWP_AI {
     // -------------------------------------------------------------------------
 
     public static function ajax_test_ai() {
-        check_ajax_referer('dialogawp_nonce', 'nonce');
+        check_ajax_referer('dialoga_nonce', 'nonce');
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Insufficient permissions', 'dialogawp'));
+            wp_send_json_error(__('Insufficient permissions', 'dialoga'));
             return;
         }
 
@@ -1371,7 +1384,7 @@ class DialogaWP_AI {
         $api_key  = isset($settings['api_key'])  ? $settings['api_key']  : '';
 
         if (empty($api_key)) {
-            wp_send_json_error(__('No API key saved. Save your settings first.', 'dialogawp'));
+            wp_send_json_error(__('No API key saved. Save your settings first.', 'dialoga'));
             return;
         }
 
@@ -1381,9 +1394,9 @@ class DialogaWP_AI {
         );
 
         if ($provider === 'openai') {
-            $reply = self::call_openai($api_key, $test_settings, 'You are a test assistant.', array(), 'Reply with exactly: "DIALOGAWP AI connection successful!"');
+            $reply = self::call_openai($api_key, $test_settings, 'You are a test assistant.', array(), 'Reply with exactly: "DIALOGA AI connection successful!"');
         } else {
-            $reply = self::call_anthropic($api_key, $test_settings, 'You are a test assistant.', array(), 'Reply with exactly: "DIALOGAWP AI connection successful!"');
+            $reply = self::call_anthropic($api_key, $test_settings, 'You are a test assistant.', array(), 'Reply with exactly: "DIALOGA AI connection successful!"');
         }
 
         if (is_wp_error($reply)) {
@@ -1391,7 +1404,7 @@ class DialogaWP_AI {
             return;
         }
 
-        wp_send_json_success(array('message' => __('DIALOGAWP AI connection successful!', 'dialogawp')));
+        wp_send_json_success(array('message' => __('DIALOGA AI connection successful!', 'dialoga')));
     }
 
     // -------------------------------------------------------------------------
@@ -1399,9 +1412,9 @@ class DialogaWP_AI {
     // -------------------------------------------------------------------------
 
     public static function ajax_generate_flow() {
-        check_ajax_referer('dialogawp_nonce', 'nonce');
+        check_ajax_referer('dialoga_nonce', 'nonce');
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Insufficient permissions', 'dialogawp'));
+            wp_send_json_error(__('Insufficient permissions', 'dialoga'));
             return;
         }
 
@@ -1413,7 +1426,7 @@ class DialogaWP_AI {
 
         if (empty($api_key)) {
             wp_send_json_error(array(
-                'message'  => __('No API key configured. Save your AI settings first.', 'dialogawp'),
+                'message'  => __('No API key configured. Save your AI settings first.', 'dialoga'),
                 'fallback' => null,
             ));
             return;
@@ -1423,7 +1436,7 @@ class DialogaWP_AI {
 
         if (empty($knowledge)) {
             wp_send_json_error(array(
-                'message'  => __('No content in the knowledge base. Click "Crawl Website" first.', 'dialogawp'),
+                'message'  => __('No content in the knowledge base. Click "Crawl Website" first.', 'dialoga'),
                 'fallback' => null,
             ));
             return;
@@ -1434,7 +1447,7 @@ class DialogaWP_AI {
         // Collect wizard context if provided
         // v1.0.0 — wp_unslash before sanitize (was using stripslashes which
         // is not the WordPress way); goals decoded then recursively sanitized.
-        $goals_raw = isset($_POST['goals']) ? wp_unslash($_POST['goals']) : '[]';
+        $goals_raw = isset($_POST['goals']) ? sanitize_textarea_field(wp_unslash($_POST['goals'])) : '[]';
         $goals_arr = json_decode($goals_raw, true) ?: array();
         $wizard_context = array(
             'business_name'  => isset($_POST['business_name'])  ? sanitize_text_field(wp_unslash($_POST['business_name']))  : '',
@@ -1465,9 +1478,9 @@ class DialogaWP_AI {
         $flow_data = self::extract_and_validate_flow_json($raw);
 
         if ($flow_data === null) {
-            error_log('DIALOGAWP wizard: invalid JSON from AI. Raw response (' . strlen($raw) . ' chars): ' . substr($raw, 0, 1000));
+            error_log('DIALOGA wizard: invalid JSON from AI. Raw response (' . strlen($raw) . ' chars): ' . substr($raw, 0, 1000));
             wp_send_json_error(array(
-                'message'  => __('AI returned an unexpected format.', 'dialogawp'),
+                'message'  => __('AI returned an unexpected format.', 'dialoga'),
                 'raw_preview' => substr($raw, 0, 300),
                 'fallback' => self::get_fallback_flow_template(),
             ));
@@ -1484,10 +1497,13 @@ class DialogaWP_AI {
      */
     private static function get_all_knowledge_for_wizard($max_chars = 10000) {
         global $wpdb;
-        $table = $wpdb->prefix . 'dialogawp_ai_knowledge';
+        $table = $wpdb->prefix . 'dialoga_ai_knowledge';
 
         $items = $wpdb->get_results(
-            "SELECT title, url, content FROM {$table} ORDER BY token_estimate DESC LIMIT 30",
+            $wpdb->prepare(
+                "SELECT title, url, content FROM %i ORDER BY token_estimate DESC LIMIT 30",
+                $table
+            ),
             ARRAY_A
         );
 

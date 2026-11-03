@@ -1,5 +1,5 @@
 ﻿/**
- * DIALOGAWP Chat Widget - Frontend JavaScript
+ * DIALOGA Chat Widget - Frontend JavaScript
  * Handles chat bubble, conversation flow, and user interactions
  */
 
@@ -7,15 +7,15 @@
     'use strict';
 
     // Store the localized settings from wp_localize_script before shadowing
-    const dialogawpConfig = window.dialogawpWidget || {};
-    if (!dialogawpConfig.settings) dialogawpConfig.settings = {};
+    const dialogaConfig = window.dialogaWidget || {};
+    if (!dialogaConfig.settings) dialogaConfig.settings = {};
 
     // Debug logging — only active when WP_DEBUG is true
-    var _log = dialogawpConfig.debug ? console.log.bind(console) : function() {};
-    var _warn = dialogawpConfig.debug ? console.warn.bind(console) : function() {};
+    var _log = dialogaConfig.debug ? console.log.bind(console) : function() {};
+    var _warn = dialogaConfig.debug ? console.warn.bind(console) : function() {};
     var _error = console.error.bind(console);
 
-    const dialogawpWidget = {
+    const dialogaWidget = {
         sessionId: null,
         sessionToken: null,
         conversationId: null,
@@ -28,21 +28,21 @@
         variables: {},
         
         init: function() {
-            _log('🎯 DIALOGAWP Widget initializing...');
-            _log('📋 Widget settings:', dialogawpConfig);
+            _log('🎯 DIALOGA Widget initializing...');
+            _log('📋 Widget settings:', dialogaConfig);
 
             // Apply primary color from settings as CSS custom property
-            const primaryColor = dialogawpConfig.settings.primaryColor;
+            const primaryColor = dialogaConfig.settings.primaryColor;
             if (primaryColor) {
-                document.getElementById('dialogawp-widget').style.setProperty('--dialogawp-primary', primaryColor);
+                document.getElementById('dialoga-widget').style.setProperty('--dialoga-primary', primaryColor);
                 // Auto-derive a darker shade for hover states
-                document.getElementById('dialogawp-widget').style.setProperty('--dialogawp-primary-dark', this.darkenColor(primaryColor, 15));
-                document.getElementById('dialogawp-widget').style.setProperty('--dialogawp-primary-contrast', this.contrastColor(primaryColor));
+                document.getElementById('dialoga-widget').style.setProperty('--dialoga-primary-dark', this.darkenColor(primaryColor, 15));
+                document.getElementById('dialoga-widget').style.setProperty('--dialoga-primary-contrast', this.contrastColor(primaryColor));
             }
 
             // Check if widget HTML exists
-            if ($('#dialogawp-widget').length === 0) {
-                _error('❌ DIALOGAWP widget HTML not found! The widget is not being rendered.');
+            if ($('#dialoga-widget').length === 0) {
+                _error('❌ DIALOGA widget HTML not found! The widget is not being rendered.');
                 _log('💡 Possible reasons:');
                 _log('   1. Widget is disabled in Settings');
                 _log('   2. No active flow exists');
@@ -62,19 +62,19 @@
             // The JS-based showPreviewMessage call is kept for back-compat only.
             
             // Fresh-session roles: when the logged-in user has a role configured in
-            // DialogaWP settings → Fresh Session for Roles, reset the chat on actual
+            // Dialoga settings → Fresh Session for Roles, reset the chat on actual
             // page reloads (F5 / reload button) but preserve it when:
             //   - the visitor is navigating between pages (link click, new URL)
-            //   - arriving via a flow Redirect action (?dialogawp_open=1)
+            //   - arriving via a flow Redirect action (?dialoga_open=1)
             // That way an admin can test a redirect and see the chat continue on
             // the destination page, while a fresh F5 still resets for clean tests.
-            if (dialogawpConfig.settings.freshSessionForUser) {
+            if (dialogaConfig.settings.freshSessionForUser) {
                 const navEntry = performance.getEntriesByType('navigation')[0];
                 const navType = navEntry ? navEntry.type : 'navigate';
-                const urlHasOpenFlag = new URLSearchParams(window.location.search).get('dialogawp_open') === '1';
+                const urlHasOpenFlag = new URLSearchParams(window.location.search).get('dialoga_open') === '1';
 
                 if (navType === 'reload' && !urlHasOpenFlag) {
-                    localStorage.removeItem('dialogawp_session');
+                    localStorage.removeItem('dialoga_session');
                     _log('🧪 Fresh-session role: page reload detected → session cleared');
                 } else {
                     _log('🧪 Fresh-session role: navigation/post-redirect → session preserved');
@@ -82,11 +82,11 @@
             }
 
             // Test mode: clear session on page reload, preserve on navigation
-            if (dialogawpConfig.settings.testMode) {
+            if (dialogaConfig.settings.testMode) {
                 const navEntry = performance.getEntriesByType('navigation')[0];
                 const isReload = navEntry ? navEntry.type === 'reload' : false;
                 if (isReload) {
-                    localStorage.removeItem('dialogawp_session');
+                    localStorage.removeItem('dialoga_session');
                     _log('🔄 Test mode: session cleared on reload');
                 }
             }
@@ -99,7 +99,7 @@
 
             // Check if coming from redirect (URL parameter)
             const urlParams = new URLSearchParams(window.location.search);
-            const isAfterRedirect = urlParams.get('dialogawp_open') === '1';
+            const isAfterRedirect = urlParams.get('dialoga_open') === '1';
             
             // Handle session restoration
             if (this.sessionId) {
@@ -108,7 +108,7 @@
                 // (e.g., page closed before first message rendered). Treat as fresh start.
                 if (!this.conversationHistory || this.conversationHistory.length === 0) {
                     _log('⚠️ Stale session detected (empty history) — starting fresh conversation');
-                    localStorage.removeItem('dialogawp_session');
+                    localStorage.removeItem('dialoga_session');
                     this.sessionId = null;
                     this.sessionToken = null;
                     this.conversationId = null;
@@ -148,23 +148,23 @@
             
             // Bubble nudge — fires on every page load as long as the chat window
             // isn't already open, so returning visitors see the animation too.
-            if (dialogawpConfig.settings.bubbleNudge) {
+            if (dialogaConfig.settings.bubbleNudge) {
                 const widget = this;
                 setTimeout(function() {
                     if (!widget.isOpen) {
-                        $('#dialogawp-bubble').addClass('dialogawp-bubble--nudge');
+                        $('#dialoga-bubble').addClass('dialoga-bubble--nudge');
                     }
                 }, 3000);
             }
 
-            _log('✅ DIALOGAWP Widget ready!');
+            _log('✅ DIALOGA Widget ready!');
         },
         
         bindEvents: function() {
             const self = this;
             
             // Open chat
-            $('#dialogawp-bubble').on('click', function() {
+            $('#dialoga-bubble').on('click', function() {
                 self.openChat();
                 if (!self.sessionId) {
                     // Show typing indicator immediately for visual feedback
@@ -176,9 +176,9 @@
             
             // Close chat — vanilla listener so TenWeb / page-speed plugins that
             // defer jQuery and intercept click events don't strip this binding.
-            var closeBtn = document.getElementById('dialogawp-close');
-            if (closeBtn && !closeBtn._dialogawpBound) {
-                closeBtn._dialogawpBound = true;
+            var closeBtn = document.getElementById('dialoga-close');
+            if (closeBtn && !closeBtn._dialogaBound) {
+                closeBtn._dialogaBound = true;
                 closeBtn.addEventListener('click', function(e) {
                     e.preventDefault();
                     self.closeChat();
@@ -189,13 +189,13 @@
             // v1.0.5 — the click trace now goes through _log like everything
             // else. It was a bare console.log, so every visitor who restarted
             // a chat got plugin output in their browser console.
-            var restartBtn = document.getElementById('dialogawp-restart-header');
-            if (restartBtn && !restartBtn._dialogawpBound) {
-                restartBtn._dialogawpBound = true;
+            var restartBtn = document.getElementById('dialoga-restart-header');
+            if (restartBtn && !restartBtn._dialogaBound) {
+                restartBtn._dialogaBound = true;
                 restartBtn.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    _log('DialogaWP: header restart clicked');
+                    _log('Dialoga: header restart clicked');
                     if (window.confirm('Start a new conversation? Your current chat history will be cleared.')) {
                         self.restartChat();
                     }
@@ -209,28 +209,28 @@
         },
         
         openChat: function() {
-            $('#dialogawp-bubble').removeClass('dialogawp-bubble--nudge').hide();
-            $('.dialogawp-preview-message').remove();
-            $('#dialogawp-window').fadeIn(200);
+            $('#dialoga-bubble').removeClass('dialoga-bubble--nudge').hide();
+            $('.dialoga-preview-message').remove();
+            $('#dialoga-window').fadeIn(200);
             this.isOpen = true;
             this.scrollToBottom();
         },
 
         // v0.38.7 — show a floating preview bubble next to the chat icon
         showPreviewMessage: function(text) {
-            if ($('.dialogawp-preview-message').length) return; // already visible
+            if ($('.dialoga-preview-message').length) return; // already visible
 
             var self = this;
             var $preview = $(
-                '<div class="dialogawp-preview-message" role="status">' +
-                    '<button type="button" class="dialogawp-preview-close" aria-label="Dismiss">&times;</button>' +
-                    '<div class="dialogawp-preview-text"></div>' +
+                '<div class="dialoga-preview-message" role="status">' +
+                    '<button type="button" class="dialoga-preview-close" aria-label="Dismiss">&times;</button>' +
+                    '<div class="dialoga-preview-text"></div>' +
                 '</div>'
             );
-            $preview.find('.dialogawp-preview-text').text(text);
+            $preview.find('.dialoga-preview-text').text(text);
 
             $preview.on('click', function(e) {
-                if ($(e.target).hasClass('dialogawp-preview-close')) return;
+                if ($(e.target).hasClass('dialoga-preview-close')) return;
                 $preview.remove();
                 self.openChat();
                 if (!self.sessionId) {
@@ -239,19 +239,19 @@
                 }
             });
 
-            $preview.find('.dialogawp-preview-close').on('click', function(e) {
+            $preview.find('.dialoga-preview-close').on('click', function(e) {
                 e.stopPropagation();
-                localStorage.setItem('dialogawp_preview_dismissed', '1');
+                localStorage.setItem('dialoga_preview_dismissed', '1');
                 $preview.fadeOut(150, function() { $preview.remove(); });
             });
 
-            $('#dialogawp-widget').append($preview);
+            $('#dialoga-widget').append($preview);
             $preview.hide().fadeIn(200);
         },
         
         closeChat: function() {
-            $('#dialogawp-window').fadeOut(200, function() {
-                $('#dialogawp-bubble').fadeIn(200);
+            $('#dialoga-window').fadeOut(200, function() {
+                $('#dialoga-bubble').fadeIn(200);
             });
             this.isOpen = false;
 
@@ -261,11 +261,11 @@
             // Track abandonment if session active but no lead captured
             if (this.conversationId && !this.leadCaptured) {
                 $.ajax({
-                    url: dialogawpConfig.ajaxUrl,
+                    url: dialogaConfig.ajaxUrl,
                     type: 'POST',
                     data: {
-                        action: 'dialogawp_track_event',
-                        nonce: dialogawpConfig.nonce,
+                        action: 'dialoga_track_event',
+                        nonce: dialogaConfig.nonce,
                         conversation_id: this.conversationId,
                         event_type: 'conversation_abandoned',
                         flow_id: this.flowId || 0
@@ -279,8 +279,8 @@
         saveTranscript: function(useBeacon) {
             if (!this.sessionId || !this.conversationHistory || this.conversationHistory.length < 2) return;
             var payload = {
-                action: 'dialogawp_save_transcript',
-                nonce: dialogawpConfig.nonce,
+                action: 'dialoga_save_transcript',
+                nonce: dialogaConfig.nonce,
                 session_id: this.sessionId,
                 session_token: this.sessionToken || '',
                 flow_id: this.flowId || 0,
@@ -290,10 +290,10 @@
                 // Best-effort during page unload — sendBeacon survives navigation
                 var fd = new FormData();
                 Object.keys(payload).forEach(function(k) { fd.append(k, payload[k]); });
-                try { navigator.sendBeacon(dialogawpConfig.ajaxUrl, fd); } catch (e) {}
+                try { navigator.sendBeacon(dialogaConfig.ajaxUrl, fd); } catch (e) {}
                 return;
             }
-            $.ajax({ url: dialogawpConfig.ajaxUrl, type: 'POST', data: payload });
+            $.ajax({ url: dialogaConfig.ajaxUrl, type: 'POST', data: payload });
         },
         
         startConversation: function() {
@@ -302,11 +302,11 @@
             _log('🚀 Starting new conversation...');
             
             $.ajax({
-                url: dialogawpConfig.ajaxUrl,
+                url: dialogaConfig.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'dialogawp_start_conversation',
-                    nonce: dialogawpConfig.nonce,
+                    action: 'dialoga_start_conversation',
+                    nonce: dialogaConfig.nonce,
                     page_url: window.location.href
                 },
                 success: function(response) {
@@ -364,11 +364,11 @@
             _log('📤 Sending response:', userResponse);
             
             $.ajax({
-                url: dialogawpConfig.ajaxUrl,
+                url: dialogaConfig.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'dialogawp_process_response',
-                    nonce: dialogawpConfig.nonce,
+                    action: 'dialoga_process_response',
+                    nonce: dialogaConfig.nonce,
                     session_id: this.sessionId,
                     session_token: this.sessionToken || '',
                     conversation_id: this.conversationId || 0,
@@ -473,15 +473,15 @@
 
             // Add to messages container (NOT for action nodes)
             const $messageHtml = $(`
-                <div class="dialogawp-message dialogawp-bot-message">
-                    <div class="dialogawp-message-content">
-                        <div class="dialogawp-message-text">${this.formatBotText(message.text)}</div>
-                        <div class="dialogawp-message-time">${timestamp}</div>
+                <div class="dialoga-message dialoga-bot-message">
+                    <div class="dialoga-message-content">
+                        <div class="dialoga-message-text">${this.formatBotText(message.text)}</div>
+                        <div class="dialoga-message-time">${timestamp}</div>
                     </div>
                 </div>
             `);
 
-            $('#dialogawp-messages').append($messageHtml);
+            $('#dialoga-messages').append($messageHtml);
 
             // Save to history
             this.conversationHistory.push({
@@ -518,15 +518,15 @@
             const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
             
             const $messageHtml = $(`
-                <div class="dialogawp-message dialogawp-user-message">
-                    <div class="dialogawp-message-content">
-                        <div class="dialogawp-message-text">${this.escapeHtml(text)}</div>
-                        <div class="dialogawp-message-time">${timestamp}</div>
+                <div class="dialoga-message dialoga-user-message">
+                    <div class="dialoga-message-content">
+                        <div class="dialoga-message-text">${this.escapeHtml(text)}</div>
+                        <div class="dialoga-message-time">${timestamp}</div>
                     </div>
                 </div>
             `);
             
-            $('#dialogawp-messages').append($messageHtml);
+            $('#dialoga-messages').append($messageHtml);
             
             // Save to history
             this.conversationHistory.push({
@@ -625,89 +625,89 @@
             }
 
             // Build survey form HTML
-            let formHtml = '<div class="dialogawp-survey-form">';
+            let formHtml = '<div class="dialoga-survey-form">';
             questions.forEach(function(q, idx) {
-                formHtml += '<div class="dialogawp-survey-question" data-index="' + idx + '">';
-                formHtml += '<label class="dialogawp-survey-label">' + self.escapeHtml(q.label) + '</label>';
+                formHtml += '<div class="dialoga-survey-question" data-index="' + idx + '">';
+                formHtml += '<label class="dialoga-survey-label">' + self.escapeHtml(q.label) + '</label>';
 
                 switch (q.type) {
                     case 'rating':
                         var max = q.max || 5;
-                        formHtml += '<div class="dialogawp-survey-rating" data-field="' + (q.field || 'q' + idx) + '">';
+                        formHtml += '<div class="dialoga-survey-rating" data-field="' + (q.field || 'q' + idx) + '">';
                         for (var i = 1; i <= max; i++) {
-                            formHtml += '<button type="button" class="dialogawp-survey-star" data-value="' + i + '">' +
+                            formHtml += '<button type="button" class="dialoga-survey-star" data-value="' + i + '">' +
                                 (max <= 5 ? '★' : i) + '</button>';
                         }
-                        formHtml += '<input type="hidden" class="dialogawp-survey-value" value="" /></div>';
+                        formHtml += '<input type="hidden" class="dialoga-survey-value" value="" /></div>';
                         break;
 
                     case 'nps':
-                        formHtml += '<div class="dialogawp-survey-nps" data-field="' + (q.field || 'q' + idx) + '">';
+                        formHtml += '<div class="dialoga-survey-nps" data-field="' + (q.field || 'q' + idx) + '">';
                         for (var n = 0; n <= 10; n++) {
-                            formHtml += '<button type="button" class="dialogawp-survey-nps-btn" data-value="' + n + '">' + n + '</button>';
+                            formHtml += '<button type="button" class="dialoga-survey-nps-btn" data-value="' + n + '">' + n + '</button>';
                         }
-                        formHtml += '<div class="dialogawp-survey-nps-labels"><span>Not likely</span><span>Very likely</span></div>';
-                        formHtml += '<input type="hidden" class="dialogawp-survey-value" value="" /></div>';
+                        formHtml += '<div class="dialoga-survey-nps-labels"><span>Not likely</span><span>Very likely</span></div>';
+                        formHtml += '<input type="hidden" class="dialoga-survey-value" value="" /></div>';
                         break;
 
                     case 'choice':
-                        formHtml += '<div class="dialogawp-survey-choices" data-field="' + (q.field || 'q' + idx) + '">';
+                        formHtml += '<div class="dialoga-survey-choices" data-field="' + (q.field || 'q' + idx) + '">';
                         (q.options || []).forEach(function(opt) {
-                            formHtml += '<button type="button" class="dialogawp-survey-choice-btn" data-value="' + self.escapeHtml(opt) + '">' +
+                            formHtml += '<button type="button" class="dialoga-survey-choice-btn" data-value="' + self.escapeHtml(opt) + '">' +
                                 self.escapeHtml(opt) + '</button>';
                         });
-                        formHtml += '<input type="hidden" class="dialogawp-survey-value" value="" /></div>';
+                        formHtml += '<input type="hidden" class="dialoga-survey-value" value="" /></div>';
                         break;
 
                     case 'text':
-                        formHtml += '<textarea class="dialogawp-survey-text dialogawp-survey-value" data-field="' + (q.field || 'q' + idx) + '" ' +
+                        formHtml += '<textarea class="dialoga-survey-text dialoga-survey-value" data-field="' + (q.field || 'q' + idx) + '" ' +
                             'placeholder="' + self.escapeHtml(q.placeholder || 'Your thoughts...') + '" rows="3"></textarea>';
                         break;
 
                     default:
-                        formHtml += '<input type="text" class="dialogawp-survey-text dialogawp-survey-value" data-field="' + (q.field || 'q' + idx) + '" ' +
+                        formHtml += '<input type="text" class="dialoga-survey-text dialoga-survey-value" data-field="' + (q.field || 'q' + idx) + '" ' +
                             'placeholder="' + self.escapeHtml(q.placeholder || '') + '" />';
                 }
                 formHtml += '</div>';
             });
-            formHtml += '<button type="button" class="dialogawp-survey-submit dialogawp-option-btn">Submit Feedback</button>';
+            formHtml += '<button type="button" class="dialoga-survey-submit dialoga-option-btn">Submit Feedback</button>';
             formHtml += '</div>';
 
             // Add to chat
-            const $msg = $('<div class="dialogawp-message dialogawp-message-bot"></div>');
+            const $msg = $('<div class="dialoga-message dialoga-message-bot"></div>');
             $msg.html(formHtml);
-            $('#dialogawp-messages').append($msg);
+            $('#dialoga-messages').append($msg);
             this.scrollToBottom();
 
             // Bind star/NPS/choice selection
-            $msg.find('.dialogawp-survey-star').on('click', function() {
-                const $parent = $(this).closest('.dialogawp-survey-rating');
+            $msg.find('.dialoga-survey-star').on('click', function() {
+                const $parent = $(this).closest('.dialoga-survey-rating');
                 const val = $(this).data('value');
-                $parent.find('.dialogawp-survey-value').val(val);
-                $parent.find('.dialogawp-survey-star').removeClass('selected');
-                $parent.find('.dialogawp-survey-star').each(function() {
+                $parent.find('.dialoga-survey-value').val(val);
+                $parent.find('.dialoga-survey-star').removeClass('selected');
+                $parent.find('.dialoga-survey-star').each(function() {
                     if (parseInt($(this).data('value')) <= val) $(this).addClass('selected');
                 });
             });
 
-            $msg.find('.dialogawp-survey-nps-btn').on('click', function() {
-                const $parent = $(this).closest('.dialogawp-survey-nps');
-                $parent.find('.dialogawp-survey-value').val($(this).data('value'));
-                $parent.find('.dialogawp-survey-nps-btn').removeClass('selected');
+            $msg.find('.dialoga-survey-nps-btn').on('click', function() {
+                const $parent = $(this).closest('.dialoga-survey-nps');
+                $parent.find('.dialoga-survey-value').val($(this).data('value'));
+                $parent.find('.dialoga-survey-nps-btn').removeClass('selected');
                 $(this).addClass('selected');
             });
 
-            $msg.find('.dialogawp-survey-choice-btn').on('click', function() {
-                const $parent = $(this).closest('.dialogawp-survey-choices');
-                $parent.find('.dialogawp-survey-value').val($(this).data('value'));
-                $parent.find('.dialogawp-survey-choice-btn').removeClass('selected');
+            $msg.find('.dialoga-survey-choice-btn').on('click', function() {
+                const $parent = $(this).closest('.dialoga-survey-choices');
+                $parent.find('.dialoga-survey-value').val($(this).data('value'));
+                $parent.find('.dialoga-survey-choice-btn').removeClass('selected');
                 $(this).addClass('selected');
             });
 
             // Submit
-            $msg.find('.dialogawp-survey-submit').on('click', function() {
+            $msg.find('.dialoga-survey-submit').on('click', function() {
                 var responses = {};
-                $msg.find('.dialogawp-survey-value').each(function() {
+                $msg.find('.dialoga-survey-value').each(function() {
                     var field = $(this).data('field') || $(this).closest('[data-field]').data('field');
                     var val = $(this).val();
                     if (field && val) responses[field] = val;
@@ -716,18 +716,18 @@
                 $(this).text('Submitting...').prop('disabled', true);
 
                 $.ajax({
-                    url: dialogawpConfig.ajaxUrl,
+                    url: dialogaConfig.ajaxUrl,
                     type: 'POST',
                     data: {
-                        action: 'dialogawp_submit_survey',
-                        nonce: dialogawpConfig.nonce,
+                        action: 'dialoga_submit_survey',
+                        nonce: dialogaConfig.nonce,
                         session_id: self.sessionId || '',
                         session_token: self.sessionToken || '',
                         flow_id: self.flowId || 0,
                         responses: JSON.stringify(responses)
                     },
                     success: function(response) {
-                        $msg.find('.dialogawp-survey-form').html(
+                        $msg.find('.dialoga-survey-form').html(
                             '<div style="text-align:center;padding:16px;"><p style="font-size:15px;color:#16A34A;font-weight:500;">' +
                             self.escapeHtml(thankYou) + '</p></div>'
                         );
@@ -767,11 +767,11 @@
                     } else {
                         // Submit without contact info
                         $.ajax({
-                            url: dialogawpConfig.ajaxUrl,
+                            url: dialogaConfig.ajaxUrl,
                             type: 'POST',
                             data: {
-                                action: 'dialogawp_submit_qualification',
-                                nonce: dialogawpConfig.nonce,
+                                action: 'dialoga_submit_qualification',
+                                nonce: dialogaConfig.nonce,
                                 session_id: self.sessionId || '',
                                 flow_id: self.flowId || 0,
                                 responses: JSON.stringify(self._qualifyResponses || {}),
@@ -791,9 +791,9 @@
 
                 // Show options as buttons
                 setTimeout(function() {
-                    var $optionsDiv = $('<div class="dialogawp-options"></div>');
+                    var $optionsDiv = $('<div class="dialoga-options"></div>');
                     (q.options || []).forEach(function(opt) {
-                        var $btn = $('<button class="dialogawp-option-btn"></button>').text(opt.text);
+                        var $btn = $('<button class="dialoga-option-btn"></button>').text(opt.text);
                         $btn.on('click', function() {
                             if (!self._qualifyResponses) self._qualifyResponses = {};
                             self._qualifyResponses[q.field] = opt.text;
@@ -803,7 +803,7 @@
                         });
                         $optionsDiv.append($btn);
                     });
-                    $('#dialogawp-messages').append($optionsDiv);
+                    $('#dialoga-messages').append($optionsDiv);
                     self.scrollToBottom();
                 }, 500);
             };
@@ -814,16 +814,16 @@
         showAIChatInput: function(placeholder) {
             const self = this;
             placeholder = placeholder || (this.aiChatConfig && this.aiChatConfig.placeholder) || 'Type your message...';
-            const $inputArea = $('#dialogawp-input-area');
+            const $inputArea = $('#dialoga-input-area');
             $inputArea.empty();
 
             const $wrap = $(`
-                <div class="dialogawp-text-input-container">
+                <div class="dialoga-text-input-container">
                     <input type="text"
-                           class="dialogawp-text-input"
+                           class="dialoga-text-input"
                            placeholder="${self.escapeHtml(placeholder)}"
-                           id="dialogawp-ai-input" />
-                    <button class="dialogawp-send-btn" id="dialogawp-ai-send">
+                           id="dialoga-ai-input" />
+                    <button class="dialoga-send-btn" id="dialoga-ai-send">
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                             <path d="M2 10L18 2L10 18L8 11L2 10Z" fill="currentColor"/>
                         </svg>
@@ -834,31 +834,31 @@
             $inputArea.append($wrap);
 
             // Connect with our team button — shows an inline lead capture form
-            const $connectBtn = $('<button class="dialogawp-connect-btn">Connect with our team →</button>');
+            const $connectBtn = $('<button class="dialoga-connect-btn">Connect with our team →</button>');
             $connectBtn.on('click', function() {
                 self.showInlineLeadForm();
             });
             $inputArea.append($connectBtn);
 
             const sendMessage = function() {
-                const text = $('#dialogawp-ai-input').val().trim();
+                const text = $('#dialoga-ai-input').val().trim();
                 if (!text) return;
-                $('#dialogawp-ai-input').val('');
+                $('#dialoga-ai-input').val('');
                 $inputArea.empty();
                 self.sendAIMessage(text);
             };
 
-            $('#dialogawp-ai-send').on('click', sendMessage);
-            $('#dialogawp-ai-input').on('keypress', function(e) {
+            $('#dialoga-ai-send').on('click', sendMessage);
+            $('#dialoga-ai-input').on('keypress', function(e) {
                 if (e.which === 13) sendMessage();
             });
 
-            setTimeout(function() { $('#dialogawp-ai-input').focus(); }, 100);
+            setTimeout(function() { $('#dialoga-ai-input').focus(); }, 100);
         },
 
         showInlineLeadForm: function() {
             const self = this;
-            const $inputArea = $('#dialogawp-input-area');
+            const $inputArea = $('#dialoga-input-area');
             $inputArea.empty();
 
             this.displayBotMessage({
@@ -904,15 +904,15 @@
             if (!this.aiLeadDraft) this.aiLeadDraft = {};
 
             $.ajax({
-                url: dialogawpConfig.ajaxUrl,
+                url: dialogaConfig.ajaxUrl,
                 type: 'POST',
                 // v0.38.24 — 25s timeout so slow AI providers don't leave the visitor
                 // staring at a typing indicator forever. If the AJAX exceeds this,
                 // the error handler renders a friendly retry message.
                 timeout: 25000,
                 data: {
-                    action: 'dialogawp_ai_chat',
-                    nonce: dialogawpConfig.nonce,
+                    action: 'dialoga_ai_chat',
+                    nonce: dialogaConfig.nonce,
                     session_id: this.sessionId || '',
                     session_token: this.sessionToken || '',
                     message: text,
@@ -1022,14 +1022,14 @@
         //
         // Two-fold delivery so every downstream analytics stack can pick it up:
         //   1. window.dataLayer.push() — Google Tag Manager listens for the
-        //      `dialogawp_lead_captured` event and fires whatever tags the site
+        //      `dialoga_lead_captured` event and fires whatever tags the site
         //      admin has configured (GA4, Google Ads conversion, Meta Pixel, etc.).
-        //   2. `dialogawp:lead-captured` CustomEvent — DialogaWP Pro (or any custom
+        //   2. `dialoga:lead-captured` CustomEvent — Dialoga Pro (or any custom
         //      integration) hooks this to fire gtag()/fbq() calls directly when
         //      the site doesn't use GTM.
         //
-        // Payload always includes: event, dialogawp_lead_id, dialogawp_flow_id,
-        // dialogawp_flow_name, dialogawp_source_node, value, currency.
+        // Payload always includes: event, dialoga_lead_id, dialoga_flow_id,
+        // dialoga_flow_name, dialoga_source_node, value, currency.
         fireConversionEvent: function(payload) {
             if (!payload || typeof payload !== 'object') return;
             try {
@@ -1037,12 +1037,12 @@
                 window.dataLayer.push(payload);
             } catch (e) { _error && _error('dataLayer.push failed:', e); }
             try {
-                var evt = new CustomEvent('dialogawp:lead-captured', {
+                var evt = new CustomEvent('dialoga:lead-captured', {
                     detail: payload,
                     bubbles: true
                 });
                 document.dispatchEvent(evt);
-            } catch (e) { _error && _error('dialogawp:lead-captured dispatch failed:', e); }
+            } catch (e) { _error && _error('dialoga:lead-captured dispatch failed:', e); }
             _log && _log('📊 Conversion event fired:', payload);
         },
 
@@ -1055,11 +1055,11 @@
             this.showTyping();
 
             $.ajax({
-                url: dialogawpConfig.ajaxUrl,
+                url: dialogaConfig.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'dialogawp_send_response',
-                    nonce: dialogawpConfig.nonce,
+                    action: 'dialoga_send_response',
+                    nonce: dialogaConfig.nonce,
                     session_id: this.sessionId || '',
                     current_node: this.currentNode || '',
                     response: '__ai_lead_captured__',
@@ -1087,13 +1087,13 @@
 
         renderCaptureLeadForm: function(config) {
             const self = this;
-            const $inputArea = $('#dialogawp-input-area');
+            const $inputArea = $('#dialoga-input-area');
             $inputArea.empty();
             
             const fields = config.fields || {};
             
             // Build form HTML
-            let formHtml = '<div class="dialogawp-lead-form">';
+            let formHtml = '<div class="dialoga-lead-form">';
             
             // Add each enabled field
             Object.keys(fields).forEach(function(fieldKey) {
@@ -1101,7 +1101,7 @@
                 if (!field.enabled) return;
                 
                 const isRequired = field.required ? 'required' : '';
-                const requiredMark = field.required ? '<span class="dialogawp-required">*</span>' : '';
+                const requiredMark = field.required ? '<span class="dialoga-required">*</span>' : '';
                 
                 // Determine input type
                 let inputType = 'text';
@@ -1109,15 +1109,15 @@
                 if (fieldKey === 'phone') inputType = 'tel';
                 
                 formHtml += `
-                    <div class="dialogawp-form-field">
-                        <label for="dialogawp-lead-${fieldKey}">
+                    <div class="dialoga-form-field">
+                        <label for="dialoga-lead-${fieldKey}">
                             ${self.escapeHtml(field.label)}${requiredMark}
                         </label>
                         <input 
                             type="${inputType}" 
-                            id="dialogawp-lead-${fieldKey}"
+                            id="dialoga-lead-${fieldKey}"
                             name="${fieldKey}"
-                            class="dialogawp-form-input"
+                            class="dialoga-form-input"
                             ${isRequired}
                             placeholder="${self.escapeHtml(field.label)}"
                         />
@@ -1127,7 +1127,7 @@
             
             // Add submit button
             formHtml += `
-                <button type="button" class="dialogawp-submit-lead-btn">
+                <button type="button" class="dialoga-submit-lead-btn">
                     Submit
                 </button>
             </div>`;
@@ -1135,12 +1135,12 @@
             $inputArea.append(formHtml);
             
             // Bind submit handler
-            $('.dialogawp-submit-lead-btn').on('click', function() {
+            $('.dialoga-submit-lead-btn').on('click', function() {
                 self.submitLead(config);
             });
             
             // Also submit on Enter key in form
-            $('.dialogawp-form-input').on('keypress', function(e) {
+            $('.dialoga-form-input').on('keypress', function(e) {
                 if (e.which === 13) {
                     e.preventDefault();
                     self.submitLead(config);
@@ -1157,18 +1157,18 @@
             const leadData = {};
             let hasErrors = false;
             
-            $('.dialogawp-form-input').each(function() {
+            $('.dialoga-form-input').each(function() {
                 const $input = $(this);
                 const fieldName = $input.attr('name');
                 const value = $input.val().trim();
                 const isRequired = $input.prop('required');
                 
                 // Clear previous errors
-                $input.removeClass('dialogawp-input-error');
+                $input.removeClass('dialoga-input-error');
                 
                 // Validate required fields
                 if (isRequired && !value) {
-                    $input.addClass('dialogawp-input-error');
+                    $input.addClass('dialoga-input-error');
                     hasErrors = true;
                 } else {
                     leadData[fieldName] = value;
@@ -1184,18 +1184,18 @@
             }
             
             // Disable submit button
-            const $submitBtn = $('.dialogawp-submit-lead-btn');
+            const $submitBtn = $('.dialoga-submit-lead-btn');
             $submitBtn.prop('disabled', true).text('Submitting...');
             
             _log('📤 Submitting lead:', leadData);
             
             // Submit via AJAX
             $.ajax({
-                url: dialogawpConfig.ajaxUrl,
+                url: dialogaConfig.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'dialogawp_submit_lead',
-                    nonce: dialogawpConfig.nonce,
+                    action: 'dialoga_submit_lead',
+                    nonce: dialogaConfig.nonce,
                     session_id: this.sessionId,
                     session_token: this.sessionToken || '',
                     flow_id: this.flowId,
@@ -1223,7 +1223,7 @@
                         }
 
                         // Clear the form
-                        $('#dialogawp-input-area').empty();
+                        $('#dialoga-input-area').empty();
 
                         // v0.39.2: render a compact user-side bubble representing the
                         // form submission so the transcript reads coherently instead of
@@ -1309,31 +1309,31 @@
             const displayMessage = message || 'Taking you there now...';
             const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
             const $messageHtml = $(
-                '<div class="dialogawp-message dialogawp-bot-message">' +
-                    '<div class="dialogawp-message-content">' +
-                        '<div class="dialogawp-message-text">' + this.escapeHtml(displayMessage) + '</div>' +
-                        '<div class="dialogawp-message-time">' + timestamp + '</div>' +
+                '<div class="dialoga-message dialoga-bot-message">' +
+                    '<div class="dialoga-message-content">' +
+                        '<div class="dialoga-message-text">' + this.escapeHtml(displayMessage) + '</div>' +
+                        '<div class="dialoga-message-time">' + timestamp + '</div>' +
                     '</div>' +
                 '</div>'
             );
-            $('#dialogawp-messages').append($messageHtml);
+            $('#dialoga-messages').append($messageHtml);
             this.scrollToBottom();
 
             // Always show a countdown so the visitor knows what's happening.
-            const $inputArea = $('#dialogawp-input-area');
+            const $inputArea = $('#dialoga-input-area');
             $inputArea.empty();
 
             let countdown = delay;
             const $countdown = $(
-                '<div class="dialogawp-redirect-countdown">' +
-                    '<p class="dialogawp-countdown">Redirecting in <span>' + countdown + '</span>s...</p>' +
+                '<div class="dialoga-redirect-countdown">' +
+                    '<p class="dialoga-countdown">Redirecting in <span>' + countdown + '</span>s...</p>' +
                 '</div>'
             );
             $inputArea.append($countdown);
 
             const timer = setInterval(function() {
                 countdown--;
-                $countdown.find('.dialogawp-countdown span').text(countdown);
+                $countdown.find('.dialoga-countdown span').text(countdown);
 
                 if (countdown <= 0) {
                     clearInterval(timer);
@@ -1352,7 +1352,7 @@
             } else {
                 // For _self redirects, add parameter to keep widget open
                 const separator = url.includes('?') ? '&' : '?';
-                const newUrl = url + separator + 'dialogawp_open=1';
+                const newUrl = url + separator + 'dialoga_open=1';
                 window.location.href = newUrl;
             }
         },
@@ -1388,14 +1388,14 @@
 
             // 2. Render the button. Live in the input area so it visually mimics a CTA,
             //    matching how question-node buttons appear (bottom of the chat).
-            const $inputArea = $('#dialogawp-input-area');
+            const $inputArea = $('#dialoga-input-area');
             $inputArea.empty();
 
             const $button = $(
-                '<a class="dialogawp-link-button" href="' + buttonUrl + '"' +
+                '<a class="dialoga-link-button" href="' + buttonUrl + '"' +
                     (target === '_blank' ? ' target="_blank" rel="noopener noreferrer"' : '') + '>' +
                     this.escapeHtml(buttonLabel) +
-                    ' <span class="dialogawp-link-button__arrow">→</span>' +
+                    ' <span class="dialoga-link-button__arrow">→</span>' +
                 '</a>'
             );
 
@@ -1409,14 +1409,14 @@
 
                 // v0.40.0 — if the admin marked this button as a conversion, fire the
                 // dataLayer + DOM event so GTM / GA4 / Pro tracking all see it. Same
-                // envelope shape as `dialogawp_lead_captured` so downstream tags can reuse
-                // their existing variables; the `dialogawp_conversion_type` field
+                // envelope shape as `dialoga_lead_captured` so downstream tags can reuse
+                // their existing variables; the `dialoga_conversion_type` field
                 // distinguishes link clicks from form-submitted leads.
                 //
                 // Note: this real-time dataLayer push only fires for clicks where the
                 // node WAS marked as a conversion at the time of click. If an admin
                 // enables the checkbox later, past clicks retroactively count in the
-                // DialogaWP dashboard (server-side lookup), but GA4/GTM never saw those
+                // Dialoga dashboard (server-side lookup), but GA4/GTM never saw those
                 // events fire so downstream platforms won't count them.
                 if (isConversion) {
                     self.fireLinkConversionEvent(nodeId, buttonUrl, buttonLabel);
@@ -1468,11 +1468,11 @@
         trackLinkClick: function(nodeId, url, label) {
             if (!this.conversationId) return;
             $.ajax({
-                url: dialogawpConfig.ajaxUrl,
+                url: dialogaConfig.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action:          'dialogawp_track_event',
-                    nonce:           dialogawpConfig.nonce,
+                    action:          'dialoga_track_event',
+                    nonce:           dialogaConfig.nonce,
                     conversation_id: this.conversationId,
                     event_type:      'link_clicked',
                     flow_id:         this.flowId || 0,
@@ -1484,29 +1484,29 @@
         },
 
         /**
-         * v0.40.0 — Fire the `dialogawp_conversion` event for a Link Button click
+         * v0.40.0 — Fire the `dialoga_conversion` event for a Link Button click
          * that the admin has marked as "Count as conversion".
          *
          * Two-fold delivery mirrors `fireConversionEvent` for lead captures:
          *   1. window.dataLayer.push() with a NEW event name so GTM tags built
-         *      against `dialogawp_lead_captured` don't silently double-count when
+         *      against `dialoga_lead_captured` don't silently double-count when
          *      a flow has both a Capture Lead node AND a marked Link Button.
-         *   2. `dialogawp:conversion` CustomEvent for Pro (and any custom listener)
+         *   2. `dialoga:conversion` CustomEvent for Pro (and any custom listener)
          *      to fire gtag()/fbq() directly.
          *
-         * Payload includes `dialogawp_conversion_type: 'link_click'` so downstream
+         * Payload includes `dialoga_conversion_type: 'link_click'` so downstream
          * consumers can distinguish source; lead-capture events get their own
-         * `dialogawp_conversion` push with type 'lead_capture' via fireConversionEvent.
+         * `dialoga_conversion` push with type 'lead_capture' via fireConversionEvent.
          */
         fireLinkConversionEvent: function(nodeId, url, label) {
             const payload = {
-                event: 'dialogawp_conversion',
-                dialogawp_conversion_type: 'link_click',
-                dialogawp_flow_id: this.flowId || 0,
-                dialogawp_flow_name: (dialogawpConfig && dialogawpConfig.flowName) || '',
-                dialogawp_source_node: nodeId || '',
-                dialogawp_link_url: url || '',
-                dialogawp_link_label: label || '',
+                event: 'dialoga_conversion',
+                dialoga_conversion_type: 'link_click',
+                dialoga_flow_id: this.flowId || 0,
+                dialoga_flow_name: (dialogaConfig && dialogaConfig.flowName) || '',
+                dialoga_source_node: nodeId || '',
+                dialoga_link_url: url || '',
+                dialoga_link_label: label || '',
                 value: 0,
                 currency: 'USD'
             };
@@ -1515,49 +1515,49 @@
                 window.dataLayer.push(payload);
             } catch (e) { _error && _error('dataLayer.push failed:', e); }
             try {
-                var evt = new CustomEvent('dialogawp:conversion', {
+                var evt = new CustomEvent('dialoga:conversion', {
                     detail: payload,
                     bubbles: true
                 });
                 document.dispatchEvent(evt);
-            } catch (e) { _error && _error('dialogawp:conversion dispatch failed:', e); }
+            } catch (e) { _error && _error('dialoga:conversion dispatch failed:', e); }
             _log && _log('📊 Link conversion event fired:', payload);
         },
 
         showInput: function(message) {
             const self = this;
-            const $inputArea = $('#dialogawp-input-area');
+            const $inputArea = $('#dialoga-input-area');
             $inputArea.empty();
 
             // Multi-select mode: render checkboxes + Continue button
             if (message.allow_multiple && message.options && message.options.length > 0) {
-                const $multiContainer = $('<div class="dialogawp-multi-select"></div>');
+                const $multiContainer = $('<div class="dialoga-multi-select"></div>');
 
                 message.options.forEach(function(option) {
                     const label = self.escapeHtml(option.label);
                     const $row = $(
-                        '<label class="dialogawp-multi-option">' +
-                            '<input type="checkbox" class="dialogawp-multi-checkbox" value="' + label + '" />' +
+                        '<label class="dialoga-multi-option">' +
+                            '<input type="checkbox" class="dialoga-multi-checkbox" value="' + label + '" />' +
                             '<span>' + label + '</span>' +
                         '</label>'
                     );
                     $multiContainer.append($row);
                 });
 
-                const $continueBtn = $('<button class="dialogawp-button dialogawp-multi-continue" type="button" disabled>Continue</button>');
+                const $continueBtn = $('<button class="dialoga-button dialoga-multi-continue" type="button" disabled>Continue</button>');
 
                 $multiContainer.append($continueBtn);
                 $inputArea.append($multiContainer);
 
                 // Enable Continue only when at least one box is checked
-                $multiContainer.on('change', '.dialogawp-multi-checkbox', function() {
-                    const anyChecked = $multiContainer.find('.dialogawp-multi-checkbox:checked').length > 0;
+                $multiContainer.on('change', '.dialoga-multi-checkbox', function() {
+                    const anyChecked = $multiContainer.find('.dialoga-multi-checkbox:checked').length > 0;
                     $continueBtn.prop('disabled', !anyChecked);
                 });
 
                 $continueBtn.on('click', function() {
                     const selected = $multiContainer
-                        .find('.dialogawp-multi-checkbox:checked')
+                        .find('.dialoga-multi-checkbox:checked')
                         .map(function() { return $(this).val(); })
                         .get();
                     if (!selected.length) return;
@@ -1577,14 +1577,14 @@
             // set is removed first so old button rows don't accumulate if
             // the flow re-prompts.
             if (message.options && message.options.length > 0) {
-                const $messages = $('#dialogawp-messages');
-                $messages.find('.dialogawp-inline-choices').remove();
+                const $messages = $('#dialoga-messages');
+                $messages.find('.dialoga-inline-choices').remove();
 
-                const $buttonsContainer = $('<div class="dialogawp-buttons dialogawp-inline-choices"></div>');
+                const $buttonsContainer = $('<div class="dialoga-buttons dialoga-inline-choices"></div>');
 
                 message.options.forEach(function(option) {
                     const $button = $(`
-                        <button class="dialogawp-button" data-value="${self.escapeHtml(option.label)}">
+                        <button class="dialoga-button" data-value="${self.escapeHtml(option.label)}">
                             ${self.escapeHtml(option.label)}
                         </button>
                     `);
@@ -1594,7 +1594,7 @@
                         // Freeze the pill row so the transcript preserves
                         // what the visitor picked, but disable further
                         // clicks. `data-selected` styles it as chosen.
-                        $buttonsContainer.find('.dialogawp-button')
+                        $buttonsContainer.find('.dialoga-button')
                             .prop('disabled', true)
                             .css('cursor', 'default');
                         $(this).attr('data-selected', '1');
@@ -1617,9 +1617,9 @@
                 const placeholder = message.placeholder || 'Type your message...';
 
                 const $textInput = $(
-                    '<div class="dialogawp-text-input-container">' +
-                        '<input type="text" class="dialogawp-text-input" placeholder="' + placeholder + '" id="dialogawp-user-input" />' +
-                        '<button class="dialogawp-send-btn" id="dialogawp-send" type="button">' +
+                    '<div class="dialoga-text-input-container">' +
+                        '<input type="text" class="dialoga-text-input" placeholder="' + placeholder + '" id="dialoga-user-input" />' +
+                        '<button class="dialoga-send-btn" id="dialoga-send" type="button">' +
                             '<svg width="20" height="20" viewBox="0 0 20 20" fill="none">' +
                                 '<path d="M2 10L18 2L10 18L8 11L2 10Z" fill="currentColor"/>' +
                             '</svg>' +
@@ -1629,22 +1629,22 @@
 
                 $inputArea.append($textInput);
 
-                $('#dialogawp-send').on('click', function() {
-                    const text = $('#dialogawp-user-input').val().trim();
+                $('#dialoga-send').on('click', function() {
+                    const text = $('#dialoga-user-input').val().trim();
                     if (text) {
                         self.sendResponse(text);
-                        $('#dialogawp-user-input').val('');
+                        $('#dialoga-user-input').val('');
                         $inputArea.empty();
                     }
                 });
 
-                $('#dialogawp-user-input').on('keypress', function(e) {
+                $('#dialoga-user-input').on('keypress', function(e) {
                     if (e.which === 13) {
-                        $('#dialogawp-send').click();
+                        $('#dialoga-send').click();
                     }
                 });
 
-                setTimeout(function() { $('#dialogawp-user-input').focus(); }, 100);
+                setTimeout(function() { $('#dialoga-user-input').focus(); }, 100);
                 return;
             }
 
@@ -1659,20 +1659,20 @@
         
         showTyping: function() {
             const $typing = $(`
-                <div class="dialogawp-typing" id="dialogawp-typing">
+                <div class="dialoga-typing" id="dialoga-typing">
                     <span></span><span></span><span></span>
                 </div>
             `);
-            $('#dialogawp-messages').append($typing);
+            $('#dialoga-messages').append($typing);
             this.scrollToBottom();
         },
         
         hideTyping: function() {
-            $('#dialogawp-typing').remove();
+            $('#dialoga-typing').remove();
         },
         
         scrollToBottom: function() {
-            const $messages = $('#dialogawp-messages');
+            const $messages = $('#dialoga-messages');
             $messages.scrollTop($messages[0].scrollHeight);
         },
 
@@ -1683,7 +1683,7 @@
          * arrive after it (e.g. AI limit-warnings).
          */
         scrollToNewMessage: function($newMessage) {
-            const $messages = $('#dialogawp-messages');
+            const $messages = $('#dialoga-messages');
             if (!$messages.length || !$newMessage || !$newMessage.length) {
                 this.scrollToBottom();
                 return;
@@ -1742,12 +1742,12 @@
                 aiChatConfig:   this.aiChatConfig || null,
                 aiLeadDraft:    this.aiLeadDraft || {}
             };
-            localStorage.setItem('dialogawp_session', JSON.stringify(session));
+            localStorage.setItem('dialoga_session', JSON.stringify(session));
             _log('💾 Session saved');
         },
 
         loadSession: function() {
-            const saved = localStorage.getItem('dialogawp_session');
+            const saved = localStorage.getItem('dialoga_session');
             if (saved) {
                 const session = JSON.parse(saved);
                 this.sessionId      = session.sessionId;
@@ -1771,7 +1771,7 @@
             _log('📚 Restoring', this.conversationHistory.length, 'messages');
             
             // CRITICAL: Clear messages first to avoid duplicates (v0.29.3)
-            $('#dialogawp-messages').empty();
+            $('#dialoga-messages').empty();
             
             // Restore messages without adding to history again
             this.conversationHistory.forEach(function(item) {
@@ -1779,24 +1779,24 @@
                 
                 if (item.type === 'bot') {
                     const $messageHtml = $(`
-                        <div class="dialogawp-message dialogawp-bot-message">
-                            <div class="dialogawp-message-content">
-                                <div class="dialogawp-message-text">${self.formatBotText(item.message.text)}</div>
-                                <div class="dialogawp-message-time">${timestamp}</div>
+                        <div class="dialoga-message dialoga-bot-message">
+                            <div class="dialoga-message-content">
+                                <div class="dialoga-message-text">${self.formatBotText(item.message.text)}</div>
+                                <div class="dialoga-message-time">${timestamp}</div>
                             </div>
                         </div>
                     `);
-                    $('#dialogawp-messages').append($messageHtml);
+                    $('#dialoga-messages').append($messageHtml);
                 } else {
                     const $messageHtml = $(`
-                        <div class="dialogawp-message dialogawp-user-message">
-                            <div class="dialogawp-message-content">
-                                <div class="dialogawp-message-text">${self.escapeHtml(item.text)}</div>
-                                <div class="dialogawp-message-time">${timestamp}</div>
+                        <div class="dialoga-message dialoga-user-message">
+                            <div class="dialoga-message-content">
+                                <div class="dialoga-message-text">${self.escapeHtml(item.text)}</div>
+                                <div class="dialoga-message-time">${timestamp}</div>
                             </div>
                         </div>
                     `);
-                    $('#dialogawp-messages').append($messageHtml);
+                    $('#dialoga-messages').append($messageHtml);
                 }
             });
             
@@ -1837,16 +1837,16 @@
         // continue from where they left off, or start over.
         showResumeFallback: function() {
             const self = this;
-            const $inputArea = $('#dialogawp-input-area');
+            const $inputArea = $('#dialoga-input-area');
             $inputArea.empty();
 
             const $continueBtn = $(
-                '<button class="dialogawp-button" type="button" style="margin-bottom:8px;">' +
+                '<button class="dialoga-button" type="button" style="margin-bottom:8px;">' +
                     'Continue from where you left off' +
                 '</button>'
             );
             const $restartBtn = $(
-                '<button class="dialogawp-restart-btn" type="button">' +
+                '<button class="dialoga-restart-btn" type="button">' +
                     '<svg width="16" height="16" viewBox="0 0 20 20" fill="none" style="margin-right:6px;vertical-align:middle;">' +
                         '<path d="M10 3v2a5 5 0 1 1-4.95 4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/>' +
                         '<path d="M10 1l3 2-3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>' +
@@ -1879,11 +1879,11 @@
             _log('🔄 Continuing flow from node:', this.currentNode);
 
             $.ajax({
-                url: dialogawpConfig.ajaxUrl,
+                url: dialogaConfig.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'dialogawp_process_response',
-                    nonce: dialogawpConfig.nonce,
+                    action: 'dialoga_process_response',
+                    nonce: dialogaConfig.nonce,
                     session_id: this.sessionId,
                     session_token: this.sessionToken || '',
                     conversation_id: this.conversationId || 0,
@@ -1940,7 +1940,7 @@
         },
         
         endConversation: function() {
-            localStorage.removeItem('dialogawp_session');
+            localStorage.removeItem('dialoga_session');
             this.sessionId = null;
             this.sessionToken = null;
             this.flowId = null;
@@ -1953,14 +1953,14 @@
 
         showEndState: function() {
             const self = this;
-            const $inputArea = $('#dialogawp-input-area');
+            const $inputArea = $('#dialoga-input-area');
             $inputArea.empty();
 
             // Persist the completed transcript when the flow reaches its natural end
             this.saveTranscript();
 
             const $restartBtn = $(
-                '<button class="dialogawp-restart-btn" id="dialogawp-restart" type="button">' +
+                '<button class="dialoga-restart-btn" id="dialoga-restart" type="button">' +
                     '<svg width="16" height="16" viewBox="0 0 20 20" fill="none" style="margin-right:6px;vertical-align:middle;">' +
                         '<path d="M10 3v2a5 5 0 1 1-4.95 4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/>' +
                         '<path d="M10 1l3 2-3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>' +
@@ -1980,12 +1980,12 @@
             _log('🔄 Restarting chat from top');
 
             // Clear messages and input area
-            $('#dialogawp-messages').empty();
-            $('#dialogawp-input-area').empty();
+            $('#dialoga-messages').empty();
+            $('#dialoga-input-area').empty();
 
             // Full state reset (endConversation already did most of this,
             // but we re-run to ensure clean slate if called from elsewhere)
-            localStorage.removeItem('dialogawp_session');
+            localStorage.removeItem('dialoga_session');
             this.sessionId = null;
             this.sessionToken = null;
             this.flowId = null;
@@ -2026,15 +2026,15 @@
         }
     };
     
-    // Expose to window so the inline onclick fallbacks (window.dialogawpRestartChat
-    // and window.dialogawpCloseChat in render_chat_widget) can route through the
+    // Expose to window so the inline onclick fallbacks (window.dialogaRestartChat
+    // and window.dialogaCloseChat in render_chat_widget) can route through the
     // full widget API once jQuery has loaded. Defined here, not inside init(),
     // so the global is available even if init runs after a user click.
-    window.dialogawpWidget = dialogawpWidget;
+    window.dialogaWidget = dialogaWidget;
 
     // Initialize when document ready
     $(document).ready(function() {
-        dialogawpWidget.init();
+        dialogaWidget.init();
     });
 
 })(jQuery);

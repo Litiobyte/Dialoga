@@ -41,7 +41,7 @@ const options = {
 if (watch) {
     const buildContext = await context(options);
     await buildContext.watch();
-    console.log('Watching DialogaWP canvas sources...');
+    console.log('Watching Dialoga canvas sources...');
 } else {
     const result = await build(options);
     await writeMetafile(result.metafile);

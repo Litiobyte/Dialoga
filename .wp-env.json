@@ -1,7 +1,7 @@
 {
   "phpVersion": "8.2",
   "plugins": [
-    "."
+    "/var/folders/2w/_41g_m7s1b3ds8bs1w06m15r0000gp/T/opencode/dialoga-check/dialoga"
   ],
   "port": 8888,
   "config": {

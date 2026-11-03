@@ -1,7 +1,7 @@
 const ReactDOM = window.ReactDOM;
 
 if (!ReactDOM) {
-    throw new Error('DialogaWP requires the WordPress ReactDOM script handle.');
+    throw new Error('Dialoga requires the WordPress ReactDOM script handle.');
 }
 
 export default ReactDOM;

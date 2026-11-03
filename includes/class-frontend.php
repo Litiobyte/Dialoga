@@ -1,6 +1,6 @@
 <?php
 /**
- * Frontend functionality for DIALOGAWP
+ * Frontend functionality for DIALOGA
  * Handles chat widget display and interaction
  */
 
@@ -8,7 +8,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class DialogaWP_Frontend {
+class Dialoga_Frontend {
     
     /**
      * Initialize frontend
@@ -18,36 +18,36 @@ class DialogaWP_Frontend {
         add_action('wp_footer', array(__CLASS__, 'render_chat_widget'));
         
         // AJAX handlers for frontend
-        add_action('wp_ajax_dialogawp_start_conversation', array(__CLASS__, 'ajax_start_conversation'));
-        add_action('wp_ajax_nopriv_dialogawp_start_conversation', array(__CLASS__, 'ajax_start_conversation'));
+        add_action('wp_ajax_dialoga_start_conversation', array(__CLASS__, 'ajax_start_conversation'));
+        add_action('wp_ajax_nopriv_dialoga_start_conversation', array(__CLASS__, 'ajax_start_conversation'));
         
-        add_action('wp_ajax_dialogawp_process_response', array(__CLASS__, 'ajax_process_response'));
-        add_action('wp_ajax_nopriv_dialogawp_process_response', array(__CLASS__, 'ajax_process_response'));
+        add_action('wp_ajax_dialoga_process_response', array(__CLASS__, 'ajax_process_response'));
+        add_action('wp_ajax_nopriv_dialoga_process_response', array(__CLASS__, 'ajax_process_response'));
         
-        add_action('wp_ajax_dialogawp_submit_lead', array(__CLASS__, 'ajax_submit_lead'));
-        add_action('wp_ajax_nopriv_dialogawp_submit_lead', array(__CLASS__, 'ajax_submit_lead'));
+        add_action('wp_ajax_dialoga_submit_lead', array(__CLASS__, 'ajax_submit_lead'));
+        add_action('wp_ajax_nopriv_dialoga_submit_lead', array(__CLASS__, 'ajax_submit_lead'));
 
-        add_action('wp_ajax_dialogawp_submit_survey', array(__CLASS__, 'ajax_submit_survey'));
-        add_action('wp_ajax_nopriv_dialogawp_submit_survey', array(__CLASS__, 'ajax_submit_survey'));
+        add_action('wp_ajax_dialoga_submit_survey', array(__CLASS__, 'ajax_submit_survey'));
+        add_action('wp_ajax_nopriv_dialoga_submit_survey', array(__CLASS__, 'ajax_submit_survey'));
 
-        add_action('wp_ajax_dialogawp_track_event', array(__CLASS__, 'ajax_track_event'));
-        add_action('wp_ajax_nopriv_dialogawp_track_event', array(__CLASS__, 'ajax_track_event'));
-        add_action('wp_ajax_dialogawp_track_bubble_shown', array(__CLASS__, 'ajax_track_bubble_shown'));
-        add_action('wp_ajax_nopriv_dialogawp_track_bubble_shown', array(__CLASS__, 'ajax_track_bubble_shown'));
-        add_action('wp_ajax_dialogawp_save_transcript', array(__CLASS__, 'ajax_save_transcript'));
-        add_action('wp_ajax_nopriv_dialogawp_save_transcript', array(__CLASS__, 'ajax_save_transcript'));
+        add_action('wp_ajax_dialoga_track_event', array(__CLASS__, 'ajax_track_event'));
+        add_action('wp_ajax_nopriv_dialoga_track_event', array(__CLASS__, 'ajax_track_event'));
+        add_action('wp_ajax_dialoga_track_bubble_shown', array(__CLASS__, 'ajax_track_bubble_shown'));
+        add_action('wp_ajax_nopriv_dialoga_track_bubble_shown', array(__CLASS__, 'ajax_track_bubble_shown'));
+        add_action('wp_ajax_dialoga_save_transcript', array(__CLASS__, 'ajax_save_transcript'));
+        add_action('wp_ajax_nopriv_dialoga_save_transcript', array(__CLASS__, 'ajax_save_transcript'));
 
-        add_action('wp_ajax_dialogawp_update_lead_tags', array(__CLASS__, 'ajax_update_lead_tags'));
-        add_action('wp_ajax_dialogawp_get_lead_details', array(__CLASS__, 'ajax_get_lead_details'));
-        add_action('wp_ajax_dialogawp_delete_lead', array(__CLASS__, 'ajax_delete_lead'));
-        add_action('wp_ajax_dialogawp_delete_all_leads', array(__CLASS__, 'ajax_delete_all_leads'));
-        add_action('wp_ajax_dialogawp_delete_conversation', array(__CLASS__, 'ajax_delete_conversation'));
-        add_action('wp_ajax_dialogawp_delete_all_conversations', array(__CLASS__, 'ajax_delete_all_conversations'));
-        add_action('wp_ajax_dialogawp_reset_analytics_events', array(__CLASS__, 'ajax_reset_analytics_events'));
-        add_action('dialogawp_conversation_retention_cleanup', array(__CLASS__, 'cron_apply_conversation_retention_policy'));
+        add_action('wp_ajax_dialoga_update_lead_tags', array(__CLASS__, 'ajax_update_lead_tags'));
+        add_action('wp_ajax_dialoga_get_lead_details', array(__CLASS__, 'ajax_get_lead_details'));
+        add_action('wp_ajax_dialoga_delete_lead', array(__CLASS__, 'ajax_delete_lead'));
+        add_action('wp_ajax_dialoga_delete_all_leads', array(__CLASS__, 'ajax_delete_all_leads'));
+        add_action('wp_ajax_dialoga_delete_conversation', array(__CLASS__, 'ajax_delete_conversation'));
+        add_action('wp_ajax_dialoga_delete_all_conversations', array(__CLASS__, 'ajax_delete_all_conversations'));
+        add_action('wp_ajax_dialoga_reset_analytics_events', array(__CLASS__, 'ajax_reset_analytics_events'));
+        add_action('dialoga_conversation_retention_cleanup', array(__CLASS__, 'cron_apply_conversation_retention_policy'));
 
         // Lead retention cron handler
-        add_action('dialogawp_lead_retention_cleanup', array(__CLASS__, 'cron_apply_retention_policy'));
+        add_action('dialoga_lead_retention_cleanup', array(__CLASS__, 'cron_apply_retention_policy'));
     }
 
     /**
@@ -75,7 +75,7 @@ class DialogaWP_Frontend {
         }
         global $wpdb;
         return (bool) $wpdb->get_var($wpdb->prepare(
-            "SELECT 1 FROM {$wpdb->prefix}dialogawp_conversations WHERE session_id = %s AND flow_id = %d LIMIT 1",
+            "SELECT 1 FROM {$wpdb->prefix}dialoga_conversations WHERE session_id = %s AND flow_id = %d LIMIT 1",
             $session_id,
             (int) $flow_id
         ));
@@ -109,40 +109,40 @@ class DialogaWP_Frontend {
      */
     public static function enqueue_scripts() {
         // Only load if chatbot is enabled
-        $settings = get_option('dialogawp_settings', array('enabled' => false));
+        $settings = get_option('dialoga_settings', array('enabled' => false));
         if (empty($settings['enabled'])) {
             return;
         }
         
         // Enqueue CSS
         wp_enqueue_style(
-            'dialogawp-widget',
+            'dialoga-widget',
             plugins_url('assets/css/chatbot-widget.css', dirname(__FILE__)),
             array(),
-            DIALOGAWP_VERSION
+            DIALOGA_VERSION
         );
         
         // Enqueue JS
         wp_enqueue_script(
-            'dialogawp-widget',
+            'dialoga-widget',
             plugins_url('assets/js/chatbot-widget.js', dirname(__FILE__)),
             array('jquery'),
-            DIALOGAWP_VERSION,
+            DIALOGA_VERSION,
             true
         );
         
         // Localize script with settings
         $preview = isset($settings['preview_message']) ? $settings['preview_message'] : array();
-        wp_localize_script('dialogawp-widget', 'dialogawpWidget', array(
+        wp_localize_script('dialoga-widget', 'dialogaWidget', array(
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('dialogawp_widget'),
+            'nonce' => wp_create_nonce('dialoga_widget'),
             'settings' => array(
                 'primaryColor'       => isset($settings['primary_color']) ? $settings['primary_color'] : '#190F4F',
                 'position'           => isset($settings['chat_position']) ? $settings['chat_position'] : 'bottom-right',
                 'welcomeMessage'     => isset($settings['welcome_message']) ? $settings['welcome_message'] : 'Hi! How can we help you today?',
                 // v1.0.0 — Default to no widget branding on the public site
                 // (wp.org guideline 10 prohibits credits without opt-in). Pro
-                // plugin filters this via `dialogawp_widget_branding` if the site
+                // plugin filters this via `dialoga_widget_branding` if the site
                 // owner explicitly enables it there.
                 'showBranding'       => false,
                 'testMode'           => !empty($settings['test_mode']),
@@ -161,35 +161,35 @@ class DialogaWP_Frontend {
         // v1.0.1 — wp.org compliance: attach the header-button + bubble-nudge
         // helper JS via wp_add_inline_script instead of emitting a raw <script>
         // tag from render_chat_widget(). All PHP-computed values are read from
-        // the dialogawpWidget object above.
+        // the dialogaWidget object above.
         $inline_js = self::widget_inline_js();
-        wp_add_inline_script('dialogawp-widget', $inline_js, 'after');
+        wp_add_inline_script('dialoga-widget', $inline_js, 'after');
     }
 
     /**
-     * Returns the JS body attached to the dialogawp-widget handle. Broken out so
+     * Returns the JS body attached to the dialoga-widget handle. Broken out so
      * enqueue_scripts() stays readable. All PHP-computed values are pulled
-     * from window.dialogawpWidget (populated by wp_localize_script above).
+     * from window.dialogaWidget (populated by wp_localize_script above).
      */
     private static function widget_inline_js() {
         return <<<'JS'
 /* Global functions for header buttons. Inline onclick on the buttons calls
    these so the click works regardless of jQuery / TenWeb timing. */
-window.dialogawpRestartChat = window.dialogawpRestartChat || function() {
+window.dialogaRestartChat = window.dialogaRestartChat || function() {
     if (!window.confirm('Start a new conversation? Your current chat history will be cleared.')) return;
-    if (window.dialogawpWidget && typeof window.dialogawpWidget.restartChat === 'function') {
-        window.dialogawpWidget.restartChat();
+    if (window.dialogaWidget && typeof window.dialogaWidget.restartChat === 'function') {
+        window.dialogaWidget.restartChat();
     } else {
-        try { localStorage.removeItem('dialogawp_session'); } catch (e) {}
+        try { localStorage.removeItem('dialoga_session'); } catch (e) {}
         window.location.reload();
     }
 };
-window.dialogawpCloseChat = window.dialogawpCloseChat || function() {
-    if (window.dialogawpWidget && typeof window.dialogawpWidget.closeChat === 'function') {
-        window.dialogawpWidget.closeChat();
+window.dialogaCloseChat = window.dialogaCloseChat || function() {
+    if (window.dialogaWidget && typeof window.dialogaWidget.closeChat === 'function') {
+        window.dialogaWidget.closeChat();
     } else {
-        var win = document.getElementById('dialogawp-window');
-        var bub = document.getElementById('dialogawp-bubble');
+        var win = document.getElementById('dialoga-window');
+        var bub = document.getElementById('dialoga-bubble');
         if (win) win.style.display = 'none';
         if (bub) bub.style.display = '';
     }
@@ -199,13 +199,13 @@ window.dialogawpCloseChat = window.dialogawpCloseChat || function() {
    Runs synchronously without jQuery so TenWeb / Breeze deferring scripts
    can't break attention-grabbers. */
 (function() {
-    var cfg = (window.dialogawpWidget && window.dialogawpWidget) || {};
-    // dialogawpWidget is used for two things: (1) the localized settings object
+    var cfg = (window.dialogaWidget && window.dialogaWidget) || {};
+    // dialogaWidget is used for two things: (1) the localized settings object
     // this file reads, (2) a widget instance the main widget script assigns.
     // The localized object always has ajaxUrl + nonce; if we don't see those,
     // bail on impression tracking.
-    var localized = (typeof window.dialogawpWidget === 'object' && window.dialogawpWidget && window.dialogawpWidget.ajaxUrl)
-        ? window.dialogawpWidget
+    var localized = (typeof window.dialogaWidget === 'object' && window.dialogaWidget && window.dialogaWidget.ajaxUrl)
+        ? window.dialogaWidget
         : null;
 
     if (localized) {
@@ -213,7 +213,7 @@ window.dialogawpCloseChat = window.dialogawpCloseChat || function() {
             if (document.hidden) return;
             try {
                 var body = new FormData();
-                body.append('action',   'dialogawp_track_bubble_shown');
+                body.append('action',   'dialoga_track_bubble_shown');
                 body.append('nonce',    localized.nonce);
                 body.append('flow_id',  0);
                 body.append('page_url', window.location.href);
@@ -224,23 +224,23 @@ window.dialogawpCloseChat = window.dialogawpCloseChat || function() {
 
     var bounceEnabled = !!(localized && localized.settings && localized.settings.bubbleBounce);
     var hasSession = false;
-    try { hasSession = !!localStorage.getItem('dialogawp_session'); } catch (e) {}
+    try { hasSession = !!localStorage.getItem('dialoga_session'); } catch (e) {}
 
-    var bubble = document.getElementById('dialogawp-bubble');
+    var bubble = document.getElementById('dialoga-bubble');
     if (hasSession && bubble) {
-        bubble.classList.remove('dialogawp-bubble--nudge');
+        bubble.classList.remove('dialoga-bubble--nudge');
     }
 
-    var badge = document.getElementById('dialogawp-bubble-badge');
+    var badge = document.getElementById('dialoga-bubble-badge');
     if (badge) {
         var acked = false;
-        try { acked = localStorage.getItem('dialogawp_badge_ack') === '1'; } catch (e) {}
+        try { acked = localStorage.getItem('dialoga_badge_ack') === '1'; } catch (e) {}
         if (acked || hasSession) {
             badge.style.display = 'none';
         } else if (bubble) {
             bubble.addEventListener('click', function() {
                 badge.style.display = 'none';
-                try { localStorage.setItem('dialogawp_badge_ack', '1'); } catch (e) {}
+                try { localStorage.setItem('dialoga_badge_ack', '1'); } catch (e) {}
             }, { once: true });
         }
     }
@@ -252,29 +252,29 @@ window.dialogawpCloseChat = window.dialogawpCloseChat || function() {
         };
         bounceInterval = setInterval(function() {
             if (bubble.matches(':hover')) return;
-            bubble.classList.remove('dialogawp-bubble--bounce');
+            bubble.classList.remove('dialoga-bubble--bounce');
             void bubble.offsetWidth;
-            bubble.classList.add('dialogawp-bubble--bounce');
-            setTimeout(function() { bubble.classList.remove('dialogawp-bubble--bounce'); }, 1000);
+            bubble.classList.add('dialoga-bubble--bounce');
+            setTimeout(function() { bubble.classList.remove('dialoga-bubble--bounce'); }, 1000);
         }, 30000);
         bubble.addEventListener('click', stopBounce, { once: true });
     }
 
-    var preview = document.getElementById('dialogawp-preview-message');
+    var preview = document.getElementById('dialoga-preview-message');
     if (!preview) return;
 
     try {
-        if (localStorage.getItem('dialogawp_preview_dismissed') === '1' || hasSession) {
+        if (localStorage.getItem('dialoga_preview_dismissed') === '1' || hasSession) {
             preview.style.display = 'none';
             return;
         }
     } catch (e) {}
 
-    var closeBtn = preview.querySelector('.dialogawp-preview-close');
+    var closeBtn = preview.querySelector('.dialoga-preview-close');
     if (closeBtn) {
         closeBtn.addEventListener('click', function(e) {
             e.stopPropagation();
-            try { localStorage.setItem('dialogawp_preview_dismissed', '1'); } catch (err) {}
+            try { localStorage.setItem('dialoga_preview_dismissed', '1'); } catch (err) {}
             preview.style.display = 'none';
         }, true);
     }
@@ -283,7 +283,7 @@ window.dialogawpCloseChat = window.dialogawpCloseChat || function() {
         if (!e.isTrusted) return;
         if (closeBtn && (e.target === closeBtn || closeBtn.contains(e.target))) return;
         preview.style.display = 'none';
-        var bubble2 = document.getElementById('dialogawp-bubble');
+        var bubble2 = document.getElementById('dialoga-bubble');
         if (bubble2) bubble2.click();
     }, true);
 })();
@@ -319,10 +319,10 @@ JS;
 
     /**
      * Returns all currently-active flows that the visitor is eligible to see.
-     * Applies BOTH the global site-wide gate (from dialogawp_settings) and each
+     * Applies BOTH the global site-wide gate (from dialoga_settings) and each
      * flow's own per-flow visibility gate. Used by render_chat_widget() to
      * decide whether to render at all, and by ajax_start_conversation() to
-     * hand a pre-filtered eligible list to the dialogawp_select_active_flow
+     * hand a pre-filtered eligible list to the dialoga_select_active_flow
      * filter — so Pro A/B selection can't assign a visitor to a flow they
      * aren't allowed to see.
      *
@@ -330,7 +330,7 @@ JS;
      *               none match or the global gate fails.
      */
     public static function get_eligible_active_flows() {
-        $settings = get_option('dialogawp_settings', array());
+        $settings = get_option('dialoga_settings', array());
 
         // Global gate — if the visitor fails the site-wide baseline, no flows apply.
         $global_roles = isset($settings['visible_roles']) && is_array($settings['visible_roles'])
@@ -390,7 +390,7 @@ JS;
         }
 
         // Only render if enabled
-        $settings = get_option('dialogawp_settings', array('enabled' => false));
+        $settings = get_option('dialoga_settings', array('enabled' => false));
 
         if (empty($settings['enabled'])) {
             return;
@@ -404,7 +404,7 @@ JS;
 
         // Position class — used to flip the widget to bottom-left when configured
         $position       = isset($settings['chat_position']) ? $settings['chat_position'] : 'bottom-right';
-        $position_class = 'dialogawp-widget--' . sanitize_html_class($position);
+        $position_class = 'dialoga-widget--' . sanitize_html_class($position);
 
         // v0.38.10 — server-rendered preview message bubble + bubble nudge.
         // Pure HTML + CSS animation so they appear on schedule even when
@@ -428,43 +428,43 @@ JS;
         $bubble_unread_badge = !isset($settings['bubble_unread_badge']) || !empty($settings['bubble_unread_badge']);
         $bubble_bounce_enabled = !isset($settings['bubble_bounce']) || !empty($settings['bubble_bounce']);
 
-        $bubble_class = 'dialogawp-bubble dialogawp-bubble--size-' . $bubble_size
-            . ($bubble_nudge_enabled ? ' dialogawp-bubble--nudge' : '');
+        $bubble_class = 'dialoga-bubble dialoga-bubble--size-' . $bubble_size
+            . ($bubble_nudge_enabled ? ' dialoga-bubble--nudge' : '');
         ?>
-        <div id="dialogawp-widget" class="dialogawp-widget <?php echo esc_attr($position_class); ?>">
+        <div id="dialoga-widget" class="dialoga-widget <?php echo esc_attr($position_class); ?>">
             <?php if ($preview_enabled) : ?>
-            <div id="dialogawp-preview-message" class="dialogawp-preview-message" role="status"
+            <div id="dialoga-preview-message" class="dialoga-preview-message" role="status"
                  style="animation-delay: <?php echo esc_attr($preview_delay); ?>s;">
-                <button type="button" class="dialogawp-preview-close" aria-label="Dismiss">&times;</button>
-                <div class="dialogawp-preview-text"><?php echo esc_html($preview_text); ?></div>
+                <button type="button" class="dialoga-preview-close" aria-label="Dismiss">&times;</button>
+                <div class="dialoga-preview-text"><?php echo esc_html($preview_text); ?></div>
             </div>
             <?php endif; ?>
             <!-- Chat Bubble (Closed State) -->
-            <div id="dialogawp-bubble" class="<?php echo esc_attr($bubble_class); ?>">
+            <div id="dialoga-bubble" class="<?php echo esc_attr($bubble_class); ?>">
                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="pointer-events:none;">
                     <path d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2Z" fill="white"/>
                 </svg>
-                <span class="dialogawp-bubble-text">Chat</span>
+                <span class="dialoga-bubble-text">Chat</span>
                 <?php if ($bubble_unread_badge) : ?>
-                <span id="dialogawp-bubble-badge" class="dialogawp-bubble__badge" aria-hidden="true">1</span>
+                <span id="dialoga-bubble-badge" class="dialoga-bubble__badge" aria-hidden="true">1</span>
                 <?php endif; ?>
             </div>
             
             <!-- Chat Window (Expanded State) -->
-            <div id="dialogawp-window" class="dialogawp-window" style="display: none;">
+            <div id="dialoga-window" class="dialoga-window" style="display: none;">
                 <!-- Header -->
-                <div class="dialogawp-header">
-                    <div class="dialogawp-header-title">
+                <div class="dialoga-header">
+                    <div class="dialoga-header-title">
                         <strong><?php echo esc_html($header_title); ?></strong>
-                        <span class="dialogawp-header-status">● Online</span>
+                        <span class="dialoga-header-status">● Online</span>
                     </div>
-                    <div class="dialogawp-header-actions">
+                    <div class="dialoga-header-actions">
                         <?php // v0.42.0 — header restart button removed; Reset now lives
                               // in the unified footer bar below (matching CAASI/modern
                               // chatbot UX). Frees up header space + more discoverable. ?>
-                        <button type="button" class="dialogawp-close-btn" id="dialogawp-close"
+                        <button type="button" class="dialoga-close-btn" id="dialoga-close"
                                 aria-label="Close chat"
-                                onclick="var w=document.getElementById('dialogawp-window');var b=document.getElementById('dialogawp-bubble');if(w)w.style.display='none';if(b)b.style.display='';">
+                                onclick="var w=document.getElementById('dialoga-window');var b=document.getElementById('dialoga-bubble');if(w)w.style.display='none';if(b)b.style.display='';">
                             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="pointer-events:none;">
                                 <path d="M15 5L5 15M5 5L15 15" stroke="white" stroke-width="2" stroke-linecap="round"/>
                             </svg>
@@ -473,12 +473,12 @@ JS;
                 </div>
 
                 <!-- Messages Container -->
-                <div class="dialogawp-messages" id="dialogawp-messages">
+                <div class="dialoga-messages" id="dialoga-messages">
                     <!-- Messages will be added here dynamically -->
                 </div>
 
                 <!-- Input Area -->
-                <div class="dialogawp-input-area" id="dialogawp-input-area">
+                <div class="dialoga-input-area" id="dialoga-input-area">
                     <!-- Dynamic input (text or buttons) will be added here -->
                 </div>
 
@@ -486,13 +486,13 @@ JS;
                 // v0.42.0 — unified footer bar: Reset button (left) + optional
                 // branding link (right). v0.42.1 adds an optional `logo` field
                 // for a small icon next to the text. Pro plugins may filter
-                // `dialogawp_widget_branding` to replace text/logo/URL with their
+                // `dialoga_widget_branding` to replace text/logo/URL with their
                 // own (white-label) or return empty text to hide the link
-                // entirely. Free default: DialogaWP logo (bundled locally in
+                // entirely. Free default: Dialoga logo (bundled locally in
                 // assets/images/ for WP.org compliance — no external URLs).
                 //
                 // v0.42.5 — hide_branding checkbox handling reverted back to
-                // Pro's `apply_widget_branding` filter (DIALOGAWP_PRO_Branding).
+                // Pro's `apply_widget_branding` filter (DIALOGA_PRO_Branding).
                 // Rendering the check here in Free bypassed the license gate,
                 // which broke the intended Pro-only nature of the feature.
                 // If the checkbox isn't hiding branding, it's because Pro's
@@ -501,17 +501,17 @@ JS;
                 // v1.0.0 — No default branding on the public widget. Site
                 // owner must explicitly opt in (via the Pro plugin, which
                 // hooks this filter). wp.org guideline 10 compliance.
-                $branding = apply_filters('dialogawp_widget_branding', array(
+                $branding = apply_filters('dialoga_widget_branding', array(
                     'text' => '',
                     'url'  => '',
                     'logo' => '',
                 ));
                 ?>
-                <div class="dialogawp-footer-bar">
-                    <button type="button" class="dialogawp-footer-reset" id="dialogawp-restart-footer"
-                            title="<?php esc_attr_e('Start a new conversation', 'dialogawp'); ?>"
-                            aria-label="<?php esc_attr_e('Start a new conversation', 'dialogawp'); ?>"
-                            onclick="if(window.confirm('Start a new conversation? Your current chat history will be cleared.')){try{localStorage.removeItem('dialogawp_session');}catch(e){}window.location.reload();}">
+                <div class="dialoga-footer-bar">
+                    <button type="button" class="dialoga-footer-reset" id="dialoga-restart-footer"
+                            title="<?php esc_attr_e('Start a new conversation', 'dialoga'); ?>"
+                            aria-label="<?php esc_attr_e('Start a new conversation', 'dialoga'); ?>"
+                            onclick="if(window.confirm('Start a new conversation? Your current chat history will be cleared.')){try{localStorage.removeItem('dialoga_session');}catch(e){}window.location.reload();}">
                         <svg viewBox="0 0 20 20" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M4 4v5h5"/>
                             <path d="M4 9a7 7 0 1 1 2 4.9"/>
@@ -523,11 +523,11 @@ JS;
                         // people scan "brand phrase → mark"). Size bumped so the
                         // logo reads at a glance instead of feeling ornamental.
                         $logo_img = !empty($branding['logo'])
-                            ? '<img src="' . esc_url($branding['logo']) . '" alt="" class="dialogawp-branding-logo" />'
+                            ? '<img src="' . esc_url($branding['logo']) . '" alt="" class="dialoga-branding-logo" />'
                             : '';
                         $text_html = !empty($branding['text']) ? esc_html($branding['text']) : '';
                     ?>
-                        <div class="dialogawp-branding">
+                        <div class="dialoga-branding">
                             <?php if (!empty($branding['url'])) : ?>
                                 <a href="<?php echo esc_url($branding['url']); ?>" target="_blank" rel="noopener noreferrer"><?php echo wp_kses_post($text_html . $logo_img); ?></a>
                             <?php else : ?>
@@ -544,9 +544,9 @@ JS;
      * AJAX: Start new conversation
      */
     public static function ajax_start_conversation() {
-        check_ajax_referer('dialogawp_widget', 'nonce');
+        check_ajax_referer('dialoga_widget', 'nonce');
 
-        $page_url   = isset($_POST['page_url'])   ? esc_url_raw($_POST['page_url'])                      : '';
+        $page_url   = isset($_POST['page_url'])   ? esc_url_raw(wp_unslash($_POST['page_url']))          : '';
         $user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? sanitize_text_field(wp_unslash($_SERVER['HTTP_USER_AGENT'])) : '';
         $ip_address = isset($_SERVER['REMOTE_ADDR'])     ? sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR']))     : '';
 
@@ -556,7 +556,7 @@ JS;
         // visitors from being handed an admin-only flow via the A/B selector, and
         // keeps the render-time gate consistent with the conversation-start gate.
         $active_flows = self::get_eligible_active_flows();
-        $flow = apply_filters('dialogawp_select_active_flow', !empty($active_flows) ? $active_flows[0] : null, $active_flows);
+        $flow = apply_filters('dialoga_select_active_flow', !empty($active_flows) ? $active_flows[0] : null, $active_flows);
 
         if (!$flow) {
             wp_send_json_error(array('message' => 'No active chatbot found. Please contact the site administrator.'));
@@ -567,7 +567,7 @@ JS;
         $flow_data = json_decode($flow->flow_data, true);
         
         // Get start node
-        $start_node_id = DialogaWP_Engine::get_start_node($flow_data);
+        $start_node_id = Dialoga_Engine::get_start_node($flow_data);
         if (!$start_node_id) {
             wp_send_json_error(array('message' => 'No start node found'));
             return;
@@ -589,11 +589,11 @@ JS;
         
         // Create session and persist conversation record
         $session_id      = 'session_' . uniqid();
-        $conversation_id = DialogaWP_Database::save_conversation($session_id, $flow->id, $page_url, $ip_address, $user_agent);
+        $conversation_id = Dialoga_Database::save_conversation($session_id, $flow->id, $page_url, $ip_address, $user_agent);
 
         // Track conversation start
         if ($conversation_id) {
-            DialogaWP_Analytics::track_event($conversation_id, 'conversation_started', array(
+            Dialoga_Analytics::track_event($conversation_id, 'conversation_started', array(
                 'flow_id'  => $flow->id,
                 'page_url' => $page_url,
             ), $flow->id);
@@ -611,8 +611,8 @@ JS;
             // v0.40.17 — capture the start node's proper display label so
             // historical reports can preserve past wording (see comment on
             // ajax_process_response's tracking call for A/B-testing context).
-            $start_label = DialogaWP_Analytics::get_node_display_label($start_node, 0);
-            DialogaWP_Analytics::track_event($conversation_id, 'node_viewed', array(
+            $start_label = Dialoga_Analytics::get_node_display_label($start_node, 0);
+            Dialoga_Analytics::track_event($conversation_id, 'node_viewed', array(
                 'node_id'   => $start_node_id,
                 'node_type' => isset($start_node['data']['nodeType']) ? $start_node['data']['nodeType'] : '',
                 'node_label'=> substr($start_label, 0, 200),
@@ -637,7 +637,7 @@ JS;
      * AJAX: Process user response
      */
     public static function ajax_process_response() {
-        check_ajax_referer('dialogawp_widget', 'nonce');
+        check_ajax_referer('dialoga_widget', 'nonce');
         
         $session_id      = isset($_POST['session_id'])   ? sanitize_text_field(wp_unslash($_POST['session_id']))   : '';
         $current_node_id = isset($_POST['current_node']) ? sanitize_text_field(wp_unslash($_POST['current_node'])) : '';
@@ -654,8 +654,8 @@ JS;
         }
 
         // Load variables from JS session state — decode + recursively sanitize
-        $variables_json = isset($_POST['variables']) ? wp_unslash($_POST['variables']) : '{}';
-        $variables      = dialogawp_sanitize_json(json_decode($variables_json, true) ?: array());
+        $variables_json = isset($_POST['variables']) ? sanitize_textarea_field(wp_unslash($_POST['variables'])) : '{}';
+        $variables      = dialoga_sanitize_json(json_decode($variables_json, true) ?: array());
         if (!is_array($variables)) $variables = array();
         
         // v1.0.0 — fetch through the cache. Runs on every AJAX chat step; on
@@ -681,7 +681,7 @@ JS;
         }
 
         // Process response and get next node
-        $next_node_id = DialogaWP_Engine::process_response($flow_data, $current_node_id, $user_response);
+        $next_node_id = Dialoga_Engine::process_response($flow_data, $current_node_id, $user_response);
         
         if (!$next_node_id) {
             // End of conversation
@@ -724,8 +724,8 @@ JS;
             $loop_delay_ms = isset($next_node['data']['delay_ms'])
                 ? max(0, intval($next_node['data']['delay_ms']))
                 : 0;
-            $loop_message  = apply_filters('dialogawp_loop_message', $loop_message, $next_node, $variables);
-            $loop_delay_ms = apply_filters('dialogawp_loop_delay_ms', $loop_delay_ms, $next_node);
+            $loop_message  = apply_filters('dialoga_loop_message', $loop_message, $next_node, $variables);
+            $loop_delay_ms = apply_filters('dialoga_loop_delay_ms', $loop_delay_ms, $next_node);
 
             $target_node_id = '';
 
@@ -765,9 +765,9 @@ JS;
 
         // First-class Webhook node (Pro): fire server-side, then advance to the next node.
         // No frontend render — the visitor never sees this step.
-        if ($next_node['data']['nodeType'] === 'webhook' && class_exists('DIALOGAWP_PRO_Webhooks')) {
+        if ($next_node['data']['nodeType'] === 'webhook' && class_exists('DIALOGA_PRO_Webhooks')) {
             $config = isset($next_node['data']['config']) ? $next_node['data']['config'] : array();
-            DIALOGAWP_PRO_Webhooks::fire_node_webhook($config, $variables, $flow_id);
+            DIALOGA_PRO_Webhooks::fire_node_webhook($config, $variables, $flow_id);
 
             $after_webhook = self::find_next_node($next_node, null, $flow_data);
             if ($after_webhook) {
@@ -787,9 +787,9 @@ JS;
             $frontend_rendered = in_array($action_type, array('capture_lead', 'ai_chat', 'redirect', 'survey', 'qualify', 'link_button'));
 
             // Webhook nodes fire server-side then continue to next node
-            if ($action_type === 'webhook' && class_exists('DIALOGAWP_PRO_Webhooks')) {
+            if ($action_type === 'webhook' && class_exists('DIALOGA_PRO_Webhooks')) {
                 $config = isset($next_node['data']['config']) ? $next_node['data']['config'] : array();
-                DIALOGAWP_PRO_Webhooks::fire_node_webhook($config, $variables, $flow_id);
+                DIALOGA_PRO_Webhooks::fire_node_webhook($config, $variables, $flow_id);
                 // Continue to next node after webhook fires
                 $after_webhook = self::find_next_node($next_node, null, $flow_data);
                 if ($after_webhook) {
@@ -808,14 +808,14 @@ JS;
                         $pending_tags = array_map('sanitize_text_field', $tags_config);
                     }
                 } else {
-                    DialogaWP_Engine::execute_action($next_node, array(
+                    Dialoga_Engine::execute_action($next_node, array(
                         'session_id'    => $session_id,
                         'user_response' => $user_response,
                     ));
                 }
 
                 // Advance past the silent action node
-                $next_node_id = DialogaWP_Engine::get_next_node($flow_data['edges'], $next_node_id);
+                $next_node_id = Dialoga_Engine::get_next_node($flow_data['edges'], $next_node_id);
                 if ($next_node_id) {
                     foreach ($flow_data['nodes'] as $node) {
                         if ($node['id'] === $next_node_id) {
@@ -842,7 +842,7 @@ JS;
             error_log('🔀 Branch node detected, processing automatically with user response: ' . $user_response);
             
             // Process the branch with the user's response
-            $branch_result_id = DialogaWP_Engine::process_response($flow_data, $next_node_id, $user_response);
+            $branch_result_id = Dialoga_Engine::process_response($flow_data, $next_node_id, $user_response);
             
             error_log('✅ Branch result: ' . ($branch_result_id ? $branch_result_id : 'NULL'));
             
@@ -870,7 +870,7 @@ JS;
             // If the result is another branch, process it too (recursive)
             while ($next_node['data']['nodeType'] === 'branch') {
                 error_log('🔀 Chained branch detected, processing...');
-                $branch_result_id = DialogaWP_Engine::process_response($flow_data, $next_node_id, $user_response);
+                $branch_result_id = Dialoga_Engine::process_response($flow_data, $next_node_id, $user_response);
 
                 if (!$branch_result_id) {
                     wp_send_json_success(array(
@@ -904,8 +904,8 @@ JS;
                 if (isset($next_node['data']['delay_ms'])) {
                     $loop_delay_ms = max(0, intval($next_node['data']['delay_ms']));
                 }
-                $loop_message  = apply_filters('dialogawp_loop_message', $loop_message, $next_node, $variables);
-                $loop_delay_ms = apply_filters('dialogawp_loop_delay_ms', $loop_delay_ms, $next_node);
+                $loop_message  = apply_filters('dialoga_loop_message', $loop_message, $next_node, $variables);
+                $loop_delay_ms = apply_filters('dialoga_loop_delay_ms', $loop_delay_ms, $next_node);
 
                 $loop_target_id = '';
 
@@ -954,9 +954,9 @@ JS;
             // reports pull labels from event_data at report time, so
             // editing a Question's text going forward doesn't rewrite
             // the labels for events already captured.
-            $raw_label = DialogaWP_Analytics::get_node_display_label($next_node, 0);
+            $raw_label = Dialoga_Analytics::get_node_display_label($next_node, 0);
             $node_label = substr(self::interpolate_variables($raw_label, $variables), 0, 200);
-            DialogaWP_Analytics::track_event($conversation_id, 'node_viewed', array(
+            Dialoga_Analytics::track_event($conversation_id, 'node_viewed', array(
                 'node_id'   => $next_node_id,
                 'node_type' => $next_node['data']['nodeType'],
                 'node_label'=> $node_label,
@@ -988,7 +988,7 @@ JS;
      * AJAX: Submit lead from capture form
      */
     public static function ajax_submit_lead() {
-        check_ajax_referer('dialogawp_widget', 'nonce');
+        check_ajax_referer('dialoga_widget', 'nonce');
 
         global $wpdb;
 
@@ -1004,10 +1004,9 @@ JS;
 
         // Sanitize lead data
         $lead_data = array();
-        if (isset($_POST['lead_data']) && is_array($_POST['lead_data'])) {
-            foreach ($_POST['lead_data'] as $key => $value) {
-                $lead_data[sanitize_key($key)] = sanitize_text_field($value);
-            }
+        $_lead_data_post = isset($_POST['lead_data']) && is_array(wp_unslash($_POST['lead_data'])) ? wp_unslash($_POST['lead_data']) : array();
+        foreach ($_lead_data_post as $key => $value) {
+            $lead_data[sanitize_key($key)] = sanitize_text_field($value);
         }
 
         // Validate required fields (basic validation)
@@ -1021,20 +1020,20 @@ JS;
         $tags = array();
         if ($flow_id) {
             $flow_name = $wpdb->get_var($wpdb->prepare(
-                "SELECT flow_name FROM {$wpdb->prefix}dialogawp_flows WHERE id = %d", $flow_id
+                "SELECT flow_name FROM {$wpdb->prefix}dialoga_flows WHERE id = %d", $flow_id
             ));
             if ($flow_name) {
                 $tags[] = sanitize_text_field($flow_name);
             }
         }
-        $pending_tags_json = isset($_POST['pending_tags']) ? wp_unslash($_POST['pending_tags']) : '[]';
+        $pending_tags_json = isset($_POST['pending_tags']) ? sanitize_textarea_field(wp_unslash($_POST['pending_tags'])) : '[]';
         $pending_tags = json_decode($pending_tags_json, true);
         if (is_array($pending_tags)) {
             $tags = array_merge($tags, array_map('sanitize_text_field', $pending_tags));
         }
 
         // Save lead to database — pass session_id so lead row links to its conversation
-        $lead_id = DialogaWP_Database::save_lead($lead_data, $tags, $session_id);
+        $lead_id = Dialoga_Database::save_lead($lead_data, $tags, $session_id);
 
         if (!$lead_id) {
             wp_send_json_error(array('message' => 'Failed to save lead data'));
@@ -1042,18 +1041,18 @@ JS;
         }
         
         // Update conversation with lead data
-        DialogaWP_Database::update_conversation_lead($session_id, $lead_data);
+        Dialoga_Database::update_conversation_lead($session_id, $lead_data);
 
         // Save conversation transcript if provided. Decode → recursively
         // sanitize every key/value → re-encode before storing, so nothing
-        // untrusted from the widget lands in wp_dialogawp_conversations verbatim.
-        $history_json = isset($_POST['history']) ? wp_unslash($_POST['history']) : '';
+        // untrusted from the widget lands in wp_dialoga_conversations verbatim.
+        $history_json = isset($_POST['history']) ? sanitize_textarea_field(wp_unslash($_POST['history'])) : '';
         if ($history_json) {
             $history_decoded = json_decode($history_json, true);
             if (is_array($history_decoded)) {
-                $history_clean = dialogawp_sanitize_json($history_decoded);
+                $history_clean = dialoga_sanitize_json($history_decoded);
                 $wpdb->update(
-                    $wpdb->prefix . 'dialogawp_conversations',
+                    $wpdb->prefix . 'dialoga_conversations',
                     array('conversation_data' => wp_json_encode($history_clean), 'updated_at' => current_time('mysql')),
                     array('session_id' => $session_id),
                     array('%s', '%s'),
@@ -1063,25 +1062,25 @@ JS;
         }
 
         // Fire action for Pro features (webhooks, etc.)
-        $variables_json = isset($_POST['variables']) ? wp_unslash($_POST['variables']) : '{}';
+        $variables_json = isset($_POST['variables']) ? sanitize_textarea_field(wp_unslash($_POST['variables'])) : '{}';
         $variables_decoded = json_decode($variables_json, true);
         if (!is_array($variables_decoded)) $variables_decoded = array();
-        $variables = dialogawp_sanitize_json($variables_decoded);
+        $variables = dialoga_sanitize_json($variables_decoded);
         // 6th arg is the node ID that captured the lead — used by the webhook walker
         // to start from the right place. For the standard form path it's the current
         // Capture Lead node (may not be tracked here — pass null to fall back to lookup).
         $source_node_id = isset($_POST['node_id']) ? sanitize_text_field(wp_unslash($_POST['node_id'])) : null;
-        do_action('dialogawp_lead_captured', $lead_id, $lead_data, $flow_id, $variables, $tags, $source_node_id);
+        do_action('dialoga_lead_captured', $lead_id, $lead_data, $flow_id, $variables, $tags, $source_node_id);
 
         // Track lead capture event
         if ($flow_id) {
             $conv_row = $wpdb->get_row($wpdb->prepare(
-                "SELECT id FROM {$wpdb->prefix}dialogawp_conversations WHERE session_id = %s LIMIT 1",
+                "SELECT id FROM {$wpdb->prefix}dialoga_conversations WHERE session_id = %s LIMIT 1",
                 $session_id
             ));
             $conv_id = $conv_row ? intval($conv_row->id) : 0;
             if ($conv_id) {
-                DialogaWP_Analytics::track_event($conv_id, 'lead_captured', array(
+                Dialoga_Analytics::track_event($conv_id, 'lead_captured', array(
                     'flow_id' => $flow_id,
                     'fields'  => array_keys($lead_data),
                 ), $flow_id);
@@ -1092,7 +1091,7 @@ JS;
         // v0.38.7: skip email when the lead came from an admin testing session, unless the
         // "Include admin sessions in analytics" toggle is on, otherwise inbox fills with
         // your own test submissions.
-        $settings = get_option('dialogawp_settings', array());
+        $settings = get_option('dialoga_settings', array());
         $email_cfg = isset($settings['email_notifications']) ? $settings['email_notifications'] : array();
         $is_admin_lead = (is_user_logged_in() && current_user_can('manage_options'));
         $include_admin = !empty($settings['include_admin_sessions']);
@@ -1100,7 +1099,7 @@ JS;
             $history_for_email = array();
             if (!empty($history_json)) {
                 $decoded_history = json_decode($history_json, true);
-                if (is_array($decoded_history)) $history_for_email = dialogawp_sanitize_json($decoded_history);
+                if (is_array($decoded_history)) $history_for_email = dialoga_sanitize_json($decoded_history);
             }
 
             // v0.39.3: append the two bubbles that fire client-side AFTER this AJAX
@@ -1140,7 +1139,7 @@ JS;
         }
 
         // Return success — includes a `tracking` payload the widget uses for
-        // dataLayer.push (GTM) + a `dialogawp:lead-captured` DOM event (Pro consumers).
+        // dataLayer.push (GTM) + a `dialoga:lead-captured` DOM event (Pro consumers).
         wp_send_json_success(array(
             'message'  => 'Lead captured successfully',
             'lead_id'  => $lead_id,
@@ -1152,10 +1151,10 @@ JS;
      * Build the conversion-tracking payload attached to lead-capture AJAX responses.
      *
      * The widget pushes this object to `window.dataLayer` (for GTM listeners) AND
-     * dispatches it as a `dialogawp:lead-captured` DOM event (which the Pro plugin's
+     * dispatches it as a `dialoga:lead-captured` DOM event (which the Pro plugin's
      * tracking module listens to for direct-fire to GA4 / Google Ads / Meta Pixel).
      *
-     * Filter `dialogawp_lead_conversion_payload` to override any field — e.g., set a
+     * Filter `dialoga_lead_conversion_payload` to override any field — e.g., set a
      * non-zero default `value` for lead scoring, or add custom fields for GTM tags.
      *
      * @param int    $lead_id
@@ -1169,27 +1168,27 @@ JS;
         $flow_name = '';
         if ($flow_id) {
             $flow_name = (string) $wpdb->get_var($wpdb->prepare(
-                "SELECT flow_name FROM {$wpdb->prefix}dialogawp_flows WHERE id = %d LIMIT 1",
+                "SELECT flow_name FROM {$wpdb->prefix}dialoga_flows WHERE id = %d LIMIT 1",
                 intval($flow_id)
             ));
         }
         $payload = array(
-            'event'              => 'dialogawp_lead_captured',
-            'dialogawp_lead_id'     => intval($lead_id),
-            'dialogawp_flow_id'     => intval($flow_id),
-            'dialogawp_flow_name'   => $flow_name,
-            'dialogawp_source_node' => (string) $source_node_id,
+            'event'              => 'dialoga_lead_captured',
+            'dialoga_lead_id'     => intval($lead_id),
+            'dialoga_flow_id'     => intval($flow_id),
+            'dialoga_flow_name'   => $flow_name,
+            'dialoga_source_node' => (string) $source_node_id,
             'value'              => 0,
             'currency'           => 'USD',
         );
-        return apply_filters('dialogawp_lead_conversion_payload', $payload, $lead_id, $lead_data, $flow_id);
+        return apply_filters('dialoga_lead_conversion_payload', $payload, $lead_id, $lead_data, $flow_id);
     }
 
     /**
      * AJAX: Track a client-side event (e.g. conversation abandoned)
      */
     public static function ajax_track_event() {
-        check_ajax_referer('dialogawp_widget', 'nonce');
+        check_ajax_referer('dialoga_widget', 'nonce');
 
         $conversation_id = isset($_POST['conversation_id']) ? intval($_POST['conversation_id']) : 0;
         $event_type      = isset($_POST['event_type'])      ? sanitize_key($_POST['event_type'])  : '';
@@ -1211,12 +1210,12 @@ JS;
             $meta['label']   = isset($_POST['label'])   ? sanitize_text_field(wp_unslash($_POST['label']))   : '';
             // v0.40.0 — no per-event `is_conversion` storage. Conversion status
             // is looked up at metric-query time from the current flow config
-            // (dialogawp_analytics::get_conversion_link_node_ids). This makes
+            // (dialoga_analytics::get_conversion_link_node_ids). This makes
             // toggling the checkbox retroactive: past clicks on a node count
             // as soon as the flag is enabled, stop counting when it's off.
         }
 
-        DialogaWP_Analytics::track_event($conversation_id, $event_type, $meta, $flow_id);
+        Dialoga_Analytics::track_event($conversation_id, $event_type, $meta, $flow_id);
         wp_send_json_success();
     }
 
@@ -1230,10 +1229,10 @@ JS;
      * admin sessions in analytics (Settings → Data Quality).
      */
     public static function ajax_track_bubble_shown() {
-        check_ajax_referer('dialogawp_widget', 'nonce');
+        check_ajax_referer('dialoga_widget', 'nonce');
 
         // Don't log admin impressions by default
-        $settings = get_option('dialogawp_settings', array());
+        $settings = get_option('dialoga_settings', array());
         $include_admin = !empty($settings['include_admin_sessions']);
         if (is_user_logged_in() && current_user_can('manage_options') && !$include_admin) {
             wp_send_json_success(array('logged' => false, 'reason' => 'admin'));
@@ -1241,9 +1240,9 @@ JS;
         }
 
         $flow_id  = isset($_POST['flow_id'])  ? intval($_POST['flow_id'])           : 0;
-        $page_url = isset($_POST['page_url']) ? esc_url_raw($_POST['page_url'])      : '';
+        $page_url = isset($_POST['page_url']) ? esc_url_raw(wp_unslash($_POST['page_url'])) : '';
 
-        DialogaWP_Analytics::track_event(0, 'bubble_shown', array('page_url' => $page_url), $flow_id);
+        Dialoga_Analytics::track_event(0, 'bubble_shown', array('page_url' => $page_url), $flow_id);
         wp_send_json_success(array('logged' => true));
     }
 
@@ -1252,10 +1251,10 @@ JS;
      * and page unload (via sendBeacon) so we capture transcripts even when no lead is submitted.
      */
     public static function ajax_save_transcript() {
-        check_ajax_referer('dialogawp_widget', 'nonce');
+        check_ajax_referer('dialoga_widget', 'nonce');
 
         $session_id    = isset($_POST['session_id'])    ? sanitize_text_field(wp_unslash($_POST['session_id']))    : '';
-        $history_json  = isset($_POST['history'])       ? wp_unslash($_POST['history'])                           : '';
+        $history_json  = isset($_POST['history'])       ? sanitize_textarea_field(wp_unslash($_POST['history']))  : '';
         $flow_id       = isset($_POST['flow_id'])       ? intval($_POST['flow_id'])                                : 0;
         $session_token = isset($_POST['session_token']) ? sanitize_text_field(wp_unslash($_POST['session_token'])) : '';
 
@@ -1282,12 +1281,12 @@ JS;
             return;
         }
 
-        $clean_history = dialogawp_sanitize_json($decoded);
+        $clean_history = dialoga_sanitize_json($decoded);
         $history_to_store = wp_json_encode($clean_history);
 
         global $wpdb;
         $result = $wpdb->update(
-            $wpdb->prefix . 'dialogawp_conversations',
+            $wpdb->prefix . 'dialoga_conversations',
             array('conversation_data' => $history_to_store, 'updated_at' => current_time('mysql')),
             array('session_id' => $session_id),
             array('%s', '%s'),
@@ -1316,7 +1315,7 @@ JS;
 
         global $wpdb;
         $flow_row = $wpdb->get_row($wpdb->prepare(
-            "SELECT flow_data FROM {$wpdb->prefix}dialogawp_flows WHERE id = %d",
+            "SELECT flow_data FROM {$wpdb->prefix}dialoga_flows WHERE id = %d",
             intval($flow_id)
         ));
         if (!$flow_row || empty($flow_row->flow_data)) return array();
@@ -1391,7 +1390,7 @@ JS;
 
         $subject_template = $use_override && !empty($node_overrides['subject'])
             ? $node_overrides['subject']
-            : (!empty($email_cfg['subject']) ? $email_cfg['subject'] : 'New Lead from DialogaWP');
+            : (!empty($email_cfg['subject']) ? $email_cfg['subject'] : 'New Lead from Dialoga');
         $subject = self::substitute_variables($subject_template, $lead_data, $variables);
 
         // Optional per-node intro block (prepended to standard body). Supports variables.
@@ -1422,14 +1421,14 @@ JS;
         // Flow name
         global $wpdb;
         $flow_name = $wpdb->get_var($wpdb->prepare(
-            "SELECT flow_name FROM {$wpdb->prefix}dialogawp_flows WHERE id = %d",
+            "SELECT flow_name FROM {$wpdb->prefix}dialoga_flows WHERE id = %d",
             $flow_id
         ));
         $flow_label = $flow_name ? esc_html($flow_name) : 'Unknown Flow';
 
         $site_name = get_bloginfo('name');
         $site_url  = home_url();
-        $leads_url = admin_url('admin.php?page=dialogawp-leads');
+        $leads_url = admin_url('admin.php?page=dialoga-leads');
         $time      = current_time('F j, Y \a\t g:i a');
 
         // Build conversation transcript HTML (if history provided)
@@ -1497,7 +1496,7 @@ JS;
         </p>
       </td></tr>
       <tr><td style="padding:16px 32px;border-top:1px solid #E5E7EF;text-align:center;">
-        <p style="margin:0;font-size:12px;color:#9ca3af;">Sent by <a href="https://www.litiobyte.com/labs-detalle.php?slug=dialogawp" style="color:#190F4F;text-decoration:none;">DialogaWP</a> on ' . esc_html($site_name) . '</p>
+        <p style="margin:0;font-size:12px;color:#9ca3af;">Sent by <a href="https://www.litiobyte.com/labs-detalle.php?slug=dialoga" style="color:#190F4F;text-decoration:none;">Dialoga</a> on ' . esc_html($site_name) . '</p>
       </td></tr>
     </table>
   </td></tr>
@@ -1513,21 +1512,21 @@ JS;
      * AJAX: Update tags on a lead (admin only)
      */
     public static function ajax_update_lead_tags() {
-        check_ajax_referer('dialogawp_nonce', 'nonce');
+        check_ajax_referer('dialoga_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Unauthorized', 'dialogawp'));
+            wp_send_json_error(__('Unauthorized', 'dialoga'));
             return;
         }
 
-        $lead_id = intval($_POST['lead_id']);
+        $lead_id = isset($_POST['lead_id']) ? intval($_POST['lead_id']) : 0;
         $tags    = isset($_POST['tags']) && is_array($_POST['tags'])
-            ? array_values(array_unique(array_filter(array_map('sanitize_text_field', $_POST['tags']))))
+            ? array_values(array_unique(array_filter(array_map('sanitize_text_field', wp_unslash($_POST['tags'])))))
             : array();
 
         global $wpdb;
         $wpdb->update(
-            $wpdb->prefix . 'dialogawp_leads',
+            $wpdb->prefix . 'dialoga_leads',
             array('tags' => !empty($tags) ? json_encode($tags) : null),
             array('id' => $lead_id),
             array('%s'),
@@ -1542,23 +1541,23 @@ JS;
      * Used by the Leads admin page "View" button to populate the detail modal.
      */
     public static function ajax_get_lead_details() {
-        check_ajax_referer('dialogawp_nonce', 'nonce');
+        check_ajax_referer('dialoga_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Unauthorized', 'dialogawp'));
+            wp_send_json_error(__('Unauthorized', 'dialoga'));
             return;
         }
 
         global $wpdb;
-        $lead_id = intval($_POST['lead_id']);
+        $lead_id = isset($_POST['lead_id']) ? intval($_POST['lead_id']) : 0;
 
         $lead = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$wpdb->prefix}dialogawp_leads WHERE id = %d",
+            "SELECT * FROM {$wpdb->prefix}dialoga_leads WHERE id = %d",
             $lead_id
         ));
 
         if (!$lead) {
-            wp_send_json_error(array('message' => __('Lead not found', 'dialogawp')));
+            wp_send_json_error(array('message' => __('Lead not found', 'dialoga')));
             return;
         }
 
@@ -1567,7 +1566,7 @@ JS;
         if (!empty($lead->conversation_id)) {
             $conversation = $wpdb->get_row($wpdb->prepare(
                 "SELECT id, session_id, flow_id, conversation_data, lead_data, ip_address, user_agent, page_url, created_at, updated_at
-                 FROM {$wpdb->prefix}dialogawp_conversations WHERE id = %d",
+                 FROM {$wpdb->prefix}dialoga_conversations WHERE id = %d",
                 $lead->conversation_id
             ));
         }
@@ -1576,7 +1575,7 @@ JS;
         $flow_name = '';
         if ($conversation && !empty($conversation->flow_id)) {
             $flow_name = $wpdb->get_var($wpdb->prepare(
-                "SELECT flow_name FROM {$wpdb->prefix}dialogawp_flows WHERE id = %d",
+                "SELECT flow_name FROM {$wpdb->prefix}dialoga_flows WHERE id = %d",
                 $conversation->flow_id
             ));
         }
@@ -1658,7 +1657,7 @@ JS;
      * AJAX: Submit survey responses.
      */
     public static function ajax_submit_survey() {
-        check_ajax_referer('dialogawp_widget', 'nonce');
+        check_ajax_referer('dialoga_widget', 'nonce');
 
         $session_id    = sanitize_text_field(wp_unslash($_POST['session_id'] ?? ''));
         $flow_id       = intval($_POST['flow_id'] ?? 0);
@@ -1670,10 +1669,10 @@ JS;
             return;
         }
 
-        $responses_raw = isset($_POST['responses']) ? wp_unslash($_POST['responses']) : '{}';
+        $responses_raw = isset($_POST['responses']) ? sanitize_textarea_field(wp_unslash($_POST['responses'])) : '{}';
         $decoded_responses = json_decode($responses_raw, true);
         if (!is_array($decoded_responses)) $decoded_responses = array();
-        $responses = dialogawp_sanitize_json($decoded_responses);
+        $responses = dialoga_sanitize_json($decoded_responses);
 
         if (empty($responses)) {
             wp_send_json_error(array('message' => 'No responses provided.'));
@@ -1688,15 +1687,15 @@ JS;
             'custom_fields' => $responses,
         );
 
-        $lead_id = DialogaWP_Database::save_lead($lead_data, array('survey'));
+        $lead_id = Dialoga_Database::save_lead($lead_data, array('survey'));
 
-        if ($lead_id && class_exists('DialogaWP_Analytics')) {
+        if ($lead_id && class_exists('Dialoga_Analytics')) {
             global $wpdb;
             $conversation_id = (int) $wpdb->get_var($wpdb->prepare(
-                "SELECT id FROM {$wpdb->prefix}dialogawp_conversations WHERE session_id = %s LIMIT 1",
+                "SELECT id FROM {$wpdb->prefix}dialoga_conversations WHERE session_id = %s LIMIT 1",
                 $session_id
             ));
-            DialogaWP_Analytics::track_event($conversation_id, 'survey_submitted', array(
+            Dialoga_Analytics::track_event($conversation_id, 'survey_submitted', array(
                 'session_id'     => $session_id,
                 'response_count' => count($responses),
             ), $flow_id);
@@ -1718,7 +1717,7 @@ JS;
          * fell through to the default branch below and the visitor's opening
          * message was "Configuration error. Please contact support."
          *
-         * DialogaWP_Database::repair_flow_key_case() rewrites those rows on
+         * Dialoga_Database::repair_flow_key_case() rewrites those rows on
          * upgrade; the lowercase fallback here covers flows that arrive some
          * other way — an import, a restored backup, a manual DB edit.
          */
@@ -1791,7 +1790,7 @@ JS;
          */
         if (defined('WP_DEBUG') && WP_DEBUG) {
             error_log(sprintf(
-                'DialogaWP: unrenderable node %s with nodeType "%s" — falling back to the configuration-error message.',
+                'Dialoga: unrenderable node %s with nodeType "%s" — falling back to the configuration-error message.',
                 isset($node['id']) ? $node['id'] : '(no id)',
                 $node_type
             ));
@@ -1809,9 +1808,9 @@ JS;
 
     /**
      * Atomic per-lead delete. Cleans up all three places lead data lives:
-     *  - the row in dialogawp_leads
-     *  - the lead_data snapshot on dialogawp_conversations (so conversion rate drops too)
-     *  - the lead_captured analytics events on dialogawp_analytics
+     *  - the row in dialoga_leads
+     *  - the lead_data snapshot on dialoga_conversations (so conversion rate drops too)
+     *  - the lead_captured analytics events on dialoga_analytics
      *
      * v0.39.5: instead of clearing `lead_data` to NULL, we now write a TOMBSTONE
      * marker so the conversation retains proof that a lead WAS captured historically.
@@ -1819,14 +1818,14 @@ JS;
      * misleading "⚠ Abandoned" label. Analytics conversion rate math stays clean
      * because it filters on `lead_data IS NOT NULL AND lead_data != '{}'` (tombstone
      * has `_deleted:true` which is truthy — but we also drop the lead_captured
-     * analytics events, so conversion rate queries against dialogawp_analytics see
+     * analytics events, so conversion rate queries against dialoga_analytics see
      * the drop correctly).
      */
     private static function purge_lead_data($lead_id, $conversation_id) {
         global $wpdb;
 
         $wpdb->delete(
-            $wpdb->prefix . 'dialogawp_leads',
+            $wpdb->prefix . 'dialoga_leads',
             array('id' => $lead_id),
             array('%d')
         );
@@ -1837,14 +1836,14 @@ JS;
                 '_deleted_at' => current_time('mysql'),
             ));
             $wpdb->update(
-                $wpdb->prefix . 'dialogawp_conversations',
+                $wpdb->prefix . 'dialoga_conversations',
                 array('lead_data' => $tombstone),
                 array('id' => $conversation_id),
                 array('%s'),
                 array('%d')
             );
             $wpdb->delete(
-                $wpdb->prefix . 'dialogawp_analytics',
+                $wpdb->prefix . 'dialoga_analytics',
                 array(
                     'conversation_id' => $conversation_id,
                     'event_type'      => 'lead_captured',
@@ -1855,26 +1854,26 @@ JS;
     }
 
     public static function ajax_delete_lead() {
-        check_ajax_referer('dialogawp_nonce', 'nonce');
+        check_ajax_referer('dialoga_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(array('message' => __('Forbidden', 'dialogawp')));
+            wp_send_json_error(array('message' => __('Forbidden', 'dialoga')));
             return;
         }
 
         $lead_id = isset($_POST['lead_id']) ? intval($_POST['lead_id']) : 0;
         if (!$lead_id) {
-            wp_send_json_error(array('message' => __('Invalid lead id', 'dialogawp')));
+            wp_send_json_error(array('message' => __('Invalid lead id', 'dialoga')));
             return;
         }
 
         global $wpdb;
         $lead = $wpdb->get_row($wpdb->prepare(
-            "SELECT id, conversation_id FROM {$wpdb->prefix}dialogawp_leads WHERE id = %d",
+            "SELECT id, conversation_id FROM {$wpdb->prefix}dialoga_leads WHERE id = %d",
             $lead_id
         ));
         if (!$lead) {
-            wp_send_json_error(array('message' => __('Lead not found', 'dialogawp')));
+            wp_send_json_error(array('message' => __('Lead not found', 'dialoga')));
             return;
         }
 
@@ -1888,30 +1887,30 @@ JS;
      * Requires the user to type the literal string "DELETE" as confirmation.
      */
     public static function ajax_delete_all_leads() {
-        check_ajax_referer('dialogawp_nonce', 'nonce');
+        check_ajax_referer('dialoga_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(array('message' => __('Forbidden', 'dialogawp')));
+            wp_send_json_error(array('message' => __('Forbidden', 'dialoga')));
             return;
         }
 
         $confirm = isset($_POST['confirm']) ? sanitize_text_field(wp_unslash($_POST['confirm'])) : '';
         if ($confirm !== 'DELETE') {
-            wp_send_json_error(array('message' => __('Type DELETE to confirm', 'dialogawp')));
+            wp_send_json_error(array('message' => __('Type DELETE to confirm', 'dialoga')));
             return;
         }
 
         global $wpdb;
-        $leads_table     = $wpdb->prefix . 'dialogawp_leads';
-        $conv_table      = $wpdb->prefix . 'dialogawp_conversations';
-        $analytics_table = $wpdb->prefix . 'dialogawp_analytics';
+        $leads_table     = $wpdb->prefix . 'dialoga_leads';
+        $conv_table      = $wpdb->prefix . 'dialoga_conversations';
+        $analytics_table = $wpdb->prefix . 'dialoga_analytics';
 
         // Capture conversation_ids tied to leads BEFORE wiping the leads table,
         // so we can clean up the related conversation+analytics rows after.
-        $conv_ids = $wpdb->get_col("SELECT conversation_id FROM {$leads_table} WHERE conversation_id IS NOT NULL");
-        $count    = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$leads_table}");
+        $conv_ids = $wpdb->get_col($wpdb->prepare("SELECT conversation_id FROM %i WHERE conversation_id IS NOT NULL", $leads_table));
+        $count    = (int) $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %i", $leads_table));
 
-        $wpdb->query("TRUNCATE TABLE {$leads_table}");
+        $wpdb->query($wpdb->prepare("TRUNCATE TABLE %i", $leads_table));
 
         if (!empty($conv_ids)) {
             $conv_ids = array_map('intval', $conv_ids);
@@ -1923,12 +1922,12 @@ JS;
                 '_deleted_at' => current_time('mysql'),
             ));
             $wpdb->query($wpdb->prepare(
-                "UPDATE {$conv_table} SET lead_data = %s WHERE id IN ($placeholders)",
-                array_merge(array($tombstone), $conv_ids)
+                "UPDATE %i SET lead_data = %s WHERE id IN ($placeholders)",
+                array_merge(array($conv_table, $tombstone), $conv_ids)
             ));
             $wpdb->query($wpdb->prepare(
-                "DELETE FROM {$analytics_table} WHERE event_type = 'lead_captured' AND conversation_id IN ($placeholders)",
-                $conv_ids
+                "DELETE FROM %i WHERE event_type = 'lead_captured' AND conversation_id IN ($placeholders)",
+                array_merge(array($analytics_table), $conv_ids)
             ));
         }
 
@@ -1937,10 +1936,10 @@ JS;
 
     /**
      * Daily cron — delete leads older than the configured retention window.
-     * Hooked on `dialogawp_lead_retention_cleanup` event scheduled at settings save.
+     * Hooked on `dialoga_lead_retention_cleanup` event scheduled at settings save.
      */
     public static function cron_apply_retention_policy() {
-        $settings  = get_option('dialogawp_settings', array());
+        $settings  = get_option('dialoga_settings', array());
         $retention = isset($settings['lead_retention']) ? $settings['lead_retention'] : array();
 
         if (empty($retention['enabled'])) {
@@ -1952,7 +1951,7 @@ JS;
 
         global $wpdb;
         $old = $wpdb->get_results($wpdb->prepare(
-            "SELECT id, conversation_id FROM {$wpdb->prefix}dialogawp_leads WHERE created_at < %s",
+            "SELECT id, conversation_id FROM {$wpdb->prefix}dialoga_leads WHERE created_at < %s",
             $cutoff
         ));
 
@@ -1971,8 +1970,8 @@ JS;
 
     /**
      * Atomic per-conversation delete. Cleans up all three tables at once:
-     *  - the row in dialogawp_conversations
-     *  - any linked lead in dialogawp_leads
+     *  - the row in dialoga_conversations
+     *  - any linked lead in dialoga_leads
      *  - all analytics events tied to this conversation
      */
     private static function purge_conversation_data($conversation_id) {
@@ -1981,43 +1980,43 @@ JS;
         if (!$conversation_id) return;
 
         $wpdb->delete(
-            $wpdb->prefix . 'dialogawp_leads',
+            $wpdb->prefix . 'dialoga_leads',
             array('conversation_id' => $conversation_id),
             array('%d')
         );
         $wpdb->delete(
-            $wpdb->prefix . 'dialogawp_analytics',
+            $wpdb->prefix . 'dialoga_analytics',
             array('conversation_id' => $conversation_id),
             array('%d')
         );
         $wpdb->delete(
-            $wpdb->prefix . 'dialogawp_conversations',
+            $wpdb->prefix . 'dialoga_conversations',
             array('id' => $conversation_id),
             array('%d')
         );
     }
 
     public static function ajax_delete_conversation() {
-        check_ajax_referer('dialogawp_nonce', 'nonce');
+        check_ajax_referer('dialoga_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(array('message' => __('Forbidden', 'dialogawp')));
+            wp_send_json_error(array('message' => __('Forbidden', 'dialoga')));
             return;
         }
 
         $conversation_id = isset($_POST['conversation_id']) ? intval($_POST['conversation_id']) : 0;
         if (!$conversation_id) {
-            wp_send_json_error(array('message' => __('Invalid conversation id', 'dialogawp')));
+            wp_send_json_error(array('message' => __('Invalid conversation id', 'dialoga')));
             return;
         }
 
         global $wpdb;
         $exists = (int) $wpdb->get_var($wpdb->prepare(
-            "SELECT id FROM {$wpdb->prefix}dialogawp_conversations WHERE id = %d",
+            "SELECT id FROM {$wpdb->prefix}dialoga_conversations WHERE id = %d",
             $conversation_id
         ));
         if (!$exists) {
-            wp_send_json_error(array('message' => __('Conversation not found', 'dialogawp')));
+            wp_send_json_error(array('message' => __('Conversation not found', 'dialoga')));
             return;
         }
 
@@ -2031,30 +2030,30 @@ JS;
      * analytics event in one shot. Requires typed DELETE confirmation.
      */
     public static function ajax_delete_all_conversations() {
-        check_ajax_referer('dialogawp_nonce', 'nonce');
+        check_ajax_referer('dialoga_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(array('message' => __('Forbidden', 'dialogawp')));
+            wp_send_json_error(array('message' => __('Forbidden', 'dialoga')));
             return;
         }
 
         $confirm = isset($_POST['confirm']) ? sanitize_text_field(wp_unslash($_POST['confirm'])) : '';
         if ($confirm !== 'DELETE') {
-            wp_send_json_error(array('message' => __('Type DELETE to confirm', 'dialogawp')));
+            wp_send_json_error(array('message' => __('Type DELETE to confirm', 'dialoga')));
             return;
         }
 
         global $wpdb;
-        $conv_table      = $wpdb->prefix . 'dialogawp_conversations';
-        $leads_table     = $wpdb->prefix . 'dialogawp_leads';
-        $analytics_table = $wpdb->prefix . 'dialogawp_analytics';
+        $conv_table      = $wpdb->prefix . 'dialoga_conversations';
+        $leads_table     = $wpdb->prefix . 'dialoga_leads';
+        $analytics_table = $wpdb->prefix . 'dialoga_analytics';
 
-        $count = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$conv_table}");
+        $count = (int) $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %i", $conv_table));
 
         // TRUNCATE resets AUTO_INCREMENT and is faster than DELETE for full wipes.
-        $wpdb->query("TRUNCATE TABLE {$conv_table}");
-        $wpdb->query("TRUNCATE TABLE {$leads_table}");
-        $wpdb->query("TRUNCATE TABLE {$analytics_table}");
+        $wpdb->query($wpdb->prepare("TRUNCATE TABLE %i", $conv_table));
+        $wpdb->query($wpdb->prepare("TRUNCATE TABLE %i", $leads_table));
+        $wpdb->query($wpdb->prepare("TRUNCATE TABLE %i", $analytics_table));
 
         wp_send_json_success(array('deleted_count' => $count));
     }
@@ -2067,7 +2066,7 @@ JS;
      * lead's retention rules.
      */
     public static function cron_apply_conversation_retention_policy() {
-        $settings  = get_option('dialogawp_settings', array());
+        $settings  = get_option('dialoga_settings', array());
         $retention = isset($settings['conversation_retention']) ? $settings['conversation_retention'] : array();
 
         if (empty($retention['enabled'])) {
@@ -2078,14 +2077,15 @@ JS;
         $cutoff = gmdate('Y-m-d H:i:s', time() - ($days * DAY_IN_SECONDS));
 
         global $wpdb;
-        $conv_table  = $wpdb->prefix . 'dialogawp_conversations';
+        $conv_table  = $wpdb->prefix . 'dialoga_conversations';
 
         // Only abandoned — anything with real lead_data (name/email captured)
         // is kept. That data is still recoverable value.
         $old = $wpdb->get_col($wpdb->prepare(
-            "SELECT id FROM {$conv_table}
+            "SELECT id FROM %i
              WHERE created_at < %s
                AND (lead_data IS NULL OR lead_data = '' OR lead_data = '{}')",
+            $conv_table,
             $cutoff
         ));
 
@@ -2105,23 +2105,23 @@ JS;
      * impressions stay high while opens/leads drop, giving a broken funnel.
      */
     public static function ajax_reset_analytics_events() {
-        check_ajax_referer('dialogawp_nonce', 'nonce');
+        check_ajax_referer('dialoga_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(array('message' => __('Forbidden', 'dialogawp')));
+            wp_send_json_error(array('message' => __('Forbidden', 'dialoga')));
             return;
         }
 
         $confirm = isset($_POST['confirm']) ? sanitize_text_field(wp_unslash($_POST['confirm'])) : '';
         if ($confirm !== 'DELETE') {
-            wp_send_json_error(array('message' => __('Type DELETE to confirm', 'dialogawp')));
+            wp_send_json_error(array('message' => __('Type DELETE to confirm', 'dialoga')));
             return;
         }
 
         global $wpdb;
-        $analytics_table = $wpdb->prefix . 'dialogawp_analytics';
-        $count = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$analytics_table}");
-        $wpdb->query("TRUNCATE TABLE {$analytics_table}");
+        $analytics_table = $wpdb->prefix . 'dialoga_analytics';
+        $count = (int) $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %i", $analytics_table));
+        $wpdb->query($wpdb->prepare("TRUNCATE TABLE %i", $analytics_table));
 
         wp_send_json_success(array('deleted_count' => $count));
     }
@@ -2131,11 +2131,11 @@ JS;
     /*  flows" and "fetch flow by id" — run on every page load / every     */
     /*  chat step. On a busy site that is thousands of DB roundtrips per   */
     /*  day for data that changes maybe a handful of times. Cache them in  */
-    /*  the `dialogawp_flows` object-cache group and bust explicitly on save  */
+    /*  the `dialoga_flows` object-cache group and bust explicitly on save  */
     /*  / delete / active-toggle. See invalidate_flow_cache() below.       */
     /* ------------------------------------------------------------------ */
 
-    const CACHE_GROUP           = 'dialogawp_flows';
+    const CACHE_GROUP           = 'dialoga_flows';
     const CACHE_KEY_ACTIVE_LIST = 'active_flows';
     const CACHE_TTL             = 12 * HOUR_IN_SECONDS;
 
@@ -2145,7 +2145,7 @@ JS;
             return $cached;
         }
         global $wpdb;
-        $flows_table = $wpdb->prefix . 'dialogawp_flows';
+        $flows_table = $wpdb->prefix . 'dialoga_flows';
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
         $rows = $wpdb->get_results("SELECT * FROM {$flows_table} WHERE is_active = 1 ORDER BY id DESC");
         if (!is_array($rows)) $rows = array();
@@ -2162,7 +2162,7 @@ JS;
             return $cached;
         }
         global $wpdb;
-        $flows_table = $wpdb->prefix . 'dialogawp_flows';
+        $flows_table = $wpdb->prefix . 'dialoga_flows';
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
         $row = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$flows_table} WHERE id = %d", $flow_id));
         // Cache the null too so a missing flow doesn't hammer the DB on every
@@ -2172,7 +2172,7 @@ JS;
     }
 
     /**
-     * Bust the cache. Call from any code path that writes to dialogawp_flows:
+     * Bust the cache. Call from any code path that writes to dialoga_flows:
      * save, delete, is_active toggle, visibility change, etc.
      *
      * $flow_id is optional — pass it when you know which row changed to only

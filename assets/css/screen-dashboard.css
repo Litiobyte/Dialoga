@@ -1,101 +1,101 @@
 /*
- * DialogaWP — dashboard screen styles.
+ * Dialoga — dashboard screen styles.
  *
  * Was a nowdoc in templates/admin/dashboard.php passed to wp_add_inline_style().
  * That call ran while the page BODY rendered, by which point WP_Styles had
- * already printed the 'dialogawp-admin' handle and put it in $done — so
+ * already printed the 'dialoga-admin' handle and put it in $done — so
  * print_late_styles() skipped it and none of this CSS ever reached the page.
- * Enqueued per-screen from DialogaWP::enqueue_admin_assets() instead.
+ * Enqueued per-screen from Dialoga::enqueue_admin_assets() instead.
  */
 
 /* Dashboard */
-.dialogawp-dashboard { max-width: 1240px; color: #26233A; }
-.dialogawp-screen-header { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin: 20px 0 24px; padding-bottom: 20px; border-bottom: 1px solid #E5E7EF; }
-.dialogawp-screen-header h1 { padding: 0; color: #190F4F; font-size: 26px; font-weight: 700; line-height: 1.2; }
-.dialogawp-dash-subtitle { color: #64748B; font-size: 14px; margin: 6px 0 0; }
-.dialogawp-screen-header-actions { display: flex; flex-wrap: wrap; gap: 8px; }
-.dialogawp-screen-header-actions .button { display: inline-flex; align-items: center; justify-content: center; min-height: 36px; padding-inline: 14px; }
-.dialogawp-screen-header-actions .button-primary { border-color: #007D75; background: #007D75; }
-.dialogawp-screen-header-actions .button-primary:hover { border-color: #006A63; background: #006A63; }
-.dialogawp-dash-alert { padding: 12px 16px; border-radius: 8px; font-size: 13px; margin-bottom: 20px; line-height: 1.5; }
-.dialogawp-dash-alert a { font-weight: 600; }
-.dialogawp-dash-alert-warning { background: #FFFBEB; border: 1px solid #FDE68A; color: #92400E; }
-.dialogawp-dash-alert-info { background: #EFF6FF; border: 1px solid #BFDBFE; color: #1E40AF; }
-.dialogawp-dash-resume { display: flex; align-items: center; gap: 16px; padding: 18px 20px; border-radius: 12px; background: linear-gradient(135deg, #EEF2FF 0%, #EFF6FF 100%); border: 1px solid #C7D2FE; margin-bottom: 20px; }
-.dialogawp-dash-resume-icon { width: 44px; height: 44px; border-radius: 10px; background: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #4338CA; }
-.dialogawp-dash-resume-icon .dashicons { font-size: 24px; width: 24px; height: 24px; }
-.dialogawp-dash-resume-body { flex: 1; min-width: 0; }
-.dialogawp-dash-resume-title { font-size: 14px; font-weight: 600; color: #26233A; margin: 0 0 4px; }
-.dialogawp-dash-resume-meta { font-size: 13px; color: #64748B; margin: 0; }
-.dialogawp-dash-resume-bar { width: 100%; max-width: 260px; height: 6px; background: #C7D2FE; border-radius: 999px; overflow: hidden; margin-top: 8px; }
-.dialogawp-dash-resume-bar-fill { height: 100%; background: #4338CA; border-radius: 999px; transition: width 0.3s; }
-.dialogawp-dash-resume-actions { display: flex; gap: 8px; flex-shrink: 0; }
-.dialogawp-dash-resume-dismiss { background: none; border: none; color: #64748B; cursor: pointer; font-size: 12px; padding: 6px 10px; border-radius: 6px; }
-.dialogawp-dash-resume-dismiss:hover { background: rgba(100,116,139,0.08); color: #26233A; }
-.dialogawp-dash-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
-.dialogawp-dash-stat { min-width: 0; background: #fff; border: 1px solid #E5E7EF; border-radius: 12px; padding: 20px; display: flex; align-items: center; gap: 16px; box-shadow: 0 1px 2px rgba(25,15,79,0.04); }
-.dialogawp-dash-stat-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.dialogawp-dash-stat-icon .dashicons { font-size: 22px; width: 22px; height: 22px; }
-.dialogawp-dash-stat-icon-visibility { background: #E0E7FF; color: #4338CA; }
-.dialogawp-dash-stat-icon-chat { background: #E6F7F5; color: #007D75; }
-.dialogawp-dash-stat-icon-leads { background: #F0FDF4; color: #16A34A; }
-.dialogawp-dash-stat-icon-conversions { background: #ECFDF5; color: #059669; }
-.dialogawp-dash-stat-icon-rate { background: #FFF7ED; color: #EA580C; }
-.dialogawp-dash-stat-icon-flows { background: #F5F3FF; color: #7C3AED; }
-.dialogawp-dash-stat-value { font-size: 28px; font-weight: 700; color: #26233A; line-height: 1; }
-.dialogawp-dash-stat-label { font-size: 13px; color: #94A3B8; margin-top: 4px; }
-.dialogawp-dash-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 20px; }
-.dialogawp-dash-card { min-width: 0; background: #fff; border: 1px solid #E5E7EF; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 2px rgba(25,15,79,0.04); }
-.dialogawp-dash-card-spaced { margin-bottom: 20px; }
-.dialogawp-dash-card-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid #F1F5F9; }
-.dialogawp-dash-card-header h3 { margin: 0; font-size: 15px; font-weight: 600; color: #26233A; }
-.dialogawp-dash-card-header a { font-size: 13px; text-decoration: none; font-weight: 500; }
-.dialogawp-dash-card-meta { color: #94A3B8; font-size: 12px; }
-.dialogawp-table-scroll { max-width: 100%; overflow-x: auto; }
-.dialogawp-dash-table { width: 100%; min-width: 520px; border-collapse: collapse; }
-.dialogawp-dash-table th { text-align: left; padding: 10px 20px; font-size: 11px; font-weight: 600; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.05em; background: #F7F8FC; }
-.dialogawp-dash-table tbody th,
-.dialogawp-dash-table td { padding: 12px 20px; font-size: 13px; color: #26233A; border-bottom: 1px solid #F1F5F9; background: #fff; text-transform: none; letter-spacing: normal; }
-.dialogawp-dash-table tbody th { font-weight: 600; }
-.dialogawp-dash-table tbody th a { color: #007D75; text-decoration: none; }
-.dialogawp-dash-table tr:last-child > * { border-bottom: none; }
-.dialogawp-dash-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
-.dialogawp-dash-badge-active { background: #DCFCE7; color: #166534; }
-.dialogawp-dash-badge-inactive { background: #F1F5F9; color: #64748B; }
-.dialogawp-dash-empty { padding: 32px 20px; text-align: center; }
-.dialogawp-dash-empty p { color: #94A3B8; font-size: 13px; margin: 0; }
-.dialogawp-dash-links { padding: 8px; }
-.dialogawp-dash-link { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 8px; text-decoration: none; color: inherit; transition: background 0.15s; position: relative; }
-.dialogawp-dash-link:hover { background: #F7F8FC; }
-.dialogawp-dash-link .dashicons { font-size: 20px; width: 20px; height: 20px; flex-shrink: 0; }
-.dialogawp-dash-link strong { display: block; font-size: 13px; color: #26233A; font-weight: 600; }
-.dialogawp-dash-link span { font-size: 12px; color: #94A3B8; }
-.dialogawp-dash-icon-teal { color: #007D75 !important; }
-.dialogawp-dash-icon-green { color: #16A34A !important; }
-.dialogawp-dash-icon-orange { color: #EA580C !important; }
-.dialogawp-dash-icon-purple { color: #7C3AED !important; }
-.dialogawp-dash-icon-pink { color: #DB2777 !important; }
-.dialogawp-dash-icon-cyan { color: #0891B2 !important; }
-.dialogawp-dash-icon-slate { color: #64748B !important; }
-.dialogawp-dash-dropoffs { display: flex; flex-direction: column; gap: 14px; padding: 20px; }
-.dialogawp-dash-dropoff { display: flex; align-items: center; gap: 16px; padding: 12px 16px; background: #FFFBF4; border: 1px solid #FEF3C7; border-radius: 8px; }
-.dialogawp-dash-dropoff-value { min-width: 64px; color: #B45309; font-size: 24px; font-weight: 700; text-align: right; }
-.dialogawp-dash-dropoff-content { flex: 1; min-width: 0; }
-.dialogawp-dash-dropoff-title { color: #26233A; font-size: 14px; font-weight: 600; line-height: 1.35; }
-.dialogawp-dash-dropoff-type { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 4px; background: #FEF3C7; color: #92400E; font-size: 11px; font-weight: 500; vertical-align: middle; }
-.dialogawp-dash-dropoff-meta { margin-top: 2px; color: #64748B; font-size: 12px; }
-.dialogawp-dash-dropoff-action { padding-top: 4px; text-align: right; }
-.dialogawp-dash-card-link { font-size: 13px; }
+.dialoga-dashboard { max-width: 1240px; color: #26233A; }
+.dialoga-screen-header { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin: 20px 0 24px; padding-bottom: 20px; border-bottom: 1px solid #E5E7EF; }
+.dialoga-screen-header h1 { padding: 0; color: #190F4F; font-size: 26px; font-weight: 700; line-height: 1.2; }
+.dialoga-dash-subtitle { color: #64748B; font-size: 14px; margin: 6px 0 0; }
+.dialoga-screen-header-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.dialoga-screen-header-actions .button { display: inline-flex; align-items: center; justify-content: center; min-height: 36px; padding-inline: 14px; }
+.dialoga-screen-header-actions .button-primary { border-color: #007D75; background: #007D75; }
+.dialoga-screen-header-actions .button-primary:hover { border-color: #006A63; background: #006A63; }
+.dialoga-dash-alert { padding: 12px 16px; border-radius: 8px; font-size: 13px; margin-bottom: 20px; line-height: 1.5; }
+.dialoga-dash-alert a { font-weight: 600; }
+.dialoga-dash-alert-warning { background: #FFFBEB; border: 1px solid #FDE68A; color: #92400E; }
+.dialoga-dash-alert-info { background: #EFF6FF; border: 1px solid #BFDBFE; color: #1E40AF; }
+.dialoga-dash-resume { display: flex; align-items: center; gap: 16px; padding: 18px 20px; border-radius: 12px; background: linear-gradient(135deg, #EEF2FF 0%, #EFF6FF 100%); border: 1px solid #C7D2FE; margin-bottom: 20px; }
+.dialoga-dash-resume-icon { width: 44px; height: 44px; border-radius: 10px; background: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #4338CA; }
+.dialoga-dash-resume-icon .dashicons { font-size: 24px; width: 24px; height: 24px; }
+.dialoga-dash-resume-body { flex: 1; min-width: 0; }
+.dialoga-dash-resume-title { font-size: 14px; font-weight: 600; color: #26233A; margin: 0 0 4px; }
+.dialoga-dash-resume-meta { font-size: 13px; color: #64748B; margin: 0; }
+.dialoga-dash-resume-bar { width: 100%; max-width: 260px; height: 6px; background: #C7D2FE; border-radius: 999px; overflow: hidden; margin-top: 8px; }
+.dialoga-dash-resume-bar-fill { height: 100%; background: #4338CA; border-radius: 999px; transition: width 0.3s; }
+.dialoga-dash-resume-actions { display: flex; gap: 8px; flex-shrink: 0; }
+.dialoga-dash-resume-dismiss { background: none; border: none; color: #64748B; cursor: pointer; font-size: 12px; padding: 6px 10px; border-radius: 6px; }
+.dialoga-dash-resume-dismiss:hover { background: rgba(100,116,139,0.08); color: #26233A; }
+.dialoga-dash-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+.dialoga-dash-stat { min-width: 0; background: #fff; border: 1px solid #E5E7EF; border-radius: 12px; padding: 20px; display: flex; align-items: center; gap: 16px; box-shadow: 0 1px 2px rgba(25,15,79,0.04); }
+.dialoga-dash-stat-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.dialoga-dash-stat-icon .dashicons { font-size: 22px; width: 22px; height: 22px; }
+.dialoga-dash-stat-icon-visibility { background: #E0E7FF; color: #4338CA; }
+.dialoga-dash-stat-icon-chat { background: #E6F7F5; color: #007D75; }
+.dialoga-dash-stat-icon-leads { background: #F0FDF4; color: #16A34A; }
+.dialoga-dash-stat-icon-conversions { background: #ECFDF5; color: #059669; }
+.dialoga-dash-stat-icon-rate { background: #FFF7ED; color: #EA580C; }
+.dialoga-dash-stat-icon-flows { background: #F5F3FF; color: #7C3AED; }
+.dialoga-dash-stat-value { font-size: 28px; font-weight: 700; color: #26233A; line-height: 1; }
+.dialoga-dash-stat-label { font-size: 13px; color: #94A3B8; margin-top: 4px; }
+.dialoga-dash-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 20px; }
+.dialoga-dash-card { min-width: 0; background: #fff; border: 1px solid #E5E7EF; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 2px rgba(25,15,79,0.04); }
+.dialoga-dash-card-spaced { margin-bottom: 20px; }
+.dialoga-dash-card-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid #F1F5F9; }
+.dialoga-dash-card-header h3 { margin: 0; font-size: 15px; font-weight: 600; color: #26233A; }
+.dialoga-dash-card-header a { font-size: 13px; text-decoration: none; font-weight: 500; }
+.dialoga-dash-card-meta { color: #94A3B8; font-size: 12px; }
+.dialoga-table-scroll { max-width: 100%; overflow-x: auto; }
+.dialoga-dash-table { width: 100%; min-width: 520px; border-collapse: collapse; }
+.dialoga-dash-table th { text-align: left; padding: 10px 20px; font-size: 11px; font-weight: 600; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.05em; background: #F7F8FC; }
+.dialoga-dash-table tbody th,
+.dialoga-dash-table td { padding: 12px 20px; font-size: 13px; color: #26233A; border-bottom: 1px solid #F1F5F9; background: #fff; text-transform: none; letter-spacing: normal; }
+.dialoga-dash-table tbody th { font-weight: 600; }
+.dialoga-dash-table tbody th a { color: #007D75; text-decoration: none; }
+.dialoga-dash-table tr:last-child > * { border-bottom: none; }
+.dialoga-dash-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+.dialoga-dash-badge-active { background: #DCFCE7; color: #166534; }
+.dialoga-dash-badge-inactive { background: #F1F5F9; color: #64748B; }
+.dialoga-dash-empty { padding: 32px 20px; text-align: center; }
+.dialoga-dash-empty p { color: #94A3B8; font-size: 13px; margin: 0; }
+.dialoga-dash-links { padding: 8px; }
+.dialoga-dash-link { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 8px; text-decoration: none; color: inherit; transition: background 0.15s; position: relative; }
+.dialoga-dash-link:hover { background: #F7F8FC; }
+.dialoga-dash-link .dashicons { font-size: 20px; width: 20px; height: 20px; flex-shrink: 0; }
+.dialoga-dash-link strong { display: block; font-size: 13px; color: #26233A; font-weight: 600; }
+.dialoga-dash-link span { font-size: 12px; color: #94A3B8; }
+.dialoga-dash-icon-teal { color: #007D75 !important; }
+.dialoga-dash-icon-green { color: #16A34A !important; }
+.dialoga-dash-icon-orange { color: #EA580C !important; }
+.dialoga-dash-icon-purple { color: #7C3AED !important; }
+.dialoga-dash-icon-pink { color: #DB2777 !important; }
+.dialoga-dash-icon-cyan { color: #0891B2 !important; }
+.dialoga-dash-icon-slate { color: #64748B !important; }
+.dialoga-dash-dropoffs { display: flex; flex-direction: column; gap: 14px; padding: 20px; }
+.dialoga-dash-dropoff { display: flex; align-items: center; gap: 16px; padding: 12px 16px; background: #FFFBF4; border: 1px solid #FEF3C7; border-radius: 8px; }
+.dialoga-dash-dropoff-value { min-width: 64px; color: #B45309; font-size: 24px; font-weight: 700; text-align: right; }
+.dialoga-dash-dropoff-content { flex: 1; min-width: 0; }
+.dialoga-dash-dropoff-title { color: #26233A; font-size: 14px; font-weight: 600; line-height: 1.35; }
+.dialoga-dash-dropoff-type { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 4px; background: #FEF3C7; color: #92400E; font-size: 11px; font-weight: 500; vertical-align: middle; }
+.dialoga-dash-dropoff-meta { margin-top: 2px; color: #64748B; font-size: 12px; }
+.dialoga-dash-dropoff-action { padding-top: 4px; text-align: right; }
+.dialoga-dash-card-link { font-size: 13px; }
 
-.dialogawp-dashboard :where(a, button, input, .button):focus-visible,
-.dialogawp-dashboard .dialogawp-table-scroll:focus-visible { outline: 2px solid #007D75; outline-offset: 2px; box-shadow: none; }
+.dialoga-dashboard :where(a, button, input, .button):focus-visible,
+.dialoga-dashboard .dialoga-table-scroll:focus-visible { outline: 2px solid #007D75; outline-offset: 2px; box-shadow: none; }
 
 /* Pro-gated Quick Link: muted icon + small Pro pill */
-.dialogawp-dash-link.is-gated .dashicons { opacity: 0.55; }
-.dialogawp-dash-link.is-gated strong { color: #475569; }
-.dialogawp-dash-link.is-gated:hover { background: #FAF5FF; }
-.dialogawp-dash-link.is-gated:hover .dashicons { opacity: 1; }
-.dialogawp-pro-pill {
+.dialoga-dash-link.is-gated .dashicons { opacity: 0.55; }
+.dialoga-dash-link.is-gated strong { color: #475569; }
+.dialoga-dash-link.is-gated:hover { background: #FAF5FF; }
+.dialoga-dash-link.is-gated:hover .dashicons { opacity: 1; }
+.dialoga-pro-pill {
     margin-left: auto;
     background: #FD6A4D;
     color: #26233A !important;
@@ -109,16 +109,16 @@
     line-height: 1.4;
 }
 @media (max-width: 960px) {
-    .dialogawp-dash-stats { grid-template-columns: repeat(2, 1fr); }
-    .dialogawp-dash-grid { grid-template-columns: 1fr; }
+    .dialoga-dash-stats { grid-template-columns: repeat(2, 1fr); }
+    .dialoga-dash-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 600px) {
-    .dialogawp-screen-header { align-items: flex-start; flex-direction: column; gap: 16px; }
-    .dialogawp-screen-header-actions { width: 100%; }
-    .dialogawp-screen-header-actions .button { flex: 1; }
-    .dialogawp-dash-stats { grid-template-columns: 1fr; }
-    .dialogawp-dash-resume { align-items: flex-start; flex-wrap: wrap; }
-    .dialogawp-dash-resume-actions { width: 100%; justify-content: flex-end; }
-    .dialogawp-dash-dropoff { align-items: flex-start; }
-    .dialogawp-dash-dropoff-value { min-width: 54px; font-size: 20px; }
+    .dialoga-screen-header { align-items: flex-start; flex-direction: column; gap: 16px; }
+    .dialoga-screen-header-actions { width: 100%; }
+    .dialoga-screen-header-actions .button { flex: 1; }
+    .dialoga-dash-stats { grid-template-columns: 1fr; }
+    .dialoga-dash-resume { align-items: flex-start; flex-wrap: wrap; }
+    .dialoga-dash-resume-actions { width: 100%; justify-content: flex-end; }
+    .dialoga-dash-dropoff { align-items: flex-start; }
+    .dialoga-dash-dropoff-value { min-width: 54px; font-size: 20px; }
 }

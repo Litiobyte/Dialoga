@@ -1,5 +1,5 @@
 <?php
-/** Run: php tests/i18n-test.php. Optional DIALOGAWP_WP_POMO points to wp-includes/pomo/mo.php.
+/** Run: php tests/i18n-test.php. Optional DIALOGA_WP_POMO points to wp-includes/pomo/mo.php.
  * Also supplies the isolated WordPress/gettext fixture for settings tests; no WordPress DB is used.
  */
 error_reporting(E_ALL);
@@ -9,7 +9,10 @@ set_error_handler(static function ($severity, $message, $file, $line) {
     }
     return false;
 });
-define('ABSPATH', dirname(__DIR__) . '/');
+if (!defined('ABSPATH')) {
+    if (PHP_SAPI !== 'cli') { http_response_code(403); exit('CLI only.'); }
+    define('ABSPATH', dirname(__DIR__) . '/');
+}
 // A deliberately nonexistent language directory makes regional fallback independent of this machine.
 define('WP_LANG_DIR', __DIR__ . '/.nonexistent-wp-languages');
 define('HOUR_IN_SECONDS', 3600);
@@ -17,8 +20,8 @@ $GLOBALS['i18n_fixture'] = array('site' => 'en_US', 'user' => null, 'admin' => t
     'catalog' => array(), 'loads' => array(), 'lookups' => array(), 'menus' => array(), 'hooks' => array());
 
 function plugin_dir_path($file) { return dirname($file) . '/'; }
-function plugin_dir_url($file) { return 'http://dialogawp.test/wp-content/plugins/dialogawp/'; }
-function plugin_basename($file) { return 'dialogawp/' . basename($file); }
+function plugin_dir_url($file) { return 'http://dialoga.test/wp-content/plugins/dialoga/'; }
+function plugin_basename($file) { return 'dialoga/' . basename($file); }
 function is_admin() { return $GLOBALS['i18n_fixture']['admin']; }
 function get_locale() { return $GLOBALS['i18n_fixture']['site']; }
 function determine_locale() {
@@ -63,7 +66,7 @@ function load_textdomain($domain, $path) {
     $GLOBALS['i18n_fixture']['loads'][] = array($domain, $path);
     if (!is_readable($path)) return false;
     $GLOBALS['i18n_fixture']['catalog'] = i18n_read_mo($path);
-    $pomo = getenv('DIALOGAWP_WP_POMO');
+    $pomo = getenv('DIALOGA_WP_POMO');
     if (!$pomo && is_readable(ABSPATH . 'wp-includes/pomo/mo.php')) $pomo = ABSPATH . 'wp-includes/pomo/mo.php';
     $GLOBALS['i18n_fixture']['pomo'] = null;
     if ($pomo) {
@@ -80,7 +83,7 @@ function load_plugin_textdomain($domain, $deprecated, $relative) {
     return is_readable($file) ? load_textdomain($domain, $file) : false;
 }
 function __($msgid, $domain = 'default') {
-    if ($domain !== 'dialogawp') return $msgid;
+    if ($domain !== 'dialoga') return $msgid;
     $GLOBALS['i18n_fixture']['lookups'][] = $msgid;
     if (!empty($GLOBALS['i18n_fixture']['pomo'])) return $GLOBALS['i18n_fixture']['pomo']->translate($msgid);
     if (isset($GLOBALS['i18n_fixture']['catalog'][$msgid])) return $GLOBALS['i18n_fixture']['catalog'][$msgid];
@@ -91,7 +94,7 @@ function __($msgid, $domain = 'default') {
     return $msgid;
 }
 function _n($single, $plural, $number, $domain = 'default') {
-    if ($domain !== 'dialogawp') return $number == 1 ? $single : $plural;
+    if ($domain !== 'dialoga') return $number == 1 ? $single : $plural;
     if (!empty($GLOBALS['i18n_fixture']['pomo'])) return $GLOBALS['i18n_fixture']['pomo']->translate_plural($single, $plural, $number);
     $key = $single . "\0" . $plural;
     if (!isset($GLOBALS['i18n_fixture']['catalog'][$key])) {
@@ -107,12 +110,12 @@ function esc_url($text) { return esc_html($text); }
 function esc_textarea($text) { return esc_html($text); }
 function esc_html__($text, $domain = 'default') { return esc_html(__($text, $domain)); }
 function esc_attr__($text, $domain = 'default') { return esc_attr(__($text, $domain)); }
-require_once ABSPATH . 'dialogawp.php';
+require_once ABSPATH . 'dialoga.php';
 
 function i18n_locale($site, $user = null, $admin = true) {
     $GLOBALS['i18n_fixture'] = array_replace($GLOBALS['i18n_fixture'], array('site' => $site, 'user' => $user,
         'admin' => $admin, 'catalog' => array(), 'loads' => array(), 'lookups' => array(), 'menus' => array(), 'pomo' => null));
-    DialogaWP_I18n::init();
+    Dialoga_I18n::init();
 }
 function i18n_assert($condition, $message) { if (!$condition) throw new RuntimeException($message); }
 function i18n_test($name, $run) {
@@ -157,7 +160,7 @@ function i18n_php_calls($file) {
                 $strings[] = $literal[0] === "'" ? str_replace(array("\\'", '\\\\'), array("'", '\\'), $value) : stripcslashes($value);
             }
         }
-        if (end($strings) === 'dialogawp' && count($strings) >= ($name === '_n' ? 3 : 2)) {
+        if (end($strings) === 'dialoga' && count($strings) >= ($name === '_n' ? 3 : 2)) {
             $calls[] = array('ids' => array_slice($strings, 0, $name === '_n' ? 2 : 1), 'line' => $tokens[$i][2]);
         }
     }
@@ -167,9 +170,9 @@ function i18n_php_calls($file) {
 function i18n_run_tests() {
     $GLOBALS['i18n_passed'] = $GLOBALS['i18n_failed'] = 0;
     $messages = i18n_dictionaries();
-    $mo = i18n_read_mo(ABSPATH . 'languages/dialogawp-es_ES.mo');
+    $mo = i18n_read_mo(ABSPATH . 'languages/dialoga-es_ES.mo');
     i18n_test('compiled MO header, dictionary equality and printf placeholders', static function () use ($messages, $mo) {
-        i18n_assert(in_array(array('DialogaWP_I18n', 'init'), $GLOBALS['i18n_fixture']['hooks']['init'][0] ?? array(), true), 'Actual plugin must register i18n init at priority zero');
+        i18n_assert(in_array(array('Dialoga_I18n', 'init'), $GLOBALS['i18n_fixture']['hooks']['init'][0] ?? array(), true), 'Actual plugin must register i18n init at priority zero');
         i18n_assert(strpos($mo[''], 'charset=UTF-8') !== false, 'MO must be UTF-8');
         i18n_assert(strpos($mo[''], 'nplurals=2; plural=(n != 1);') !== false, 'Unsupported Spanish plural rule');
         $flattened = array();
@@ -191,17 +194,17 @@ function i18n_run_tests() {
         i18n_test('real init, menu and script dictionary: site=' . $case[0] . ' user=' . ($case[1] ?? 'site') . ' admin=' . (int) $case[2], static function () use ($case, $messages) {
             i18n_locale(...$case);
             $spanish = strpos(determine_locale(), 'es_') === 0;
-            i18n_assert($GLOBALS['i18n_fixture']['plugin_load'] === array('dialogawp', false, 'dialogawp/languages'), 'Plugin textdomain registration');
+            i18n_assert($GLOBALS['i18n_fixture']['plugin_load'] === array('dialoga', false, 'dialoga/languages'), 'Plugin textdomain registration');
             if ($spanish) i18n_assert(!empty($GLOBALS['i18n_fixture']['loads']) && !empty($GLOBALS['i18n_fixture']['catalog']), 'Spanish regional fallback did not load bundled MO');
             else i18n_assert(!$GLOBALS['i18n_fixture']['loads'], 'English preference must not load Spanish MO');
-            DialogaWP::get_instance()->add_admin_menu();
-            DialogaWP::get_instance()->add_analytics_menu();
-            foreach (array('DialogaWP' => 'Dashboard', 'dialogawp-builder' => 'Flows', 'dialogawp-leads' => 'Leads',
-                'dialogawp-settings' => 'Settings', 'dialogawp-ai-settings' => 'AI Settings', 'dialogawp-analytics' => 'Analytics') as $slug => $id) {
+            Dialoga::get_instance()->add_admin_menu();
+            Dialoga::get_instance()->add_analytics_menu();
+            foreach (array('Dialoga' => 'Dashboard', 'dialoga-builder' => 'Flows', 'dialoga-leads' => 'Leads',
+                'dialoga-settings' => 'Settings', 'dialoga-ai-settings' => 'AI Settings', 'dialoga-analytics' => 'Analytics') as $slug => $id) {
                 $expected = $spanish ? $messages[$id] : $id;
                 i18n_assert($GLOBALS['i18n_fixture']['menus'][$slug] === array($expected, $expected, 'manage_options'), 'Menu translation/capability: ' . $slug);
             }
-            $dictionary = DialogaWP_I18n::script_messages();
+            $dictionary = Dialoga_I18n::script_messages();
             i18n_assert(count($dictionary) === count($messages), 'Missing script dictionary keys');
             $missing = array();
             foreach ($messages as $id => $value) if (($dictionary[$id] ?? null) !== ($spanish ? $value : $id)) $missing[] = $id;
@@ -209,7 +212,7 @@ function i18n_run_tests() {
         });
     }
     i18n_test('all actual PHP gettext literals have catalog entries, including plural forms', static function () use ($messages, $mo) {
-        $files = array_merge(array(ABSPATH . 'dialogawp.php'), glob(ABSPATH . 'includes/*.php'), glob(ABSPATH . 'templates/admin/*.php'));
+        $files = array_merge(array(ABSPATH . 'dialoga.php'), glob(ABSPATH . 'includes/*.php'), glob(ABSPATH . 'templates/admin/*.php'));
         $errors = array(); $count = 0;
         i18n_locale('es_ES');
         foreach ($files as $file) foreach (i18n_php_calls($file) as $call) {
@@ -220,7 +223,7 @@ function i18n_run_tests() {
                 if (!isset($mo[$one . "\0" . $many])) $errors[] = basename($file) . ':' . $call['line'] . ' missing compiled plural pair: ' . $one;
                 foreach (array(0, 1, 2, 21) as $n) {
                     $id = $n === 1 ? $one : $many;
-                    if (isset($messages[$id]) && _n($one, $many, $n, 'dialogawp') !== $messages[$id]) $errors[] = basename($file) . ':' . $call['line'] . ' untranslated _n at n=' . $n;
+                    if (isset($messages[$id]) && _n($one, $many, $n, 'dialoga') !== $messages[$id]) $errors[] = basename($file) . ':' . $call['line'] . ' untranslated _n at n=' . $n;
                 }
             }
         }

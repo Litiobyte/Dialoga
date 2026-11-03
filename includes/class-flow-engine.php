@@ -1,6 +1,6 @@
 <?php
 /**
- * Flow Engine for DIALOGAWP
+ * Flow Engine for DIALOGA
  * Processes conversation flows and determines next steps
  */
 
@@ -8,7 +8,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class DialogaWP_Engine {
+class Dialoga_Engine {
     
     /**
      * Process a user response and get next node
@@ -104,24 +104,24 @@ class DialogaWP_Engine {
      * Handle branch node conditional logic
      */
     private static function handle_branch_node($node, $edges, $user_response) {
-        dialogawp_debug_log('Branch node: evaluating conditions against user response.');
+        dialoga_debug_log('Branch node: evaluating conditions against user response.');
         
         $output_groups = isset($node['data']['output_groups']) ? $node['data']['output_groups'] : array();
         
-        dialogawp_debug_log('  output groups: ' . count($output_groups));
+        dialoga_debug_log('  output groups: ' . count($output_groups));
         
         // Evaluate each output group
         foreach ($output_groups as $group) {
-            dialogawp_debug_log('  checking group ' . $group['id']);
+            dialoga_debug_log('  checking group ' . $group['id']);
             $conditions = isset($group['conditions']) ? $group['conditions'] : array();
             $logic = isset($group['logic']) ? $group['logic'] : 'and';
             
-            dialogawp_debug_log('    logic ' . $logic . ', ' . count($conditions) . ' condition(s)');
+            dialoga_debug_log('    logic ' . $logic . ', ' . count($conditions) . ' condition(s)');
             
             $results = array();
             foreach ($conditions as $condition) {
                 $result = self::evaluate_condition($condition, $user_response);
-                dialogawp_debug_log('    condition ' . $condition['operator'] . ' => ' . ($result ? 'TRUE' : 'FALSE'));
+                dialoga_debug_log('    condition ' . $condition['operator'] . ' => ' . ($result ? 'TRUE' : 'FALSE'));
                 $results[] = $result;
             }
             
@@ -133,27 +133,27 @@ class DialogaWP_Engine {
                 $group_match = in_array(true, $results); // Any can be true
             }
             
-            dialogawp_debug_log('    group result: ' . ($group_match ? 'MATCHED' : 'NO MATCH'));
+            dialoga_debug_log('    group result: ' . ($group_match ? 'MATCHED' : 'NO MATCH'));
             
             if ($group_match) {
                 // This group matched - find edge with this sourceHandle
                 $group_id = $group['id'];
-                dialogawp_debug_log('  group matched, using sourceHandle ' . $group_id);
+                dialoga_debug_log('  group matched, using sourceHandle ' . $group_id);
                 return self::get_next_node($edges, $node['id'], $group_id);
             }
         }
         
-        dialogawp_debug_log('  no groups matched, trying default edge');
+        dialoga_debug_log('  no groups matched, trying default edge');
         
         // No groups matched - try default edge (first one with no handle)
         foreach ($edges as $edge) {
             if ($edge['source'] === $node['id'] && !isset($edge['sourceHandle'])) {
-                dialogawp_debug_log('  using default edge to ' . $edge['target']);
+                dialoga_debug_log('  using default edge to ' . $edge['target']);
                 return $edge['target'];
             }
         }
         
-        dialogawp_debug_log('  no default edge found');
+        dialoga_debug_log('  no default edge found');
         return null;
     }
     
@@ -206,7 +206,7 @@ class DialogaWP_Engine {
      */
     private static function capture_lead($session_data) {
         global $wpdb;
-        $leads_table = $wpdb->prefix . 'dialogawp_leads';
+        $leads_table = $wpdb->prefix . 'dialoga_leads';
         
         // TODO: Collect actual lead data from session
         $wpdb->insert(
@@ -226,7 +226,7 @@ class DialogaWP_Engine {
      */
     private static function send_notification_email($config) {
         $to = isset($config['email_to']) ? $config['email_to'] : get_option('admin_email');
-        $subject = isset($config['email_subject']) ? $config['email_subject'] : 'New DIALOGAWP Lead';
+        $subject = isset($config['email_subject']) ? $config['email_subject'] : 'New DIALOGA Lead';
         $message = isset($config['email_message']) ? $config['email_message'] : 'A new lead was captured.';
         
         wp_mail($to, $subject, $message);

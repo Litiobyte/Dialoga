@@ -1,6 +1,6 @@
 /** Run: node tests/settings-browser-test.cjs.
- * External Playwright only (no jQuery): DIALOGAWP_BROWSER_TOOLING=/path/to/tooling.
- * DIALOGAWP_BROWSER_EXECUTABLE and PHP_BINARY override Chrome/PHP; DIALOGAWP_BROWSER_REQUIRE=1 makes missing tooling fail.
+ * External Playwright only (no jQuery): DIALOGA_BROWSER_TOOLING=/path/to/tooling.
+ * DIALOGA_BROWSER_EXECUTABLE and PHP_BINARY override Chrome/PHP; DIALOGA_BROWSER_REQUIRE=1 makes missing tooling fail.
  */
 'use strict';
 const assert = require('node:assert/strict');
@@ -11,10 +11,10 @@ const { spawnSync } = require('node:child_process');
 const root = path.resolve(__dirname, '..');
 const temporaryTools = '/var/folders/2w/_41g_m7s1b3ds8bs1w06m15r0000gp/T/opencode/flow-transfer-browser-tooling';
 const slugs = ['general', 'appearance', 'messages', 'business-hours', 'notifications', 'engagement', 'data-privacy', 'danger-zone'];
-const fragment = slug => '#dialogawp-settings-' + slug;
-const tab = (page, slug) => page.locator('#dialogawp-settings-tab-' + slug);
+const fragment = slug => '#dialoga-settings-' + slug;
+const tab = (page, slug) => page.locator('#dialoga-settings-tab-' + slug);
 function dependency(name) {
-    for (const base of [process.env.DIALOGAWP_BROWSER_TOOLING, root, temporaryTools].filter(Boolean)) {
+    for (const base of [process.env.DIALOGA_BROWSER_TOOLING, root, temporaryTools].filter(Boolean)) {
         try { return createRequire(path.join(base, 'package.json')).resolve(name); } catch {}
     }
     return null;
@@ -27,9 +27,9 @@ function bridge(input) {
     return JSON.parse(result.stdout);
 }
 async function selected(page, slug, focused = false) {
-    await page.waitForFunction(() => document.querySelector('.dialogawp-settings-tabs')?.getAttribute('role') === 'tablist');
-    const state = await page.evaluate(() => [...document.querySelectorAll('.dialogawp-settings-tab')].map(element => ({
-        slug: element.id.replace('dialogawp-settings-tab-', ''), selected: element.getAttribute('aria-selected'),
+    await page.waitForFunction(() => document.querySelector('.dialoga-settings-tabs')?.getAttribute('role') === 'tablist');
+    const state = await page.evaluate(() => [...document.querySelectorAll('.dialoga-settings-tab')].map(element => ({
+        slug: element.id.replace('dialoga-settings-tab-', ''), selected: element.getAttribute('aria-selected'),
         tabIndex: element.tabIndex, hidden: document.getElementById(element.hash.slice(1)).hidden,
         display: getComputedStyle(document.getElementById(element.hash.slice(1))).display,
         focused: document.activeElement === element, role: element.getAttribute('role'),
@@ -42,8 +42,8 @@ async function selected(page, slug, focused = false) {
         assert.equal(item.hidden, item.slug !== slug);
         assert.equal(item.display === 'none', item.slug !== slug, 'actual CSS honors hidden');
         assert.equal(item.role, 'tab');
-        assert.equal(item.controls, 'dialogawp-settings-' + item.slug);
-        assert.equal(item.labelled, 'dialogawp-settings-tab-' + item.slug);
+        assert.equal(item.controls, 'dialoga-settings-' + item.slug);
+        assert.equal(item.labelled, 'dialoga-settings-tab-' + item.slug);
         if (focused && item.slug === slug) assert.equal(item.focused, true, 'keyboard focus follows selected tab');
     }
     assert.ok((await page.locator('form').getAttribute('action')).endsWith(fragment(slug)));
@@ -51,18 +51,18 @@ async function selected(page, slug, focused = false) {
 async function main() {
     const playwright = dependency('playwright') || dependency('playwright-core');
     if (!playwright) {
-        console.log('SKIP: external Playwright required; set DIALOGAWP_BROWSER_TOOLING. No jQuery required.');
-        if (process.env.DIALOGAWP_BROWSER_REQUIRE === '1') process.exitCode = 1;
+        console.log('SKIP: external Playwright required; set DIALOGA_BROWSER_TOOLING. No jQuery required.');
+        if (process.env.DIALOGA_BROWSER_REQUIRE === '1') process.exitCode = 1;
         return;
     }
     const { chromium } = require(playwright);
     let browser;
     try {
-        browser = await chromium.launch(process.env.DIALOGAWP_BROWSER_EXECUTABLE ? { executablePath: process.env.DIALOGAWP_BROWSER_EXECUTABLE } :
+        browser = await chromium.launch(process.env.DIALOGA_BROWSER_EXECUTABLE ? { executablePath: process.env.DIALOGA_BROWSER_EXECUTABLE } :
             fs.existsSync('/Applications/Google Chrome.app') ? { channel: 'chrome' } : {});
     } catch (error) {
         console.log('SKIP: Chrome unavailable: ' + error.message);
-        if (process.env.DIALOGAWP_BROWSER_REQUIRE === '1') process.exitCode = 1;
+        if (process.env.DIALOGA_BROWSER_REQUIRE === '1') process.exitCode = 1;
         return;
     }
     let passed = 0, failed = 0;
@@ -77,7 +77,7 @@ async function main() {
             state.dialogs.push({ type: dialog.type(), message: dialog.message() });
             if (dialog.type() === 'prompt') await dialog.accept('DELETE'); else await dialog.accept();
         });
-        await page.route('http://dialogawp.test/**', async route => {
+        await page.route('http://dialoga.test/**', async route => {
             const request = route.request();
             const url = new URL(request.url());
             if (url.pathname === '/assets/settings.js') return route.fulfill({ contentType: 'text/javascript', body: fs.readFileSync(path.join(root, 'assets/js/settings.js'), 'utf8') });
@@ -106,14 +106,14 @@ async function main() {
                 await route.fulfill({ contentType: 'text/html', body: '<!doctype html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
                     '<link rel="stylesheet" href="/assets/admin.css"><link rel="stylesheet" href="/assets/screen-settings.css">' +
                     '<style>body{margin:0;background:#f0f0f1;font:14px Arial}#wpcontent{margin-left:160px;padding:20px}.wrap{margin:10px 20px 0 2px}input,textarea,select{box-sizing:border-box}button{min-height:30px}@media(max-width:782px){#wpcontent{margin-left:0;padding:10px}.wrap{margin:0}}</style>' +
-                    '</head><body><main id="wpcontent">' + rendered.html + '</main>' + (options.js === false ? '' : '<script>window.dialogawpAdmin=' + config + '</script><script src="/assets/settings.js"></script>') + '</body></html>' });
+                    '</head><body><main id="wpcontent">' + rendered.html + '</main>' + (options.js === false ? '' : '<script>window.dialogaAdmin=' + config + '</script><script src="/assets/settings.js"></script>') + '</body></html>' });
             } catch (error) {
                 errors.push('PHP fixture: ' + error.message);
                 await route.fulfill({ status: 500, body: error.message });
             }
         });
         try {
-            await page.goto('http://dialogawp.test/wp-admin/admin.php?page=dialogawp-settings' + (options.hash || ''));
+            await page.goto('http://dialoga.test/wp-admin/admin.php?page=dialoga-settings' + (options.hash || ''));
             await run({ page, state });
             assert.deepEqual(errors, [], 'no uncaught browser/fixture errors');
             console.log('PASS: ' + name); passed++;
@@ -123,7 +123,7 @@ async function main() {
     try {
         await test('real script keyboard tabs, focus, wraparound, Home/End, Tab to panel, color and role controls', async ({ page }) => {
             assert.equal(await page.evaluate(() => typeof window.jQuery), 'undefined', 'native DOM without jQuery');
-            assert.equal(await page.locator('.dialogawp-settings-tabs').getAttribute('role'), 'tablist');
+            assert.equal(await page.locator('.dialoga-settings-tabs').getAttribute('role'), 'tablist');
             await selected(page, 'general'); await tab(page, 'general').focus();
             for (const [key, slug] of [['End', 'danger-zone'], ['ArrowRight', 'general'], ['ArrowLeft', 'danger-zone'],
                 ['Home', 'general'], ['ArrowDown', 'appearance'], ['ArrowUp', 'general']]) {
@@ -131,22 +131,22 @@ async function main() {
                 assert.equal(new URL(page.url()).hash, fragment(slug));
             }
             await page.keyboard.press('Tab');
-            assert.equal(await page.evaluate(() => document.activeElement.id), 'dialogawp-settings-general', 'Tab skips inactive tabs/hidden panels');
+            assert.equal(await page.evaluate(() => document.activeElement.id), 'dialoga-settings-general', 'Tab skips inactive tabs/hidden panels');
             await page.locator('[name="visibility_mode"]').selectOption('specific_roles');
-            assert.equal(await page.locator('#dialogawp-roles-selector').isVisible(), true);
+            assert.equal(await page.locator('#dialoga-roles-selector').isVisible(), true);
             await page.locator('[name="visibility_mode"]').selectOption('everyone');
-            assert.equal(await page.locator('#dialogawp-roles-selector').isVisible(), false);
+            assert.equal(await page.locator('#dialoga-roles-selector').isVisible(), false);
             await tab(page, 'appearance').click();
             await page.locator('[name="primary_color"]').evaluate(el => { el.value = '#abcdef'; el.dispatchEvent(new Event('input', { bubbles: true })); });
             assert.equal(await page.locator('[name="primary_color_text"]').inputValue(), '#abcdef');
         });
         await test('fragment restores on initial load, reload, native POST, hashchange and browser back', async ({ page, state }) => {
             await selected(page, 'engagement'); await page.reload(); await selected(page, 'engagement');
-            await Promise.all([page.waitForNavigation(), page.locator('[name="dialogawp_save_settings"]').first().click()]);
+            await Promise.all([page.waitForNavigation(), page.locator('[name="dialoga_save_settings"]').first().click()]);
             assert.equal(state.posts.length, 1); await selected(page, 'engagement');
             assert.equal(new URL(page.url()).hash, fragment('engagement'));
-            await page.evaluate(() => { location.hash = '#dialogawp-settings-messages'; });
-            await page.waitForFunction(() => document.querySelector('#dialogawp-settings-tab-messages').getAttribute('aria-selected') === 'true');
+            await page.evaluate(() => { location.hash = '#dialoga-settings-messages'; });
+            await page.waitForFunction(() => document.querySelector('#dialoga-settings-tab-messages').getAttribute('aria-selected') === 'true');
             await selected(page, 'messages'); await page.goBack(); await selected(page, 'engagement');
         }, { hash: fragment('engagement') });
         await test('native hidden-panel inputs submit with visible fields and persist cross-tab edits in real PHP', async ({ page, state }) => {
@@ -161,7 +161,7 @@ async function main() {
             assert.equal(successful.chat_header_title, 'Talk to our team');
             assert.equal(successful.welcome_message, 'Visitor\'s "welcome"\nSecond line \\ path');
             assert.equal(successful.email_notifications_subject, 'Custom lead subject'); assert.equal(successful.lead_retention_days, '45');
-            await Promise.all([page.waitForNavigation(), page.locator('[name="dialogawp_save_settings"]').first().click()]);
+            await Promise.all([page.waitForNavigation(), page.locator('[name="dialoga_save_settings"]').first().click()]);
             await selected(page, 'appearance');
             // Native HTML form encoding canonicalizes textarea line breaks to CRLF.
             assert.equal(state.settings.welcome_message.replace(/\r\n/g, '\n'), successful.welcome_message);
@@ -175,23 +175,23 @@ async function main() {
             await page.locator('[name="session_duration"]').fill('0');
             await tab(page, 'engagement').click(); await page.locator('[name="preview_message_delay"]').fill('100');
             await tab(page, 'appearance').click();
-            await page.locator('[name="dialogawp_save_settings"]').first().click();
+            await page.locator('[name="dialoga_save_settings"]').first().click();
             await selected(page, 'general');
             assert.equal(await page.evaluate(() => document.activeElement.name), 'session_duration');
             assert.equal(state.posts.length, 0);
             await page.locator('[name="session_duration"]').fill('7');
-            await page.locator('[name="dialogawp_save_settings"]').first().click(); await selected(page, 'engagement');
+            await page.locator('[name="dialoga_save_settings"]').first().click(); await selected(page, 'engagement');
             assert.equal(await page.evaluate(() => document.activeElement.name), 'preview_message_delay');
             assert.equal(state.posts.length, 0);
         });
         await test('no JavaScript exposes every panel and roles, fragment links and native saving still work', async ({ page, state }) => {
-            for (const slug of slugs) assert.equal(await page.locator('#dialogawp-settings-' + slug).isVisible(), true);
-            assert.equal(await page.locator('#dialogawp-roles-selector').isVisible(), true);
+            for (const slug of slugs) assert.equal(await page.locator('#dialoga-settings-' + slug).isVisible(), true);
+            assert.equal(await page.locator('#dialoga-roles-selector').isVisible(), true);
             await tab(page, 'messages').click(); assert.equal(new URL(page.url()).hash, fragment('messages'));
             await page.locator('[name="welcome_message"]').fill('No JS message\nStill saved');
-            await Promise.all([page.waitForNavigation(), page.locator('[name="dialogawp_save_settings"]').last().click()]);
+            await Promise.all([page.waitForNavigation(), page.locator('[name="dialoga_save_settings"]').last().click()]);
             assert.equal(state.settings.welcome_message.replace(/\r\n/g, '\n'), 'No JS message\nStill saved'); assert.equal(state.posts.length, 1);
-            assert.equal(await page.locator('.dialogawp-settings-danger noscript').isVisible(), true);
+            assert.equal(await page.locator('.dialoga-settings-danger noscript').isVisible(), true);
         }, { js: false });
         for (const locale of ['es_ES', 'es_MX', 'es_AR', 'en_US']) {
             await test('real MO-rendered tabs and translated destructive dialogs: ' + locale, async ({ page, state }) => {
@@ -199,11 +199,11 @@ async function main() {
                 assert.equal(await tab(page, 'appearance').textContent(), dictionary.Appearance);
                 assert.equal(await page.locator('h1').textContent(), dictionary['Settings']);
                 await tab(page, 'danger-zone').click();
-                await page.locator('#dialogawp-clear-all-leads-btn').click();
-                await page.waitForFunction(() => !document.querySelector('#dialogawp-clear-all-leads-btn').disabled);
+                await page.locator('#dialoga-clear-all-leads-btn').click();
+                await page.waitForFunction(() => !document.querySelector('#dialoga-clear-all-leads-btn').disabled);
                 assert.deepEqual(state.dialogs.map(item => item.message), [dictionary['Delete ALL leads?\n\nThis cannot be undone.'],
                     dictionary['Type DELETE (in caps) to confirm:'], dictionary['Deleted %d lead(s).'].replace('%d', '3')]);
-                assert.deepEqual(state.ajax, [{ action: 'dialogawp_delete_all_leads', nonce: 'browser-settings-nonce', confirm: 'DELETE' }]);
+                assert.deepEqual(state.ajax, [{ action: 'dialoga_delete_all_leads', nonce: 'browser-settings-nonce', confirm: 'DELETE' }]);
             }, { site: locale });
         }
         for (const [site, user, spanish] of [['en_US', 'es_MX', true], ['es_ES', 'en_US', false]]) {
@@ -217,8 +217,8 @@ async function main() {
                     await tab(page, slug).click();
                     const layout = await page.evaluate(() => ({ viewport: innerWidth, scroll: document.documentElement.scrollWidth,
                         tabs: (() => {
-                            const nav = document.querySelector('.dialogawp-settings-tabs');
-                            const firstTab = document.querySelector('.dialogawp-settings-tab');
+                            const nav = document.querySelector('.dialoga-settings-tabs');
+                            const firstTab = document.querySelector('.dialoga-settings-tab');
                             const box = nav.getBoundingClientRect();
                             return {
                                 left: box.left, right: box.right, clientWidth: nav.clientWidth, scrollWidth: nav.scrollWidth,
@@ -226,7 +226,7 @@ async function main() {
                                 tabHeight: firstTab.getBoundingClientRect().height, whiteSpace: getComputedStyle(firstTab).whiteSpace
                             };
                         })(),
-                        rows: [...document.querySelectorAll('.dialogawp-settings-panel:not([hidden]) .dialogawp-setting-row')].map(row => ({
+                        rows: [...document.querySelectorAll('.dialoga-settings-panel:not([hidden]) .dialoga-setting-row')].map(row => ({
                             direction: getComputedStyle(row).flexDirection, left: row.getBoundingClientRect().left, right: row.getBoundingClientRect().right,
                             controls: [...row.querySelectorAll('input,select,textarea')].map(el => ({ left: el.getBoundingClientRect().left, right: el.getBoundingClientRect().right }))
                         })) }));

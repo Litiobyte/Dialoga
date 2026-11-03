@@ -1,5 +1,5 @@
 ﻿/**
- * DIALOGAWP Visual Canvas
+ * DIALOGA Visual Canvas
  * v0.28.9 - FEATURE: Delete connections by hovering and clicking
  */
 
@@ -7,16 +7,16 @@
     'use strict';
 
     function t(message) {
-        const i18n = window.dialogawpAdmin && window.dialogawpAdmin.i18n;
+        const i18n = window.dialogaAdmin && window.dialogaAdmin.i18n;
         return i18n && Object.prototype.hasOwnProperty.call(i18n, message) ? i18n[message] : message;
     }
 
     // Debug logging — only active when WP_DEBUG is true
-    var _log = (window.dialogawpAdmin && window.dialogawpAdmin.debug) ? console.log.bind(console) : function() {};
-    var _warn = (window.dialogawpAdmin && window.dialogawpAdmin.debug) ? console.warn.bind(console) : function() {};
+    var _log = (window.dialogaAdmin && window.dialogaAdmin.debug) ? console.log.bind(console) : function() {};
+    var _warn = (window.dialogaAdmin && window.dialogaAdmin.debug) ? console.warn.bind(console) : function() {};
     var _error = console.error.bind(console);
 
-    _log('🎨 Initializing DIALOGAWP Canvas v0.28.9...');
+    _log('🎨 Initializing DIALOGA Canvas v0.28.9...');
     
     const { useState, useCallback, useEffect, useMemo } = React;
     const h = React.createElement;
@@ -45,8 +45,8 @@
         const handleNodeMouseDown = useCallback((e, node) => {
             // Only drag on left click, not on handles/buttons
             if (e.button !== 0) return;
-            if (e.target.closest('.dialogawp-node-delete')) return;
-            if (e.target.classList.contains('dialogawp-node-delete')) return;
+            if (e.target.closest('.dialoga-node-delete')) return;
+            if (e.target.classList.contains('dialoga-node-delete')) return;
 
             _log('🎯 Node mouse down:', node.id);
 
@@ -78,7 +78,7 @@
             
             _log('📥 Drop event on canvas (React handler)');
             
-            const paletteNodeType = e.dataTransfer.getData('dialogawp/node-type');
+            const paletteNodeType = e.dataTransfer.getData('dialoga/node-type');
             
             _log('🔍 Drop data:', { paletteNodeType });
             
@@ -91,8 +91,8 @@
                 const dropX = (e.clientX - rect.left - panOffset.x) / zoom;
                 const dropY = (e.clientY - rect.top - panOffset.y) / zoom;
                 
-                if (window.dialogawpBuilder && window.dialogawpBuilder.addNodeAtPosition) {
-                    window.dialogawpBuilder.addNodeAtPosition(paletteNodeType, dropX, dropY, false);
+                if (window.dialogaBuilder && window.dialogaBuilder.addNodeAtPosition) {
+                    window.dialogaBuilder.addNodeAtPosition(paletteNodeType, dropX, dropY, false);
                 }
                 return;
             }
@@ -155,17 +155,17 @@
                 const updatedEdges = [...prevEdges, newEdge];
 
                 setTimeout(() => {
-                    if (window.dialogawpBuilder && window.dialogawpBuilder.selectedNode) {
-                        const selectedNode = window.dialogawpBuilder.selectedNode;
+                    if (window.dialogaBuilder && window.dialogaBuilder.selectedNode) {
+                        const selectedNode = window.dialogaBuilder.selectedNode;
                         // Branch editor: refresh when branch is the target
                         if (selectedNode.id === targetNode.id && selectedNode.data.nodeType === 'branch') {
                             _log('🔄 Refreshing branch editor with new connection');
-                            window.dialogawpBuilder.selectNode(selectedNode);
+                            window.dialogaBuilder.selectNode(selectedNode);
                         }
                         // Loop editor: refresh when loop is the source (new target wire drawn)
                         if (selectedNode.id === sourceNodeId && selectedNode.data.nodeType === 'loop') {
                             _log('🔄 Refreshing loop editor with new target connection');
-                            window.dialogawpBuilder.selectNode(selectedNode);
+                            window.dialogaBuilder.selectNode(selectedNode);
                         }
                     }
                 }, 50);
@@ -177,7 +177,7 @@
         }, [connectingFrom]);
         
         const handleCanvasMouseDown = useCallback((e) => {
-            if (e.target.id === 'dialogawp-canvas' || e.target.classList.contains('canvas-background')) {
+            if (e.target.id === 'dialoga-canvas' || e.target.classList.contains('canvas-background')) {
                 setIsPanning(true);
                 setPanStart({ x: e.clientX - panOffset.x, y: e.clientY - panOffset.y });
             }
@@ -201,7 +201,7 @@
 
                 // Only reposition once a real drag has started
                 if (hasDraggedRef.current) {
-                    const canvas = document.getElementById('dialogawp-canvas');
+                    const canvas = document.getElementById('dialoga-canvas');
                     const rect = canvas.getBoundingClientRect();
 
                     const newX = (e.clientX - rect.left - panOffset.x - dragOffset.x) / zoom;
@@ -217,7 +217,7 @@
                 }
             } else if (connectingFrom) {
                 // Connection preview - track mouse position
-                const canvas = document.getElementById('dialogawp-canvas');
+                const canvas = document.getElementById('dialoga-canvas');
                 const rect = canvas.getBoundingClientRect();
                 setConnectionPreviewMouse({
                     x: e.clientX - rect.left,
@@ -259,7 +259,7 @@
         const handleWheel = useCallback(() => {}, []);
         
         const handleCanvasClick = useCallback((e) => {
-            if (e.target.id === 'dialogawp-canvas' || e.target.classList.contains('canvas-background')) {
+            if (e.target.id === 'dialoga-canvas' || e.target.classList.contains('canvas-background')) {
                 if (connectingFrom) {
                     _log('❌ Connection cancelled (clicked canvas)');
                     setConnectingFrom(null);
@@ -278,9 +278,9 @@
         }), [nodes, edges, zoom, panOffset]);
         
         useEffect(() => {
-            window.dialogawpReactInstance = apiInstance;
-            _log('✅ DIALOGAWPReactInstance API updated');
-            return () => { delete window.dialogawpReactInstance; };
+            window.dialogaReactInstance = apiInstance;
+            _log('✅ DIALOGAReactInstance API updated');
+            return () => { delete window.dialogaReactInstance; };
         }, [apiInstance]);
         
         useEffect(() => {
@@ -300,7 +300,7 @@
             // (badge size varies with font/zoom, so DOM measurement is more reliable than estimating)
             if (node.id === '__start__') {
                 const handleEl = document.querySelector('[data-start-handle="true"]');
-                const canvas = document.getElementById('dialogawp-canvas');
+                const canvas = document.getElementById('dialoga-canvas');
 
                 if (handleEl && canvas) {
                     const canvasRect = canvas.getBoundingClientRect();
@@ -435,7 +435,7 @@
                     onMouseLeave: () => setHoveredEdgeId(null),
                     onClick: (e) => {
                         e.stopPropagation();
-                        dialogawpModal.confirm(t('Delete this connection?'), function() {
+                        dialogaModal.confirm(t('Delete this connection?'), function() {
                             _log('🗑️ Deleting edge:', edge.id);
                             setEdges(prevEdges => prevEdges.filter(e => e.id !== edge.id));
                         }, { title: t('Delete Connection'), okText: t('Delete'), danger: true });
@@ -550,7 +550,7 @@
             
             return h('div', {
                 key: node.id,
-                className: 'dialogawp-node-container',
+                className: 'dialoga-node-container',
                 'data-node-id': node.id,
                 style: {
                     position: 'absolute',
@@ -573,7 +573,7 @@
             }, [
                 h('button', {
                     key: 'delete-btn',
-                    className: 'dialogawp-node-delete',
+                    className: 'dialoga-node-delete',
                     style: {
                         position: 'absolute',
                         top: (4 * zoom) + 'px',
@@ -598,9 +598,9 @@
                     onClick: (e) => {
                         e.stopPropagation();
                         // deleteNode already has its own modal confirm
-                        if (window.dialogawpBuilder) {
-                            window.dialogawpBuilder.selectedNode = node;
-                            window.dialogawpBuilder.deleteNode();
+                        if (window.dialogaBuilder) {
+                            window.dialogaBuilder.selectedNode = node;
+                            window.dialogaBuilder.deleteNode();
                         }
                     },
                     onMouseEnter: (e) => { e.target.style.opacity = '1'; },
@@ -797,7 +797,7 @@
         });
         
         return h('div', {
-            id: 'dialogawp-canvas',
+            id: 'dialoga-canvas',
             className: 'canvas-background',
             style: {
                 width: '100%',
@@ -1054,8 +1054,8 @@
             }, [
                 h('img', {
                     key: 'icon',
-                    src: (window.dialogawpAdmin && window.dialogawpAdmin.logoUrl) || '',
-                    alt: 'DialogaWP',
+                    src: (window.dialogaAdmin && window.dialogaAdmin.logoUrl) || '',
+                    alt: 'Dialoga',
                     style: { height: '80px', width: 'auto', marginBottom: '14px', opacity: '0.4' },
                     onerror: function(e) { e.target.style.display = 'none'; }
                 }),
@@ -1064,7 +1064,7 @@
         ]);
     }
     
-    window.dialogawpCanvasComponent = FlowCanvas;
-    _log('✅✅✅ DIALOGAWP Canvas v0.28.9 ready! ✅✅✅');
+    window.dialogaCanvasComponent = FlowCanvas;
+    _log('✅✅✅ DIALOGA Canvas v0.28.9 ready! ✅✅✅');
     
 })();

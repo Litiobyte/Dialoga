@@ -3,12 +3,12 @@
     'use strict';
 
     function t(message) {
-        const i18n = window.dialogawpAdmin && window.dialogawpAdmin.i18n;
+        const i18n = window.dialogaAdmin && window.dialogaAdmin.i18n;
         return i18n && Object.prototype.hasOwnProperty.call(i18n, message) ? i18n[message] : message;
     }
 
     $(function() {
-        const builder = window.dialogawpBuilder;
+        const builder = window.dialogaBuilder;
         if (!builder) return;
 
         const maxBytes = 5242880;
@@ -21,9 +21,9 @@
         async function request(action, fields) {
             const data = new FormData();
             data.append('action', action);
-            data.append('nonce', dialogawpAdmin.nonce);
+            data.append('nonce', dialogaAdmin.nonce);
             Object.entries(fields).forEach(([key, value]) => data.append(key, JSON.stringify(value)));
-            const response = await fetch(dialogawpAdmin.ajaxUrl, { method: 'POST', body: data });
+            const response = await fetch(dialogaAdmin.ajaxUrl, { method: 'POST', body: data });
             let result;
             try {
                 result = await response.json();
@@ -43,7 +43,7 @@
 
         function setBusy(value) {
             busy = value;
-            $('.dialogawp-import-flows, .dialogawp-export-flows, .dialogawp-export-current').prop('disabled', value);
+            $('.dialoga-import-flows, .dialoga-export-flows, .dialoga-export-current').prop('disabled', value);
             if (dialog) $(dialog).find('button, input').prop('disabled', value);
         }
 
@@ -59,22 +59,22 @@
             closeDialog();
             const returnFocus = document.activeElement;
             const overlay = document.createElement('div');
-            overlay.className = 'dialogawp-transfer-overlay';
+            overlay.className = 'dialoga-transfer-overlay';
             const box = document.createElement('section');
-            box.className = 'dialogawp-transfer-dialog';
+            box.className = 'dialoga-transfer-dialog';
             box.setAttribute('role', 'dialog');
             box.setAttribute('aria-modal', 'true');
-            box.setAttribute('aria-labelledby', 'dialogawp-transfer-title');
+            box.setAttribute('aria-labelledby', 'dialoga-transfer-title');
             const heading = document.createElement('h2');
-            heading.id = 'dialogawp-transfer-title';
+            heading.id = 'dialoga-transfer-title';
             heading.textContent = title;
             const content = document.createElement('div');
-            content.className = 'dialogawp-transfer-content';
+            content.className = 'dialoga-transfer-content';
             const status = document.createElement('p');
-            status.className = 'dialogawp-transfer-status';
+            status.className = 'dialoga-transfer-status';
             status.setAttribute('role', 'status');
             const actions = document.createElement('div');
-            actions.className = 'dialogawp-transfer-actions';
+            actions.className = 'dialoga-transfer-actions';
             const cancel = document.createElement('button');
             cancel.type = 'button';
             cancel.className = 'button';
@@ -117,7 +117,7 @@
         function addWarnings(parent, warnings) {
             if (!warnings.length) return;
             const list = document.createElement('ul');
-            list.className = 'dialogawp-transfer-warnings';
+            list.className = 'dialoga-transfer-warnings';
             warnings.forEach(warning => {
                 const item = document.createElement('li');
                 item.textContent = warning;
@@ -129,8 +129,8 @@
         async function currentFlow() {
             if (!builder.currentFlowId) return null;
             // Commit the open form before reading React's graph; retain fresh position/edge state.
-            if (builder.selectedNode && $('#dialogawp-node-editor').is(':visible')) {
-                const latest = window.dialogawpReactInstance?.getFlow();
+            if (builder.selectedNode && $('#dialoga-node-editor').is(':visible')) {
+                const latest = window.dialogaReactInstance?.getFlow();
                 if (latest) {
                     const selected = latest.nodes.find(node => node.id === builder.selectedNode.id);
                     if (!selected) throw new Error(t('The selected node no longer exists. Close its editor and try again.'));
@@ -141,14 +141,14 @@
                 builder.saveNodeEdits(true);
                 await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
             }
-            const graph = window.dialogawpReactInstance?.getFlow() || { nodes: builder.nodes, edges: builder.edges };
+            const graph = window.dialogaReactInstance?.getFlow() || { nodes: builder.nodes, edges: builder.edges };
             const nodes = graph.nodes.map(node => builder.selectedNode?.id === node.id
                 ? { ...node, data: builder.selectedNode.data } : node);
             return {
                 id: Number(builder.currentFlowId),
-                flow_name: $('#dialogawp-flow-name').val(),
-                visibility_mode: $('#dialogawp-flow-visibility').val(),
-                visible_roles: $('.dialogawp-role-checkbox:checked').map(function() { return this.value; }).get(),
+                flow_name: $('#dialoga-flow-name').val(),
+                visibility_mode: $('#dialoga-flow-visibility').val(),
+                visible_roles: $('.dialoga-role-checkbox:checked').map(function() { return this.value; }).get(),
                 flow_data: { nodes, edges: graph.edges }
             };
         }
@@ -158,42 +158,42 @@
             if (ids.length > 100) throw new Error(t('Export up to 100 flows per package.'));
             const fields = { flow_ids: ids };
             if (ids.includes(Number(builder.currentFlowId))) fields.current_flow = await currentFlow();
-            const result = await request('dialogawp_export_flows', fields);
+            const result = await request('dialoga_export_flows', fields);
             const blob = new Blob([JSON.stringify(result.package)], { type: 'application/json' });
             if (blob.size > maxBytes) throw new Error(t('Export package exceeds 5 MiB; select fewer flows.'));
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
-            link.download = 'dialogawp-flows-' + new Date().toISOString().slice(0, 10) + '.json';
+            link.download = 'dialoga-flows-' + new Date().toISOString().slice(0, 10) + '.json';
             document.body.append(link);
             link.click();
             link.remove();
             setTimeout(() => URL.revokeObjectURL(url), 1000);
             // Delay feedback until the selection dialog has closed.
-            if (result.warnings.length) setTimeout(() => dialogawpModal.alert(result.warnings.join('\n\n'), t('Export warnings')), 0);
+            if (result.warnings.length) setTimeout(() => dialogaModal.alert(result.warnings.join('\n\n'), t('Export warnings')), 0);
         }
 
-        $('.dialogawp-export-current').on('click', async function() {
+        $('.dialoga-export-current').on('click', async function() {
             if (busy || !builder.currentFlowId) return;
             setBusy(true);
             try {
                 await exportFlows([Number(builder.currentFlowId)]);
             } catch (error) {
-                dialogawpModal.error(error.message);
+                dialogaModal.error(error.message);
             } finally {
                 setBusy(false);
             }
         });
 
-        $(document).on('click', '.dialogawp-export-flows', async function() {
+        $(document).on('click', '.dialoga-export-flows', async function() {
             if (busy) return;
             setBusy(true);
             try {
-                const flows = await request('dialogawp_get_flows', {});
+                const flows = await request('dialoga_get_flows', {});
                 if (!flows.length) throw new Error(t('There are no flows to export.'));
                 setBusy(false);
                 const content = openDialog(t('Export flows'), t('Download JSON'), async parent => {
-                    const ids = Array.from(parent.querySelectorAll('.dialogawp-export-choice:checked'), input => Number(input.value));
+                    const ids = Array.from(parent.querySelectorAll('.dialoga-export-choice:checked'), input => Number(input.value));
                     await exportFlows(ids);
                 });
                 addText(content, t('Select up to 100 flows. The open flow includes current editor changes. Credentials and connector bindings are excluded.'));
@@ -206,25 +206,25 @@
                     const label = document.createElement('label');
                     const input = document.createElement('input');
                     input.type = 'checkbox';
-                    input.className = 'dialogawp-export-choice';
+                    input.className = 'dialoga-export-choice';
                     input.value = flow.id;
                     input.checked = Number(flow.id) === Number(builder.currentFlowId);
                     label.append(input, document.createTextNode(' ' + flow.flow_name));
                     content.append(label);
                 });
-                all.onchange = () => content.querySelectorAll('.dialogawp-export-choice').forEach(input => { input.checked = all.checked; });
+                all.onchange = () => content.querySelectorAll('.dialoga-export-choice').forEach(input => { input.checked = all.checked; });
             } catch (error) {
-                dialogawpModal.error(error.message);
+                dialogaModal.error(error.message);
             } finally {
                 setBusy(false);
             }
         });
 
-        $(document).on('click', '.dialogawp-import-flows', function() {
-            if (!busy) $('#dialogawp-import-file').val('').trigger('click');
+        $(document).on('click', '.dialoga-import-flows', function() {
+            if (!busy) $('#dialoga-import-file').val('').trigger('click');
         });
 
-        $(document).on('change', '#dialogawp-import-file', async function() {
+        $(document).on('change', '#dialoga-import-file', async function() {
             const file = this.files[0];
             if (!file || busy) return;
             setBusy(true);
@@ -236,20 +236,20 @@
                 } catch (error) {
                     throw new Error(t('The file does not contain valid JSON.'));
                 }
-                const preview = await request('dialogawp_validate_flow_import', { package: pkg });
+                const preview = await request('dialoga_validate_flow_import', { package: pkg });
                 setBusy(false);
                 const content = openDialog(t('Import %s flow(s)').replace('%s', preview.flows.length), t('Import inactive copies'), async () => {
-                    const result = await request('dialogawp_import_flows', { package: pkg });
+                    const result = await request('dialoga_import_flows', { package: pkg });
                     // The list is server-rendered; refresh it after import. The editor stays mounted.
                     if (builder.isEditor) builder.loadFlows();
                     else window.location.reload();
-                    setTimeout(() => dialogawpModal.success(t('%s flow(s) imported as inactive copies. Select them from the list and review settings before activation.').replace('%s', result.flow_ids.length)), 0);
+                    setTimeout(() => dialogaModal.success(t('%s flow(s) imported as inactive copies. Select them from the list and review settings before activation.').replace('%s', result.flow_ids.length)), 0);
                 });
                 addText(content, t('Existing flows will not be replaced. Imported copies remain inactive until you explicitly activate them.'));
                 preview.flows.forEach(flow => addText(content, flow.flow_name + ' (' + t('%s nodes, %s connections').replace('%s', flow.node_count).replace('%s', flow.edge_count) + ')'));
                 addWarnings(content, preview.warnings);
             } catch (error) {
-                dialogawpModal.error(error.message);
+                dialogaModal.error(error.message);
             } finally {
                 setBusy(false);
                 this.value = '';
@@ -263,10 +263,10 @@
                 previousFocus = document.activeElement;
                 previousScroll = { x: window.scrollX, y: window.scrollY };
             }
-            document.body.classList.toggle('dialogawp-canvas-fullscreen', value);
-            const button = document.querySelector('.dialogawp-fullscreen-toggle');
+            document.body.classList.toggle('dialoga-canvas-fullscreen', value);
+            const button = document.querySelector('.dialoga-fullscreen-toggle');
             button.setAttribute('aria-pressed', String(value));
-            button.querySelector('.dialogawp-fullscreen-label').textContent = value ? t('Exit full screen') : t('Full screen');
+            button.querySelector('.dialoga-fullscreen-label').textContent = value ? t('Exit full screen') : t('Full screen');
             button.querySelector('.dashicons').className = 'dashicons ' + (value ? 'dashicons-editor-contract' : 'dashicons-editor-expand');
             if (value) button.focus();
             else {
@@ -276,7 +276,7 @@
             window.dispatchEvent(new Event('resize'));
         }
 
-        $('.dialogawp-fullscreen-toggle').on('click', () => toggleFullscreen(!fullscreen));
+        $('.dialoga-fullscreen-toggle').on('click', () => toggleFullscreen(!fullscreen));
         document.addEventListener('keydown', function(e) {
             if (dialog && e.key === 'Tab') {
                 const focusable = Array.from(dialog.querySelectorAll('button:not(:disabled), input:not(:disabled)'));
@@ -293,7 +293,7 @@
                 closeDialog();
                 return;
             }
-            if (document.querySelector('.dialogawp-modal-overlay') || $('.dialogawp-modal:visible').length) return;
+            if (document.querySelector('.dialoga-modal-overlay') || $('.dialoga-modal:visible').length) return;
             if (fullscreen) {
                 e.preventDefault();
                 toggleFullscreen(false);
@@ -301,10 +301,10 @@
         }, true);
 
         // If the active flow is deleted, its toolbar disappears. Do not leave the user trapped.
-        const activeBuilder = document.getElementById('dialogawp-builder-active');
+        const activeBuilder = document.getElementById('dialoga-builder-active');
         if (activeBuilder) {
             const observer = new MutationObserver(() => {
-                if (fullscreen && !$('#dialogawp-builder-active').is(':visible')) toggleFullscreen(false);
+                if (fullscreen && !$('#dialoga-builder-active').is(':visible')) toggleFullscreen(false);
             });
             observer.observe(activeBuilder, { attributes: true, attributeFilter: ['style'] });
         }

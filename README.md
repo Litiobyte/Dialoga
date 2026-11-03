@@ -1,11 +1,11 @@
 <p align="center">
-  <img src="assets/images/dialogawp-logo.png" alt="DialogaWP" width="220">
+  <img src="assets/images/dialoga-logo.png" alt="Dialoga" width="220">
 </p>
 
 <h1 align="center">Convierte conversaciones en oportunidades</h1>
 
 <p align="center">
-  <strong>DialogaWP</strong> es el constructor visual de chatbots para WordPress que ayuda a captar, calificar y acompañar a tus visitantes con conversaciones útiles.
+  <strong>Dialoga</strong> es el constructor visual de chatbots para WordPress que ayuda a captar, calificar y acompañar a tus visitantes con conversaciones útiles.
 </p>
 
 <p align="center">
@@ -16,13 +16,13 @@
 
 ## Tu sitio puede conversar y convertir
 
-Los formularios estáticos piden demasiado antes de ofrecer valor. DialogaWP transforma esa primera interacción en una conversación guiada: responde preguntas, descubre necesidades y captura los datos que importan para tu negocio.
+Los formularios estáticos piden demasiado antes de ofrecer valor. Dialoga transforma esa primera interacción en una conversación guiada: responde preguntas, descubre necesidades y captura los datos que importan para tu negocio.
 
 Todo ocurre dentro de WordPress, con un widget preparado para móvil y un builder visual que tu equipo puede usar sin escribir código.
 
 ## Lo que puedes crear
 
-| Para tu objetivo | DialogaWP te ayuda a |
+| Para tu objetivo | Dialoga te ayuda a |
 | --- | --- |
 | Generar más leads | Capturar nombre, correo, teléfono y respuestas dentro de una conversación. |
 | Atender preguntas | Crear rutas guiadas o conectar OpenAI y Anthropic para conversaciones abiertas. |
@@ -42,7 +42,7 @@ Obtén información cuando el visitante está listo para compartirla. Guarda res
 
 ### IA que conoce tu negocio
 
-Conecta tu propia clave de OpenAI o Anthropic. DialogaWP puede usar el contenido de tu sitio como base de conocimiento para responder con información relevante sobre tu oferta.
+Conecta tu propia clave de OpenAI o Anthropic. Dialoga puede usar el contenido de tu sitio como base de conocimiento para responder con información relevante sobre tu oferta.
 
 ### Decide con datos
 
@@ -66,14 +66,14 @@ Configura horarios, visibilidad, roles, posición y estilo del widget. El asiste
 
 ## Empieza en minutos
 
-1. Instala DialogaWP en `wp-content/plugins/dialogawp` y actívalo desde WordPress.
-2. Abre **DialogaWP > Setup Wizard** para crear tu primer flujo guiado.
-3. Si usarás IA, añade tu propia clave en **DialogaWP > AI Settings**.
+1. Instala Dialoga en `wp-content/plugins/dialoga` y actívalo desde WordPress.
+2. Abre **Dialoga > Setup Wizard** para crear tu primer flujo guiado.
+3. Si usarás IA, añade tu propia clave en **Dialoga > AI Settings**.
 4. Activa el flujo y empieza a convertir conversaciones en oportunidades.
 
 ## IA con control
 
-Las funciones de IA son opcionales. DialogaWP no realiza llamadas externas si no configuras una clave de proveedor y no utilizas nodos de IA.
+Las funciones de IA son opcionales. Dialoga no realiza llamadas externas si no configuras una clave de proveedor y no utilizas nodos de IA.
 
 Cuando habilitas OpenAI o Anthropic, las solicitudes se envían con la clave que tú proporcionas para responder en un nodo de IA, generar el flujo inicial o crear la base de conocimiento. Revisa las políticas de tu proveedor antes de activar estas funciones y no incluyas claves API ni datos de visitantes en el repositorio.
 
@@ -104,7 +104,7 @@ node tools/build-translations.cjs
 
 ## Licencia
 
-DialogaWP se distribuye bajo [GNU GPL v2 o posterior](https://www.gnu.org/licenses/gpl-2.0.html).
+Dialoga se distribuye bajo [GNU GPL v2 o posterior](https://www.gnu.org/licenses/gpl-2.0.html).
 
 ---
 

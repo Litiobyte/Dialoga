@@ -1,8 +1,8 @@
 <?php
 /**
- * Database management for DIALOGAWP
+ * Database management for DIALOGA
  *
- * SQL safety note: table names are all $wpdb->prefix-derived (DialogaWP's own
+ * SQL safety note: table names are all $wpdb->prefix-derived (Dialoga's own
  * custom tables). Schema changes (CREATE/ALTER/DROP) inherently require
  * literal SQL — placeholders are not supported by MySQL DDL. All dynamic
  * values pass through $wpdb->prepare() properly.
@@ -17,8 +17,50 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class DialogaWP_Database {
-    
+class Dialoga_Database {
+
+    /**
+     * Migration from the pre-1.0 "DialogaWP" era: table names carried the
+     * "dialogawp_" prefix. WordPress.org cannot accept plugins with "wp" in
+     * the slug, so the plugin was renamed to Dialoga at 1.0.0 and its tables
+     * renamed accordingly. RENAME preserves every row, index, and column.
+     * Idempotent — does nothing when legacy tables are absent/gone.
+     */
+    public static function rename_legacy_tables() {
+        global $wpdb;
+        $tables = array(
+            'dialoga_flows',
+            'dialoga_conversations',
+            'dialoga_leads',
+            'dialoga_analytics',
+            'dialoga_ai_knowledge',
+        );
+        foreach ($tables as $table) {
+            $legacy = $wpdb->prefix . 'dialogawp_' . substr($table, strlen('dialoga_'));
+            $current = $wpdb->prefix . $table;
+            $legacy_exists  = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $legacy));
+            $current_exists = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $current));
+            if ($legacy_exists && !$current_exists) {
+                $wpdb->query($wpdb->prepare("RENAME TABLE %i TO %i", $legacy, $current));
+            }
+        }
+    }
+
+    /**
+     * Migration from the pre-1.0 "DialogaWP" era: option names also carried
+     * the "dialogawp_" prefix (settings, AI settings, transients, etc.).
+     * One UPDATE per storage table renames everything in place; idempotent
+     * because REPLACE() is a no-op once no "dialogawp_" substring remains.
+     */
+    public static function rename_legacy_options() {
+        global $wpdb;
+        $wpdb->query(
+            "UPDATE {$wpdb->options}
+             SET option_name = REPLACE(option_name, 'dialogawp_', 'dialoga_')
+             WHERE option_name LIKE '%dialogawp\\_%'"
+        );
+    }
+
     /**
      * Create database tables
      */
@@ -27,7 +69,7 @@ class DialogaWP_Database {
         $charset_collate = $wpdb->get_charset_collate();
         
         // Flows table
-        $flows_table = $wpdb->prefix . 'dialogawp_flows';
+        $flows_table = $wpdb->prefix . 'dialoga_flows';
         $flows_sql = "CREATE TABLE IF NOT EXISTS $flows_table (
             id bigint(20) NOT NULL AUTO_INCREMENT,
             flow_name varchar(255) NOT NULL,
@@ -42,7 +84,7 @@ class DialogaWP_Database {
         ) $charset_collate;";
         
         // Conversations table
-        $conversations_table = $wpdb->prefix . 'dialogawp_conversations';
+        $conversations_table = $wpdb->prefix . 'dialoga_conversations';
         $conversations_sql = "CREATE TABLE IF NOT EXISTS $conversations_table (
             id bigint(20) NOT NULL AUTO_INCREMENT,
             session_id varchar(255) NOT NULL,
@@ -61,7 +103,7 @@ class DialogaWP_Database {
         ) $charset_collate;";
         
         // Leads table
-        $leads_table = $wpdb->prefix . 'dialogawp_leads';
+        $leads_table = $wpdb->prefix . 'dialoga_leads';
         $leads_sql = "CREATE TABLE IF NOT EXISTS $leads_table (
             id bigint(20) NOT NULL AUTO_INCREMENT,
             conversation_id bigint(20) DEFAULT NULL,
@@ -82,7 +124,7 @@ class DialogaWP_Database {
         ) $charset_collate;";
         
         // Analytics table
-        $analytics_table = $wpdb->prefix . 'dialogawp_analytics';
+        $analytics_table = $wpdb->prefix . 'dialoga_analytics';
         $analytics_sql = "CREATE TABLE IF NOT EXISTS $analytics_table (
             id bigint(20) NOT NULL AUTO_INCREMENT,
             conversation_id bigint(20) DEFAULT NULL,
@@ -98,7 +140,7 @@ class DialogaWP_Database {
         ) $charset_collate;";
 
         // AI knowledge base table
-        $ai_knowledge_table = $wpdb->prefix . 'dialogawp_ai_knowledge';
+        $ai_knowledge_table = $wpdb->prefix . 'dialoga_ai_knowledge';
         $ai_knowledge_sql = "CREATE TABLE IF NOT EXISTS $ai_knowledge_table (
             id bigint(20) NOT NULL AUTO_INCREMENT,
             content_type varchar(50) NOT NULL DEFAULT 'page',
@@ -130,10 +172,10 @@ class DialogaWP_Database {
         global $wpdb;
         
         $tables = array(
-            $wpdb->prefix . 'dialogawp_flows',
-            $wpdb->prefix . 'dialogawp_conversations',
-            $wpdb->prefix . 'dialogawp_leads',
-            $wpdb->prefix . 'dialogawp_analytics'
+            $wpdb->prefix . 'dialoga_flows',
+            $wpdb->prefix . 'dialoga_conversations',
+            $wpdb->prefix . 'dialoga_leads',
+            $wpdb->prefix . 'dialoga_analytics'
         );
         
         foreach ($tables as $table) {
@@ -166,11 +208,11 @@ class DialogaWP_Database {
 
     public static function migrate() {
         global $wpdb;
-        $flows_table     = $wpdb->prefix . 'dialogawp_flows';
-        $conv_table      = $wpdb->prefix . 'dialogawp_conversations';
-        $analytics_table = $wpdb->prefix . 'dialogawp_analytics';
-        $leads_table     = $wpdb->prefix . 'dialogawp_leads';
-        $ai_table        = $wpdb->prefix . 'dialogawp_ai_knowledge';
+        $flows_table     = $wpdb->prefix . 'dialoga_flows';
+        $conv_table      = $wpdb->prefix . 'dialoga_conversations';
+        $analytics_table = $wpdb->prefix . 'dialoga_analytics';
+        $leads_table     = $wpdb->prefix . 'dialoga_leads';
+        $ai_table        = $wpdb->prefix . 'dialoga_ai_knowledge';
 
         // Visibility columns on flows
         if (!self::column_exists($flows_table, 'visibility_mode')) {
@@ -244,11 +286,11 @@ class DialogaWP_Database {
      */
     public static function backfill_start_node_views() {
         global $wpdb;
-        $flows_table     = $wpdb->prefix . 'dialogawp_flows';
-        $conv_table      = $wpdb->prefix . 'dialogawp_conversations';
-        $analytics_table = $wpdb->prefix . 'dialogawp_analytics';
+        $flows_table     = $wpdb->prefix . 'dialoga_flows';
+        $conv_table      = $wpdb->prefix . 'dialoga_conversations';
+        $analytics_table = $wpdb->prefix . 'dialoga_analytics';
 
-        $done = get_option('dialogawp_backfilled_start_nodes', array());
+        $done = get_option('dialoga_backfilled_start_nodes', array());
         if (!is_array($done)) $done = array();
 
         $flow_rows = $wpdb->get_results("SELECT id, flow_data FROM {$flows_table}");
@@ -318,10 +360,10 @@ class DialogaWP_Database {
             );
         }
 
-        update_option('dialogawp_backfilled_start_nodes', $done, false);
+        update_option('dialoga_backfilled_start_nodes', $done, false);
 
         if ($total_inserted > 0 && function_exists('error_log')) {
-            error_log(sprintf('[DialogaWP] Backfilled %d start-node view events across %d flows.', $total_inserted, count($flow_rows)));
+            error_log(sprintf('[Dialoga] Backfilled %d start-node view events across %d flows.', $total_inserted, count($flow_rows)));
         }
     }
     
@@ -336,7 +378,7 @@ class DialogaWP_Database {
      */
     public static function save_lead($lead_data, $tags = array(), $session_id = '') {
         global $wpdb;
-        $table_name = $wpdb->prefix . 'dialogawp_leads';
+        $table_name = $wpdb->prefix . 'dialoga_leads';
 
         // Extract standard fields
         $name  = isset($lead_data['name'])  ? $lead_data['name']  : '';
@@ -354,7 +396,7 @@ class DialogaWP_Database {
         $conversation_id = 0;
         $is_admin_session = (is_user_logged_in() && current_user_can('manage_options')) ? 1 : 0;
         if (!empty($session_id)) {
-            $conv_table = $wpdb->prefix . 'dialogawp_conversations';
+            $conv_table = $wpdb->prefix . 'dialoga_conversations';
             $conv_row = $wpdb->get_row($wpdb->prepare(
                 "SELECT id, is_admin_session FROM {$conv_table} WHERE session_id = %s LIMIT 1",
                 $session_id
@@ -405,7 +447,7 @@ class DialogaWP_Database {
         );
 
         if ($result === false) {
-            error_log('DIALOGAWP: Failed to save lead - ' . $wpdb->last_error);
+            error_log('DIALOGA: Failed to save lead - ' . $wpdb->last_error);
             return false;
         }
 
@@ -421,7 +463,7 @@ class DialogaWP_Database {
      */
     public static function update_conversation_lead($session_id, $lead_data) {
         global $wpdb;
-        $table_name = $wpdb->prefix . 'dialogawp_conversations';
+        $table_name = $wpdb->prefix . 'dialoga_conversations';
         
         // Update conversation record
         $result = $wpdb->update(
@@ -436,7 +478,7 @@ class DialogaWP_Database {
         );
         
         if ($result === false) {
-            error_log('DIALOGAWP: Failed to update conversation lead - ' . $wpdb->last_error);
+            error_log('DIALOGA: Failed to update conversation lead - ' . $wpdb->last_error);
             return false;
         }
 
@@ -455,7 +497,7 @@ class DialogaWP_Database {
      */
     public static function save_conversation($session_id, $flow_id, $page_url = '', $ip_address = '', $user_agent = '') {
         global $wpdb;
-        $table = $wpdb->prefix . 'dialogawp_conversations';
+        $table = $wpdb->prefix . 'dialoga_conversations';
 
         // Base insert data — required columns that exist on every install
         $data = array(
@@ -483,7 +525,7 @@ class DialogaWP_Database {
         $result = $wpdb->insert($table, $data, $format);
 
         if ($result === false) {
-            error_log('DialogaWP: Failed to save conversation - ' . $wpdb->last_error);
+            error_log('Dialoga: Failed to save conversation - ' . $wpdb->last_error);
             return false;
         }
 
@@ -493,7 +535,7 @@ class DialogaWP_Database {
     /**
      * v1.0.4 — repair flows whose JSON keys were case-folded on save.
      *
-     * Between v1.0.0 and v1.0.3 dialogawp_sanitize_json() ran sanitize_key() over
+     * Between v1.0.0 and v1.0.3 dialoga_sanitize_json() ran sanitize_key() over
      * every object key in flow_data before writing it. sanitize_key()
      * lowercases, so the builder's camelCase keys were renamed in place:
      *
@@ -508,14 +550,14 @@ class DialogaWP_Database {
      * "Configuration error. Please contact support." Branch and loop edges
      * lost their handle bindings the same way.
      *
-     * The sanitizer no longer touches case (see dialogawp_sanitize_json_key), but
+     * The sanitizer no longer touches case (see dialoga_sanitize_json_key), but
      * rows written while it did are still wrong on disk, so rename them back.
      * Only flows that actually contain a mangled key are rewritten, and the
      * correct spelling always wins if somehow both are present.
      */
     public static function repair_flow_key_case() {
         global $wpdb;
-        $flows_table = $wpdb->prefix . 'dialogawp_flows';
+        $flows_table = $wpdb->prefix . 'dialoga_flows';
 
         if (!$wpdb->get_var("SHOW TABLES LIKE '{$flows_table}'")) {
             return 0;

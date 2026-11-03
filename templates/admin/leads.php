@@ -8,14 +8,15 @@ if (!defined('ABSPATH')) {
 }
 
 global $wpdb;
-$leads_table = $wpdb->prefix . 'dialogawp_leads';
+$leads_table = $wpdb->prefix . 'dialoga_leads';
 
 // Handle status update
-if (isset($_POST['update_lead_status']) && check_admin_referer('dialogawp_update_lead')) {
-    $lead_id    = intval($_POST['lead_id']);
-    $new_status = sanitize_text_field(wp_unslash($_POST['status']));
+if (isset($_POST['update_lead_status']) && check_admin_referer('dialoga_update_lead')) {
+    $lead_id    = isset($_POST['lead_id']) ? absint(wp_unslash($_POST['lead_id'])) : 0;
+    $new_status = isset($_POST['status']) && is_string(wp_unslash($_POST['status'])) ? sanitize_key(wp_unslash($_POST['status'])) : '';
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared -- admin write/update op; $wpdb->update() handles preparation internally.
     $wpdb->update($leads_table, array('status' => $new_status), array('id' => $lead_id), array('%s'), array('%d'));
-    echo '<div class="notice notice-success"><p>' . esc_html__('Lead status updated!', 'dialogawp') . '</p></div>';
+    echo '<div class="notice notice-success"><p>' . esc_html__('Lead status updated!', 'dialoga') . '</p></div>';
 }
 
 // Tag filter
@@ -26,10 +27,10 @@ $tag_filter = isset($_GET['tag']) ? sanitize_text_field(wp_unslash($_GET['tag'])
 //
 // v0.38.17 — defensive column existence check so we don't throw
 // "Unknown column" errors on installs where migration hasn't run yet.
-$dialogawp_leads_cols   = $wpdb->get_col("DESCRIBE {$leads_table}", 0);
-$has_admin_flag_col  = in_array('is_admin_session', $dialogawp_leads_cols, true);
-$dialogawp_settings_for_filter = get_option('dialogawp_settings', array());
-$include_admin = !empty($dialogawp_settings_for_filter['include_admin_sessions']);
+$dialoga_leads_cols   = $wpdb->get_col($wpdb->prepare("DESCRIBE %i", $leads_table), 0);
+$has_admin_flag_col  = in_array('is_admin_session', $dialoga_leads_cols, true);
+$dialoga_settings_for_filter = get_option('dialoga_settings', array());
+$include_admin = !empty($dialoga_settings_for_filter['include_admin_sessions']);
 $admin_clause  = ($include_admin || !$has_admin_flag_col) ? '' : ' AND is_admin_session = 0';
 
 // Allow viewing admin-test rows via ?show=admin for one-off inspection
@@ -42,17 +43,24 @@ if ($show_admin_only) {
 if ($tag_filter) {
     $tag_like = '%' . $wpdb->esc_like('"' . $tag_filter . '"') . '%';
     $leads = $wpdb->get_results($wpdb->prepare(
-        "SELECT * FROM $leads_table WHERE tags LIKE %s {$admin_clause} ORDER BY created_at DESC LIMIT 200",
+        "SELECT * FROM %i WHERE tags LIKE %s {$admin_clause} ORDER BY created_at DESC LIMIT 200",
+        $leads_table,
         $tag_like
     ));
 } else {
-    $leads = $wpdb->get_results("SELECT * FROM $leads_table WHERE 1=1 {$admin_clause} ORDER BY created_at DESC LIMIT 200");
+    $leads = $wpdb->get_results($wpdb->prepare(
+        "SELECT * FROM %i WHERE 1=1 {$admin_clause} ORDER BY created_at DESC LIMIT 200",
+        $leads_table
+    ));
 }
 
-// CSV export handled earlier in admin_init (see DialogaWP::maybe_export_leads_csv)
+// CSV export handled earlier in admin_init (see Dialoga::maybe_export_leads_csv)
 
 // Collect all unique tags for filter dropdown
-$all_leads_for_tags = $wpdb->get_col("SELECT tags FROM $leads_table WHERE tags IS NOT NULL AND tags != ''");
+$all_leads_for_tags = $wpdb->get_col($wpdb->prepare(
+    "SELECT tags FROM %i WHERE tags IS NOT NULL AND tags != ''",
+    $leads_table
+));
 $all_tags = array();
 foreach ($all_leads_for_tags as $tags_json) {
     $arr = json_decode($tags_json, true);
@@ -64,7 +72,7 @@ $all_tags = array_values(array_unique(array_filter($all_tags)));
 sort($all_tags);
 
 // Tag colors — hash-based for consistency
-function dialogawp_tag_color($tag) {
+function dialoga_tag_color($tag) {
     $colors = array(
         array('#dbeafe','#190F4F'), array('#dcfce7','#15803d'), array('#fef9c3','#a16207'),
         array('#fce7f3','#be185d'), array('#ede9fe','#6d28d9'), array('#ffedd5','#c2410c'),
@@ -74,79 +82,83 @@ function dialogawp_tag_color($tag) {
     return $colors[$idx];
 }
 
-$base_url = admin_url('admin.php?page=dialogawp-leads');
+$base_url = admin_url('admin.php?page=dialoga-leads');
 $status_labels = array(
-    'new' => __('New', 'dialogawp'),
-    'contacted' => __('Contacted', 'dialogawp'),
-    'qualified' => __('Qualified', 'dialogawp'),
-    'converted' => __('Converted', 'dialogawp'),
-    'closed' => __('Closed', 'dialogawp'),
+    'new' => __('New', 'dialoga'),
+    'contacted' => __('Contacted', 'dialoga'),
+    'qualified' => __('Qualified', 'dialoga'),
+    'converted' => __('Converted', 'dialoga'),
+    'closed' => __('Closed', 'dialoga'),
 );
 $export_url = wp_nonce_url(
     $base_url . ($tag_filter ? '&tag=' . urlencode($tag_filter) : '') . '&export=csv',
-    'dialogawp_export_leads'
+    'dialoga_export_leads'
 );
 ?>
 
-<div class="wrap dialogawp-leads-wrap">
-    <div class="dialogawp-leads-header">
+<div class="wrap dialoga-leads-wrap">
+    <div class="dialoga-leads-header">
         <div>
-            <div class="dialogawp-leads-title-row">
-                <h1><?php echo esc_html__('DialogaWP Leads', 'dialogawp'); ?></h1>
+            <div class="dialoga-leads-title-row">
+                <h1><?php echo esc_html__('Dialoga Leads', 'dialoga'); ?></h1>
                 <?php if ($show_admin_only) : ?>
-                    <span class="dialogawp-leads-view-badge"><?php echo esc_html__('Admin test sessions only', 'dialogawp'); ?></span>
+                    <span class="dialoga-leads-view-badge"><?php echo esc_html__('Admin test sessions only', 'dialoga'); ?></span>
                 <?php endif; ?>
             </div>
-            <p class="dialogawp-leads-description">
+            <p class="dialoga-leads-description">
                 <?php
                 /* translators: %d: number of lead records shown. */
-                echo esc_html(sprintf(_n('%d lead record shown', '%d lead records shown', count($leads), 'dialogawp'), count($leads)));
+                echo esc_html(sprintf(_n('%d lead record shown', '%d lead records shown', count($leads), 'dialoga'), count($leads)));
                 ?>
                 <?php if ($tag_filter) : ?>
-                    <span class="dialogawp-leads-current-filter">
+                    <span class="dialoga-leads-current-filter">
                         <?php
                         /* translators: %s: active tag filter. */
-                        echo esc_html(sprintf(__('Tagged “%s”', 'dialogawp'), $tag_filter));
+                        echo esc_html(sprintf(__('Tagged “%s”', 'dialoga'), $tag_filter));
                         ?>
                     </span>
                 <?php endif; ?>
             </p>
         </div>
         <?php if ($show_admin_only) : ?>
-            <a href="<?php echo esc_url(admin_url('admin.php?page=dialogawp-leads')); ?>" class="button">&larr; <?php echo esc_html__('Back to public leads', 'dialogawp'); ?></a>
+            <a href="<?php echo esc_url(admin_url('admin.php?page=dialoga-leads')); ?>" class="button">&larr; <?php echo esc_html__('Back to public leads', 'dialoga'); ?></a>
         <?php endif; ?>
     </div>
 
     <?php
     if (!$show_admin_only && !$include_admin && $has_admin_flag_col) {
-        $admin_count = (int) $wpdb->get_var("SELECT COUNT(*) FROM $leads_table WHERE is_admin_session = 1");
+        $admin_count = (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM %i WHERE is_admin_session = %d",
+            $leads_table,
+            1
+        ));
         if ($admin_count > 0) :
     ?>
-        <p class="dialogawp-leads-admin-note">
+        <p class="dialoga-leads-admin-note">
             <?php
             /* translators: %d: hidden admin test lead count. */
-            echo esc_html(sprintf(_n('%d admin test lead hidden', '%d admin test leads hidden', $admin_count, 'dialogawp'), $admin_count));
+            echo esc_html(sprintf(_n('%d admin test lead hidden', '%d admin test leads hidden', $admin_count, 'dialoga'), $admin_count));
             ?> &mdash;
-            <a href="<?php echo esc_url(admin_url('admin.php?page=dialogawp-leads&show=admin')); ?>"><?php echo esc_html__('view', 'dialogawp'); ?></a>
-            &middot; <a href="<?php echo esc_url(admin_url('admin.php?page=dialogawp-settings')); ?>"><?php echo esc_html__('change in Settings', 'dialogawp'); ?></a>
+            <a href="<?php echo esc_url(admin_url('admin.php?page=dialoga-leads&show=admin')); ?>"><?php echo esc_html__('view', 'dialoga'); ?></a>
+            &middot; <a href="<?php echo esc_url(admin_url('admin.php?page=dialoga-settings')); ?>"><?php echo esc_html__('change in Settings', 'dialoga'); ?></a>
         </p>
     <?php endif; } ?>
 
-    <div class="dialogawp-leads-toolbar">
-        <nav class="dialogawp-leads-filters" aria-label="<?php echo esc_attr__('Filter leads by tag', 'dialogawp'); ?>">
+    <div class="dialoga-leads-toolbar">
+        <nav class="dialoga-leads-filters" aria-label="<?php echo esc_attr__('Filter leads by tag', 'dialoga'); ?>">
             <?php if (!empty($all_tags)) : ?>
-            <span class="dialogawp-leads-filter-label"><?php echo esc_html__('Filter by tag:', 'dialogawp'); ?></span>
+            <span class="dialoga-leads-filter-label"><?php echo esc_html__('Filter by tag:', 'dialoga'); ?></span>
             <a href="<?php echo esc_url($base_url); ?>"
-               class="dialogawp-filter-tag dialogawp-filter-tag--all<?php echo $tag_filter ? '' : ' is-active'; ?>"
+               class="dialoga-filter-tag dialoga-filter-tag--all<?php echo $tag_filter ? '' : ' is-active'; ?>"
                <?php echo $tag_filter ? '' : 'aria-current="page"'; ?>>
-                <?php echo esc_html__('All', 'dialogawp'); ?>
+                <?php echo esc_html__('All', 'dialoga'); ?>
             </a>
             <?php foreach ($all_tags as $t) :
                 $active = ($tag_filter === $t);
-                list($bg, $text) = dialogawp_tag_color($t);
+                list($bg, $text) = dialoga_tag_color($t);
             ?>
             <a href="<?php echo esc_url($base_url . '&tag=' . urlencode($t)); ?>"
-               class="dialogawp-filter-tag<?php echo $active ? ' is-active' : ''; ?>"
+               class="dialoga-filter-tag<?php echo $active ? ' is-active' : ''; ?>"
                <?php echo $active ? 'aria-current="page"' : ''; ?>
                style="background:<?php echo esc_attr($active ? $text : $bg); ?>;
                        color:<?php echo esc_attr($active ? '#fff' : $text); ?>;
@@ -155,51 +167,51 @@ $export_url = wp_nonce_url(
             </a>
             <?php endforeach; ?>
             <?php else : ?>
-                <span class="dialogawp-leads-filter-label"><?php echo esc_html__('No tags available', 'dialogawp'); ?></span>
+                <span class="dialoga-leads-filter-label"><?php echo esc_html__('No tags available', 'dialoga'); ?></span>
             <?php endif; ?>
         </nav>
-        <a href="<?php echo esc_url($export_url); ?>" class="button button-primary dialogawp-leads-export">
-            <span class="dashicons dashicons-download" aria-hidden="true"></span> <?php echo esc_html__('Export CSV', 'dialogawp'); ?>
+        <a href="<?php echo esc_url($export_url); ?>" class="button button-primary dialoga-leads-export">
+            <span class="dashicons dashicons-download" aria-hidden="true"></span> <?php echo esc_html__('Export CSV', 'dialoga'); ?>
         </a>
     </div>
 
     <!-- Datalist for tag autocomplete (populated from existing tags) -->
-    <datalist id="dialogawp-tag-suggestions">
+    <datalist id="dialoga-tag-suggestions">
         <?php foreach ($all_tags as $t) : ?>
         <option value="<?php echo esc_attr($t); ?>"></option>
         <?php endforeach; ?>
     </datalist>
 
     <?php if (empty($leads)) : ?>
-        <div class="dialogawp-notice dialogawp-leads-empty">
+        <div class="dialoga-notice dialoga-leads-empty">
             <p><?php
             /* translators: %s: tag name. */
-            echo $tag_filter ? sprintf(esc_html__('No leads with tag %s.', 'dialogawp'), '<strong>' . esc_html($tag_filter) . '</strong>') : esc_html__('No leads captured yet.', 'dialogawp');
+            echo $tag_filter ? sprintf(esc_html__('No leads with tag %s.', 'dialoga'), '<strong>' . esc_html($tag_filter) . '</strong>') : esc_html__('No leads captured yet.', 'dialoga');
             ?></p>
         </div>
     <?php else : ?>
-        <div class="dialogawp-leads-table-shell">
-        <p id="dialogawp-leads-table-help" class="screen-reader-text">
-            <?php echo esc_html__('Scroll horizontally to view all lead record columns.', 'dialogawp'); ?>
+        <div class="dialoga-leads-table-shell">
+        <p id="dialoga-leads-table-help" class="screen-reader-text">
+            <?php echo esc_html__('Scroll horizontally to view all lead record columns.', 'dialoga'); ?>
         </p>
-        <div class="dialogawp-leads-table-scroll" tabindex="0" role="region" aria-label="<?php echo esc_attr__('Lead records table', 'dialogawp'); ?>" aria-describedby="dialogawp-leads-table-help">
-        <table class="dialogawp-leads-table wp-list-table widefat striped">
+        <div class="dialoga-leads-table-scroll" tabindex="0" role="region" aria-label="<?php echo esc_attr__('Lead records table', 'dialoga'); ?>" aria-describedby="dialoga-leads-table-help">
+        <table class="dialoga-leads-table wp-list-table widefat striped">
             <caption>
                 <?php
                 /* translators: %d: number of lead records shown. */
-                echo esc_html(sprintf(_n('Lead records: %d result', 'Lead records: %d results', count($leads), 'dialogawp'), count($leads)));
+                echo esc_html(sprintf(_n('Lead records: %d result', 'Lead records: %d results', count($leads), 'dialoga'), count($leads)));
                 ?>
             </caption>
             <thead>
                 <tr>
                     <th scope="col">ID</th>
-                    <th scope="col"><?php echo esc_html__('Name', 'dialogawp'); ?></th>
-                    <th scope="col"><?php echo esc_html__('Email', 'dialogawp'); ?></th>
-                    <th scope="col"><?php echo esc_html__('Phone', 'dialogawp'); ?></th>
-                    <th scope="col"><?php echo esc_html__('Status', 'dialogawp'); ?></th>
-                    <th scope="col"><?php echo esc_html__('Tags', 'dialogawp'); ?></th>
-                    <th scope="col"><?php echo esc_html__('Created', 'dialogawp'); ?></th>
-                    <th scope="col"><?php echo esc_html__('Actions', 'dialogawp'); ?></th>
+                    <th scope="col"><?php echo esc_html__('Name', 'dialoga'); ?></th>
+                    <th scope="col"><?php echo esc_html__('Email', 'dialoga'); ?></th>
+                    <th scope="col"><?php echo esc_html__('Phone', 'dialoga'); ?></th>
+                    <th scope="col"><?php echo esc_html__('Status', 'dialoga'); ?></th>
+                    <th scope="col"><?php echo esc_html__('Tags', 'dialoga'); ?></th>
+                    <th scope="col"><?php echo esc_html__('Created', 'dialoga'); ?></th>
+                    <th scope="col"><?php echo esc_html__('Actions', 'dialoga'); ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -221,63 +233,66 @@ $export_url = wp_nonce_url(
                             <?php else : ?>—<?php endif; ?>
                         </td>
                         <td>
-                            <span class="dialogawp-lead-status dialogawp-lead-status--<?php echo esc_attr(sanitize_html_class($lead->status)); ?>">
+                            <span class="dialoga-lead-status dialoga-lead-status--<?php echo esc_attr(sanitize_html_class($lead->status)); ?>">
                                 <?php echo esc_html($status_labels[$lead->status] ?? $lead->status); ?>
                             </span>
                         </td>
-                        <td class="dialogawp-tags-cell" data-lead-id="<?php echo esc_attr($lead->id); ?>">
-                            <div class="dialogawp-tags-list">
+                        <td class="dialoga-tags-cell" data-lead-id="<?php echo esc_attr($lead->id); ?>">
+                            <div class="dialoga-tags-list">
                                 <?php foreach ($tags_arr as $tag) :
-                                    list($bg, $text) = dialogawp_tag_color($tag);
+                                    list($bg, $text) = dialoga_tag_color($tag);
                                 ?>
-                                <span class="dialogawp-tag-pill"
+                                <span class="dialoga-tag-pill"
                                       data-tag="<?php echo esc_attr($tag); ?>"
                                        style="background:<?php echo esc_attr($bg); ?>;color:<?php echo esc_attr($text); ?>;border-color:<?php echo esc_attr($text); ?>;">
                                      <?php echo esc_html($tag); ?>
-                                     <button type="button" class="dialogawp-tag-remove"
-                                             onclick="dialogawpLeads.removeTag(<?php echo esc_attr($lead->id); ?>, '<?php echo esc_js($tag); ?>')"
+                                     <button type="button" class="dialoga-tag-remove"
+                                             onclick="dialogaLeads.removeTag(<?php echo esc_attr($lead->id); ?>, '<?php echo esc_js($tag); ?>')"
                                              aria-label="<?php
                                              /* translators: 1: tag name, 2: lead ID. */
-                                             echo esc_attr(sprintf(__('Remove tag %1$s from lead %2$d', 'dialogawp'), $tag, $lead->id));
+                                             echo esc_attr(sprintf(__('Remove tag %1$s from lead %2$d', 'dialoga'), $tag, $lead->id));
                                              ?>">&times;</button>
                                 </span>
                                 <?php endforeach; ?>
-                                 <button type="button" class="dialogawp-tag-add-btn"
-                                         onclick="dialogawpLeads.showAddTag(<?php echo esc_attr($lead->id); ?>)"
+                                 <button type="button" class="dialoga-tag-add-btn"
+                                         onclick="dialogaLeads.showAddTag(<?php echo esc_attr($lead->id); ?>)"
                                          aria-expanded="false"
                                          aria-controls="tag-input-<?php echo esc_attr($lead->id); ?>"
-                                         aria-label="<?php echo esc_attr(sprintf(__('Add tag to lead %d', 'dialogawp'), $lead->id)); ?>">
-                                     + <?php echo esc_html__('tag', 'dialogawp'); ?>
+                                         <?php // translators: %d: lead record ID. ?>
+                                         aria-label="<?php echo esc_attr(sprintf(__('Add tag to lead %d', 'dialoga'), $lead->id)); ?>">
+                                     + <?php echo esc_html__('tag', 'dialoga'); ?>
                                  </button>
-                                 <span class="dialogawp-tag-spinner" id="tag-spinner-<?php echo esc_attr($lead->id); ?>" hidden role="status">
-                                     <span class="dialogawp-spinner-dot" aria-hidden="true"></span>
-                                     <span><?php echo esc_html__('Saving...', 'dialogawp'); ?></span>
+                                 <span class="dialoga-tag-spinner" id="tag-spinner-<?php echo esc_attr($lead->id); ?>" hidden role="status">
+                                     <span class="dialoga-spinner-dot" aria-hidden="true"></span>
+                                     <span><?php echo esc_html__('Saving...', 'dialoga'); ?></span>
                                  </span>
                              </div>
-                            <div class="dialogawp-tag-input-wrap" id="tag-input-<?php echo esc_attr($lead->id); ?>" hidden>
-                                 <input type="text" placeholder="<?php echo esc_attr__('tag name', 'dialogawp'); ?>"
-                                        list="dialogawp-tag-suggestions"
+                            <div class="dialoga-tag-input-wrap" id="tag-input-<?php echo esc_attr($lead->id); ?>" hidden>
+                                 <input type="text" placeholder="<?php echo esc_attr__('tag name', 'dialoga'); ?>"
+                                        list="dialoga-tag-suggestions"
                                         autocomplete="off"
-                                        aria-label="<?php echo esc_attr(sprintf(__('Tag name for lead %d', 'dialogawp'), $lead->id)); ?>"
-                                        onkeydown="if(event.key==='Enter'){event.preventDefault();dialogawpLeads.addTag(<?php echo esc_attr($lead->id); ?>,this.value);}"
+                                        <?php // translators: %d: lead record ID. ?>
+                                        aria-label="<?php echo esc_attr(sprintf(__('Tag name for lead %d', 'dialoga'), $lead->id)); ?>"
+                                        onkeydown="if(event.key==='Enter'){event.preventDefault();dialogaLeads.addTag(<?php echo esc_attr($lead->id); ?>,this.value);}"
                                         id="tag-input-field-<?php echo esc_attr($lead->id); ?>" />
-                                <button type="button" class="button button-small button-primary" onclick="dialogawpLeads.addTag(<?php echo esc_attr($lead->id); ?>,document.getElementById('tag-input-field-<?php echo esc_attr($lead->id); ?>').value)"><?php echo esc_html__('Add', 'dialogawp'); ?></button>
-                                <button type="button" class="button button-small" onclick="dialogawpLeads.hideAddTag(<?php echo esc_attr($lead->id); ?>)"
-                                        aria-label="<?php echo esc_attr(sprintf(__('Cancel adding a tag to lead %d', 'dialogawp'), $lead->id)); ?>"><?php echo esc_html__('Cancel', 'dialogawp'); ?></button>
+                                <button type="button" class="button button-small button-primary" onclick="dialogaLeads.addTag(<?php echo esc_attr($lead->id); ?>,document.getElementById('tag-input-field-<?php echo esc_attr($lead->id); ?>').value)"><?php echo esc_html__('Add', 'dialoga'); ?></button>
+                                <button type="button" class="button button-small" onclick="dialogaLeads.hideAddTag(<?php echo esc_attr($lead->id); ?>)"
+                                        <?php // translators: %d: lead record ID. ?>
+                                aria-label="<?php echo esc_attr(sprintf(__('Cancel adding a tag to lead %d', 'dialoga'), $lead->id)); ?>"><?php echo esc_html__('Cancel', 'dialoga'); ?></button>
                             </div>
                         </td>
                         <td><?php echo esc_html(wp_date('M d, Y g:i A', strtotime($lead->created_at), new DateTimeZone('UTC'))); ?></td>
-                        <td class="dialogawp-lead-actions">
+                        <td class="dialoga-lead-actions">
                             <button class="button button-small"
-                                    onclick="dialogawpLeads.viewLead(<?php echo esc_attr($lead->id); ?>)">
-                                <?php echo esc_html__('View', 'dialogawp'); ?>
+                                    onclick="dialogaLeads.viewLead(<?php echo esc_attr($lead->id); ?>)">
+                                <?php echo esc_html__('View', 'dialoga'); ?>
                             </button>
-                             <button class="button button-small dialogawp-lead-delete-btn"
-                                    onclick="dialogawpLeads.deleteLead(<?php echo esc_attr($lead->id); ?>, '<?php
+                             <button class="button button-small dialoga-lead-delete-btn"
+                                    onclick="dialogaLeads.deleteLead(<?php echo esc_attr($lead->id); ?>, '<?php
                                     /* translators: %d: lead ID. */
-                                    echo esc_js($lead->name ?: $lead->email ?: sprintf(__('Lead #%d', 'dialogawp'), $lead->id));
+                                    echo esc_js($lead->name ?: $lead->email ?: sprintf(__('Lead #%d', 'dialoga'), $lead->id));
                                      ?>')">
-                                <?php echo esc_html__('Delete', 'dialogawp'); ?>
+                                <?php echo esc_html__('Delete', 'dialoga'); ?>
                             </button>
                         </td>
                     </tr>
@@ -290,24 +305,24 @@ $export_url = wp_nonce_url(
 </div>
 
 <!-- Lead detail modal -->
-<div id="dialogawp-lead-modal" class="dialogawp-lead-modal" hidden>
-    <div class="dialogawp-lead-dialog" role="dialog" aria-modal="true" aria-labelledby="dialogawp-lead-modal-title" aria-describedby="dialogawp-lead-modal-context">
-        <div class="dialogawp-lead-dialog-header">
+<div id="dialoga-lead-modal" class="dialoga-lead-modal" hidden>
+    <div class="dialoga-lead-dialog" role="dialog" aria-modal="true" aria-labelledby="dialoga-lead-modal-title" aria-describedby="dialoga-lead-modal-context">
+        <div class="dialoga-lead-dialog-header">
             <div>
-                <h2 id="dialogawp-lead-modal-title"><?php echo esc_html__('Lead Details', 'dialogawp'); ?></h2>
-                <p id="dialogawp-lead-modal-context"><?php echo esc_html__('Loading lead record', 'dialogawp'); ?></p>
+                <h2 id="dialoga-lead-modal-title"><?php echo esc_html__('Lead Details', 'dialoga'); ?></h2>
+                <p id="dialoga-lead-modal-context"><?php echo esc_html__('Loading lead record', 'dialoga'); ?></p>
             </div>
-            <button type="button" class="dialogawp-lead-dialog-close" onclick="dialogawpLeads.closeModal()" aria-label="<?php echo esc_attr__('Close lead details', 'dialogawp'); ?>">&times;</button>
+            <button type="button" class="dialoga-lead-dialog-close" onclick="dialogaLeads.closeModal()" aria-label="<?php echo esc_attr__('Close lead details', 'dialoga'); ?>">&times;</button>
         </div>
-        <div id="dialogawp-lead-modal-body" class="dialogawp-lead-dialog-body" aria-live="polite" aria-busy="true">
-            <div class="dialogawp-ld-loading" role="status"><?php echo esc_html__('Loading...', 'dialogawp'); ?></div>
+        <div id="dialoga-lead-modal-body" class="dialoga-lead-dialog-body" aria-live="polite" aria-busy="true">
+            <div class="dialoga-ld-loading" role="status"><?php echo esc_html__('Loading...', 'dialoga'); ?></div>
         </div>
     </div>
 </div>
 
 <?php
 // Screen CSS lives in assets/css/screen-leads.css and is enqueued from
-// DialogaWP::enqueue_admin_assets(). It cannot be attached here:
+// Dialoga::enqueue_admin_assets(). It cannot be attached here:
 // wp_add_inline_style() is a no-op once the handle has printed.
 ?>
 
@@ -315,12 +330,12 @@ $export_url = wp_nonce_url(
 // wp.org: no output buffering. The script body is a nowdoc (no
 // interpolation, so jQuery $ and regex escapes survive intact) and the
 // two runtime values are substituted after the fact via strtr().
-$dialogawp_leads_js = strtr(<<<'JS'
+$dialoga_leads_js = strtr(<<<'JS'
 (function() {
-var t = function(s) { return (dialogawpAdmin.i18n || {})[s] || s; };
-window.dialogawpLeads = {
-    nonce: '%%DIALOGAWP_NONCE%%',
-    ajaxUrl: '%%DIALOGAWP_AJAXURL%%',
+var t = function(s) { return (dialogaAdmin.i18n || {})[s] || s; };
+window.dialogaLeads = {
+    nonce: '%%DIALOGA_NONCE%%',
+    ajaxUrl: '%%DIALOGA_AJAXURL%%',
     previousFocus: null,
 
     escapeHtml: function(s) {
@@ -329,7 +344,7 @@ window.dialogawpLeads = {
     },
 
     getLeadTags: function(leadId) {
-        var pills = document.querySelectorAll('#lead-row-' + leadId + ' .dialogawp-tag-pill');
+        var pills = document.querySelectorAll('#lead-row-' + leadId + ' .dialoga-tag-pill');
         var tags = [];
         pills.forEach(function(pill) { tags.push(pill.dataset.tag); });
         return tags;
@@ -337,7 +352,7 @@ window.dialogawpLeads = {
 
     showAddTag: function(leadId) {
         var inputWrap = document.getElementById('tag-input-' + leadId);
-        var button = document.querySelector('#lead-row-' + leadId + ' .dialogawp-tag-add-btn');
+        var button = document.querySelector('#lead-row-' + leadId + ' .dialoga-tag-add-btn');
         inputWrap.hidden = false;
         if (button) button.setAttribute('aria-expanded', 'true');
         document.getElementById('tag-input-field-' + leadId).focus();
@@ -345,7 +360,7 @@ window.dialogawpLeads = {
 
     hideAddTag: function(leadId) {
         var inputWrap = document.getElementById('tag-input-' + leadId);
-        var button = document.querySelector('#lead-row-' + leadId + ' .dialogawp-tag-add-btn');
+        var button = document.querySelector('#lead-row-' + leadId + ' .dialoga-tag-add-btn');
         if (inputWrap) inputWrap.hidden = true;
         if (button) {
             button.setAttribute('aria-expanded', 'false');
@@ -383,7 +398,7 @@ window.dialogawpLeads = {
         if (inputWrap) inputWrap.hidden = true;
         self.setRowBusy(leadId, true);
         var data = new FormData();
-        data.append('action', 'dialogawp_update_lead_tags');
+        data.append('action', 'dialoga_update_lead_tags');
         data.append('nonce', this.nonce);
         data.append('lead_id', leadId);
         tags.forEach(function(t) { data.append('tags[]', t); });
@@ -411,7 +426,7 @@ window.dialogawpLeads = {
         this.setRowBusy(leadId, true);
 
         var data = new FormData();
-        data.append('action', 'dialogawp_delete_lead');
+        data.append('action', 'dialoga_delete_lead');
         data.append('nonce', this.nonce);
         data.append('lead_id', leadId);
 
@@ -434,22 +449,22 @@ window.dialogawpLeads = {
 
     viewLead: function(leadId) {
         var self = this;
-        var modal = document.getElementById('dialogawp-lead-modal');
-        var body = document.getElementById('dialogawp-lead-modal-body');
-        var title = document.getElementById('dialogawp-lead-modal-title');
-        var context = document.getElementById('dialogawp-lead-modal-context');
+        var modal = document.getElementById('dialoga-lead-modal');
+        var body = document.getElementById('dialoga-lead-modal-body');
+        var title = document.getElementById('dialoga-lead-modal-title');
+        var context = document.getElementById('dialoga-lead-modal-context');
 
         this.previousFocus = document.activeElement;
         title.textContent = t('Lead Details');
         context.textContent = t('Loading lead record');
         body.setAttribute('aria-busy', 'true');
-        body.innerHTML = '<div class="dialogawp-ld-loading" role="status">' + self.escapeHtml(t('Loading...')) + '</div>';
+        body.innerHTML = '<div class="dialoga-ld-loading" role="status">' + self.escapeHtml(t('Loading...')) + '</div>';
         modal.hidden = false;
-        document.body.classList.add('dialogawp-modal-open');
-        modal.querySelector('.dialogawp-lead-dialog-close').focus();
+        document.body.classList.add('dialoga-modal-open');
+        modal.querySelector('.dialoga-lead-dialog-close').focus();
 
         var data = new FormData();
-        data.append('action', 'dialogawp_get_lead_details');
+        data.append('action', 'dialoga_get_lead_details');
         data.append('nonce', this.nonce);
         data.append('lead_id', leadId);
 
@@ -459,12 +474,12 @@ window.dialogawpLeads = {
                 if (response.success) {
                     self.renderLeadDetails(response.data);
                 } else {
-                    body.innerHTML = '<div class="dialogawp-ld-empty">' + self.escapeHtml(t('Could not load lead details.')) + '</div>';
+                    body.innerHTML = '<div class="dialoga-ld-empty">' + self.escapeHtml(t('Could not load lead details.')) + '</div>';
                     body.setAttribute('aria-busy', 'false');
                 }
             })
             .catch(function() {
-                body.innerHTML = '<div class="dialogawp-ld-empty">' + self.escapeHtml(t('Network error loading lead details.')) + '</div>';
+                body.innerHTML = '<div class="dialoga-ld-empty">' + self.escapeHtml(t('Network error loading lead details.')) + '</div>';
                 body.setAttribute('aria-busy', 'false');
             });
     },
@@ -474,9 +489,9 @@ window.dialogawpLeads = {
         var lead = payload.lead || {};
         var conv = payload.conversation;
         var transcript = payload.transcript || [];
-        var title = document.getElementById('dialogawp-lead-modal-title');
-        var context = document.getElementById('dialogawp-lead-modal-context');
-        var body = document.getElementById('dialogawp-lead-modal-body');
+        var title = document.getElementById('dialoga-lead-modal-title');
+        var context = document.getElementById('dialoga-lead-modal-context');
+        var body = document.getElementById('dialoga-lead-modal-body');
         var status = lead.status || 'new';
         var statusLabel = ({new: t('New'), contacted: t('Contacted'), qualified: t('Qualified'), converted: t('Converted'), closed: t('Closed')})[status] || status;
 
@@ -485,9 +500,9 @@ window.dialogawpLeads = {
 
         var tagsHtml = (lead.tags && lead.tags.length)
             ? lead.tags.map(function(t) {
-                return '<span class="dialogawp-ld-tag">' + self.escapeHtml(t) + '</span>';
+                return '<span class="dialoga-ld-tag">' + self.escapeHtml(t) + '</span>';
             }).join('')
-            : '<span class="dialogawp-ld-none">' + self.escapeHtml(t('none')) + '</span>';
+            : '<span class="dialoga-ld-none">' + self.escapeHtml(t('none')) + '</span>';
 
         var extraFieldsHtml = '';
         var skip = { name: 1, email: 1, phone: 1 };
@@ -500,7 +515,7 @@ window.dialogawpLeads = {
             '<dt>' + self.escapeHtml(t('Name')) + '</dt><dd>' + self.escapeHtml(lead.name || '—') + '</dd>' +
             '<dt>' + self.escapeHtml(t('Email')) + '</dt><dd>' + (lead.email ? '<a href="mailto:' + self.escapeHtml(lead.email) + '">' + self.escapeHtml(lead.email) + '</a>' : '—') + '</dd>' +
             '<dt>' + self.escapeHtml(t('Phone')) + '</dt><dd>' + (lead.phone ? '<a href="tel:' + self.escapeHtml(lead.phone) + '">' + self.escapeHtml(lead.phone) + '</a>' : '—') + '</dd>' +
-            '<dt>' + self.escapeHtml(t('Status')) + '</dt><dd><span class="dialogawp-lead-status dialogawp-lead-status--' + self.escapeHtml(status) + '">' + self.escapeHtml(statusLabel) + '</span></dd>' +
+            '<dt>' + self.escapeHtml(t('Status')) + '</dt><dd><span class="dialoga-lead-status dialoga-lead-status--' + self.escapeHtml(status) + '">' + self.escapeHtml(statusLabel) + '</span></dd>' +
             '<dt>' + self.escapeHtml(t('Captured')) + '</dt><dd>' + self.escapeHtml(lead.created_at) + '</dd>' +
             '<dt>' + self.escapeHtml(t('Tags')) + '</dt><dd>' + tagsHtml + '</dd>' +
             extraFieldsHtml;
@@ -508,9 +523,9 @@ window.dialogawpLeads = {
         var convHtml = '';
         if (conv) {
             convHtml = '' +
-                '<div class="dialogawp-ld-section">' +
+                '<div class="dialoga-ld-section">' +
                     '<h3>' + self.escapeHtml(t('Conversation')) + '</h3>' +
-                    '<dl class="dialogawp-ld-grid">' +
+                    '<dl class="dialoga-ld-grid">' +
                         '<dt>' + self.escapeHtml(t('Flow')) + '</dt><dd>' + self.escapeHtml(conv.flow_name || '#' + conv.flow_id) + '</dd>' +
                         '<dt>' + self.escapeHtml(t('Page')) + '</dt><dd>' + (conv.page_url ? '<a href="' + self.escapeHtml(conv.page_url) + '" target="_blank" rel="noopener">' + self.escapeHtml(conv.page_url) + '</a>' : '—') + '</dd>' +
                         '<dt>' + self.escapeHtml(t('Started')) + '</dt><dd>' + self.escapeHtml(conv.created_at) + '</dd>' +
@@ -519,11 +534,11 @@ window.dialogawpLeads = {
                 '</div>';
         }
 
-        var transcriptHtml = '<div class="dialogawp-ld-section"><h3>' + self.escapeHtml(t('Transcript')) + '</h3>';
+        var transcriptHtml = '<div class="dialoga-ld-section"><h3>' + self.escapeHtml(t('Transcript')) + '</h3>';
         if (!transcript.length) {
-            transcriptHtml += '<div class="dialogawp-ld-empty">' + self.escapeHtml(t('No conversation recorded.')) + '</div>';
+            transcriptHtml += '<div class="dialoga-ld-empty">' + self.escapeHtml(t('No conversation recorded.')) + '</div>';
         } else {
-            transcriptHtml += '<div class="dialogawp-ld-transcript">';
+            transcriptHtml += '<div class="dialoga-ld-transcript">';
             transcript.forEach(function(item) {
                 var isUser = item.type === 'user';
                 var text = '';
@@ -534,10 +549,10 @@ window.dialogawpLeads = {
                 }
                 if (!text) return;
                 transcriptHtml += '' +
-                    '<div class="dialogawp-ld-msg ' + (isUser ? 'user' : 'bot') + '">' +
+                    '<div class="dialoga-ld-msg ' + (isUser ? 'user' : 'bot') + '">' +
                         '<div>' +
-                            '<div class="dialogawp-ld-msg-bubble">' + self.escapeHtml(text) + '</div>' +
-                            (item.timestamp ? '<div class="dialogawp-ld-msg-time">' + self.escapeHtml(item.timestamp) + '</div>' : '') +
+                            '<div class="dialoga-ld-msg-bubble">' + self.escapeHtml(text) + '</div>' +
+                            (item.timestamp ? '<div class="dialoga-ld-msg-time">' + self.escapeHtml(item.timestamp) + '</div>' : '') +
                         '</div>' +
                     '</div>';
             });
@@ -546,9 +561,9 @@ window.dialogawpLeads = {
         transcriptHtml += '</div>';
 
         body.innerHTML =
-            '<div class="dialogawp-ld-section">' +
+            '<div class="dialoga-ld-section">' +
                 '<h3>' + self.escapeHtml(t('Contact')) + '</h3>' +
-                '<dl class="dialogawp-ld-grid">' + contactHtml + '</dl>' +
+                '<dl class="dialoga-ld-grid">' + contactHtml + '</dl>' +
             '</div>' +
             convHtml +
             transcriptHtml;
@@ -556,9 +571,9 @@ window.dialogawpLeads = {
     },
 
     closeModal: function() {
-        var modal = document.getElementById('dialogawp-lead-modal');
+        var modal = document.getElementById('dialoga-lead-modal');
         modal.hidden = true;
-        document.body.classList.remove('dialogawp-modal-open');
+        document.body.classList.remove('dialoga-modal-open');
         if (this.previousFocus && document.contains(this.previousFocus)) {
             this.previousFocus.focus();
         }
@@ -568,18 +583,18 @@ window.dialogawpLeads = {
 
 // Close modal when clicking the backdrop (but not the inner content)
 document.addEventListener('click', function(e) {
-    if (e.target && e.target.id === 'dialogawp-lead-modal') {
-        dialogawpLeads.closeModal();
+    if (e.target && e.target.id === 'dialoga-lead-modal') {
+        dialogaLeads.closeModal();
     }
 });
 
 // ESC to close
 document.addEventListener('keydown', function(e) {
-    var modal = document.getElementById('dialogawp-lead-modal');
+    var modal = document.getElementById('dialoga-lead-modal');
     if (!modal || modal.hidden) return;
 
     if (e.key === 'Escape') {
-        dialogawpLeads.closeModal();
+        dialogaLeads.closeModal();
         return;
     }
 
@@ -600,8 +615,8 @@ document.addEventListener('keydown', function(e) {
 })();
 JS
 , array(
-    '%%DIALOGAWP_NONCE%%'   => esc_js(wp_create_nonce('dialogawp_nonce')),
-    '%%DIALOGAWP_AJAXURL%%' => esc_js(admin_url('admin-ajax.php')),
+    '%%DIALOGA_NONCE%%'   => esc_js(wp_create_nonce('dialoga_nonce')),
+    '%%DIALOGA_AJAXURL%%' => esc_js(admin_url('admin-ajax.php')),
 ));
-wp_add_inline_script('dialogawp-admin', $dialogawp_leads_js);
+wp_add_inline_script('dialoga-admin', $dialoga_leads_js);
 ?>

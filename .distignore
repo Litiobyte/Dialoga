@@ -3,7 +3,15 @@
 /.opencode
 /node_modules
 /tests
+/tools
 /.DS_Store
 /**/*.log
 /.env
 /.env.*
+/.gitignore
+/.gitattributes
+/.distignore
+/.nvmrc
+/.wp-env.json
+plugin-check-report.json
+readme-source.md

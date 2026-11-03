@@ -4,17 +4,17 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class DialogaWP_I18n {
+class Dialoga_I18n {
     public static function init() {
-        load_plugin_textdomain('dialogawp', false, dirname(plugin_basename(DIALOGAWP_PATH . 'dialogawp.php')) . '/languages');
+        load_plugin_textdomain('dialoga', false, dirname(plugin_basename(DIALOGA_PATH . 'dialoga.php')) . '/languages');
         $locale = function_exists('determine_locale') ? determine_locale() : get_locale();
         if (preg_match('/^es(?:_|$)/', $locale)) {
             // WordPress does not automatically fall back from es_MX, es_AR, etc. to es_ES.
-            $global = WP_LANG_DIR . '/plugins/dialogawp-' . $locale . '.mo';
-            if (is_readable($global) && load_textdomain('dialogawp', $global)) {
+            $global = WP_LANG_DIR . '/plugins/dialoga-' . $locale . '.mo';
+            if (is_readable($global) && load_textdomain('dialoga', $global)) {
                 return;
             }
-            load_textdomain('dialogawp', DIALOGAWP_PATH . 'languages/dialogawp-es_ES.mo');
+            load_textdomain('dialoga', DIALOGA_PATH . 'languages/dialoga-es_ES.mo');
         }
     }
 
@@ -34,15 +34,60 @@ class DialogaWP_I18n {
             'Lead records: %d results' => 'Lead records: %d result',
         );
         foreach (array('scripts', 'settings', 'templates', 'backend', 'core', 'wizard', 'fixes', 'admin-ui') as $part) {
-            $path = DIALOGAWP_PATH . 'languages/' . $part . '-es.json';
+            $path = DIALOGA_PATH . 'languages/' . $part . '-es.json';
             if (!is_readable($path)) {
                 continue;
             }
             $catalog = json_decode(file_get_contents($path), true);
             if (is_array($catalog)) {
                 foreach ($catalog as $msgid => $unused) {
-                    $messages[$msgid] = isset($plural_messages[$msgid])
-                        ? _n($plural_messages[$msgid], $msgid, 2, 'dialogawp') : __($msgid, 'dialogawp');
+                    // _n() and __() require string literals — the checker (and
+                    // sane translators) cannot parse dynamic strings. Every
+                    // key of $plural_messages and every $msgid is a literal
+                    // from the reviewed JSON catalogs, so switch on the
+                    // known set instead of calling with variables.
+                    if (isset($plural_messages[$msgid])) {
+                        // translators: %s: number of items the message plurals.
+                        switch ($msgid) {
+                            case "You've handled %s visitor conversations so far!":
+                                $messages[$msgid] = _n("You've handled %s visitor conversation so far!", "You've handled %s visitor conversations so far!", 2, 'dialoga');
+                                break;
+                            case '%d admin test leads hidden':
+                                $messages[$msgid] = _n('%d admin test lead hidden', '%d admin test leads hidden', 2, 'dialoga');
+                                break;
+                            case '%d leads':
+                                $messages[$msgid] = _n('%d lead', '%d leads', 2, 'dialoga');
+                                break;
+                            case '%d link clicks':
+                                $messages[$msgid] = _n('%d link click', '%d link clicks', 2, 'dialoga');
+                                break;
+                            case 'across %1$d visitors (%2$s avg)':
+                                $messages[$msgid] = _n('across %1$d visitor (%2$s avg)', 'across %1$d visitors (%2$s avg)', 2, 'dialoga');
+                                break;
+                            case 'across %d visitors':
+                                $messages[$msgid] = _n('across %d visitor', 'across %d visitors', 2, 'dialoga');
+                                break;
+                            case '%d active flows':
+                                $messages[$msgid] = _n('%d active flow', '%d active flows', 2, 'dialoga');
+                                break;
+                            case '%d conversations with lead data':
+                                $messages[$msgid] = _n('%d conversation with lead data', '%d conversations with lead data', 2, 'dialoga');
+                                break;
+                            case '%d conversations with conversion link clicks':
+                                $messages[$msgid] = _n('%d conversation with a conversion link click', '%d conversations with conversion link clicks', 2, 'dialoga');
+                                break;
+                            case '%d lead records shown':
+                                $messages[$msgid] = _n('%d lead record shown', '%d lead records shown', 2, 'dialoga');
+                                break;
+                            case 'Lead records: %d results':
+                                $messages[$msgid] = _n('Lead records: %d result', 'Lead records: %d results', 2, 'dialoga');
+                                break;
+                            default:
+                                $messages[$msgid] = __($msgid, 'dialoga');
+                        }
+                    } else {
+                        $messages[$msgid] = __($msgid, 'dialoga');
+                    }
                 }
             }
         }

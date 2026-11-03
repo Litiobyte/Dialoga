@@ -1,4 +1,8 @@
 <?php
+if (!defined('ABSPATH')) {
+    if (PHP_SAPI !== 'cli') { http_response_code(403); exit('CLI only.'); }
+    define('ABSPATH', dirname(__DIR__) . '/');
+}
 /** Browser fixture bridge. Reuses the standalone suite's WordPress/DB doubles. */
 ob_start();
 require __DIR__ . '/flow-transfer-test.php';
@@ -6,7 +10,7 @@ ob_end_clean();
 
 $input = json_decode(stream_get_contents(STDIN), true);
 if (isset($input['render'])) {
-    define('DIALOGAWP_LOGO_URL', 'data:,');
+    define('DIALOGA_LOGO_URL', 'data:,');
     function absint($value) { return abs((int) $value); }
     function esc_url($value) { return htmlspecialchars($value, ENT_QUOTES); }
     function esc_attr($value) { return htmlspecialchars($value, ENT_QUOTES); }
@@ -25,7 +29,7 @@ if (isset($input['render'])) {
     require dirname(__DIR__) . '/templates/admin/builder.php';
     $html = ob_get_clean();
     require dirname(__DIR__) . '/templates/admin/builder-templates.php';
-    print json_encode(array('html' => $html, 'templates' => dialogawp_builder_templates()));
+    print json_encode(array('html' => $html, 'templates' => dialoga_builder_templates()));
     exit;
 }
 
@@ -33,8 +37,8 @@ reset_transfer();
 foreach ($input['rows'] as $row) {
     $GLOBALS['wpdb']->rows[$row['id']] = (object) $row;
 }
-$methods = array('dialogawp_export_flows' => 'ajax_export',
-    'dialogawp_validate_flow_import' => 'ajax_validate', 'dialogawp_import_flows' => 'ajax_import');
+$methods = array('dialoga_export_flows' => 'ajax_export',
+    'dialoga_validate_flow_import' => 'ajax_validate', 'dialoga_import_flows' => 'ajax_import');
 if (!isset($methods[$input['action']])) {
     throw new Exception('Unexpected browser fixture action');
 }

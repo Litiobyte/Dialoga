@@ -1,11 +1,11 @@
 <?php
 /**
- * Analytics for DialogaWP
+ * Analytics for Dialoga
  *
  * SQL safety note (wp.org Plugin Check):
  *   All queries in this file interpolate three kinds of tokens that PHPCS can't
  *   statically verify but are provably safe:
- *     1. Table names built as $wpdb->prefix . 'dialogawp_xxx' (never user input)
+ *     1. Table names built as $wpdb->prefix . 'dialoga_xxx' (never user input)
  *     2. Static SQL fragments from date_range_clause() / admin_session_clause() /
  *        admin_session_subquery() — those helpers themselves use $wpdb->prepare()
  *        for any dynamic values and return literal WHERE/AND fragments
@@ -24,7 +24,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class DialogaWP_Analytics {
+class Dialoga_Analytics {
 
     /**
      * Track event
@@ -36,7 +36,7 @@ class DialogaWP_Analytics {
      */
     public static function track_event($conversation_id, $event_type, $event_data = array(), $flow_id = 0) {
         global $wpdb;
-        $table = $wpdb->prefix . 'dialogawp_analytics';
+        $table = $wpdb->prefix . 'dialoga_analytics';
 
         $wpdb->insert(
             $table,
@@ -76,7 +76,7 @@ class DialogaWP_Analytics {
         if ($cache !== null) return $cache;
 
         global $wpdb;
-        $flows_table = $wpdb->prefix . 'dialogawp_flows';
+        $flows_table = $wpdb->prefix . 'dialoga_flows';
         $rows = $wpdb->get_results("SELECT id, flow_data FROM {$flows_table}");
 
         $node_ids = array();
@@ -123,8 +123,8 @@ class DialogaWP_Analytics {
      */
     public static function get_conversation_metrics($date_from = null, $date_to = null) {
         global $wpdb;
-        $table          = $wpdb->prefix . 'dialogawp_conversations';
-        $analytics_table = $wpdb->prefix . 'dialogawp_analytics';
+        $table          = $wpdb->prefix . 'dialoga_conversations';
+        $analytics_table = $wpdb->prefix . 'dialoga_analytics';
 
         $where = 'WHERE 1=1';
         if ($date_from) $where .= $wpdb->prepare(' AND created_at >= %s', $date_from);
@@ -223,7 +223,7 @@ class DialogaWP_Analytics {
      */
     public static function get_lead_metrics($date_from = null, $date_to = null) {
         global $wpdb;
-        $table = $wpdb->prefix . 'dialogawp_leads';
+        $table = $wpdb->prefix . 'dialoga_leads';
 
         $where = 'WHERE 1=1';
         if ($date_from) $where .= $wpdb->prepare(' AND created_at >= %s', $date_from);
@@ -248,7 +248,7 @@ class DialogaWP_Analytics {
      */
     public static function get_time_metrics($days = 30) {
         global $wpdb;
-        $table = $wpdb->prefix . 'dialogawp_conversations';
+        $table = $wpdb->prefix . 'dialoga_conversations';
 
         // v0.38.17 — the daily trend chart used to skip the admin filter,
         // causing tile totals and chart lines to disagree. Apply consistently.
@@ -270,7 +270,7 @@ class DialogaWP_Analytics {
      */
     public static function get_funnel_data($flow_id) {
         global $wpdb;
-        $table = $wpdb->prefix . 'dialogawp_analytics';
+        $table = $wpdb->prefix . 'dialoga_analytics';
         $admin_sub = self::admin_session_subquery();
 
         $rows = $wpdb->get_results($wpdb->prepare(
@@ -325,7 +325,7 @@ class DialogaWP_Analytics {
      */
     public static function get_top_drop_offs($flow_id, $limit = 3) {
         global $wpdb;
-        $table     = $wpdb->prefix . 'dialogawp_analytics';
+        $table     = $wpdb->prefix . 'dialoga_analytics';
         $admin_sub = self::admin_session_subquery();
 
         $started = (int) $wpdb->get_var($wpdb->prepare(
@@ -420,7 +420,7 @@ class DialogaWP_Analytics {
         global $wpdb;
 
         $flow = $wpdb->get_row($wpdb->prepare(
-            "SELECT flow_data FROM {$wpdb->prefix}dialogawp_flows WHERE id = %d",
+            "SELECT flow_data FROM {$wpdb->prefix}dialoga_flows WHERE id = %d",
             $flow_id
         ));
         if (!$flow) return array();
@@ -460,7 +460,7 @@ class DialogaWP_Analytics {
         $date_where = self::date_range_clause('created_at', $date_from, $date_to);
         $rows = $wpdb->get_results($wpdb->prepare(
             "SELECT conversation_id, event_data, created_at
-             FROM {$wpdb->prefix}dialogawp_analytics
+             FROM {$wpdb->prefix}dialoga_analytics
              WHERE event_type = 'node_viewed' AND flow_id = %d AND conversation_id IS NOT NULL{$admin_sub}{$date_where}
              ORDER BY conversation_id ASC, created_at ASC",
             $flow_id
@@ -494,7 +494,7 @@ class DialogaWP_Analytics {
             $total  = 0;
             foreach ($info['options'] as $opt) {
                 $opt_id    = $opt['id']    ?? '';
-                $opt_label = $opt['label'] ?? __('Unnamed option', 'dialogawp');
+                $opt_label = $opt['label'] ?? __('Unnamed option', 'dialoga');
                 $target_id = $edges_from[$node_id][$opt_id] ?? null;
                 $count     = ($target_id && isset($transitions[$node_id][$target_id]))
                     ? (int) $transitions[$node_id][$target_id]
@@ -542,7 +542,7 @@ class DialogaWP_Analytics {
         global $wpdb;
 
         $flow = $wpdb->get_row($wpdb->prepare(
-            "SELECT flow_data FROM {$wpdb->prefix}dialogawp_flows WHERE id = %d",
+            "SELECT flow_data FROM {$wpdb->prefix}dialoga_flows WHERE id = %d",
             $flow_id
         ));
         if (!$flow) return array();
@@ -562,7 +562,7 @@ class DialogaWP_Analytics {
         $date_where = self::date_range_clause('created_at', $date_from, $date_to);
         $rows = $wpdb->get_results($wpdb->prepare(
             "SELECT conversation_id, event_data
-             FROM {$wpdb->prefix}dialogawp_analytics
+             FROM {$wpdb->prefix}dialoga_analytics
              WHERE event_type = 'node_viewed' AND flow_id = %d AND conversation_id IS NOT NULL{$admin_sub}{$date_where}
              ORDER BY conversation_id ASC, created_at ASC",
             $flow_id
@@ -660,7 +660,7 @@ class DialogaWP_Analytics {
      * $max_len = 0 skips truncation (for expandable / hover UI).
      */
     public static function get_node_display_label($node, $max_len = 60) {
-        if (!is_array($node)) return __('Untitled node', 'dialogawp');
+        if (!is_array($node)) return __('Untitled node', 'dialoga');
         $data = isset($node['data']) && is_array($node['data']) ? $node['data'] : array();
         $type = isset($data['nodeType']) ? $data['nodeType'] : '';
 
@@ -674,39 +674,43 @@ class DialogaWP_Analytics {
             case 'ai_chat':
                 $candidates[] = $data['config']['greeting'] ?? '';
                 $candidates[] = ($data['label'] ?? '') === 'AI Chat'
-                    ? __('AI Chat', 'dialogawp') : ($data['label'] ?? '');
+                    ? __('AI Chat', 'dialoga') : ($data['label'] ?? '');
                 break;
             case 'action':
                 $config = isset($data['config']) && is_array($data['config']) ? $data['config'] : array();
                 $label = $data['label'] ?? '';
                 $canonical_label = 'Action';
-                $display_label = __('Action', 'dialogawp');
+                $display_label = __('Action', 'dialoga');
                 switch ($data['action_type'] ?? '') {
                     case 'capture_lead':
                         $canonical_label = 'Capture Lead';
-                        $display_label = __('Capture Lead', 'dialogawp');
+                        $display_label = __('Capture Lead', 'dialoga');
                         break;
                     case 'redirect':
                         $host = !empty($config['url']) ? wp_parse_url($config['url'], PHP_URL_HOST) : '';
                         $canonical_label = $host ? 'Redirect → ' . $host : 'Redirect (URL needed)';
-                        $display_label = $host ? sprintf(__('Redirect to %s', 'dialogawp'), $host) : __('Redirect (URL needed)', 'dialogawp');
+                        // translators: %s: the destination host of the redirect.
+                        $display_label = $host ? sprintf(__('Redirect to %s', 'dialoga'), $host) : __('Redirect (URL needed)', 'dialoga');
                         break;
                     case 'link_button':
                         $canonical_label = 'Link Button (label needed)';
-                        $display_label = __('Link Button (label needed)', 'dialogawp');
+                        $display_label = __('Link Button (label needed)', 'dialoga');
                         break;
                     case 'send_email':
                         $canonical_label = 'Email: ' . (!empty($config['to']) ? $config['to'] : 'Not configured');
-                        $display_label = sprintf(__('Email: %s', 'dialogawp'), !empty($config['to']) ? $config['to'] : __('Not configured', 'dialogawp'));
+                        // translators: %s: recipient email address of the action node.
+                        $display_label = sprintf(__('Email: %s', 'dialoga'), !empty($config['to']) ? $config['to'] : __('Not configured', 'dialoga'));
                         break;
                     case 'set_variable':
                         $canonical_label = 'Set ' . (!empty($config['variable_name']) ? $config['variable_name'] : 'variable');
-                        $display_label = sprintf(__('Set %s', 'dialogawp'), !empty($config['variable_name']) ? $config['variable_name'] : __('variable', 'dialogawp'));
+                        // translators: %s: name of the flow variable being set.
+                        $display_label = sprintf(__('Set %s', 'dialoga'), !empty($config['variable_name']) ? $config['variable_name'] : __('variable', 'dialoga'));
                         break;
                     case 'tag_lead':
                         $tags = implode(', ', $config['tags'] ?? array());
                         $canonical_label = 'Tag: ' . ($tags !== '' ? $tags : 'No tags');
-                        $display_label = sprintf(__('Tag: %s', 'dialogawp'), $tags !== '' ? $tags : __('No tags', 'dialogawp'));
+                        // translators: %s: comma-separated list of lead tags.
+                        $display_label = sprintf(__('Tag: %s', 'dialoga'), $tags !== '' ? $tags : __('No tags', 'dialoga'));
                         break;
                 }
                 // Translate only the builder's generated label, never authored text.
@@ -719,12 +723,12 @@ class DialogaWP_Analytics {
                 break;
             case 'branch':
                 $candidates[] = ($data['label'] ?? '') === 'Branch Logic'
-                    ? __('Branch Logic', 'dialogawp') : ($data['label'] ?? '');
+                    ? __('Branch Logic', 'dialoga') : ($data['label'] ?? '');
                 $candidates[] = $data['message'] ?? '';
                 break;
             case 'webhook':
                 $candidates[] = ($data['label'] ?? '') === '⚡ Webhook'
-                    ? '⚡ ' . __('Webhook', 'dialogawp') : ($data['label'] ?? '');
+                    ? '⚡ ' . __('Webhook', 'dialoga') : ($data['label'] ?? '');
                 $candidates[] = $data['message'] ?? '';
                 break;
             case 'loop':
@@ -745,15 +749,15 @@ class DialogaWP_Analytics {
         // Last resort — surface node type as a labeled fallback so admins
         // can at least tell what KIND of node this is.
         $type_pretty_map = array(
-            'question' => __('Question', 'dialogawp'),
-            'ai_chat'  => __('AI Chat', 'dialogawp'),
-            'action'   => __('Action', 'dialogawp'),
-            'branch'   => __('Branch', 'dialogawp'),
-            'loop'     => __('Loop', 'dialogawp'),
-            'webhook'  => __('Webhook', 'dialogawp'),
-            'message'  => __('Message', 'dialogawp'),
+            'question' => __('Question', 'dialoga'),
+            'ai_chat'  => __('AI Chat', 'dialoga'),
+            'action'   => __('Action', 'dialoga'),
+            'branch'   => __('Branch', 'dialoga'),
+            'loop'     => __('Loop', 'dialoga'),
+            'webhook'  => __('Webhook', 'dialoga'),
+            'message'  => __('Message', 'dialoga'),
         );
-        return $type_pretty_map[$type] ?? __('Untitled node', 'dialogawp');
+        return $type_pretty_map[$type] ?? __('Untitled node', 'dialoga');
     }
 
     /**
@@ -777,7 +781,7 @@ class DialogaWP_Analytics {
 
         global $wpdb;
         $flow = $wpdb->get_row($wpdb->prepare(
-            "SELECT flow_data FROM {$wpdb->prefix}dialogawp_flows WHERE id = %d",
+            "SELECT flow_data FROM {$wpdb->prefix}dialoga_flows WHERE id = %d",
             $flow_id
         ));
         if (!$flow) return array();
@@ -808,7 +812,7 @@ class DialogaWP_Analytics {
         $date_where = self::date_range_clause('created_at', $date_from, $date_to);
         $rows = $wpdb->get_results($wpdb->prepare(
             "SELECT conversation_id, event_data
-             FROM {$wpdb->prefix}dialogawp_analytics
+             FROM {$wpdb->prefix}dialoga_analytics
              WHERE event_type = 'node_viewed' AND flow_id = %d AND conversation_id IS NOT NULL{$admin_sub}{$date_where}
              ORDER BY conversation_id ASC, created_at ASC",
             $flow_id
@@ -931,7 +935,7 @@ class DialogaWP_Analytics {
 
         global $wpdb;
         $flow = $wpdb->get_row($wpdb->prepare(
-            "SELECT flow_data FROM {$wpdb->prefix}dialogawp_flows WHERE id = %d",
+            "SELECT flow_data FROM {$wpdb->prefix}dialoga_flows WHERE id = %d",
             $flow_id
         ));
         if (!$flow) return null;
@@ -1055,7 +1059,7 @@ class DialogaWP_Analytics {
                 // Fallback: use the target node's display label.
                 $tgt_node = $nodes_by_id[$target_id] ?? null;
                 // translators: %d: branch number in the report.
-                $label = $tgt_node ? self::get_node_display_label($tgt_node) : sprintf(__('Branch %d', 'dialogawp'), count($branches) + 1);
+                $label = $tgt_node ? self::get_node_display_label($tgt_node) : sprintf(__('Branch %d', 'dialoga'), count($branches) + 1);
             }
             $branches[] = array(
                 'label'          => $label,
@@ -1114,7 +1118,7 @@ class DialogaWP_Analytics {
         // Load edges for BFS ordering.
         global $wpdb;
         $flow = $wpdb->get_row($wpdb->prepare(
-            "SELECT flow_data FROM {$wpdb->prefix}dialogawp_flows WHERE id = %d",
+            "SELECT flow_data FROM {$wpdb->prefix}dialoga_flows WHERE id = %d",
             $flow_id
         ));
         $edges_out = array();
@@ -1136,7 +1140,7 @@ class DialogaWP_Analytics {
         $historical_lbls = array();
         $rows = $wpdb->get_results($wpdb->prepare(
             "SELECT event_data
-             FROM {$wpdb->prefix}dialogawp_analytics
+             FROM {$wpdb->prefix}dialoga_analytics
              WHERE event_type = 'node_viewed' AND flow_id = %d{$admin_sub}{$date_where}
              ORDER BY created_at ASC",
             $flow_id
@@ -1227,7 +1231,7 @@ class DialogaWP_Analytics {
 
         global $wpdb;
         $flow = $wpdb->get_row($wpdb->prepare(
-            "SELECT flow_data FROM {$wpdb->prefix}dialogawp_flows WHERE id = %d",
+            "SELECT flow_data FROM {$wpdb->prefix}dialoga_flows WHERE id = %d",
             $flow_id
         ));
         $indexed = array();
@@ -1248,7 +1252,7 @@ class DialogaWP_Analytics {
      */
     public static function get_top_drop_off($flow_id) {
         global $wpdb;
-        $table = $wpdb->prefix . 'dialogawp_analytics';
+        $table = $wpdb->prefix . 'dialoga_analytics';
         $admin_sub = self::admin_session_subquery();
 
         // Get total conversations for this flow
@@ -1276,7 +1280,7 @@ class DialogaWP_Analytics {
         $views = (int) $rows[0]->views;
 
         return array(
-            'node_label'  => isset($data['node_label']) ? $data['node_label'] : __('Unknown node', 'dialogawp'),
+            'node_label'  => isset($data['node_label']) ? $data['node_label'] : __('Unknown node', 'dialoga'),
             'node_type'   => isset($data['node_type'])  ? $data['node_type']  : '',
             'views'       => $views,
             'drop_off_pct'=> $started > 0 ? round((1 - $views / $started) * 100, 1) : 0,
@@ -1288,7 +1292,7 @@ class DialogaWP_Analytics {
      */
     public static function get_top_sources($limit = 5) {
         global $wpdb;
-        $table = $wpdb->prefix . 'dialogawp_conversations';
+        $table = $wpdb->prefix . 'dialoga_conversations';
         $admin_clause = self::admin_session_clause();
 
         return $wpdb->get_results($wpdb->prepare(
@@ -1307,7 +1311,7 @@ class DialogaWP_Analytics {
      */
     public static function get_popular_paths($limit = 10) {
         global $wpdb;
-        $table = $wpdb->prefix . 'dialogawp_analytics';
+        $table = $wpdb->prefix . 'dialoga_analytics';
         $admin_sub = self::admin_session_subquery();
 
         return $wpdb->get_results($wpdb->prepare(
@@ -1342,7 +1346,7 @@ class DialogaWP_Analytics {
      */
     public static function get_funnel_ordered($flow_id, $date_from = null, $date_to = null) {
         global $wpdb;
-        $table = $wpdb->prefix . 'dialogawp_analytics';
+        $table = $wpdb->prefix . 'dialoga_analytics';
         $admin_sub  = self::admin_session_subquery();
         $date_where = self::date_range_clause('created_at', $date_from, $date_to);
 
@@ -1373,7 +1377,7 @@ class DialogaWP_Analytics {
 
         // Load flow edges to build the graph.
         $flow = $wpdb->get_row($wpdb->prepare(
-            "SELECT flow_data FROM {$wpdb->prefix}dialogawp_flows WHERE id = %d",
+            "SELECT flow_data FROM {$wpdb->prefix}dialoga_flows WHERE id = %d",
             $flow_id
         ));
         $edges_out = array(); // source_id => [target_id, ...]
@@ -1488,8 +1492,8 @@ class DialogaWP_Analytics {
      */
     public static function get_avg_time_to_lead($flow_id = 0, $date_from = null, $date_to = null) {
         global $wpdb;
-        $conv_table      = $wpdb->prefix . 'dialogawp_conversations';
-        $analytics_table = $wpdb->prefix . 'dialogawp_analytics';
+        $conv_table      = $wpdb->prefix . 'dialoga_conversations';
+        $analytics_table = $wpdb->prefix . 'dialoga_analytics';
 
         $flow_clause  = $flow_id ? $wpdb->prepare(' AND c.flow_id = %d', $flow_id) : '';
         $admin_clause = self::admin_session_clause('c');
@@ -1520,9 +1524,9 @@ class DialogaWP_Analytics {
      */
     public static function get_flow_comparison($date_from = null, $date_to = null) {
         global $wpdb;
-        $flows_table     = $wpdb->prefix . 'dialogawp_flows';
-        $conv_table      = $wpdb->prefix . 'dialogawp_conversations';
-        $analytics_table = $wpdb->prefix . 'dialogawp_analytics';
+        $flows_table     = $wpdb->prefix . 'dialoga_flows';
+        $conv_table      = $wpdb->prefix . 'dialoga_conversations';
+        $analytics_table = $wpdb->prefix . 'dialoga_analytics';
 
         $flows  = $wpdb->get_results("SELECT id, flow_name, is_active FROM {$flows_table} ORDER BY created_at DESC");
         $result = array();
@@ -1610,9 +1614,9 @@ class DialogaWP_Analytics {
      */
     public static function get_sessions($limit = 25, $offset = 0, $flow_id = 0, $page_url = '', $date_from = null, $date_to = null) {
         global $wpdb;
-        $conv_table      = $wpdb->prefix . 'dialogawp_conversations';
-        $flows_table     = $wpdb->prefix . 'dialogawp_flows';
-        $analytics_table = $wpdb->prefix . 'dialogawp_analytics';
+        $conv_table      = $wpdb->prefix . 'dialoga_conversations';
+        $flows_table     = $wpdb->prefix . 'dialoga_flows';
+        $analytics_table = $wpdb->prefix . 'dialoga_analytics';
 
         $where = $flow_id ? $wpdb->prepare('WHERE c.flow_id = %d', $flow_id) : 'WHERE 1=1';
         if ($page_url !== '') {
@@ -1644,7 +1648,7 @@ class DialogaWP_Analytics {
      */
     public static function get_sessions_count($flow_id = 0, $page_url = '', $date_from = null, $date_to = null) {
         global $wpdb;
-        $table = $wpdb->prefix . 'dialogawp_conversations';
+        $table = $wpdb->prefix . 'dialoga_conversations';
 
         $admin_clause = self::admin_session_clause();
         $date_where   = self::date_range_clause('created_at', $date_from, $date_to);
@@ -1670,8 +1674,8 @@ class DialogaWP_Analytics {
      */
     public static function get_funnel_metrics($date_from = null, $date_to = null) {
         global $wpdb;
-        $analytics_table = $wpdb->prefix . 'dialogawp_analytics';
-        $conv_table      = $wpdb->prefix . 'dialogawp_conversations';
+        $analytics_table = $wpdb->prefix . 'dialoga_analytics';
+        $conv_table      = $wpdb->prefix . 'dialoga_conversations';
 
         $a_where = "WHERE event_type = 'bubble_shown'";
         $c_where = 'WHERE 1=1';
@@ -1706,20 +1710,20 @@ class DialogaWP_Analytics {
             $link_conversions = (int) $wpdb->get_var(
                 $wpdb->prepare(
                     "SELECT COUNT(DISTINCT a.conversation_id)
-                     FROM {$analytics_table} a
-                     INNER JOIN {$conv_table} c ON c.id = a.conversation_id
+                     FROM %i a
+                     INNER JOIN %i c ON c.id = a.conversation_id
                      {$c_where_aliased}
                        AND a.event_type = 'link_clicked'
                        AND {$node_id_expr} IN ({$placeholders})",
-                    $conversion_node_ids
+                    array_merge(array($analytics_table, $conv_table), $conversion_node_ids)
                 )
             );
 
             $conversions = (int) $wpdb->get_var(
                 $wpdb->prepare(
                     "SELECT COUNT(DISTINCT c.id)
-                     FROM {$conv_table} c
-                     LEFT JOIN {$analytics_table} a
+                     FROM %i c
+                     LEFT JOIN %i a
                          ON a.conversation_id = c.id
                         AND a.event_type = 'link_clicked'
                         AND {$node_id_expr} IN ({$placeholders})
@@ -1728,7 +1732,7 @@ class DialogaWP_Analytics {
                          (c.lead_data IS NOT NULL AND c.lead_data != '{}')
                          OR a.id IS NOT NULL
                        )",
-                    $conversion_node_ids
+                    array_merge(array($conv_table, $analytics_table), $conversion_node_ids)
                 )
             );
         }
@@ -1760,7 +1764,7 @@ class DialogaWP_Analytics {
         static $exists = null;
         if ($exists === null) {
             global $wpdb;
-            $conv_table = $wpdb->prefix . 'dialogawp_conversations';
+            $conv_table = $wpdb->prefix . 'dialoga_conversations';
             $cols = $wpdb->get_col("DESCRIBE {$conv_table}", 0);
             $exists = in_array('is_admin_session', $cols, true);
         }
@@ -1773,7 +1777,7 @@ class DialogaWP_Analytics {
      *  2. The is_admin_session column actually exists on the DB
      */
     private static function should_filter_admin() {
-        $settings = get_option('dialogawp_settings', array());
+        $settings = get_option('dialoga_settings', array());
         if (!empty($settings['include_admin_sessions'])) return false;
         return self::has_admin_column();
     }
@@ -1797,7 +1801,7 @@ class DialogaWP_Analytics {
     }
 
     /**
-     * WHERE fragment for queries that hit dialogawp_conversations or dialogawp_leads
+     * WHERE fragment for queries that hit dialoga_conversations or dialoga_leads
      * directly. Optional alias for joined queries.
      *   $alias = ''  → " AND is_admin_session = 0"
      *   $alias = 'c' → " AND c.is_admin_session = 0"
@@ -1809,14 +1813,14 @@ class DialogaWP_Analytics {
     }
 
     /**
-     * WHERE fragment for queries that hit dialogawp_analytics (event log). The
+     * WHERE fragment for queries that hit dialoga_analytics (event log). The
      * analytics table doesn't carry the flag directly — filter via subquery
-     * against dialogawp_conversations. Cheap because IN( ) uses the conv PK index.
+     * against dialoga_conversations. Cheap because IN( ) uses the conv PK index.
      */
     private static function admin_session_subquery() {
         if (!self::should_filter_admin()) return '';
         global $wpdb;
-        $conv_table = $wpdb->prefix . 'dialogawp_conversations';
+        $conv_table = $wpdb->prefix . 'dialoga_conversations';
         return " AND conversation_id IN (SELECT id FROM {$conv_table} WHERE is_admin_session = 0)";
     }
 
@@ -1826,7 +1830,7 @@ class DialogaWP_Analytics {
      */
     public static function get_flow_transitions($flow_id) {
         global $wpdb;
-        $analytics_table = $wpdb->prefix . 'dialogawp_analytics';
+        $analytics_table = $wpdb->prefix . 'dialoga_analytics';
         $admin_sub = self::admin_session_subquery();
 
         $rows = $wpdb->get_results($wpdb->prepare(
@@ -1870,7 +1874,7 @@ class DialogaWP_Analytics {
      */
     public static function get_time_of_day_heatmap($flow_id = 0, $days_back = 90) {
         global $wpdb;
-        $table = $wpdb->prefix . 'dialogawp_conversations';
+        $table = $wpdb->prefix . 'dialoga_conversations';
 
         $where = $wpdb->prepare('created_at >= %s', gmdate('Y-m-d H:i:s', strtotime("-{$days_back} days")));
         if ($flow_id) $where .= $wpdb->prepare(' AND flow_id = %d', $flow_id);

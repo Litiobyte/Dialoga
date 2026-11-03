@@ -1,9 +1,9 @@
 /* Settings-only layout. Panels remain visible until JavaScript enhances them. */
-.dialogawp-settings-wrap .dialogawp-settings-extension-nav {
+.dialoga-settings-wrap .dialoga-settings-extension-nav {
     margin-bottom: 20px;
 }
 
-.dialogawp-settings-summary {
+.dialoga-settings-summary {
     display: flex;
     min-width: 180px;
     flex-direction: column;
@@ -16,12 +16,12 @@
     font-size: 12px;
 }
 
-.dialogawp-settings-summary strong {
+.dialoga-settings-summary strong {
     color: #190F4F;
     font-size: 13px;
 }
 
-.dialogawp-settings-tabs {
+.dialoga-settings-tabs {
     display: flex;
     align-items: stretch;
     width: 100%;
@@ -34,16 +34,16 @@
     border-bottom: 1px solid #E5E7EF;
 }
 
-.dialogawp-settings-tabs::-webkit-scrollbar {
+.dialoga-settings-tabs::-webkit-scrollbar {
     height: 5px;
 }
 
-.dialogawp-settings-tabs::-webkit-scrollbar-thumb {
+.dialoga-settings-tabs::-webkit-scrollbar-thumb {
     border-radius: 999px;
     background: #C8D0DD;
 }
 
-.dialogawp-settings-tab {
+.dialoga-settings-tab {
     display: inline-flex;
     flex: 0 0 auto;
     align-items: center;
@@ -60,90 +60,90 @@
     transition: color 120ms ease, border-color 120ms ease, background-color 120ms ease;
 }
 
-.dialogawp-settings-tab:hover {
+.dialoga-settings-tab:hover {
     background: rgba(0, 173, 161, 0.06);
     color: #190F4F;
 }
 
-.dialogawp-settings-tab[aria-selected="true"] {
+.dialoga-settings-tab[aria-selected="true"] {
     border-bottom-color: #00ADA1;
     color: #190F4F;
 }
 
-.dialogawp-settings-tab:focus-visible,
-.dialogawp-settings-panel:focus-visible {
+.dialoga-settings-tab:focus-visible,
+.dialoga-settings-panel:focus-visible {
     outline: 2px solid #007D75;
     outline-offset: 2px;
 }
 
-.dialogawp-settings-wrap [hidden] {
+.dialoga-settings-wrap [hidden] {
     display: none !important;
 }
 
 /* The Danger Zone is its own tab and lives outside the settings form.
    Hide the save controls while it is active so they don't float above it. */
-.dialogawp-settings-wrap .dialogawp-settings-form--danger .dialogawp-settings-top-actions,
-.dialogawp-settings-wrap .dialogawp-settings-form--danger p.submit {
+.dialoga-settings-wrap .dialoga-settings-form--danger .dialoga-settings-top-actions,
+.dialoga-settings-wrap .dialoga-settings-form--danger p.submit {
     display: none;
 }
 
-.dialogawp-settings-subheading {
+.dialoga-settings-subheading {
     grid-column: 1 / -1;
     margin: 24px 0 0;
 }
 
-.dialogawp-settings-wrap .dialogawp-setting-control {
+.dialoga-settings-wrap .dialoga-setting-control {
     min-width: 0;
 }
 
-.dialogawp-settings-wrap .dialogawp-setting-control input[type="text"],
-.dialogawp-settings-wrap .dialogawp-setting-control textarea {
+.dialoga-settings-wrap .dialoga-setting-control input[type="text"],
+.dialoga-settings-wrap .dialoga-setting-control textarea {
     width: 100%;
     max-width: 440px;
 }
 
-.dialogawp-settings-wrap .dialogawp-setting-control select {
+.dialoga-settings-wrap .dialoga-setting-control select {
     max-width: 100%;
 }
 
-.dialogawp-settings-wrap .dialogawp-setting-control input[type="number"] {
+.dialoga-settings-wrap .dialoga-setting-control input[type="number"] {
     width: 90px;
 }
 
-.dialogawp-settings-wrap .dialogawp-setting-row:has(input:disabled),
-.dialogawp-settings-wrap .dialogawp-setting-row.is-dependent-disabled {
+.dialoga-settings-wrap .dialoga-setting-row:has(input:disabled),
+.dialoga-settings-wrap .dialoga-setting-row.is-dependent-disabled {
     opacity: 0.58;
 }
 
-.dialogawp-settings-wrap .dialogawp-color-picker input[name="primary_color_text"] {
+.dialoga-settings-wrap .dialoga-color-picker input[name="primary_color_text"] {
     width: 100px;
 }
 
-.dialogawp-settings-roles {
+.dialoga-settings-roles {
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
-.dialogawp-settings-roles label {
+.dialoga-settings-roles label {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 8px;
 }
 
-.dialogawp-settings-test-notice {
+.dialoga-settings-test-notice {
     padding: 8px 12px;
     background: #fef9c3;
     border-left: 3px solid #eab308;
     color: #713f12;
 }
 
-.dialogawp-settings-retention-status {
+.dialoga-settings-retention-status {
     color: #166534;
 }
 
-.dialogawp-settings-danger {
+.dialoga-settings-danger {
     margin-top: 32px;
     padding: 20px;
     border: 1px solid #fecaca;
@@ -152,31 +152,31 @@
     color: #7f1d1d;
 }
 
-.dialogawp-settings-danger h2,
-.dialogawp-settings-danger h3 {
+.dialoga-settings-danger h2,
+.dialoga-settings-danger h3 {
     color: #7f1d1d;
 }
 
-.dialogawp-settings-danger > div + div {
+.dialoga-settings-danger > div + div {
     margin-top: 20px;
     padding-top: 20px;
     border-top: 1px solid #fecaca;
 }
 
-.dialogawp-settings-danger .button {
+.dialoga-settings-danger .button {
     border-color: #991b1b;
     background: #b91c1c;
     color: #fff;
 }
 
-.dialogawp-settings-danger .button:hover,
-.dialogawp-settings-danger .button:focus {
+.dialoga-settings-danger .button:hover,
+.dialoga-settings-danger .button:focus {
     background: #7f1d1d;
     color: #fff;
 }
 
 @media (max-width: 782px) {
-    .dialogawp-settings-tabs {
+    .dialoga-settings-tabs {
         margin-right: -10px;
         margin-left: -10px;
         width: calc(100% + 20px);
@@ -184,18 +184,18 @@
         scroll-padding-inline: 10px;
     }
 
-    .dialogawp-settings-tab {
+    .dialoga-settings-tab {
         padding: 0 14px;
     }
 
-    .dialogawp-settings-wrap .dialogawp-setting-row {
+    .dialoga-settings-wrap .dialoga-setting-row {
         flex-direction: column;
         align-items: stretch;
         gap: 12px;
     }
 
-    .dialogawp-settings-wrap .dialogawp-setting-label,
-    .dialogawp-settings-wrap .dialogawp-setting-control {
+    .dialoga-settings-wrap .dialoga-setting-label,
+    .dialoga-settings-wrap .dialoga-setting-control {
         width: 100%;
     }
 }

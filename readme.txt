@@ -1,4 +1,4 @@
-=== DialogaWP – Chatbot Flows Made Easy, With or Without AI ===
+=== Dialoga – Chatbot Flows Made Easy, With or Without AI ===
 Contributors: litiobyte
 Tags: chatbot, lead generation, conversational form, lead capture, no-code
 Requires at least: 6.2
@@ -12,7 +12,7 @@ Build easy conversational chatbot flows that capture leads, answer questions, an
 
 == Description ==
 
-**DialogaWP** is a visual chatbot builder for WordPress that helps you convert website visitors into qualified leads through interactive conversations.
+**Dialoga** is a visual chatbot builder for WordPress that helps you convert website visitors into qualified leads through interactive conversations.
 
 No coding required. Drag and drop nodes to create a conversation flow, connect your AI provider, and deploy a chat widget on your site in minutes.
 
@@ -52,9 +52,9 @@ No coding required. Drag and drop nodes to create a conversation flow, connect y
 
 == Installation ==
 
-1. Upload `dialogawp` to the `/wp-content/plugins/` directory
+1. Upload `dialoga` to the `/wp-content/plugins/` directory
 2. Activate the plugin through the **Plugins** menu
-3. Click **Run Setup Wizard** on the plugins page, or go to **DialogaWP > Setup Wizard**
+3. Click **Run Setup Wizard** on the plugins page, or go to **Dialoga > Setup Wizard**
 4. Follow the 7-step wizard to create your first chatbot with AI
 
 = Minimum Requirements =
@@ -65,10 +65,10 @@ No coding required. Drag and drop nodes to create a conversation flow, connect y
 
 == External services ==
 
-DialogaWP can connect to third-party AI providers when you enable the AI features. All requests are opt-in: nothing is sent until you enter an API key for a provider in the AI Settings screen and enable an AI Chat node in your flow (or run the Setup Wizard's AI-assisted flow generation).
+Dialoga can connect to third-party AI providers when you enable the AI features. All requests are opt-in: nothing is sent until you enter an API key for a provider in the AI Settings screen and enable an AI Chat node in your flow (or run the Setup Wizard's AI-assisted flow generation).
 
 = OpenAI =
-Used when you select OpenAI as your provider in DialogaWP > AI Settings and enter your own OpenAI API key.
+Used when you select OpenAI as your provider in Dialoga > AI Settings and enter your own OpenAI API key.
 
 * **What it's for:** Powers the AI Chat node's open-ended conversations, generates knowledge-base embeddings for site content, and creates the starter flow in the Setup Wizard.
 * **What data is sent:** The visitor's message, the recent conversation history (last few turns), the node's system instructions, and — for the wizard — a summary of your website content that you crawled.
@@ -78,7 +78,7 @@ Used when you select OpenAI as your provider in DialogaWP > AI Settings and ente
 * **Privacy Policy:** [https://openai.com/policies/privacy-policy](https://openai.com/policies/privacy-policy)
 
 = Anthropic =
-Used when you select Anthropic as your provider in DialogaWP > AI Settings and enter your own Anthropic API key.
+Used when you select Anthropic as your provider in Dialoga > AI Settings and enter your own Anthropic API key.
 
 * **What it's for:** Same as OpenAI above — powers AI Chat conversations and generates flows in the Setup Wizard when Anthropic is the selected provider.
 * **What data is sent:** The visitor's message, recent conversation history, the node's system instructions, and (wizard only) your crawled site summary.
@@ -87,7 +87,7 @@ Used when you select Anthropic as your provider in DialogaWP > AI Settings and e
 * **Terms of Use:** [https://www.anthropic.com/legal/consumer-terms](https://www.anthropic.com/legal/consumer-terms)
 * **Privacy Policy:** [https://www.anthropic.com/legal/privacy](https://www.anthropic.com/legal/privacy)
 
-If you do not enter an API key and do not use AI Chat nodes, DialogaWP makes no external calls at all.
+If you do not enter an API key and do not use AI Chat nodes, Dialoga makes no external calls at all.
 
 == Source code ==
 
@@ -101,7 +101,7 @@ To reproduce the assets, install Node.js 22 and run `npm ci && npm run build` fr
 
 Yes, for AI-powered features you need an API key from [OpenAI](https://platform.openai.com) or [Anthropic](https://console.anthropic.com). The Setup Wizard walks you through getting one. Typical cost is $0.01-0.05 per conversation.
 
-= Can I use DialogaWP without AI? =
+= Can I use Dialoga without AI? =
 
 Yes! You can build flows using Message, Question, Branch, and Action nodes without any AI. The AI Chat node is optional.
 

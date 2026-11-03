@@ -1,5 +1,5 @@
 ﻿/**
- * DIALOGAWP Admin JavaScript
+ * DIALOGA Admin JavaScript
  * Flow Builder functionality using custom React canvas
  * Version: 0.26.0 - Added Action Node Configurations
  */
@@ -8,16 +8,16 @@
     'use strict';
 
     function t(message) {
-        const i18n = window.dialogawpAdmin && window.dialogawpAdmin.i18n;
+        const i18n = window.dialogaAdmin && window.dialogaAdmin.i18n;
         return i18n && Object.prototype.hasOwnProperty.call(i18n, message) ? i18n[message] : message;
     }
 
     // Debug logging — only active when WP_DEBUG is true
-    var _log = (window.dialogawpAdmin && window.dialogawpAdmin.debug) ? console.log.bind(console) : function() {};
-    var _warn = (window.dialogawpAdmin && window.dialogawpAdmin.debug) ? console.warn.bind(console) : function() {};
+    var _log = (window.dialogaAdmin && window.dialogaAdmin.debug) ? console.log.bind(console) : function() {};
+    var _warn = (window.dialogaAdmin && window.dialogaAdmin.debug) ? console.warn.bind(console) : function() {};
     var _error = console.error.bind(console); // always show errors
     
-    const dialogawpBuilder = {
+    const dialogaBuilder = {
         currentFlowId: null,
         currentFlow: null,
         reactFlowInstance: null,
@@ -32,14 +32,14 @@
         isEditor: false,
         
         init: function() {
-            this.isEditor = dialogawpAdmin && dialogawpAdmin.builderMode === 'editor';
+            this.isEditor = dialogaAdmin && dialogaAdmin.builderMode === 'editor';
             this.bindEvents();
 
             // The list view is server-rendered and intentionally avoids loading React.
             if (!this.isEditor) return;
 
             // Keep the canvas out of view until its requested flow is loaded.
-            $('#dialogawp-canvas').hide();
+            $('#dialoga-canvas').hide();
 
             this.bindDragDropEvents();
             this.bindWebhookNodeEvents();
@@ -48,7 +48,7 @@
             setTimeout(() => {
                 this.initCanvas();
 
-                const flowId = Number(dialogawpAdmin.flowId);
+                const flowId = Number(dialogaAdmin.flowId);
                 if (Number.isInteger(flowId) && flowId > 0) {
                     setTimeout(() => this.loadFlow(flowId), 300);
                 }
@@ -66,21 +66,21 @@
             });
 
             // Listen for changes from React canvas (node moves, edge changes)
-            $(document).on('dialogawp:canvas-changed', () => {
+            $(document).on('dialoga:canvas-changed', () => {
                 this.markDirty();
             });
 
             // Watch the flow name input
-            $(document).on('input change', '#dialogawp-flow-name', () => {
+            $(document).on('input change', '#dialoga-flow-name', () => {
                 this.markDirty();
             });
 
             // Watch visibility changes
-            $(document).on('change', '#dialogawp-flow-visibility, .dialogawp-role-checkbox', () => {
+            $(document).on('change', '#dialoga-flow-visibility, .dialoga-role-checkbox', () => {
                 this.markDirty();
             });
 
-            // Note: #dialogawp-flow-active is intentionally NOT auto-saved
+            // Note: #dialoga-flow-active is intentionally NOT auto-saved
             // (activating a flow makes it live on the frontend — should require explicit Save click)
         },
 
@@ -90,7 +90,7 @@
          * @param {string} text - Optional custom text
          */
         updateSaveStatus: function(state, text) {
-            const $status = $('#dialogawp-save-status');
+            const $status = $('#dialoga-save-status');
             if (!$status.length) return;
 
             const labels = {
@@ -101,9 +101,9 @@
             };
 
             $status
-                .removeClass('dialogawp-save-status--saved dialogawp-save-status--unsaved dialogawp-save-status--saving dialogawp-save-status--error')
-                .addClass('dialogawp-save-status--' + state)
-                .find('.dialogawp-save-status-text')
+                .removeClass('dialoga-save-status--saved dialoga-save-status--unsaved dialoga-save-status--saving dialoga-save-status--error')
+                .addClass('dialoga-save-status--' + state)
+                .find('.dialoga-save-status-text')
                 .text(text || labels[state] || '');
         },
 
@@ -132,14 +132,14 @@
          * Snapshot the current canvas state (for change detection)
          */
         getCanvasSnapshot: function() {
-            if (!window.dialogawpReactInstance) return '';
+            if (!window.dialogaReactInstance) return '';
             try {
-                const flow = window.dialogawpReactInstance.getFlow();
+                const flow = window.dialogaReactInstance.getFlow();
                 return JSON.stringify({
                     nodes: flow.nodes || [],
                     edges: flow.edges || [],
-                    name: $('#dialogawp-flow-name').val(),
-                    visibility: $('#dialogawp-flow-visibility').val()
+                    name: $('#dialoga-flow-name').val(),
+                    visibility: $('#dialoga-flow-visibility').val()
                 });
             } catch (e) {
                 return '';
@@ -188,13 +188,13 @@
             }
 
             // Sync nodes/edges from React canvas
-            if (window.dialogawpReactInstance) {
-                const currentFlow = window.dialogawpReactInstance.getFlow();
+            if (window.dialogaReactInstance) {
+                const currentFlow = window.dialogaReactInstance.getFlow();
                 if (currentFlow.nodes) this.nodes = currentFlow.nodes;
                 if (currentFlow.edges) this.edges = currentFlow.edges;
             }
 
-            const flowName = $('#dialogawp-flow-name').val();
+            const flowName = $('#dialoga-flow-name').val();
             if (!flowName || flowName.trim() === '') {
                 return; // Skip — name is required
             }
@@ -205,9 +205,9 @@
             // IMPORTANT: Auto-save preserves the existing is_active state from the loaded flow
             // (do NOT auto-save the checkbox state — that requires explicit Save click)
             const isActive = this.currentFlow ? parseInt(this.currentFlow.is_active) === 1 : false;
-            const visibilityMode = $('#dialogawp-flow-visibility').val();
+            const visibilityMode = $('#dialoga-flow-visibility').val();
             const visibleRoles = [];
-            $('.dialogawp-role-checkbox:checked').each(function() {
+            $('.dialoga-role-checkbox:checked').each(function() {
                 visibleRoles.push($(this).val());
             });
 
@@ -215,8 +215,8 @@
             this.updateSaveStatus('saving');
 
             const formData = new FormData();
-            formData.append('action', 'dialogawp_save_flow');
-            formData.append('nonce', dialogawpAdmin.nonce);
+            formData.append('action', 'dialoga_save_flow');
+            formData.append('nonce', dialogaAdmin.nonce);
             formData.append('flow_id', this.currentFlowId);
             formData.append('flow_name', flowName);
             formData.append('is_active', isActive ? 1 : 0);
@@ -230,7 +230,7 @@
             if (synchronous) {
                 // Synchronous request for beforeunload (best effort)
                 const xhr = new XMLHttpRequest();
-                xhr.open('POST', dialogawpAdmin.ajaxUrl, false); // false = synchronous
+                xhr.open('POST', dialogaAdmin.ajaxUrl, false); // false = synchronous
                 try {
                     xhr.send(formData);
                     self.isDirty = false;
@@ -241,7 +241,7 @@
                 return;
             }
 
-            fetch(dialogawpAdmin.ajaxUrl, {
+            fetch(dialogaAdmin.ajaxUrl, {
                 method: 'POST',
                 body: formData
             })
@@ -269,57 +269,57 @@
             const self = this;
             
             // New flow button
-            $('.dialogawp-new-flow').on('click', function(e) {
+            $('.dialoga-new-flow').on('click', function(e) {
                 e.preventDefault();
                 self.createNewFlow();
             });
 
-            $(document).on('click', '.dialogawp-back-to-flows', function() {
+            $(document).on('click', '.dialoga-back-to-flows', function() {
                 if (self.isDirty) self.performAutoSave(true);
             });
             
             // Save flow button
-            $('.dialogawp-save-flow').on('click', function(e) {
+            $('.dialoga-save-flow').on('click', function(e) {
                 e.preventDefault();
                 self.saveFlow();
             });
             
             // Add node buttons
-            $('.dialogawp-add-node').on('click', function(e) {
+            $('.dialoga-add-node').on('click', function(e) {
                 e.preventDefault();
                 const nodeType = $(this).data('type');
                 self.addNode(nodeType);
             });
             
             // Close node editor
-            $(document).on('click', '.dialogawp-close-editor', function(e) {
+            $(document).on('click', '.dialoga-close-editor', function(e) {
                 e.preventDefault();
-                $('#dialogawp-node-editor').hide();
+                $('#dialoga-node-editor').hide();
             });
 
-            $(document).on('keydown', '#dialogawp-node-editor', function(e) {
+            $(document).on('keydown', '#dialoga-node-editor', function(e) {
                 if (e.key === 'Escape') {
                     e.preventDefault();
-                    $('#dialogawp-node-editor').hide();
+                    $('#dialoga-node-editor').hide();
                 }
             });
             
             // Save node
-            $(document).on('click', '.dialogawp-save-node', function(e) {
+            $(document).on('click', '.dialoga-save-node', function(e) {
                 e.preventDefault();
                 self.saveNodeEdits();
             });
             
             // Delete node
-            $(document).on('click', '.dialogawp-delete-node', function(e) {
+            $(document).on('click', '.dialoga-delete-node', function(e) {
                 e.preventDefault();
                 self.deleteNode();
             });
             
             // Flow card click (anywhere on the card loads the flow)
-            $(document).on('click', '.dialogawp-flow-item', function(e) {
+            $(document).on('click', '.dialoga-flow-item', function(e) {
                 // Don't load the flow if an action button was clicked
-                if ($(e.target).closest('.dialogawp-flow-item-actions, button, a').length) {
+                if ($(e.target).closest('.dialoga-flow-item-actions, button, a').length) {
                     return;
                 }
                 e.preventDefault();
@@ -329,16 +329,16 @@
                 }
             });
 
-            $(document).on('keydown', '.dialogawp-flow-item', function(e) {
+            $(document).on('keydown', '.dialoga-flow-item', function(e) {
                 if (e.key !== 'Enter' && e.key !== ' ') return;
-                if ($(e.target).closest('.dialogawp-flow-item-actions, button, a').length) return;
+                if ($(e.target).closest('.dialoga-flow-item-actions, button, a').length) return;
                 e.preventDefault();
                 const flowId = $(this).data('flow-id');
                 if (flowId && parseInt(flowId) !== parseInt(self.currentFlowId)) self.loadFlow(flowId);
             });
 
             // Legacy Edit button (if still present anywhere)
-            $(document).on('click', '.dialogawp-edit-flow', function(e) {
+            $(document).on('click', '.dialoga-edit-flow', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
                 const flowId = $(this).data('flow-id');
@@ -346,17 +346,17 @@
             });
 
             // Delete flow
-            $(document).on('click', '.dialogawp-delete-flow', function(e) {
+            $(document).on('click', '.dialoga-delete-flow', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
                 const flowId = $(this).data('flow-id');
-                dialogawpModal.confirm(t('Are you sure you want to delete this flow?'), function() {
+                dialogaModal.confirm(t('Are you sure you want to delete this flow?'), function() {
                     self.deleteFlow(flowId);
                 }, { title: t('Delete Flow'), okText: t('Delete'), danger: true });
             });
 
             // Duplicate flow
-            $(document).on('click', '.dialogawp-duplicate-flow', function(e) {
+            $(document).on('click', '.dialoga-duplicate-flow', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
                 const flowId = $(this).data('flow-id');
@@ -364,70 +364,70 @@
             });
             
             // Add option button
-            $(document).on('click', '.dialogawp-add-option', function(e) {
+            $(document).on('click', '.dialoga-add-option', function(e) {
                 e.preventDefault();
                 self.addQuestionOption();
             });
             
             // Add condition button (old - keep for backward compat)
-            $(document).on('click', '.dialogawp-add-condition', function(e) {
+            $(document).on('click', '.dialoga-add-condition', function(e) {
                 e.preventDefault();
                 self.addBranchCondition();
             });
             
             // Add output group button (new)
-            $(document).on('click', '.dialogawp-add-output-group', function(e) {
+            $(document).on('click', '.dialoga-add-output-group', function(e) {
                 e.preventDefault();
                 self.addOutputGroup();
             });
             
             // Add button (for Output nodes)
-            $(document).on('click', '.dialogawp-add-button', function(e) {
+            $(document).on('click', '.dialoga-add-button', function(e) {
                 e.preventDefault();
                 self.addOutputButton();
             });
             
             // Visibility mode change
-            $('#dialogawp-flow-visibility').on('change', function() {
+            $('#dialoga-flow-visibility').on('change', function() {
                 const mode = $(this).val();
                 if (mode === 'specific_roles') {
-                    $('#dialogawp-visibility-settings').show();
+                    $('#dialoga-visibility-settings').show();
                 } else {
-                    $('#dialogawp-visibility-settings').hide();
+                    $('#dialoga-visibility-settings').hide();
                 }
             });
             
             // Configure roles button
-            $(document).on('click', '#dialogawp-visibility-settings', function(e) {
+            $(document).on('click', '#dialoga-visibility-settings', function(e) {
                 e.preventDefault();
-                $('#dialogawp-visibility-modal').fadeIn(200);
+                $('#dialoga-visibility-modal').fadeIn(200);
                 window.setTimeout(function() {
-                    $('#dialogawp-visibility-modal').focus();
+                    $('#dialoga-visibility-modal').focus();
                 }, 0);
             });
             
             // Close visibility modal
-            $(document).on('click', '.dialogawp-modal-close, .dialogawp-modal-backdrop', function(e) {
+            $(document).on('click', '.dialoga-modal-close, .dialoga-modal-backdrop', function(e) {
                 e.preventDefault();
-                $('#dialogawp-visibility-modal').fadeOut(200);
-                $('#dialogawp-visibility-settings').focus();
+                $('#dialoga-visibility-modal').fadeOut(200);
+                $('#dialoga-visibility-settings').focus();
             });
 
-            $(document).on('keydown', '#dialogawp-visibility-modal', function(e) {
+            $(document).on('keydown', '#dialoga-visibility-modal', function(e) {
                 if (e.key === 'Escape') {
                     e.preventDefault();
-                    $('#dialogawp-visibility-modal').fadeOut(200);
-                    $('#dialogawp-visibility-settings').focus();
+                    $('#dialoga-visibility-modal').fadeOut(200);
+                    $('#dialoga-visibility-settings').focus();
                 }
             });
             
             // Save roles
-            $(document).on('click', '#dialogawp-save-roles', function(e) {
+            $(document).on('click', '#dialoga-save-roles', function(e) {
                 e.preventDefault();
-                $('#dialogawp-visibility-modal').fadeOut(200);
+                $('#dialoga-visibility-modal').fadeOut(200);
                 // Update button text to show how many roles selected
-                const selectedCount = $('.dialogawp-role-checkbox:checked').length;
-                $('#dialogawp-visibility-settings').text(t('%s role(s) selected').replace('%s', selectedCount));
+                const selectedCount = $('.dialoga-role-checkbox:checked').length;
+                $('#dialoga-visibility-settings').text(t('%s role(s) selected').replace('%s', selectedCount));
             });
         },
 
@@ -438,11 +438,11 @@
             
             _log('🎯 Binding palette drag events...');
             
-            $('.dialogawp-draggable-node').on('dragstart', function(e) {
+            $('.dialoga-draggable-node').on('dragstart', function(e) {
                 const nodeType = $(this).data('type');
                 _log('🎨 Palette drag started:', nodeType);
                 
-                e.originalEvent.dataTransfer.setData('dialogawp/node-type', nodeType);
+                e.originalEvent.dataTransfer.setData('dialoga/node-type', nodeType);
                 e.originalEvent.dataTransfer.effectAllowed = 'copy';
                 
                 $(this).addClass('dragging');
@@ -458,8 +458,8 @@
         addNodeAtPosition: function(nodeType, x, y, isStart = false) {
             _log('🔵 addNodeAtPosition called:', nodeType, 'at', x, y);
             
-            if (window.dialogawpReactInstance) {
-                const currentFlow = window.dialogawpReactInstance.getFlow();
+            if (window.dialogaReactInstance) {
+                const currentFlow = window.dialogaReactInstance.getFlow();
                 if (currentFlow.nodes) this.nodes = [...currentFlow.nodes];
                 if (currentFlow.edges) this.edges = [...currentFlow.edges];
             }
@@ -555,8 +555,8 @@
 
             _log('✅ Node created at:', newNode.position);
 
-            if (window.dialogawpReactInstance) {
-                window.dialogawpReactInstance.setFlow({
+            if (window.dialogaReactInstance) {
+                window.dialogaReactInstance.setFlow({
                     nodes: this.nodes,
                     edges: this.edges
                 });
@@ -581,17 +581,17 @@
             _log('✅ React and ReactDOM ready');
             
             // Check if FlowBuilder component is ready (loaded via ES module)
-            if (typeof window.dialogawpCanvasComponent === 'undefined') {
-                _log('⏳ Waiting for DIALOGAWPCanvasComponent...');
+            if (typeof window.dialogaCanvasComponent === 'undefined') {
+                _log('⏳ Waiting for DIALOGACanvasComponent...');
                 setTimeout(() => self.initCanvas(), 200);
                 return;
             }
             
-            _log('✅ DIALOGAWPCanvasComponent found');
+            _log('✅ DIALOGACanvasComponent found');
             
-            const container = document.getElementById('dialogawp-canvas');
+            const container = document.getElementById('dialoga-canvas');
             if (!container) {
-                _error('❌ Canvas container #dialogawp-canvas not found');
+                _error('❌ Canvas container #dialoga-canvas not found');
                 return;
             }
             
@@ -615,7 +615,7 @@
                 _log('📦 Rendering FlowBuilder with props:', flowBuilderProps);
                 
                 // Render the FlowCanvas component
-                root.render(React.createElement(window.dialogawpCanvasComponent, flowBuilderProps));
+                root.render(React.createElement(window.dialogaCanvasComponent, flowBuilderProps));
                 
                 self.reactFlowRoot = root;
                 
@@ -627,21 +627,21 @@
         },
         
         showBuilder: function() {
-            $('#dialogawp-builder-active').show();
-            $('#dialogawp-canvas').show();
+            $('#dialoga-builder-active').show();
+            $('#dialoga-canvas').show();
         },
 
         hideBuilder: function() {
-            $('#dialogawp-builder-active').hide();
-            $('#dialogawp-canvas').hide();
-            $('#dialogawp-node-editor').hide();
+            $('#dialoga-builder-active').hide();
+            $('#dialoga-canvas').hide();
+            $('#dialoga-node-editor').hide();
         },
 
         createNewFlow: function() {
             const self = this;
 
             // This comes from the database, not from the currently rendered list.
-            var flowCount = Number(dialogawpAdmin.flowCount) || 0;
+            var flowCount = Number(dialogaAdmin.flowCount) || 0;
             var flowName = 'ChatFlow ' + (flowCount + 1);
 
             this.currentFlowId = null;
@@ -655,9 +655,9 @@
             };
 
             if (this.isEditor) {
-                $('#dialogawp-flow-name').val(flowName);
-                $('#dialogawp-flow-active').prop('checked', false);
-                $('#dialogawp-flow-visibility').val('everyone');
+                $('#dialoga-flow-name').val(flowName);
+                $('#dialoga-flow-active').prop('checked', false);
+                $('#dialoga-flow-visibility').val('everyone');
                 this.showBuilder();
             }
 
@@ -667,18 +667,18 @@
             this.nodeIdCounter = 1;
 
             // Clear canvas
-            if (window.dialogawpReactInstance) {
-                window.dialogawpReactInstance.setFlow({ nodes: [], edges: [] });
+            if (window.dialogaReactInstance) {
+                window.dialogaReactInstance.setFlow({ nodes: [], edges: [] });
             }
-            $('#dialogawp-node-editor').hide();
+            $('#dialoga-node-editor').hide();
 
             // Show saving status while we persist the new (empty) flow
             this.updateSaveStatus('saving', t('Creating flow…'));
 
             // Persist the empty flow shell immediately so it appears in "Your Flows"
             const formData = new FormData();
-            formData.append('action', 'dialogawp_save_flow');
-            formData.append('nonce', dialogawpAdmin.nonce);
+            formData.append('action', 'dialoga_save_flow');
+            formData.append('nonce', dialogaAdmin.nonce);
             formData.append('flow_id', 0);
             formData.append('flow_name', flowName);
             formData.append('is_active', 0);
@@ -686,7 +686,7 @@
             formData.append('visible_roles', '[]');
             formData.append('flow_data', JSON.stringify({ nodes: [], edges: [] }));
 
-            fetch(dialogawpAdmin.ajaxUrl, {
+            fetch(dialogaAdmin.ajaxUrl, {
                 method: 'POST',
                 body: formData
             })
@@ -696,7 +696,7 @@
                     self.currentFlowId = response.data.flow_id;
                     self.currentFlow.id = response.data.flow_id;
                     if (!self.isEditor) {
-                        window.location.assign(dialogawpAdmin.builderUrl + '&flow_id=' + encodeURIComponent(response.data.flow_id));
+                        window.location.assign(dialogaAdmin.builderUrl + '&flow_id=' + encodeURIComponent(response.data.flow_id));
                         return;
                     }
                     self.isDirty = false;
@@ -723,8 +723,8 @@
             _log('🔵 addNode called with type:', nodeType);
             
             // CRITICAL: Sync BOTH nodes and edges from canvas before adding new node
-            if (window.dialogawpReactInstance) {
-                const currentFlow = window.dialogawpReactInstance.getFlow();
+            if (window.dialogaReactInstance) {
+                const currentFlow = window.dialogaReactInstance.getFlow();
                 if (currentFlow.nodes) {
                     this.nodes = [...currentFlow.nodes];
                 }
@@ -813,15 +813,15 @@
         
         selectNode: function(node) {
             // Auto-save edits from the previously selected node before switching
-            const editorVisible = $('#dialogawp-node-editor').is(':visible');
+            const editorVisible = $('#dialoga-node-editor').is(':visible');
             if (this.selectedNode && editorVisible && (!node || this.selectedNode.id !== node.id)) {
                 _log('💾 Auto-saving previous node before switch:', this.selectedNode.id);
                 this.saveNodeEdits(true); // silent: don't close editor
             }
 
             // IMPORTANT: Sync edges from canvas to get latest connections
-            if (window.dialogawpReactInstance) {
-                const currentFlow = window.dialogawpReactInstance.getFlow();
+            if (window.dialogaReactInstance) {
+                const currentFlow = window.dialogaReactInstance.getFlow();
                 if (currentFlow.edges) {
                     this.edges = currentFlow.edges;
                 }
@@ -840,8 +840,8 @@
 
         showNodeEditor: function(node) {
             if (this._suppressEditor) return;
-            const $editor = $('#dialogawp-node-editor');
-            const $content = $('#dialogawp-node-editor-content');
+            const $editor = $('#dialoga-node-editor');
+            const $content = $('#dialoga-node-editor-content');
 
             let template = '';
 
@@ -917,16 +917,16 @@
             const esc = (s) => this.escapeEditorHtml(s);
 
             const chips = vars.map((v) => {
-                return `<button type="button" class="dialogawp-var-chip" data-var="${esc(v.key)}" title="${esc(t('From: %s').replace('%s', v.source.substring(0, 60)))}">{{${esc(v.key)}}}</button>`;
+                return `<button type="button" class="dialoga-var-chip" data-var="${esc(v.key)}" title="${esc(t('From: %s').replace('%s', v.source.substring(0, 60)))}">{{${esc(v.key)}}}</button>`;
             }).join('');
 
             return `
-                <div class="dialogawp-variable-picker" style="margin-bottom:14px;padding:10px 12px;background:#f0f7ff;border:1px solid #cfe3ff;border-radius:6px;">
+                <div class="dialoga-variable-picker" style="margin-bottom:14px;padding:10px 12px;background:#f0f7ff;border:1px solid #cfe3ff;border-radius:6px;">
                     <div style="font-size:12px;font-weight:600;color:#1565c0;margin-bottom:6px;">
                         ${esc(t('Available Variables'))}
                         <span style="font-weight:400;color:#5a6a7d;">&mdash; ${esc(t('click to insert into the last focused field'))}</span>
                     </div>
-                    <div class="dialogawp-var-chip-list" style="display:flex;flex-wrap:wrap;gap:6px;">
+                    <div class="dialoga-var-chip-list" style="display:flex;flex-wrap:wrap;gap:6px;">
                         ${chips}
                     </div>
                 </div>
@@ -935,14 +935,14 @@
 
         bindVariablePickerEvents: function() {
             const self = this;
-            const $editor = $('#dialogawp-node-editor-content');
+            const $editor = $('#dialoga-node-editor-content');
 
             // Track the last focused text-like field inside the editor
-            $editor.off('focusin.dialogawpVar').on('focusin.dialogawpVar', 'input[type="text"], input:not([type]), textarea', function() {
+            $editor.off('focusin.dialogaVar').on('focusin.dialogaVar', 'input[type="text"], input:not([type]), textarea', function() {
                 self._lastFocusedField = this;
             });
 
-            $editor.off('click.dialogawpVar', '.dialogawp-var-chip').on('click.dialogawpVar', '.dialogawp-var-chip', function(e) {
+            $editor.off('click.dialogaVar', '.dialoga-var-chip').on('click.dialogaVar', '.dialoga-var-chip', function(e) {
                 e.preventDefault();
                 const varName = $(this).attr('data-var');
                 const token = '{{' + varName + '}}';
@@ -977,28 +977,28 @@
             const self = this;
 
             // Show the inline "new connector" form
-            $(document).on('click', '#dialogawp-webhook-new-connector', function(e) {
+            $(document).on('click', '#dialoga-webhook-new-connector', function(e) {
                 e.preventDefault();
-                $('#dialogawp-webhook-new-form').slideDown(120);
-                setTimeout(() => $('#dialogawp-webhook-new-name').focus(), 130);
+                $('#dialoga-webhook-new-form').slideDown(120);
+                setTimeout(() => $('#dialoga-webhook-new-name').focus(), 130);
             });
 
             // Cancel the inline form
-            $(document).on('click', '#dialogawp-webhook-new-cancel', function(e) {
+            $(document).on('click', '#dialoga-webhook-new-cancel', function(e) {
                 e.preventDefault();
-                $('#dialogawp-webhook-new-form').slideUp(120);
-                $('#dialogawp-webhook-new-name, #dialogawp-webhook-new-url, #dialogawp-webhook-new-secret').val('');
-                $('#dialogawp-webhook-new-status').text('');
+                $('#dialoga-webhook-new-form').slideUp(120);
+                $('#dialoga-webhook-new-name, #dialoga-webhook-new-url, #dialoga-webhook-new-secret').val('');
+                $('#dialoga-webhook-new-status').text('');
             });
 
             // Save a new connector via AJAX, then add it to the dropdown and select it
-            $(document).on('click', '#dialogawp-webhook-new-save', function(e) {
+            $(document).on('click', '#dialoga-webhook-new-save', function(e) {
                 e.preventDefault();
                 const $btn = $(this);
-                const $status = $('#dialogawp-webhook-new-status');
-                const name = ($('#dialogawp-webhook-new-name').val() || '').trim();
-                const url  = ($('#dialogawp-webhook-new-url').val() || '').trim();
-                const secret = $('#dialogawp-webhook-new-secret').val() || '';
+                const $status = $('#dialoga-webhook-new-status');
+                const name = ($('#dialoga-webhook-new-name').val() || '').trim();
+                const url  = ($('#dialoga-webhook-new-url').val() || '').trim();
+                const secret = $('#dialoga-webhook-new-secret').val() || '';
 
                 if (!name || !url) {
                     $status.css('color', '#dc2626').text(t('Name and URL are required.'));
@@ -1009,13 +1009,13 @@
                 $status.css('color', '#6b7280').text(t('Saving…'));
 
                 const data = new FormData();
-                data.append('action', 'dialogawp_save_webhook_connector');
-                data.append('nonce', (window.dialogawpAdmin && window.dialogawpAdmin.nonce) || '');
+                data.append('action', 'dialoga_save_webhook_connector');
+                data.append('nonce', (window.dialogaAdmin && window.dialogaAdmin.nonce) || '');
                 data.append('name', name);
                 data.append('url', url);
                 data.append('secret', secret);
 
-                fetch((window.dialogawpAdmin && window.dialogawpAdmin.ajaxUrl) || '', {
+                fetch((window.dialogaAdmin && window.dialogaAdmin.ajaxUrl) || '', {
                     method: 'POST',
                     body: data
                 })
@@ -1028,21 +1028,21 @@
                         }
                         // Update local cache and the dropdown; pre-select the new connector
                         const connectors = (res.data && res.data.connectors) || [];
-                        window.dialogawpProConnectors = window.dialogawpProConnectors || {};
-                        window.dialogawpProConnectors.connectors = connectors;
+                        window.dialogaProConnectors = window.dialogaProConnectors || {};
+                        window.dialogaProConnectors.connectors = connectors;
 
                         const newest = connectors[connectors.length - 1];
-                        const $select = $('#dialogawp-webhook-connector');
+                        const $select = $('#dialoga-webhook-connector');
                         $select.empty().append($('<option>').val('').text(t('Select a connector')));
                         connectors.forEach((c) => {
                             $select.append($('<option>').val(c.id).text(c.name).prop('selected', !!newest && c.id === newest.id));
                         });
 
                         // Reset the inline form
-                        $('#dialogawp-webhook-new-name, #dialogawp-webhook-new-url, #dialogawp-webhook-new-secret').val('');
+                        $('#dialoga-webhook-new-name, #dialoga-webhook-new-url, #dialoga-webhook-new-secret').val('');
                         $status.css('color', '#16a34a').text(t('Saved!'));
                         setTimeout(() => {
-                            $('#dialogawp-webhook-new-form').slideUp(120);
+                            $('#dialoga-webhook-new-form').slideUp(120);
                             $status.text('');
                         }, 800);
                     })
@@ -1054,13 +1054,13 @@
         },
 
         renderMessageNodeEditor: function(node) {
-            const template = (window.dialogawpTemplates && window.dialogawpTemplates.messageNode) || '';
+            const template = (window.dialogaTemplates && window.dialogaTemplates.messageNode) || '';
             return template.replace(/{{(message|delay)}}/g, (match, field) =>
                 this.escapeEditorHtml(node.data[field] || (field === 'delay' ? 0 : '')));
         },
         
         renderQuestionNodeEditor: function(node) {
-            const template = (window.dialogawpTemplates && window.dialogawpTemplates.questionNode) || '';
+            const template = (window.dialogaTemplates && window.dialogaTemplates.questionNode) || '';
             
             // Handle backward compatibility
             const message = node.data.message || node.data.question || '';
@@ -1090,13 +1090,13 @@
                 // Add event listener for auto_continue checkbox to show/hide delay
                 $('input[data-field="auto_continue"]').on('change', function() {
                     const isChecked = $(this).is(':checked');
-                    $('.dialogawp-delay-field').toggle(isChecked);
+                    $('.dialoga-delay-field').toggle(isChecked);
                 });
                 
                 // Add event listener for allow_text_input checkbox to show/hide placeholder
                 $('input[data-field="allow_text_input"]').on('change', function() {
                     const isChecked = $(this).is(':checked');
-                    $('.dialogawp-text-placeholder-field').toggle(isChecked);
+                    $('.dialoga-text-placeholder-field').toggle(isChecked);
                 });
             }, 0);
             
@@ -1104,7 +1104,7 @@
         },
         
         renderOutputNodeEditor: function(node) {
-            const template = (window.dialogawpTemplates && window.dialogawpTemplates.outputNode) || '';
+            const template = (window.dialogaTemplates && window.dialogaTemplates.outputNode) || '';
             const html = template.replace(/{{(output_message|delay)}}/g, (match, field) =>
                 this.escapeEditorHtml(node.data[field] || (field === 'delay' ? 0 : '')));
             
@@ -1116,27 +1116,27 @@
         },
         
         renderOutputButtons: function(buttons) {
-            const $container = $('#dialogawp-output-buttons');
+            const $container = $('#dialoga-output-buttons');
             $container.empty();
             
             buttons.forEach((button, index) => {
                 const buttonHtml = `
-                    <div class="dialogawp-option-item" data-button-id="${this.escapeEditorHtml(button.id)}">
+                    <div class="dialoga-option-item" data-button-id="${this.escapeEditorHtml(button.id)}">
                         <input type="text" 
-                               class="dialogawp-button-label" 
+                               class="dialoga-button-label" 
                                value="${this.escapeEditorHtml(button.label)}" 
                                placeholder="${this.escapeEditorHtml(t('Button text'))}" 
                                style="flex: 1;" />
-                        <select class="dialogawp-button-action" style="width: 120px;">
+                        <select class="dialoga-button-action" style="width: 120px;">
                             <option value="link" ${button.action === 'link' ? 'selected' : ''}>${this.escapeEditorHtml(t('Open Link'))}</option>
                             <option value="continue" ${button.action === 'continue' ? 'selected' : ''}>${this.escapeEditorHtml(t('Continue Flow'))}</option>
                         </select>
                         <input type="url" 
-                               class="dialogawp-button-url" 
+                               class="dialoga-button-url" 
                                value="${this.escapeEditorHtml(button.url || '')}" 
                                placeholder="https://..." 
                                style="flex: 1; ${button.action === 'link' ? '' : 'display:none;'}" />
-                        <button class="button button-small dialogawp-remove-button" type="button">
+                        <button class="button button-small dialoga-remove-button" type="button">
                             <span class="dashicons dashicons-no"></span>
                         </button>
                     </div>
@@ -1145,9 +1145,9 @@
             });
             
             // Show/hide URL field based on action type
-            $('.dialogawp-button-action').on('change', function() {
+            $('.dialoga-button-action').on('change', function() {
                 const $select = $(this);
-                const $urlField = $select.siblings('.dialogawp-button-url');
+                const $urlField = $select.siblings('.dialoga-button-url');
                 if ($select.val() === 'link') {
                     $urlField.show();
                 } else {
@@ -1156,19 +1156,19 @@
             });
             
             // Remove button event
-            $('.dialogawp-remove-button').on('click', function(e) {
+            $('.dialoga-remove-button').on('click', function(e) {
                 e.preventDefault();
-                $(this).closest('.dialogawp-option-item').remove();
+                $(this).closest('.dialoga-option-item').remove();
             });
         },
         
         renderClickNodeEditor: function(node) {
-            const template = (window.dialogawpTemplates && window.dialogawpTemplates.clickNode) || '';
+            const template = (window.dialogaTemplates && window.dialogaTemplates.clickNode) || '';
             
             // Find connected Output node to show available click options
             let connectedOutputNode = null;
-            if (window.dialogawpReactInstance) {
-                const currentFlow = window.dialogawpReactInstance.getFlow();
+            if (window.dialogaReactInstance) {
+                const currentFlow = window.dialogaReactInstance.getFlow();
                 const incomingEdge = currentFlow.edges?.find(e => e.target === node.id);
                 if (incomingEdge) {
                     connectedOutputNode = this.nodes.find(n => 
@@ -1186,16 +1186,16 @@
                         </div>`)
                         .join('');
                     
-                    $('#dialogawp-click-options').html(`
-                        <div class="dialogawp-notice" style="background: #e3f2fd;">
+                    $('#dialoga-click-options').html(`
+                        <div class="dialoga-notice" style="background: #e3f2fd;">
                             <p><strong>💡 ${this.escapeEditorHtml(t('Available Buttons:'))}</strong></p>
                             ${buttonsList}
                             <small style="color: #666; margin-top: 10px; display: block;">${this.escapeEditorHtml(t('Connect this Click node to different paths based on which button is clicked.'))}</small>
                         </div>
                     `);
                 } else {
-                    $('#dialogawp-click-options').html(`
-                        <div class="dialogawp-notice warning">
+                    $('#dialoga-click-options').html(`
+                        <div class="dialoga-notice warning">
                             <p><strong>⚠️ ${this.escapeEditorHtml(t('No buttons detected'))}</strong></p>
                             <p>${this.escapeEditorHtml(t('Connect an Output node (with buttons configured) to this Click node to detect button clicks.'))}</p>
                         </div>
@@ -1207,17 +1207,17 @@
         },
         
         renderQuestionOptions: function(options) {
-            const $container = $('#dialogawp-question-options');
+            const $container = $('#dialoga-question-options');
             $container.empty();
             
             options.forEach((option, index) => {
                 const optionHtml = `
-                    <div class="dialogawp-option-item" data-option-id="${this.escapeEditorHtml(option.id)}">
+                    <div class="dialoga-option-item" data-option-id="${this.escapeEditorHtml(option.id)}">
                         <input type="text" 
-                               class="dialogawp-option-label" 
+                               class="dialoga-option-label" 
                                value="${this.escapeEditorHtml(option.label)}" 
                                placeholder="${this.escapeEditorHtml(t('Option %s').replace('%s', index + 1))}" />
-                        <button class="button button-small dialogawp-remove-option" type="button">
+                        <button class="button button-small dialoga-remove-option" type="button">
                             <span class="dashicons dashicons-no"></span>
                         </button>
                     </div>
@@ -1225,18 +1225,18 @@
                 $container.append(optionHtml);
             });
             
-            $('.dialogawp-remove-option').on('click', function(e) {
+            $('.dialoga-remove-option').on('click', function(e) {
                 e.preventDefault();
-                $(this).closest('.dialogawp-option-item').remove();
+                $(this).closest('.dialoga-option-item').remove();
             });
         },
         
         renderBranchNodeEditor: function(node) {
-            const template = (window.dialogawpTemplates && window.dialogawpTemplates.branchNode) || '';
+            const template = (window.dialogaTemplates && window.dialogaTemplates.branchNode) || '';
             
             let connectedQuestionNode = null;
-            if (window.dialogawpReactInstance) {
-                const currentFlow = window.dialogawpReactInstance.getFlow();
+            if (window.dialogaReactInstance) {
+                const currentFlow = window.dialogaReactInstance.getFlow();
                 const incomingEdge = currentFlow.edges?.find(e => e.target === node.id);
                 if (incomingEdge) {
                     connectedQuestionNode = this.nodes.find(n => 
@@ -1251,7 +1251,7 @@
                     .map(o => `<code style="background: #f0f0f0; padding: 2px 6px; margin: 0 4px; border-radius: 3px;">${this.escapeEditorHtml(o.label)}</code>`)
                     .join('');
                     
-                helpText = `<div class="dialogawp-notice" style="padding: 12px; margin-bottom: 15px; background: #e3f2fd; border-left: 4px solid #190F4F; font-size: 13px; line-height: 1.6;">
+                helpText = `<div class="dialoga-notice" style="padding: 12px; margin-bottom: 15px; background: #e3f2fd; border-left: 4px solid #190F4F; font-size: 13px; line-height: 1.6;">
                     <strong>💡 ${this.escapeEditorHtml(t('Connected Question Options:'))}</strong><br>
                     ${optionsList}<br>
                     <small style="color: #666; margin-top: 6px; display: block;">${this.escapeEditorHtml(t("Use these values in your conditions below to route based on the user's answer."))}</small>
@@ -1260,7 +1260,7 @@
             
             setTimeout(() => {
                 if (helpText) {
-                    $('#dialogawp-branch-groups').before(helpText);
+                    $('#dialoga-branch-groups').before(helpText);
                 }
                 this.renderBranchGroups(node.data.output_groups || []);
             }, 0);
@@ -1269,12 +1269,12 @@
         },
         
         renderBranchConditions: function(conditions) {
-            const $container = $('#dialogawp-branch-conditions');
+            const $container = $('#dialoga-branch-conditions');
             $container.empty();
             
             let questionOptions = null;
-            if (this.selectedNode && window.dialogawpReactInstance) {
-                const currentFlow = window.dialogawpReactInstance.getFlow();
+            if (this.selectedNode && window.dialogaReactInstance) {
+                const currentFlow = window.dialogaReactInstance.getFlow();
                 const incomingEdge = currentFlow.edges?.find(e => e.target === this.selectedNode.id);
                 if (incomingEdge) {
                     const connectedNode = this.nodes.find(n => 
@@ -1295,7 +1295,7 @@
                     ).join('');
                     
                     valueInput = `
-                        <select class="dialogawp-condition-value" style="flex: 1;">
+                        <select class="dialoga-condition-value" style="flex: 1;">
                             <option value="">${this.escapeEditorHtml(t('Select an option'))}</option>
                             ${optionsHtml}
                         </select>
@@ -1303,7 +1303,7 @@
                 } else {
                     valueInput = `
                         <input type="text" 
-                               class="dialogawp-condition-value" 
+                               class="dialoga-condition-value" 
                                value="${this.escapeEditorHtml(condition.value || '')}" 
                                placeholder="${this.escapeEditorHtml(t('Enter value'))}" 
                                style="flex: 1;" />
@@ -1311,23 +1311,23 @@
                 }
                 
                 const logicDropdown = index > 0 ? `
-                    <select class="dialogawp-condition-logic" style="width: 80px; margin-right: 8px;">
+                    <select class="dialoga-condition-logic" style="width: 80px; margin-right: 8px;">
                         <option value="and" ${(condition.logic === 'and' || !condition.logic) ? 'selected' : ''}>${this.escapeEditorHtml(t('AND'))}</option>
                         <option value="or" ${condition.logic === 'or' ? 'selected' : ''}>${this.escapeEditorHtml(t('OR'))}</option>
                     </select>
                 ` : '';
                 
                 const conditionHtml = `
-                    <div class="dialogawp-condition-item" data-condition-id="${this.escapeEditorHtml(condition.id)}" style="display: flex; gap: 8px; margin-bottom: 10px; align-items: center;">
+                    <div class="dialoga-condition-item" data-condition-id="${this.escapeEditorHtml(condition.id)}" style="display: flex; gap: 8px; margin-bottom: 10px; align-items: center;">
                         ${logicDropdown}
-                        <select class="dialogawp-condition-operator" style="width: 140px;">
+                        <select class="dialoga-condition-operator" style="width: 140px;">
                             <option value="equals" ${condition.operator === 'equals' ? 'selected' : ''}>${this.escapeEditorHtml(t('Equals'))}</option>
                             <option value="contains" ${condition.operator === 'contains' ? 'selected' : ''}>${this.escapeEditorHtml(t('Contains'))}</option>
                             <option value="starts_with" ${condition.operator === 'starts_with' ? 'selected' : ''}>${this.escapeEditorHtml(t('Starts with'))}</option>
                             <option value="not_empty" ${condition.operator === 'not_empty' ? 'selected' : ''}>${this.escapeEditorHtml(t('Not empty'))}</option>
                         </select>
                         ${valueInput}
-                        <button class="button button-small dialogawp-remove-condition" type="button" style="flex-shrink: 0;">
+                        <button class="button button-small dialoga-remove-condition" type="button" style="flex-shrink: 0;">
                             <span class="dashicons dashicons-no"></span>
                         </button>
                     </div>
@@ -1335,21 +1335,21 @@
                 $container.append(conditionHtml);
             });
             
-            $('.dialogawp-remove-condition').on('click', function(e) {
+            $('.dialoga-remove-condition').on('click', function(e) {
                 e.preventDefault();
-                $(this).closest('.dialogawp-condition-item').remove();
+                $(this).closest('.dialoga-condition-item').remove();
             });
         },
         
         renderBranchGroups: function(outputGroups) {
             const esc = (s) => this.escapeEditorHtml(s);
-            const $container = $('#dialogawp-branch-groups');
+            const $container = $('#dialoga-branch-groups');
             $container.empty();
             
             // Get connected Question options for dropdown values
             let questionOptions = null;
-            if (this.selectedNode && window.dialogawpReactInstance) {
-                const currentFlow = window.dialogawpReactInstance.getFlow();
+            if (this.selectedNode && window.dialogaReactInstance) {
+                const currentFlow = window.dialogaReactInstance.getFlow();
                 const incomingEdge = currentFlow.edges?.find(e => e.target === this.selectedNode.id);
                 if (incomingEdge) {
                     const connectedNode = this.nodes.find(n => 
@@ -1363,23 +1363,23 @@
             
             outputGroups.forEach((group, groupIndex) => {
                 const groupHtml = `
-                    <div class="dialogawp-output-group" data-group-id="${esc(group.id)}" style="background: #F7F8FC; border: 2px solid #E5E7EF; border-radius: 6px; padding: 15px; margin-bottom: 15px;">
+                    <div class="dialoga-output-group" data-group-id="${esc(group.id)}" style="background: #F7F8FC; border: 2px solid #E5E7EF; border-radius: 6px; padding: 15px; margin-bottom: 15px;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                             <h4 style="margin: 0; color: #555;">${esc(t('Output %s').replace('%s', groupIndex + 1))}</h4>
-                            <button class="button button-small dialogawp-remove-group" type="button" style="color: #d32f2f;">
+                            <button class="button button-small dialoga-remove-group" type="button" style="color: #d32f2f;">
                                 <span class="dashicons dashicons-no"></span> ${esc(t('Remove Output'))}
                             </button>
                         </div>
-                        <div class="dialogawp-group-conditions" data-group-id="${esc(group.id)}">
+                        <div class="dialoga-group-conditions" data-group-id="${esc(group.id)}">
                             <!-- Conditions for this group -->
                         </div>
                         <div style="margin-top: 10px;">
-                            <button class="button button-small dialogawp-add-condition-to-group" data-group-id="${esc(group.id)}">
+                            <button class="button button-small dialoga-add-condition-to-group" data-group-id="${esc(group.id)}">
                                 <span class="dashicons dashicons-plus"></span> ${esc(t('Add Condition'))}
                             </button>
                             <label style="margin-left: 15px;">
                                 <span style="margin-right: 5px;">${esc(t('Conditions must:'))}</span>
-                                <select class="dialogawp-group-logic" data-group-id="${esc(group.id)}" style="width: 160px;">
+                                <select class="dialoga-group-logic" data-group-id="${esc(group.id)}" style="width: 160px;">
                                     <option value="and" ${group.logic === 'and' ? 'selected' : ''}>${esc(t('ALL match (AND)'))}</option>
                                     <option value="or" ${group.logic === 'or' ? 'selected' : ''}>${esc(t('ANY match (OR)'))}</option>
                                 </select>
@@ -1390,7 +1390,7 @@
                 $container.append(groupHtml);
                 
                 // Render conditions for this group
-                const $groupConditions = $container.children('.dialogawp-output-group').last().find('.dialogawp-group-conditions');
+                const $groupConditions = $container.children('.dialoga-output-group').last().find('.dialoga-group-conditions');
                 (group.conditions || []).forEach((condition, condIndex) => {
                     let valueInput;
                     if (questionOptions && questionOptions.length > 0) {
@@ -1398,7 +1398,7 @@
                             `<option value="${esc(opt.label)}" ${condition.value === opt.label ? 'selected' : ''}>${esc(opt.label)}</option>`
                         ).join('');
                         valueInput = `
-                            <select class="dialogawp-condition-value" style="flex: 1;">
+                            <select class="dialoga-condition-value" style="flex: 1;">
                                 <option value="">${esc(t('Select'))}</option>
                                 ${optionsHtml}
                             </select>
@@ -1406,7 +1406,7 @@
                     } else {
                         valueInput = `
                             <input type="text" 
-                                   class="dialogawp-condition-value" 
+                                   class="dialoga-condition-value" 
                                    value="${esc(condition.value || '')}" 
                                    placeholder="${esc(t('Enter value'))}" 
                                    style="flex: 1;" />
@@ -1414,15 +1414,15 @@
                     }
                     
                     const conditionHtml = `
-                        <div class="dialogawp-condition-item" data-condition-id="${esc(condition.id)}" style="display: flex; gap: 8px; margin-bottom: 8px; align-items: center;">
-                            <select class="dialogawp-condition-operator" style="width: 120px;">
+                        <div class="dialoga-condition-item" data-condition-id="${esc(condition.id)}" style="display: flex; gap: 8px; margin-bottom: 8px; align-items: center;">
+                            <select class="dialoga-condition-operator" style="width: 120px;">
                                 <option value="equals" ${condition.operator === 'equals' ? 'selected' : ''}>${esc(t('Equals'))}</option>
                                 <option value="contains" ${condition.operator === 'contains' ? 'selected' : ''}>${esc(t('Contains'))}</option>
                                 <option value="starts_with" ${condition.operator === 'starts_with' ? 'selected' : ''}>${esc(t('Starts with'))}</option>
                                 <option value="not_empty" ${condition.operator === 'not_empty' ? 'selected' : ''}>${esc(t('Not empty'))}</option>
                             </select>
                             ${valueInput}
-                            <button class="button button-small dialogawp-remove-condition" type="button">
+                            <button class="button button-small dialoga-remove-condition" type="button">
                                 <span class="dashicons dashicons-no"></span>
                             </button>
                         </div>
@@ -1432,34 +1432,34 @@
             });
             
             // Event handlers
-            $('.dialogawp-remove-group').on('click', function(e) {
+            $('.dialoga-remove-group').on('click', function(e) {
                 e.preventDefault();
-                var groupEl = $(this).closest('.dialogawp-output-group');
+                var groupEl = $(this).closest('.dialoga-output-group');
                 if (outputGroups.length > 1) {
                     groupEl.remove();
                 } else {
-                    dialogawpModal.confirm(t('Remove this output group?'), function() {
+                    dialogaModal.confirm(t('Remove this output group?'), function() {
                         groupEl.remove();
                     }, { title: t('Remove Group'), okText: t('Remove'), danger: true });
                 }
             });
             
-            $('.dialogawp-remove-condition').on('click', function(e) {
+            $('.dialoga-remove-condition').on('click', function(e) {
                 e.preventDefault();
-                $(this).closest('.dialogawp-condition-item').remove();
+                $(this).closest('.dialoga-condition-item').remove();
             });
             
-            $('.dialogawp-add-condition-to-group').on('click', function(e) {
+            $('.dialoga-add-condition-to-group').on('click', function(e) {
                 e.preventDefault();
-                const $groupConditions = $(this).closest('.dialogawp-output-group').find('.dialogawp-group-conditions');
+                const $groupConditions = $(this).closest('.dialoga-output-group').find('.dialoga-group-conditions');
                 
-                let valueInput = `<input type="text" class="dialogawp-condition-value" placeholder="${esc(t('Enter value'))}" style="flex: 1;" />`;
+                let valueInput = `<input type="text" class="dialoga-condition-value" placeholder="${esc(t('Enter value'))}" style="flex: 1;" />`;
                 if (questionOptions && questionOptions.length > 0) {
                     const optionsHtml = questionOptions.map(opt => 
                         `<option value="${esc(opt.label)}">${esc(opt.label)}</option>`
                     ).join('');
                     valueInput = `
-                        <select class="dialogawp-condition-value" style="flex: 1;">
+                        <select class="dialoga-condition-value" style="flex: 1;">
                             <option value="">${esc(t('Select'))}</option>
                             ${optionsHtml}
                         </select>
@@ -1467,15 +1467,15 @@
                 }
                 
                 const newCondHtml = `
-                    <div class="dialogawp-condition-item" data-condition-id="cond_${Date.now()}" style="display: flex; gap: 8px; margin-bottom: 8px;">
-                        <select class="dialogawp-condition-operator" style="width: 120px;">
+                    <div class="dialoga-condition-item" data-condition-id="cond_${Date.now()}" style="display: flex; gap: 8px; margin-bottom: 8px;">
+                        <select class="dialoga-condition-operator" style="width: 120px;">
                             <option value="equals">${esc(t('Equals'))}</option>
                             <option value="contains">${esc(t('Contains'))}</option>
                             <option value="starts_with">${esc(t('Starts with'))}</option>
                             <option value="not_empty">${esc(t('Not empty'))}</option>
                         </select>
                         ${valueInput}
-                        <button class="button button-small dialogawp-remove-condition" type="button">
+                        <button class="button button-small dialoga-remove-condition" type="button">
                             <span class="dashicons dashicons-no"></span>
                         </button>
                     </div>
@@ -1483,15 +1483,15 @@
                 $groupConditions.append(newCondHtml);
                 
                 // Rebind remove handler
-                $groupConditions.find('.dialogawp-remove-condition').last().on('click', function(e) {
+                $groupConditions.find('.dialoga-remove-condition').last().on('click', function(e) {
                     e.preventDefault();
-                    $(this).closest('.dialogawp-condition-item').remove();
+                    $(this).closest('.dialoga-condition-item').remove();
                 });
             });
         },
         
         renderActionNodeEditor: function(node) {
-            const template = (window.dialogawpTemplates && window.dialogawpTemplates.actionNode) || '';
+            const template = (window.dialogaTemplates && window.dialogaTemplates.actionNode) || '';
             // v0.39.8: don't default to 'capture_lead' — respect the empty state on
             // brand-new Action nodes so the dropdown shows "-- Select an action type --"
             // and forces the admin to pick something.
@@ -1509,8 +1509,8 @@
             setTimeout(() => {
                 this.renderActionConfig(node);
                 
-                $('#dialogawp-action-type').on('change', () => {
-                    const newType = $('#dialogawp-action-type').val();
+                $('#dialoga-action-type').on('change', () => {
+                    const newType = $('#dialoga-action-type').val();
                     if (!node.data.config) node.data.config = {};
                     node.data.action_type = newType;
                     this.renderActionConfig(node);
@@ -1530,33 +1530,33 @@
             const leadFields   = config.lead_fields || { name: true, email: true, phone: true };
 
             return `
-                <div class="dialogawp-field">
+                <div class="dialoga-field">
                     <label>${this.escapeEditorHtml(t('Greeting Message'))}</label>
                     <input type="text" id="ai-chat-greeting" class="regular-text" value="${this.escapeEditorHtml(greeting)}"
                            placeholder="${this.escapeEditorHtml(t('Hi! How can I help you today?'))}" />
                     <p class="description">${this.escapeEditorHtml(t('The first message the AI sends to open the conversation.'))}</p>
                 </div>
-                <div class="dialogawp-field">
+                <div class="dialoga-field">
                     <label>${this.escapeEditorHtml(t('Input Placeholder'))}</label>
                     <input type="text" id="ai-chat-placeholder" class="regular-text" value="${this.escapeEditorHtml(placeholder)}" />
                 </div>
-                <div class="dialogawp-field">
+                <div class="dialoga-field">
                     <label>${this.escapeEditorHtml(t('Node-Specific Instructions'))} <span style="font-weight:400;color:#787c82;">${this.escapeEditorHtml(t('(optional)'))}</span></label>
                     <textarea id="ai-chat-instructions" rows="4" style="width:100%;"
                               placeholder="${this.escapeEditorHtml(t('Any extra context for the AI at this point in the flow...'))}">${this.escapeEditorHtml(instructions)}</textarea>
                 </div>
 
-                <div class="dialogawp-field" style="border-top:1px solid #E5E7EF;padding-top:14px;margin-top:14px;">
+                <div class="dialoga-field" style="border-top:1px solid #E5E7EF;padding-top:14px;margin-top:14px;">
                     <label style="display:flex;align-items:center;gap:8px;font-weight:600;">
                         <input type="checkbox" id="ai-chat-auto-extract" ${autoExtract ? 'checked' : ''} />
                         ${this.escapeEditorHtml(t('Auto-extract lead from conversation'))}
                     </label>
                     <p class="description">
                         ${this.escapeEditorHtml(t('When enabled, the AI gathers contact fields naturally in chat, confirms them with the visitor, and saves a lead on confirmation. No separate form needed.'))}
-                        ${this.escapeEditorHtml(t('Fires %s so any downstream Webhook nodes fire too.')).replace('%s', '<code>dialogawp_lead_captured</code>')}
+                        ${this.escapeEditorHtml(t('Fires %s so any downstream Webhook nodes fire too.')).replace('%s', '<code>dialoga_lead_captured</code>')}
                     </p>
                 </div>
-                <div id="ai-chat-extract-fields" class="dialogawp-field" style="padding:10px 12px;background:#F7F8FC;border:1px solid #E5E7EF;border-radius:6px;display:${autoExtract ? 'block' : 'none'};">
+                <div id="ai-chat-extract-fields" class="dialoga-field" style="padding:10px 12px;background:#F7F8FC;border:1px solid #E5E7EF;border-radius:6px;display:${autoExtract ? 'block' : 'none'};">
                     <label style="font-weight:600;font-size:12px;margin-bottom:8px;display:block;">${this.escapeEditorHtml(t('Required fields'))}</label>
                     <label style="display:block;margin-bottom:6px;font-weight:400;">
                         <input type="checkbox" id="ai-chat-field-name" ${leadFields.name !== false ? 'checked' : ''} /> ${this.escapeEditorHtml(t('Name'))}
@@ -1599,22 +1599,22 @@
             const message = node.data.message || '';
 
             return `
-                <div class="dialogawp-field">
+                <div class="dialoga-field">
                     ${targetInfo}
                     <p class="description">
                         ${this.escapeEditorHtml(t('The connection wire from this Loop node determines where the flow jumps back to. Drag a connection from this node to any earlier step.'))}
                     </p>
                 </div>
 
-                <div class="dialogawp-field">
+                <div class="dialoga-field">
                     <label>${this.escapeEditorHtml(t('Optional Loopback Message'))}</label>
-                    <textarea id="dialogawp-loop-message" rows="2" style="width:100%;" placeholder="${this.escapeEditorHtml(t('e.g. Anything else I can help with?'))}">${this.escapeEditorHtml(message)}</textarea>
+                    <textarea id="dialoga-loop-message" rows="2" style="width:100%;" placeholder="${this.escapeEditorHtml(t('e.g. Anything else I can help with?'))}">${this.escapeEditorHtml(message)}</textarea>
                     <p class="description">${this.escapeEditorHtml(t('Show this message before looping back. Leave blank to skip.'))}</p>
                 </div>
 
-                <div class="dialogawp-field">
+                <div class="dialoga-field">
                     <label>${this.escapeEditorHtml(t('Optional Delay Before Loop'))}</label>
-                    <input type="number" id="dialogawp-loop-delay" min="0" max="30" step="0.5" value="${delaySeconds}" style="width:120px;" />
+                    <input type="number" id="dialoga-loop-delay" min="0" max="30" step="0.5" value="${delaySeconds}" style="width:120px;" />
                     <span style="color:#666;margin-left:6px;">${this.escapeEditorHtml(t('seconds'))}</span>
                     <p class="description">${this.escapeEditorHtml(t('Wait this many seconds before looping back. 0 = instant.'))}</p>
                 </div>`;
@@ -1624,7 +1624,7 @@
             const config = node.data.config || {};
             const esc = (s) => this.escapeEditorHtml(s);
 
-            const connectorsCfg = window.dialogawpProConnectors || {};
+            const connectorsCfg = window.dialogaProConnectors || {};
             const connectors    = connectorsCfg.connectors || [];
             const manageUrl     = connectorsCfg.manageUrl  || '';
 
@@ -1635,13 +1635,13 @@
             });
 
             return `
-                <div class="dialogawp-field">
+                <div class="dialoga-field">
                     <label>${esc(t('Webhook Connector'))}</label>
                     <div style="display:flex;gap:6px;align-items:center;">
-                        <select id="dialogawp-webhook-connector" style="flex:1;">
+                        <select id="dialoga-webhook-connector" style="flex:1;">
                             ${connectorOptions}
                         </select>
-                        <button type="button" class="button button-small" id="dialogawp-webhook-new-connector"
+                        <button type="button" class="button button-small" id="dialoga-webhook-new-connector"
                                 style="white-space:nowrap;">${esc(t('+ New'))}</button>
                     </div>
                     <p class="description">
@@ -1651,52 +1651,52 @@
                 </div>
 
                 <!-- Inline "create new connector" form (hidden by default) -->
-                <div id="dialogawp-webhook-new-form" style="display:none;padding:12px;background:#F7F8FC;border:1px solid #E5E7EF;border-radius:6px;margin-bottom:14px;">
-                    <div class="dialogawp-field">
+                <div id="dialoga-webhook-new-form" style="display:none;padding:12px;background:#F7F8FC;border:1px solid #E5E7EF;border-radius:6px;margin-bottom:14px;">
+                    <div class="dialoga-field">
                         <label style="font-size:12px;">${esc(t('Name'))}</label>
-                        <input type="text" id="dialogawp-webhook-new-name" placeholder="${esc(t('Zapier - Lead Notifier'))}" style="width:100%;" />
+                        <input type="text" id="dialoga-webhook-new-name" placeholder="${esc(t('Zapier - Lead Notifier'))}" style="width:100%;" />
                     </div>
-                    <div class="dialogawp-field">
+                    <div class="dialoga-field">
                         <label style="font-size:12px;">${esc(t('Webhook URL'))}</label>
-                        <input type="url" id="dialogawp-webhook-new-url" placeholder="https://hooks.zapier.com/..." style="width:100%;" />
+                        <input type="url" id="dialoga-webhook-new-url" placeholder="https://hooks.zapier.com/..." style="width:100%;" />
                     </div>
-                    <div class="dialogawp-field">
+                    <div class="dialoga-field">
                         <label style="font-size:12px;">${esc(t('Shared Secret'))} <span style="color:#9ca3af;font-weight:400;">${esc(t('(optional)'))}</span></label>
-                        <input type="text" id="dialogawp-webhook-new-secret" placeholder="${esc(t('For HMAC-SHA256 signing'))}" style="width:100%;" />
+                        <input type="text" id="dialoga-webhook-new-secret" placeholder="${esc(t('For HMAC-SHA256 signing'))}" style="width:100%;" />
                     </div>
                     <div style="display:flex;gap:6px;">
-                        <button type="button" class="button button-primary button-small" id="dialogawp-webhook-new-save">${esc(t('Save Connector'))}</button>
-                        <button type="button" class="button button-small" id="dialogawp-webhook-new-cancel">${esc(t('Cancel'))}</button>
-                        <span id="dialogawp-webhook-new-status" style="font-size:12px;color:#6b7280;align-self:center;"></span>
+                        <button type="button" class="button button-primary button-small" id="dialoga-webhook-new-save">${esc(t('Save Connector'))}</button>
+                        <button type="button" class="button button-small" id="dialoga-webhook-new-cancel">${esc(t('Cancel'))}</button>
+                        <span id="dialoga-webhook-new-status" style="font-size:12px;color:#6b7280;align-self:center;"></span>
                     </div>
                 </div>
 
-                <div class="dialogawp-field">
+                <div class="dialoga-field">
                     <label>${esc(t('HTTP Method'))}</label>
-                    <select id="dialogawp-webhook-method" style="width:140px;">
+                    <select id="dialoga-webhook-method" style="width:140px;">
                         <option value="POST"${config.method === 'POST' || !config.method ? ' selected' : ''}>POST</option>
                         <option value="PUT"${config.method === 'PUT' ? ' selected' : ''}>PUT</option>
                         <option value="PATCH"${config.method === 'PATCH' ? ' selected' : ''}>PATCH</option>
                     </select>
                 </div>
 
-                <div class="dialogawp-field">
+                <div class="dialoga-field">
                     <label style="display:flex;align-items:center;gap:6px;font-weight:400;">
-                        <input type="checkbox" id="dialogawp-webhook-include-lead" ${config.include_lead_data !== false ? 'checked' : ''} />
+                        <input type="checkbox" id="dialoga-webhook-include-lead" ${config.include_lead_data !== false ? 'checked' : ''} />
                         ${esc(t('Include lead data (name, email, phone, tags)'))}
                     </label>
                 </div>
 
-                <div class="dialogawp-field">
+                <div class="dialoga-field">
                     <label style="display:flex;align-items:center;gap:6px;font-weight:400;">
-                        <input type="checkbox" id="dialogawp-webhook-include-flow" ${config.include_flow_data !== false ? 'checked' : ''} />
+                        <input type="checkbox" id="dialoga-webhook-include-flow" ${config.include_flow_data !== false ? 'checked' : ''} />
                         ${esc(t('Include flow data (flow name, variables, session)'))}
                     </label>
                 </div>
 
-                <div class="dialogawp-field">
+                <div class="dialoga-field">
                     <label>${esc(t('Custom Headers'))} <span style="color:#9ca3af;font-weight:400;font-size:11px;">${esc(t('(optional, one per line, key:value)'))}</span></label>
-                    <textarea id="dialogawp-webhook-headers" rows="3"
+                    <textarea id="dialoga-webhook-headers" rows="3"
                               placeholder="Authorization: Bearer token123&#10;X-Custom: value"
                               style="width:100%;font-family:monospace;font-size:12px;">${esc(config.custom_headers || '')}</textarea>
                 </div>
@@ -1717,7 +1717,7 @@
             // '' → 'capture_lead' before the !actionType guard below could catch it.
             const actionType = node.data.action_type || '';
             const config = node.data.config || {};
-            const $container = $('#dialogawp-action-config');
+            const $container = $('#dialoga-action-config');
             
             _log('🎨 Rendering action config for:', actionType);
             _log('📋 Current config:', config);
@@ -1729,7 +1729,7 @@
             // behavior, which hid the other action types from admin awareness.
             if (!actionType) {
                 $container.html(
-                    '<div class="dialogawp-notice" style="background:#f0f6fc;border-left:4px solid #190F4F;padding:14px 16px;margin:16px 0;color:#26233A;border-radius:4px;">' +
+                    '<div class="dialoga-notice" style="background:#f0f6fc;border-left:4px solid #190F4F;padding:14px 16px;margin:16px 0;color:#26233A;border-radius:4px;">' +
                         '<p style="margin:0 0 6px;font-weight:600;">👋 ' + this.escapeEditorHtml(t('Choose an action type above to get started.')) + '</p>' +
                         '<p style="margin:0;font-size:13px;color:#475569;">' + this.escapeEditorHtml(t('Each action type does something different when a visitor reaches this node: capture their contact info, show a booking link, redirect to a page, send an email, tag them, or set a variable.')) + '</p>' +
                     '</div>'
@@ -1763,7 +1763,7 @@
                     break;
             }
             
-            _log('✅ Config rendered, fields:', $('.dialogawp-action-config-field').length);
+            _log('✅ Config rendered, fields:', $('.dialoga-action-config-field').length);
         },
         
         renderCaptureLeadConfig: function($container, config) {
@@ -1780,18 +1780,18 @@
             // v0.39.11 — email notification overrides. Optional per-node override
             // of the global email notification recipient / subject / intro copy.
             // Off by default; when on, this node's config replaces the global
-            // DialogaWP → Settings → Email Notifications values for THIS Capture Lead.
+            // Dialoga → Settings → Email Notifications values for THIS Capture Lead.
             const overrideEmail   = !!config.override_email_settings;
             const emailRecipients = config.email_recipients || '';
             const emailSubject    = config.email_subject    || '';
             const emailIntro      = config.email_intro      || '';
 
             const html = `
-                <div class="dialogawp-field">
+                <div class="dialoga-field">
                     <label>${this.escapeEditorHtml(t('Fields to Capture'))}</label>
                     <p class="description">${this.escapeEditorHtml(t('Choose which fields to collect from visitors.'))}</p>
 
-                    <div class="dialogawp-capture-fields">
+                    <div class="dialoga-capture-fields">
                         ${this.renderCaptureField('name', 'Name', fields.name)}
                         ${this.renderCaptureField('email', 'Email', fields.email)}
                         ${this.renderCaptureField('phone', 'Phone', fields.phone)}
@@ -1799,19 +1799,19 @@
                     </div>
                 </div>
 
-                <div class="dialogawp-field">
+                <div class="dialoga-field">
                     <label>${this.escapeEditorHtml(t('Success Message'))}</label>
-                    <textarea class="dialogawp-action-config-field"
+                    <textarea class="dialoga-action-config-field"
                               data-config-field="success_message"
                               rows="2"
                               placeholder="${this.escapeEditorHtml(t('Message shown after form submission'))}">${this.escapeEditorHtml(successMessage)}</textarea>
                     <p class="description">${this.escapeEditorHtml(t('Message displayed after the visitor submits their information.'))}</p>
                 </div>
 
-                <div class="dialogawp-field">
+                <div class="dialoga-field">
                     <label>${this.escapeEditorHtml(t('Redirect After Capture (Optional)'))}</label>
                     <input type="url"
-                           class="dialogawp-action-config-field"
+                           class="dialoga-action-config-field"
                            data-config-field="redirect_url"
                            value="${this.escapeEditorHtml(redirectUrl)}"
                            placeholder="https://example.com/thank-you" />
@@ -1819,43 +1819,43 @@
                 </div>
 
                 <!-- v0.39.11 — Email Notification Overrides -->
-                <div class="dialogawp-field" style="border-top:1px solid #E5E7EF;padding-top:16px;margin-top:16px;">
+                <div class="dialoga-field" style="border-top:1px solid #E5E7EF;padding-top:16px;margin-top:16px;">
                     <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
                         <input type="checkbox"
-                               id="dialogawp-override-email-toggle"
-                               class="dialogawp-action-config-field"
+                               id="dialoga-override-email-toggle"
+                               class="dialoga-action-config-field"
                                data-config-field="override_email_settings"
                                value="1"
                                ${overrideEmail ? 'checked' : ''} />
                         <strong>${this.escapeEditorHtml(t('Override global email notification settings'))}</strong>
                     </label>
-                    <p class="description">${this.escapeEditorHtml(t('When on, this Capture Lead node uses its own recipient / subject / intro for the lead notification email instead of the global settings under %s. Useful when different flows (wellness / therapy) should notify different people.')).replace('%s', `<em>DialogaWP &rarr; ${this.escapeEditorHtml(t('Settings'))} &rarr; ${this.escapeEditorHtml(t('Email Notifications'))}</em>`)}</p>
+                    <p class="description">${this.escapeEditorHtml(t('When on, this Capture Lead node uses its own recipient / subject / intro for the lead notification email instead of the global settings under %s. Useful when different flows (wellness / therapy) should notify different people.')).replace('%s', `<em>Dialoga &rarr; ${this.escapeEditorHtml(t('Settings'))} &rarr; ${this.escapeEditorHtml(t('Email Notifications'))}</em>`)}</p>
                 </div>
 
-                <div id="dialogawp-email-override-fields" style="display:${overrideEmail ? 'block' : 'none'};padding-left:16px;border-left:3px solid #dbeafe;margin-top:8px;">
-                    <div class="dialogawp-field">
+                <div id="dialoga-email-override-fields" style="display:${overrideEmail ? 'block' : 'none'};padding-left:16px;border-left:3px solid #dbeafe;margin-top:8px;">
+                    <div class="dialoga-field">
                         <label>${this.escapeEditorHtml(t('Recipient(s)'))}</label>
                         <input type="text"
-                               class="dialogawp-action-config-field"
+                               class="dialoga-action-config-field"
                                data-config-field="email_recipients"
                                value="${this.escapeEditorHtml(emailRecipients)}"
                                placeholder="wellness@yourdomain.com, owner@yourdomain.com" />
                         <p class="description">${this.escapeEditorHtml(t('Comma-separated email addresses. Where to send the lead notification for THIS node.'))}</p>
                     </div>
 
-                    <div class="dialogawp-field">
+                    <div class="dialoga-field">
                         <label>${this.escapeEditorHtml(t('Subject Line'))}</label>
                         <input type="text"
-                               class="dialogawp-action-config-field"
+                               class="dialoga-action-config-field"
                                data-config-field="email_subject"
                                value="${this.escapeEditorHtml(emailSubject)}"
                                 placeholder="${this.escapeEditorHtml(t('New Wellness Lead - {user_name}'))}" />
                         <p class="description">${this.escapeEditorHtml(t('Variables: %s, or any flow variable set by a Question node\'s "Save As".')).replace('%s', '<code>{user_name}</code>, <code>{user_email}</code>, <code>{user_phone}</code>')}</p>
                     </div>
 
-                    <div class="dialogawp-field">
+                    <div class="dialoga-field">
                         <label>${this.escapeEditorHtml(t('Additional Intro (Optional)'))}</label>
-                        <textarea class="dialogawp-action-config-field"
+                        <textarea class="dialoga-action-config-field"
                                   data-config-field="email_intro"
                                   rows="3"
                                   placeholder="${this.escapeEditorHtml(t('Prepended above the standard lead details and chat transcript.'))}">${this.escapeEditorHtml(emailIntro)}</textarea>
@@ -1866,11 +1866,11 @@
 
             $container.html(html);
 
-            $('.dialogawp-field-enable').on('change', function() {
+            $('.dialoga-field-enable').on('change', function() {
                 const $checkbox = $(this);
                 const fieldKey = $checkbox.data('field');
-                const $fieldRow = $checkbox.closest('.dialogawp-capture-field-row');
-                const $inputs = $fieldRow.find('.dialogawp-field-label, .dialogawp-field-required');
+                const $fieldRow = $checkbox.closest('.dialoga-capture-field-row');
+                const $inputs = $fieldRow.find('.dialoga-field-label, .dialoga-field-required');
 
                 if ($checkbox.is(':checked')) {
                     $inputs.prop('disabled', false);
@@ -1882,8 +1882,8 @@
             });
 
             // v0.39.11 — toggle the override fields visibility
-            $('#dialogawp-override-email-toggle').on('change', function() {
-                $('#dialogawp-email-override-fields').toggle($(this).is(':checked'));
+            $('#dialoga-override-email-toggle').on('change', function() {
+                $('#dialoga-email-override-fields').toggle($(this).is(':checked'));
             });
         },
         
@@ -1894,25 +1894,25 @@
             const disabledClass = enabled ? '' : 'disabled';
             
             return `
-                <div class="dialogawp-capture-field-row ${disabledClass}" data-field="${this.escapeEditorHtml(fieldKey)}">
-                    <label class="dialogawp-capture-field-enable-label">
+                <div class="dialoga-capture-field-row ${disabledClass}" data-field="${this.escapeEditorHtml(fieldKey)}">
+                    <label class="dialoga-capture-field-enable-label">
                         <input type="checkbox" 
-                               class="dialogawp-field-enable" 
+                               class="dialoga-field-enable" 
                                data-field="${this.escapeEditorHtml(fieldKey)}" 
                                ${enabled ? 'checked' : ''} />
                         <strong>${this.escapeEditorHtml(({ name: t('Name'), email: t('Email'), phone: t('Phone'), company: t('Company') })[fieldKey] || fieldName)}</strong>
                     </label>
                     
                     <input type="text" 
-                           class="dialogawp-field-label" 
+                           class="dialoga-field-label" 
                            data-field="${this.escapeEditorHtml(fieldKey)}" 
                            value="${this.escapeEditorHtml(label)}" 
                            placeholder="${this.escapeEditorHtml(t('Field label'))}" 
                            ${enabled ? '' : 'disabled'} />
                     
-                    <label class="dialogawp-field-required-label">
+                    <label class="dialoga-field-required-label">
                         <input type="checkbox" 
-                               class="dialogawp-field-required" 
+                               class="dialoga-field-required" 
                                data-field="${this.escapeEditorHtml(fieldKey)}" 
                                ${required ? 'checked' : ''} 
                                ${enabled ? '' : 'disabled'} />
@@ -1928,36 +1928,36 @@
             const instructions = config.instructions || '';
 
             const html = `
-                <div class="dialogawp-field">
+                <div class="dialoga-field">
                     <label>${this.escapeEditorHtml(t('Greeting Message'))}</label>
                     <input type="text"
-                           class="dialogawp-action-config-field"
+                           class="dialoga-action-config-field"
                            data-config-field="greeting"
                            value="${this.escapeEditorHtml(greeting)}"
                            placeholder="${this.escapeEditorHtml(t('Hi! How can I help you today?'))}" />
                     <p class="description">${this.escapeEditorHtml(t('The first message the AI sends to start the conversation.'))}</p>
                 </div>
 
-                <div class="dialogawp-field">
+                <div class="dialoga-field">
                     <label>${this.escapeEditorHtml(t('Input Placeholder'))}</label>
                     <input type="text"
-                           class="dialogawp-action-config-field"
+                           class="dialoga-action-config-field"
                            data-config-field="placeholder"
                            value="${this.escapeEditorHtml(placeholder)}"
                            placeholder="${this.escapeEditorHtml(t('Type your message...'))}" />
                 </div>
 
-                <div class="dialogawp-field">
+                <div class="dialoga-field">
                     <label>${this.escapeEditorHtml(t('Node-Specific Instructions'))} ${this.escapeEditorHtml(t('(optional)'))}</label>
-                    <textarea class="dialogawp-action-config-field"
+                    <textarea class="dialoga-action-config-field"
                               data-config-field="instructions"
                               rows="4"
                               placeholder="${this.escapeEditorHtml(t('Additional context for this specific AI chat node...'))}">${this.escapeEditorHtml(instructions)}</textarea>
-                    <p class="description">${this.escapeEditorHtml(t('Adds extra context to the AI for this node only. Global instructions are set in %s.')).replace('%s', `<a href="admin.php?page=dialogawp-ai-settings" target="_blank">${this.escapeEditorHtml(t('AI Settings'))}</a>`)}</p>
+                    <p class="description">${this.escapeEditorHtml(t('Adds extra context to the AI for this node only. Global instructions are set in %s.')).replace('%s', `<a href="admin.php?page=dialoga-ai-settings" target="_blank">${this.escapeEditorHtml(t('AI Settings'))}</a>`)}</p>
                 </div>
 
                 <p class="description" style="background:#f0f6ff;border:1px solid #c3d9f7;padding:10px;border-radius:4px;margin-top:12px;">
-                    ℹ️ ${this.escapeEditorHtml(t('Make sure you have configured your AI provider in %s before activating this flow.')).replace('%s', `<a href="admin.php?page=dialogawp-ai-settings" target="_blank">${this.escapeEditorHtml(t('AI Settings'))}</a>`)}
+                    ℹ️ ${this.escapeEditorHtml(t('Make sure you have configured your AI provider in %s before activating this flow.')).replace('%s', `<a href="admin.php?page=dialoga-ai-settings" target="_blank">${this.escapeEditorHtml(t('AI Settings'))}</a>`)}
                 </p>
             `;
 
@@ -1977,10 +1977,10 @@
             _log('  Message:', message);
             
             const html = `
-                <div class="dialogawp-field">
+                <div class="dialoga-field">
                     <label>${this.escapeEditorHtml(t('Redirect URL'))} *</label>
                     <input type="url" 
-                           class="dialogawp-action-config-field" 
+                           class="dialoga-action-config-field" 
                            data-config-field="url" 
                            value="${this.escapeEditorHtml(url)}" 
                            placeholder="https://example.com/contact" 
@@ -1988,18 +1988,18 @@
                     <p class="description">${this.escapeEditorHtml(t('Full URL including https:// where visitors will be redirected.'))}</p>
                 </div>
                 
-                <div class="dialogawp-field">
+                <div class="dialoga-field">
                     <label>${this.escapeEditorHtml(t('Open In'))}</label>
-                    <select class="dialogawp-action-config-field" data-config-field="target">
+                    <select class="dialoga-action-config-field" data-config-field="target">
                         <option value="_self" ${target === '_self' ? 'selected' : ''}>${this.escapeEditorHtml(t('Same Window'))}</option>
                         <option value="_blank" ${target === '_blank' ? 'selected' : ''}>${this.escapeEditorHtml(t('New Tab'))}</option>
                     </select>
                 </div>
                 
-                <div class="dialogawp-field">
+                <div class="dialoga-field">
                     <label>${this.escapeEditorHtml(t('Delay (seconds)'))}</label>
                     <input type="number" 
-                           class="dialogawp-action-config-field" 
+                           class="dialoga-action-config-field" 
                            data-config-field="delay" 
                            value="${this.escapeEditorHtml(delay)}" 
                            min="0" 
@@ -2008,9 +2008,9 @@
                     <p class="description">${this.escapeEditorHtml(t('Optional delay before redirect (0-10 seconds).'))}</p>
                 </div>
                 
-                <div class="dialogawp-field">
+                <div class="dialoga-field">
                     <label>${this.escapeEditorHtml(t('Message Before Redirect (Optional)'))}</label>
-                    <textarea class="dialogawp-action-config-field" 
+                    <textarea class="dialoga-action-config-field" 
                               data-config-field="message" 
                               rows="2" 
                               placeholder="${this.escapeEditorHtml(t('Taking you there now...'))}">${this.escapeEditorHtml(message)}</textarea>
@@ -2023,7 +2023,7 @@
             _log('✅ HTML set, checking if fields have values...');
             
             setTimeout(() => {
-                const urlField = $('.dialogawp-action-config-field[data-config-field="url"]');
+                const urlField = $('.dialoga-action-config-field[data-config-field="url"]');
                 _log('  URL field value after render:', urlField.val());
                 _log('  URL field element:', urlField[0]);
             }, 100);
@@ -2036,7 +2036,7 @@
          * them choose to click. Flow ends after button is shown.
          *
          * v0.40.0: `is_conversion` checkbox lets the admin count clicks on this
-         * specific button as conversions in the DialogaWP dashboard and (if Pro is
+         * specific button as conversions in the Dialoga dashboard and (if Pro is
          * active) fire multi-platform conversion tracking (GA4, Google Ads, Meta).
          * Default OFF so existing flows don't retroactively inflate metrics.
          *
@@ -2073,18 +2073,18 @@
             const esc = (s) => this.escapeEditorHtml(s);
 
             const html = `
-                <div class="dialogawp-field">
+                <div class="dialoga-field">
                     <label>${esc(t('Intro Message'))} *</label>
-                    <textarea class="dialogawp-action-config-field"
+                    <textarea class="dialoga-action-config-field"
                               data-config-field="message"
                               rows="2"
                               placeholder="${esc(t('Great! Book your session below.'))}">${esc(message)}</textarea>
                     <p class="description">${esc(t('Bot bubble shown above the button.'))}</p>
                 </div>
 
-                <div class="dialogawp-field">
+                <div class="dialoga-field">
                     <label>${esc(t('Contact Type'))}</label>
-                    <select class="dialogawp-action-config-field dialogawp-link-contact-type" data-config-field="contact_type">
+                    <select class="dialoga-action-config-field dialoga-link-contact-type" data-config-field="contact_type">
                         <option value="custom"    ${contactType === 'custom'    ? 'selected' : ''}>${esc(t('Custom URL'))}</option>
                         <option value="whatsapp"  ${contactType === 'whatsapp'  ? 'selected' : ''}>🟢 WhatsApp</option>
                         <option value="telegram"  ${contactType === 'telegram'  ? 'selected' : ''}>✈️ Telegram</option>
@@ -2098,11 +2098,11 @@
                 </div>
 
                 <!-- Custom URL panel -->
-                <div class="dialogawp-contact-panel dialogawp-contact-panel-custom" style="display:${contactType === 'custom' ? 'block' : 'none'};">
-                    <div class="dialogawp-field">
+                <div class="dialoga-contact-panel dialoga-contact-panel-custom" style="display:${contactType === 'custom' ? 'block' : 'none'};">
+                    <div class="dialoga-field">
                         <label>${esc(t('Button URL'))} *</label>
                         <input type="url"
-                               class="dialogawp-action-config-field"
+                               class="dialoga-action-config-field"
                                data-config-field="button_url"
                                value="${esc(buttonUrl)}"
                                placeholder="https://yourbusiness.janeapp.com/..." />
@@ -2111,19 +2111,19 @@
                 </div>
 
                 <!-- WhatsApp panel -->
-                <div class="dialogawp-contact-panel dialogawp-contact-panel-whatsapp" style="display:${contactType === 'whatsapp' ? 'block' : 'none'};">
-                    <div class="dialogawp-field">
+                <div class="dialoga-contact-panel dialoga-contact-panel-whatsapp" style="display:${contactType === 'whatsapp' ? 'block' : 'none'};">
+                    <div class="dialoga-field">
                         <label>${esc(t('WhatsApp Number'))} *</label>
                         <input type="tel"
-                               class="dialogawp-action-config-field"
+                               class="dialoga-action-config-field"
                                data-config-field="wa_phone"
                                value="${esc(waPhone)}"
                                placeholder="+16105551234" />
                         <p class="description">${esc(t('International format with country code (e.g., %s). Digits only, plus optional leading +.')).replace('%s', '<code>+16105551234</code>')}</p>
                     </div>
-                    <div class="dialogawp-field">
+                    <div class="dialoga-field">
                         <label>${esc(t('Pre-filled Message (Optional)'))}</label>
-                        <textarea class="dialogawp-action-config-field"
+                        <textarea class="dialoga-action-config-field"
                                   data-config-field="wa_message"
                                   rows="2"
                                   placeholder="${esc(t("Hi! I'd like to book a session."))}">${esc(waMessage)}</textarea>
@@ -2132,11 +2132,11 @@
                 </div>
 
                 <!-- Telegram panel -->
-                <div class="dialogawp-contact-panel dialogawp-contact-panel-telegram" style="display:${contactType === 'telegram' ? 'block' : 'none'};">
-                    <div class="dialogawp-field">
+                <div class="dialoga-contact-panel dialoga-contact-panel-telegram" style="display:${contactType === 'telegram' ? 'block' : 'none'};">
+                    <div class="dialoga-field">
                         <label>${esc(t('Telegram Username'))} *</label>
                         <input type="text"
-                               class="dialogawp-action-config-field"
+                               class="dialoga-action-config-field"
                                data-config-field="tg_handle"
                                value="${esc(tgHandle)}"
                                placeholder="yourbusiness" />
@@ -2145,11 +2145,11 @@
                 </div>
 
                 <!-- Messenger panel -->
-                <div class="dialogawp-contact-panel dialogawp-contact-panel-messenger" style="display:${contactType === 'messenger' ? 'block' : 'none'};">
-                    <div class="dialogawp-field">
+                <div class="dialoga-contact-panel dialoga-contact-panel-messenger" style="display:${contactType === 'messenger' ? 'block' : 'none'};">
+                    <div class="dialoga-field">
                         <label>${esc(t('Facebook Page Username'))} *</label>
                         <input type="text"
-                               class="dialogawp-action-config-field"
+                               class="dialoga-action-config-field"
                                data-config-field="fb_handle"
                                value="${esc(fbHandle)}"
                                placeholder="YourPageName" />
@@ -2158,11 +2158,11 @@
                 </div>
 
                 <!-- Instagram panel -->
-                <div class="dialogawp-contact-panel dialogawp-contact-panel-instagram" style="display:${contactType === 'instagram' ? 'block' : 'none'};">
-                    <div class="dialogawp-field">
+                <div class="dialoga-contact-panel dialoga-contact-panel-instagram" style="display:${contactType === 'instagram' ? 'block' : 'none'};">
+                    <div class="dialoga-field">
                         <label>${esc(t('Instagram Username'))} *</label>
                         <input type="text"
-                               class="dialogawp-action-config-field"
+                               class="dialoga-action-config-field"
                                data-config-field="ig_handle"
                                value="${esc(igHandle)}"
                                placeholder="yourbusiness" />
@@ -2171,19 +2171,19 @@
                 </div>
 
                 <!-- SMS panel -->
-                <div class="dialogawp-contact-panel dialogawp-contact-panel-sms" style="display:${contactType === 'sms' ? 'block' : 'none'};">
-                    <div class="dialogawp-field">
+                <div class="dialoga-contact-panel dialoga-contact-panel-sms" style="display:${contactType === 'sms' ? 'block' : 'none'};">
+                    <div class="dialoga-field">
                         <label>${esc(t('Phone Number'))} *</label>
                         <input type="tel"
-                               class="dialogawp-action-config-field"
+                               class="dialoga-action-config-field"
                                data-config-field="sms_phone"
                                value="${esc(smsPhone)}"
                                placeholder="+16105551234" />
                         <p class="description">${esc(t("Full phone number with country code. Opens the visitor's native SMS app."))}</p>
                     </div>
-                    <div class="dialogawp-field">
+                    <div class="dialoga-field">
                         <label>${esc(t('Pre-filled Message (Optional)'))}</label>
-                        <textarea class="dialogawp-action-config-field"
+                        <textarea class="dialoga-action-config-field"
                                   data-config-field="sms_body"
                                   rows="2"
                                   placeholder="${esc(t("Hi! I'd like to book a massage."))}">${esc(smsBody)}</textarea>
@@ -2192,11 +2192,11 @@
                 </div>
 
                 <!-- Phone panel -->
-                <div class="dialogawp-contact-panel dialogawp-contact-panel-phone" style="display:${contactType === 'phone' ? 'block' : 'none'};">
-                    <div class="dialogawp-field">
+                <div class="dialoga-contact-panel dialoga-contact-panel-phone" style="display:${contactType === 'phone' ? 'block' : 'none'};">
+                    <div class="dialoga-field">
                         <label>${esc(t('Phone Number'))} *</label>
                         <input type="tel"
-                               class="dialogawp-action-config-field"
+                               class="dialoga-action-config-field"
                                data-config-field="tel_phone"
                                value="${esc(telPhone)}"
                                placeholder="+16105551234" />
@@ -2205,62 +2205,62 @@
                 </div>
 
                 <!-- Email panel -->
-                <div class="dialogawp-contact-panel dialogawp-contact-panel-email" style="display:${contactType === 'email' ? 'block' : 'none'};">
-                    <div class="dialogawp-field">
+                <div class="dialoga-contact-panel dialoga-contact-panel-email" style="display:${contactType === 'email' ? 'block' : 'none'};">
+                    <div class="dialoga-field">
                         <label>${esc(t('Email Address'))} *</label>
                         <input type="email"
-                               class="dialogawp-action-config-field"
+                               class="dialoga-action-config-field"
                                data-config-field="email_to"
                                value="${esc(emailTo)}"
                                placeholder="hello@yourbusiness.com" />
                     </div>
-                    <div class="dialogawp-field">
+                    <div class="dialoga-field">
                         <label>${esc(t('Subject (Optional)'))}</label>
                         <input type="text"
-                               class="dialogawp-action-config-field"
+                               class="dialoga-action-config-field"
                                data-config-field="email_subject"
                                value="${esc(emailSubject)}"
                                placeholder="${esc(t('Booking inquiry'))}" />
                     </div>
-                    <div class="dialogawp-field">
+                    <div class="dialoga-field">
                         <label>${esc(t('Body (Optional)'))}</label>
-                        <textarea class="dialogawp-action-config-field"
+                        <textarea class="dialoga-action-config-field"
                                   data-config-field="email_body"
                                   rows="3"
                                   placeholder="${esc(t("Hi, I'd like to book a session."))}">${esc(emailBody)}</textarea>
                     </div>
                 </div>
 
-                <div class="dialogawp-field">
+                <div class="dialoga-field">
                     <label>${esc(t('Button Label'))} *</label>
                     <input type="text"
-                           class="dialogawp-action-config-field"
+                           class="dialoga-action-config-field"
                            data-config-field="button_label"
                            value="${esc(buttonLabel)}"
                            placeholder="${esc(t('Book Massage'))}" />
                     <p class="description">${esc(t('Text shown on the CTA button.'))}</p>
                 </div>
 
-                <div class="dialogawp-field">
+                <div class="dialoga-field">
                     <label>${esc(t('Open In'))}</label>
-                    <select class="dialogawp-action-config-field" data-config-field="target">
+                    <select class="dialoga-action-config-field" data-config-field="target">
                         <option value="_blank" ${target === '_blank' ? 'selected' : ''}>${esc(t('New Tab (recommended)'))}</option>
                         <option value="_self"  ${target === '_self'  ? 'selected' : ''}>${esc(t('Same Window'))}</option>
                     </select>
                     <p class="description">${esc(t('New Tab keeps the chat open so visitors can return.'))}</p>
                 </div>
 
-                <div class="dialogawp-field">
+                <div class="dialoga-field">
                     <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
                         <input type="checkbox"
-                               class="dialogawp-action-config-field"
+                               class="dialoga-action-config-field"
                                data-config-field="is_conversion"
                                data-config-type="bool"
                                ${isConversion ? 'checked' : ''} />
                         <span>${esc(t('Count as conversion'))}</span>
                     </label>
                     <p class="description">
-                        ${esc(t('Clicks on this button will count toward your Conversions metric on the dashboard and fire the %s dataLayer event for GTM / GA4 tracking. Enable for high-intent CTAs like booking links; leave off for social or resource links.')).replace('%s', '<code>dialogawp_conversion</code>')}
+                        ${esc(t('Clicks on this button will count toward your Conversions metric on the dashboard and fire the %s dataLayer event for GTM / GA4 tracking. Enable for high-intent CTAs like booking links; leave off for social or resource links.')).replace('%s', '<code>dialoga_conversion</code>')}
                     </p>
                 </div>
             `;
@@ -2271,7 +2271,7 @@
             // button label auto-suggested when switching to a channel that
             // has no label yet OR still has the previous channel's default.
             setTimeout(function () {
-                const $sel = $container.find('.dialogawp-link-contact-type');
+                const $sel = $container.find('.dialoga-link-contact-type');
                 const defaults = {
                     'custom':    'Book Now',
                     'whatsapp':  'Chat on WhatsApp',
@@ -2284,8 +2284,8 @@
                 };
                 $sel.on('change', function () {
                     const type = $(this).val();
-                    $container.find('.dialogawp-contact-panel').hide();
-                    $container.find('.dialogawp-contact-panel-' + type).show();
+                    $container.find('.dialoga-contact-panel').hide();
+                    $container.find('.dialoga-contact-panel-' + type).show();
 
                     // If the label is one of the known defaults, upgrade it
                     // to the new channel's default (so switching from
@@ -2305,20 +2305,20 @@
 
         renderSendEmailConfig: function($container, config) {
             const to = config.to || '';
-            const subject = config.subject ?? 'New Lead from DIALOGAWP';
+            const subject = config.subject ?? 'New Lead from DIALOGA';
             const body = config.body ?? 'Name: {user_name}\nEmail: {user_email}\nPhone: {user_phone}';
             const cc = config.cc || '';
             const bcc = config.bcc || '';
             
             const html = `
-                <div class="dialogawp-notice" style="margin-bottom: 20px;">
+                <div class="dialoga-notice" style="margin-bottom: 20px;">
                     <p>${this.escapeEditorHtml(t("Email is sent with WordPress's built-in mailer. If your host blocks outgoing mail, install an SMTP plugin so these notifications deliver reliably."))}</p>
                 </div>
                 
-                <div class="dialogawp-field">
+                <div class="dialoga-field">
                     <label>${this.escapeEditorHtml(t('Recipient Email'))} *</label>
                     <input type="email" 
-                           class="dialogawp-action-config-field" 
+                           class="dialoga-action-config-field" 
                            data-config-field="to" 
                            value="${this.escapeEditorHtml(to)}" 
                            placeholder="sales@example.com" 
@@ -2326,38 +2326,38 @@
                     <p class="description">${this.escapeEditorHtml(t('Where to send the notification email.'))}</p>
                 </div>
                 
-                <div class="dialogawp-field">
+                <div class="dialoga-field">
                     <label>${this.escapeEditorHtml(t('Subject Line'))}</label>
                     <input type="text" 
-                           class="dialogawp-action-config-field" 
+                           class="dialoga-action-config-field" 
                            data-config-field="subject" 
                            value="${this.escapeEditorHtml(subject)}" 
-                           placeholder="${this.escapeEditorHtml(t('New Lead from DIALOGAWP'))}" />
+                           placeholder="${this.escapeEditorHtml(t('New Lead from DIALOGA'))}" />
                     <p class="description">${this.escapeEditorHtml(t('Use variables like {user_name}, {user_email}, {user_phone}.'))}</p>
                 </div>
                 
-                <div class="dialogawp-field">
+                <div class="dialoga-field">
                     <label>${this.escapeEditorHtml(t('Email Body'))}</label>
-                    <textarea class="dialogawp-action-config-field" 
+                    <textarea class="dialoga-action-config-field" 
                               data-config-field="body" 
                               rows="6" 
                               placeholder="${this.escapeEditorHtml(t('Name: {user_name}...'))}">${this.escapeEditorHtml(body)}</textarea>
                     <p class="description">${this.escapeEditorHtml(t('Email content. Use {variable_name} for captured data.'))}</p>
                 </div>
                 
-                <div class="dialogawp-field">
+                <div class="dialoga-field">
                     <label>${this.escapeEditorHtml(t('CC (Optional)'))}</label>
                     <input type="text" 
-                           class="dialogawp-action-config-field" 
+                           class="dialoga-action-config-field" 
                            data-config-field="cc" 
                            value="${this.escapeEditorHtml(cc)}" 
                            placeholder="manager@example.com, team@example.com" />
                 </div>
                 
-                <div class="dialogawp-field">
+                <div class="dialoga-field">
                     <label>${this.escapeEditorHtml(t('BCC (Optional)'))}</label>
                     <input type="text" 
-                           class="dialogawp-action-config-field" 
+                           class="dialoga-action-config-field" 
                            data-config-field="bcc" 
                            value="${this.escapeEditorHtml(bcc)}" 
                            placeholder="archive@example.com" />
@@ -2373,14 +2373,14 @@
             const valueType = config.value_type || 'static';
             
             const html = `
-                <div class="dialogawp-notice" style="margin-bottom: 20px;">
+                <div class="dialoga-notice" style="margin-bottom: 20px;">
                     <p>${this.escapeEditorHtml(t('Store a value here, then reference it later in any message with %s.')).replace('%s', '<code>{{variable_name}}</code>')}</p>
                 </div>
                 
-                <div class="dialogawp-field">
+                <div class="dialoga-field">
                     <label>${this.escapeEditorHtml(t('Variable Name'))} *</label>
                     <input type="text" 
-                           class="dialogawp-action-config-field" 
+                           class="dialoga-action-config-field" 
                            data-config-field="variable_name" 
                            value="${this.escapeEditorHtml(variableName)}" 
                            placeholder="user_score" 
@@ -2389,18 +2389,18 @@
                     <p class="description">${this.escapeEditorHtml(t('Use lowercase letters and underscores only (e.g., user_score, interest_level).'))}</p>
                 </div>
                 
-                <div class="dialogawp-field">
+                <div class="dialoga-field">
                     <label>${this.escapeEditorHtml(t('Value Type'))}</label>
-                    <select class="dialogawp-action-config-field" data-config-field="value_type">
+                    <select class="dialoga-action-config-field" data-config-field="value_type">
                         <option value="static" ${valueType === 'static' ? 'selected' : ''}>${this.escapeEditorHtml(t('Static Value'))}</option>
                         <option value="reference" ${valueType === 'reference' ? 'selected' : ''}>${this.escapeEditorHtml(t('Reference Previous Answer'))}</option>
                     </select>
                 </div>
                 
-                <div class="dialogawp-field">
+                <div class="dialoga-field">
                     <label>${this.escapeEditorHtml(t('Variable Value'))} *</label>
                     <input type="text" 
-                           class="dialogawp-action-config-field" 
+                           class="dialoga-action-config-field" 
                            data-config-field="variable_value" 
                            value="${this.escapeEditorHtml(variableValue)}" 
                            placeholder="${this.escapeEditorHtml(t('10 or {previous_answer}'))}" 
@@ -2408,7 +2408,7 @@
                     <p class="description">${this.escapeEditorHtml(t('Static value (e.g., "10") or reference like {previous_answer}.'))}</p>
                 </div>
                 
-                <div class="dialogawp-notice" style="margin-top: 15px;">
+                <div class="dialoga-notice" style="margin-top: 15px;">
                     <p><strong>💡 ${this.escapeEditorHtml(t('Use Case:'))}</strong> ${this.escapeEditorHtml(t('Store values to use in Branch conditions later. Example: Set "score" based on answers, then branch if score > 50.'))}</p>
                 </div>
             `;
@@ -2421,17 +2421,17 @@
             const tagsStr = Array.isArray(tags) ? tags.join(', ') : '';
 
             const html = `
-                <div class="dialogawp-field">
+                <div class="dialoga-field">
                     <label>${this.escapeEditorHtml(t('Tags to Apply'))}</label>
                     <input type="text"
-                           class="dialogawp-action-config-field"
+                           class="dialoga-action-config-field"
                            data-config-field="tags_input"
                            value="${this.escapeEditorHtml(tagsStr)}"
                            placeholder="hot-lead, contacted, vip" />
                     <p class="description">${this.escapeEditorHtml(t('Comma-separated tags to apply when this node is reached (e.g., %s).')).replace('%s', '<code>hot-lead, insurance</code>')}</p>
                 </div>
 
-                <div class="dialogawp-notice" style="margin-top: 15px;">
+                <div class="dialoga-notice" style="margin-top: 15px;">
                     <p><strong>💡 ${this.escapeEditorHtml(t('How it works:'))}</strong> ${this.escapeEditorHtml(t('Tags are applied to the lead when it is captured later in the flow. Place this node %s a Capture Lead node. You can use multiple Tag Lead nodes to accumulate tags.')).replace('%s', `<em>${this.escapeEditorHtml(t('before'))}</em>`)}</p>
                 </div>
             `;
@@ -2442,7 +2442,7 @@
         saveNodeEdits: function(silent) {
             if (!this.selectedNode) return;
 
-            $('.dialogawp-node-field').each((index, field) => {
+            $('.dialoga-node-field').each((index, field) => {
                 const $field = $(field);
                 const fieldName = $field.data('field');
                 let value = $field.val();
@@ -2458,10 +2458,10 @@
             
             if (nodeType === 'question') {
                 const options = [];
-                $('.dialogawp-option-item').each(function() {
+                $('.dialoga-option-item').each(function() {
                     const $item = $(this);
                     const optionId = $item.data('option-id') || 'opt_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-                    const label = $item.find('.dialogawp-option-label').val();
+                    const label = $item.find('.dialoga-option-label').val();
                     if (label) {
                         options.push({
                             id: optionId,
@@ -2479,12 +2479,12 @@
             
             if (nodeType === 'output') {
                 const buttons = [];
-                $('.dialogawp-option-item').each(function() {
+                $('.dialoga-option-item').each(function() {
                     const $item = $(this);
                     const buttonId = $item.data('button-id') || 'btn_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-                    const label = $item.find('.dialogawp-button-label').val();
-                    const action = $item.find('.dialogawp-button-action').val();
-                    const url = $item.find('.dialogawp-button-url').val();
+                    const label = $item.find('.dialoga-button-label').val();
+                    const action = $item.find('.dialoga-button-action').val();
+                    const url = $item.find('.dialoga-button-url').val();
                     if (label) {
                         buttons.push({
                             id: buttonId,
@@ -2499,16 +2499,16 @@
             
             if (nodeType === 'branch') {
                 const outputGroups = [];
-                $('.dialogawp-output-group').each(function() {
+                $('.dialoga-output-group').each(function() {
                     const $group = $(this);
                     const groupId = $group.data('group-id');
-                    const logic = $group.find('.dialogawp-group-logic').val() || 'and';
+                    const logic = $group.find('.dialoga-group-logic').val() || 'and';
                     const conditions = [];
                     
-                    $group.find('.dialogawp-condition-item').each(function() {
+                    $group.find('.dialoga-condition-item').each(function() {
                         const $cond = $(this);
-                        const operator = $cond.find('.dialogawp-condition-operator').val();
-                        const value = $cond.find('.dialogawp-condition-value').val();
+                        const operator = $cond.find('.dialoga-condition-operator').val();
+                        const value = $cond.find('.dialoga-condition-value').val();
                         if (value) {
                             conditions.push({
                                 id: $cond.data('condition-id') || 'cond_' + Date.now(),
@@ -2541,7 +2541,7 @@
             
             // Collect action configuration if this is an action node
             if (nodeType === 'action') {
-                const actionType = $('#dialogawp-action-type').val();
+                const actionType = $('#dialoga-action-type').val();
                 _log('💾 Saving action node:', actionType);
                 this.selectedNode.data.action_type = actionType;
                 
@@ -2551,40 +2551,40 @@
                 
                 if (actionType === 'capture_lead') {
                     const fields = {};
-                    $('.dialogawp-capture-field-row').each(function() {
+                    $('.dialoga-capture-field-row').each(function() {
                         const $row = $(this);
                         const fieldKey = $row.data('field');
-                        const enabled = $row.find('.dialogawp-field-enable').is(':checked');
-                        const label = $row.find('.dialogawp-field-label').val();
-                        const required = $row.find('.dialogawp-field-required').is(':checked');
+                        const enabled = $row.find('.dialoga-field-enable').is(':checked');
+                        const label = $row.find('.dialoga-field-label').val();
+                        const required = $row.find('.dialoga-field-required').is(':checked');
 
                         fields[fieldKey] = { enabled, label, required };
                     });
 
                     this.selectedNode.data.config.fields = fields;
                     this.selectedNode.data.config.success_message =
-                        $('.dialogawp-action-config-field[data-config-field="success_message"]').val();
+                        $('.dialoga-action-config-field[data-config-field="success_message"]').val();
                     this.selectedNode.data.config.redirect_url =
-                        $('.dialogawp-action-config-field[data-config-field="redirect_url"]').val();
+                        $('.dialoga-action-config-field[data-config-field="redirect_url"]').val();
 
                     // v0.39.11 — email notification overrides
                     this.selectedNode.data.config.override_email_settings =
-                        $('#dialogawp-override-email-toggle').is(':checked');
+                        $('#dialoga-override-email-toggle').is(':checked');
                     this.selectedNode.data.config.email_recipients =
-                        $('.dialogawp-action-config-field[data-config-field="email_recipients"]').val() || '';
+                        $('.dialoga-action-config-field[data-config-field="email_recipients"]').val() || '';
                     this.selectedNode.data.config.email_subject =
-                        $('.dialogawp-action-config-field[data-config-field="email_subject"]').val() || '';
+                        $('.dialoga-action-config-field[data-config-field="email_subject"]').val() || '';
                     this.selectedNode.data.config.email_intro =
-                        $('.dialogawp-action-config-field[data-config-field="email_intro"]').val() || '';
+                        $('.dialoga-action-config-field[data-config-field="email_intro"]').val() || '';
 
                 } else {
                     // For redirect, send_email, set_variable - collect all config fields
                     _log('💾 Collecting config fields for:', actionType);
                     
-                    const self = this; // Save reference to DIALOGAWPBuilder
+                    const self = this; // Save reference to DIALOGABuilder
                     
                     // CRITICAL: Scope selector to ONLY the editor modal to avoid picking up random objects
-                    const $fields = $('#dialogawp-node-editor-content').find('input.dialogawp-action-config-field[data-config-field], select.dialogawp-action-config-field[data-config-field], textarea.dialogawp-action-config-field[data-config-field]');
+                    const $fields = $('#dialoga-node-editor-content').find('input.dialoga-action-config-field[data-config-field], select.dialoga-action-config-field[data-config-field], textarea.dialoga-action-config-field[data-config-field]');
                     
                     _log('🔍 Found', $fields.length, 'fields');
                     
@@ -2612,7 +2612,7 @@
 
                         _log('  📝 Field:', fieldName, '=', value);
 
-                        // Use 'self' to access DIALOGAWPBuilder
+                        // Use 'self' to access DIALOGABuilder
                         self.selectedNode.data.config[fieldName] = value;
                     });
                     
@@ -2771,23 +2771,23 @@
                 this.selectedNode.data.label = '↩ ' + targetLabel;
 
                 // UI shows seconds; backend stores milliseconds.
-                const delaySecondsInput = parseFloat($('#dialogawp-loop-delay').val()) || 0;
+                const delaySecondsInput = parseFloat($('#dialoga-loop-delay').val()) || 0;
                 this.selectedNode.data.delay_ms = Math.round(delaySecondsInput * 1000);
-                this.selectedNode.data.message = $('#dialogawp-loop-message').val() || '';
+                this.selectedNode.data.message = $('#dialoga-loop-message').val() || '';
             }
 
             if (nodeType === 'webhook') {
-                const connectorId = $('#dialogawp-webhook-connector').val() || '';
+                const connectorId = $('#dialoga-webhook-connector').val() || '';
                 this.selectedNode.data.config = {
                     connector_id:      connectorId,
-                    method:            $('#dialogawp-webhook-method').val() || 'POST',
-                    include_lead_data: $('#dialogawp-webhook-include-lead').is(':checked'),
-                    include_flow_data: $('#dialogawp-webhook-include-flow').is(':checked'),
-                    custom_headers:    $('#dialogawp-webhook-headers').val() || ''
+                    method:            $('#dialoga-webhook-method').val() || 'POST',
+                    include_lead_data: $('#dialoga-webhook-include-lead').is(':checked'),
+                    include_flow_data: $('#dialoga-webhook-include-flow').is(':checked'),
+                    custom_headers:    $('#dialoga-webhook-headers').val() || ''
                 };
 
                 // Label the node by the selected connector name for quick scanning on the canvas
-                const connectors = (window.dialogawpProConnectors && window.dialogawpProConnectors.connectors) || [];
+                const connectors = (window.dialogaProConnectors && window.dialogaProConnectors.connectors) || [];
                 const match = connectors.find((c) => c.id === connectorId);
                 this.selectedNode.data.label = match ? ('⚡ ' + match.name) : '⚡ Webhook';
             }
@@ -2817,15 +2817,15 @@
             }
             
             if (!silent) {
-                $('#dialogawp-node-editor').hide();
+                $('#dialoga-node-editor').hide();
             }
 
             // Skip the React getFlow/setFlow round-trip on silent saves —
             // React may still be mid-update from a sibling call (e.g. addNodeAtPosition),
             // and reading getFlow too early returns stale state that wipes new nodes.
             if (!silent) {
-                if (window.dialogawpReactInstance) {
-                    const currentFlow = window.dialogawpReactInstance.getFlow();
+                if (window.dialogaReactInstance) {
+                    const currentFlow = window.dialogaReactInstance.getFlow();
                     if (currentFlow.nodes) {
                         const updatedNode = this.selectedNode;
                         this.nodes = currentFlow.nodes.map(node =>
@@ -2838,7 +2838,7 @@
                         this.edges = currentFlow.edges;
                     }
 
-                    window.dialogawpReactInstance.setFlow({
+                    window.dialogaReactInstance.setFlow({
                         nodes: this.nodes,
                         edges: this.edges
                     });
@@ -2846,13 +2846,13 @@
             } else {
                 // Silent save: push only the updated selectedNode data into React
                 // so the canvas label updates, without resyncing the whole node list.
-                if (window.dialogawpReactInstance && this.selectedNode) {
+                if (window.dialogaReactInstance && this.selectedNode) {
                     const updatedNode = this.selectedNode;
                     const nodesWithUpdate = this.nodes.map(n =>
                         n.id === updatedNode.id ? updatedNode : n
                     );
                     this.nodes = nodesWithUpdate;
-                    window.dialogawpReactInstance.setFlow({
+                    window.dialogaReactInstance.setFlow({
                         nodes: this.nodes,
                         edges: this.edges
                     });
@@ -2879,10 +2879,10 @@
             
             // CRITICAL: Collect current values before re-rendering
             const currentOptions = [];
-            $('.dialogawp-option-item').each(function() {
+            $('.dialoga-option-item').each(function() {
                 const $item = $(this);
                 const optionId = $item.data('option-id');
-                const label = $item.find('.dialogawp-option-label').val();
+                const label = $item.find('.dialoga-option-label').val();
                 if (optionId) {
                     currentOptions.push({
                         id: optionId,
@@ -2923,12 +2923,12 @@
             }
             
             const currentConditions = [];
-            $('.dialogawp-condition-item').each(function() {
+            $('.dialoga-condition-item').each(function() {
                 const $item = $(this);
                 const conditionId = $item.data('condition-id');
-                const operator = $item.find('.dialogawp-condition-operator').val();
-                const value = $item.find('.dialogawp-condition-value').val();
-                const logic = $item.find('.dialogawp-condition-logic').val() || 'and';
+                const operator = $item.find('.dialoga-condition-operator').val();
+                const value = $item.find('.dialoga-condition-value').val();
+                const logic = $item.find('.dialoga-condition-logic').val() || 'and';
                 currentConditions.push({
                     id: conditionId,
                     operator: operator,
@@ -2966,17 +2966,17 @@
             
             // CRITICAL: Collect current values from form before re-rendering
             const currentGroups = [];
-            $('.dialogawp-output-group').each(function() {
+            $('.dialoga-output-group').each(function() {
                 const $group = $(this);
                 const groupId = $group.data('group-id');
-                const logic = $group.find('.dialogawp-group-logic').val() || 'and';
+                const logic = $group.find('.dialoga-group-logic').val() || 'and';
                 const conditions = [];
                 
-                $group.find('.dialogawp-condition-item').each(function() {
+                $group.find('.dialoga-condition-item').each(function() {
                     const $cond = $(this);
                     const condId = $cond.data('condition-id');
-                    const operator = $cond.find('.dialogawp-condition-operator').val();
-                    const value = $cond.find('.dialogawp-condition-value').val();
+                    const operator = $cond.find('.dialoga-condition-operator').val();
+                    const value = $cond.find('.dialoga-condition-value').val();
                     
                     conditions.push({
                         id: condId || 'cond_' + Date.now(),
@@ -3033,12 +3033,12 @@
             
             // CRITICAL: Collect current values before re-rendering
             const currentButtons = [];
-            $('.dialogawp-option-item').each(function() {
+            $('.dialoga-option-item').each(function() {
                 const $item = $(this);
                 const buttonId = $item.data('button-id');
-                const label = $item.find('.dialogawp-button-label').val();
-                const action = $item.find('.dialogawp-button-action').val();
-                const url = $item.find('.dialogawp-button-url').val();
+                const label = $item.find('.dialoga-button-label').val();
+                const action = $item.find('.dialoga-button-action').val();
+                const url = $item.find('.dialoga-button-url').val();
                 if (buttonId) {
                     currentButtons.push({
                         id: buttonId,
@@ -3073,9 +3073,9 @@
             if (!this.selectedNode) return;
             
             var self = this;
-            dialogawpModal.confirm(t('Are you sure you want to delete this node?'), function() {
-                if (window.dialogawpReactInstance) {
-                    const currentFlow = window.dialogawpReactInstance.getFlow();
+            dialogaModal.confirm(t('Are you sure you want to delete this node?'), function() {
+                if (window.dialogaReactInstance) {
+                    const currentFlow = window.dialogaReactInstance.getFlow();
                     if (currentFlow.nodes) {
                         self.nodes = currentFlow.nodes;
                     }
@@ -3089,11 +3089,11 @@
                     e.source !== self.selectedNode.id && e.target !== self.selectedNode.id
                 );
 
-                $('#dialogawp-node-editor').hide();
+                $('#dialoga-node-editor').hide();
                 self.selectedNode = null;
 
-                if (window.dialogawpReactInstance) {
-                    window.dialogawpReactInstance.setFlow({
+                if (window.dialogaReactInstance) {
+                    window.dialogaReactInstance.setFlow({
                         nodes: self.nodes,
                         edges: self.edges
                     });
@@ -3110,18 +3110,18 @@
         },
         
         saveFlow: function() {
-            const flowName = $('#dialogawp-flow-name').val();
-            const isActive = $('#dialogawp-flow-active').is(':checked');
-            const visibilityMode = $('#dialogawp-flow-visibility').val();
+            const flowName = $('#dialoga-flow-name').val();
+            const isActive = $('#dialoga-flow-active').is(':checked');
+            const visibilityMode = $('#dialoga-flow-visibility').val();
             
             // Get selected roles
             const visibleRoles = [];
-            $('.dialogawp-role-checkbox:checked').each(function() {
+            $('.dialoga-role-checkbox:checked').each(function() {
                 visibleRoles.push($(this).val());
             });
             
             if (!flowName || flowName.trim() === '') {
-                dialogawpModal.error(t('Please enter a flow name!'));
+                dialogaModal.error(t('Please enter a flow name!'));
                 return;
             }
             
@@ -3140,11 +3140,11 @@
             
             // Get all flows to check for conflicts
             $.ajax({
-                url: dialogawpAdmin.ajaxUrl,
+                url: dialogaAdmin.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'dialogawp_get_flows',
-                    nonce: dialogawpAdmin.nonce
+                    action: 'dialoga_get_flows',
+                    nonce: dialogaAdmin.nonce
                 },
                 success: (response) => {
                     if (response.success) {
@@ -3172,7 +3172,7 @@
                         
                         if (conflicts.length > 0) {
                             const conflictNames = conflicts.map(f => f.flow_name).join(', ');
-                            dialogawpModal.confirm(
+                            dialogaModal.confirm(
                                 t('Another active flow "%s" has the same visibility. Visitors will see the newest flow. Continue anyway?').replace('%s', () => conflictNames),
                                 function() { callback(); },
                                 { title: t('Visibility Conflict'), okText: t('Continue'), cancelText: t('Go Back'), icon: '\u26A0\uFE0F' }
@@ -3186,8 +3186,8 @@
         },
         
         performSave: function(flowName, isActive, visibilityMode, visibleRoles) {
-            if (window.dialogawpReactInstance) {
-                const flow = window.dialogawpReactInstance.getFlow();
+            if (window.dialogaReactInstance) {
+                const flow = window.dialogaReactInstance.getFlow();
                 this.nodes = flow.nodes;
                 this.edges = flow.edges;
             }
@@ -3218,7 +3218,7 @@
             
             // VALIDATION: Check for empty flow
             if (this.nodes.length === 0) {
-                dialogawpModal.error(t('Cannot save empty flow! Please add at least one node.'));
+                dialogaModal.error(t('Cannot save empty flow! Please add at least one node.'));
                 return;
             }
             
@@ -3235,8 +3235,8 @@
             _log('📦 Flow data JSON length:', flowDataJSON.length, 'characters');
             
             const formData = new FormData();
-            formData.append('action', 'dialogawp_save_flow');
-            formData.append('nonce', dialogawpAdmin.nonce);
+            formData.append('action', 'dialoga_save_flow');
+            formData.append('nonce', dialogaAdmin.nonce);
             formData.append('flow_id', this.currentFlowId || 0);
             formData.append('flow_name', flowName);
             formData.append('is_active', isActive ? 1 : 0);
@@ -3247,18 +3247,18 @@
             // Webhook connector — Pro only. Dropdown won't exist for free, so default to empty.
 
             // Show loading state on save button + current flow card in sidebar
-            const $saveBtn = $('#dialogawp-save-flow');
+            const $saveBtn = $('#dialoga-save-flow');
             const originalBtnHtml = $saveBtn.html();
             $saveBtn.prop('disabled', true).text(isActive ? t('Saving & activating…') : t('Saving…'));
 
             // Loading spinner on the active flow card in the sidebar
             if (this.currentFlowId) {
-                $(`.dialogawp-flow-item[data-flow-id="${this.currentFlowId}"]`).addClass('loading');
+                $(`.dialoga-flow-item[data-flow-id="${this.currentFlowId}"]`).addClass('loading');
             }
 
             const self = this;
 
-            fetch(dialogawpAdmin.ajaxUrl, {
+            fetch(dialogaAdmin.ajaxUrl, {
                 method: 'POST',
                 body: formData
             })
@@ -3279,53 +3279,53 @@
                     // Start change detection if not already started
                     if (!self.changeDetectionTimer) self.startChangeDetection();
 
-                    dialogawpModal.success(t('Flow saved successfully!'));
+                    dialogaModal.success(t('Flow saved successfully!'));
                     self.loadFlows();
                 } else {
                     _error('❌ Save failed:', response);
-                    $(`.dialogawp-flow-item`).removeClass('loading');
-                    dialogawpModal.error(t('Error saving flow: %s').replace('%s', response.data || t('Unknown error')));
+                    $(`.dialoga-flow-item`).removeClass('loading');
+                    dialogaModal.error(t('Error saving flow: %s').replace('%s', response.data || t('Unknown error')));
                 }
             })
             .catch(error => {
                 _error('❌ AJAX Error:', error);
                 $saveBtn.prop('disabled', false).html(originalBtnHtml);
-                $(`.dialogawp-flow-item`).removeClass('loading');
-                dialogawpModal.error(t('Error saving flow. Check browser console for details.'));
+                $(`.dialoga-flow-item`).removeClass('loading');
+                dialogaModal.error(t('Error saving flow. Check browser console for details.'));
             });
         },
         
         loadFlows: function() {
             $.ajax({
-                url: dialogawpAdmin.ajaxUrl,
+                url: dialogaAdmin.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'dialogawp_get_flows',
-                    nonce: dialogawpAdmin.nonce
+                    action: 'dialoga_get_flows',
+                    nonce: dialogaAdmin.nonce
                 },
                 success: (response) => {
                     if (response.success) {
                         this.renderFlowList(response.data);
                     } else {
-                        $('#dialogawp-flows-list').html('<p class="dialogawp-builder-inline-error" role="alert">' + this.escapeEditorHtml(t('Could not load flows. Please refresh and try again.')) + '</p>');
+                        $('#dialoga-flows-list').html('<p class="dialoga-builder-inline-error" role="alert">' + this.escapeEditorHtml(t('Could not load flows. Please refresh and try again.')) + '</p>');
                     }
                 },
                 error: () => {
-                    $('#dialogawp-flows-list').html('<p class="dialogawp-builder-inline-error" role="alert">' + this.escapeEditorHtml(t('Could not load flows. Please refresh and try again.')) + '</p>');
+                    $('#dialoga-flows-list').html('<p class="dialoga-builder-inline-error" role="alert">' + this.escapeEditorHtml(t('Could not load flows. Please refresh and try again.')) + '</p>');
                 }
             });
         },
         
         renderFlowList: function(flows) {
-            const $list = $('#dialogawp-flows-list');
-            if (!$list.length || !$list.closest('.dialogawp-flows-sidebar').length) return;
+            const $list = $('#dialoga-flows-list');
+            if (!$list.length || !$list.closest('.dialoga-flows-sidebar').length) return;
             
             if (flows.length === 0) {
-                $list.html('<p class="dialogawp-loading">' + this.escapeEditorHtml(t('No flows yet. Create your first flow!')) + '</p>');
+                $list.html('<p class="dialoga-loading">' + this.escapeEditorHtml(t('No flows yet. Create your first flow!')) + '</p>');
                 return;
             }
             
-            const template = (window.dialogawpTemplates && window.dialogawpTemplates.flowItem) || '';
+            const template = (window.dialogaTemplates && window.dialogaTemplates.flowItem) || '';
             let html = '';
             
             flows.forEach(flow => {
@@ -3378,18 +3378,18 @@
             }
 
             // Show loading state on the card being clicked
-            $(`.dialogawp-flow-item[data-flow-id="${flowId}"]`).addClass('loading');
+            $(`.dialoga-flow-item[data-flow-id="${flowId}"]`).addClass('loading');
 
             const self = this;
             $.ajax({
-                url: dialogawpAdmin.ajaxUrl,
+                url: dialogaAdmin.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'dialogawp_get_flows',
-                    nonce: dialogawpAdmin.nonce
+                    action: 'dialoga_get_flows',
+                    nonce: dialogaAdmin.nonce
                 },
                 success: (response) => {
-                    $(`.dialogawp-flow-item`).removeClass('loading');
+                    $(`.dialoga-flow-item`).removeClass('loading');
                     if (response.success) {
                         const flow = response.data.find(f => parseInt(f.id) === parseInt(flowId));
                         if (flow) {
@@ -3400,7 +3400,7 @@
                             this.currentFlowId = flow.id;
                             this.currentFlow = flow;
                             this.selectedNode = null;
-                            $('#dialogawp-node-editor').hide();
+                            $('#dialoga-node-editor').hide();
                             
                             const flowData = JSON.parse(flow.flow_data);
                             _log('🔍 Parsed flow data:', flowData);
@@ -3440,28 +3440,28 @@
                                 }
                             });
                             
-                            $('#dialogawp-flow-name').val(flow.flow_name);
-                            $('#dialogawp-flow-active').prop('checked', parseInt(flow.is_active) === 1);
+                            $('#dialoga-flow-name').val(flow.flow_name);
+                            $('#dialoga-flow-active').prop('checked', parseInt(flow.is_active) === 1);
                             
                             // Load visibility settings
                             const visibilityMode = flow.visibility_mode || 'everyone';
-                            $('#dialogawp-flow-visibility').val(visibilityMode);
+                            $('#dialoga-flow-visibility').val(visibilityMode);
                             
                             // Show/hide role button
                             if (visibilityMode === 'specific_roles') {
-                                $('#dialogawp-visibility-settings').show();
+                                $('#dialoga-visibility-settings').show();
                             } else {
-                                $('#dialogawp-visibility-settings').hide();
+                                $('#dialoga-visibility-settings').hide();
                             }
                             
                             // Load visible roles
-                            $('.dialogawp-role-checkbox').prop('checked', false);
+                            $('.dialoga-role-checkbox').prop('checked', false);
                             if (flow.visible_roles) {
                                 const roles = JSON.parse(flow.visible_roles);
                                 roles.forEach(role => {
-                                    $('.dialogawp-role-checkbox[value="' + role + '"]').prop('checked', true);
+                                    $('.dialoga-role-checkbox[value="' + role + '"]').prop('checked', true);
                                 });
-                                $('#dialogawp-visibility-settings').text(t('%s role(s) selected').replace('%s', roles.length));
+                                $('#dialoga-visibility-settings').text(t('%s role(s) selected').replace('%s', roles.length));
                             }
                             
 
@@ -3502,9 +3502,9 @@
                                 }
                             });
 
-                            if (window.dialogawpReactInstance) {
+                            if (window.dialogaReactInstance) {
                                 _log('🎨 Sending to React canvas:', this.nodes.length, 'nodes,', this.edges.length, 'edges');
-                                window.dialogawpReactInstance.setFlow({
+                                window.dialogaReactInstance.setFlow({
                                     nodes: this.nodes,
                                     edges: this.edges
                                 });
@@ -3519,37 +3519,37 @@
                             setTimeout(() => self.startChangeDetection(), 500);
                         } else {
                             _error('❌ Flow not found:', flowId);
-                            dialogawpModal.error(t('The selected flow could not be found. Please refresh and try again.'));
+                            dialogaModal.error(t('The selected flow could not be found. Please refresh and try again.'));
                         }
                     } else {
                         _error('❌ Failed to get flows:', response);
-                        dialogawpModal.error(t('Could not load the flow. Please try again.'));
+                        dialogaModal.error(t('Could not load the flow. Please try again.'));
                     }
                 },
                 error: function(xhr, status, error) {
-                    $(`.dialogawp-flow-item`).removeClass('loading');
+                    $(`.dialoga-flow-item`).removeClass('loading');
                     _error('❌ AJAX error loading flow:', error);
-                    dialogawpModal.error(t('Could not load the flow. Please try again.'));
+                    dialogaModal.error(t('Could not load the flow. Please try again.'));
                 }
             });
         },
         
         deleteFlow: function(flowId) {
             // Work for both the legacy card markup and the server-rendered table row.
-            const $card = $(`.dialogawp-flow-item[data-flow-id="${flowId}"], .dialogawp-flows-table tr[data-flow-id="${flowId}"]`);
+            const $card = $(`.dialoga-flow-item[data-flow-id="${flowId}"], .dialoga-flows-table tr[data-flow-id="${flowId}"]`);
             $card.addClass('loading is-deleting');
 
             $.ajax({
-                url: dialogawpAdmin.ajaxUrl,
+                url: dialogaAdmin.ajaxUrl,
                 type: 'POST',
                 data: {
-                    action: 'dialogawp_delete_flow',
-                    nonce: dialogawpAdmin.nonce,
+                    action: 'dialoga_delete_flow',
+                    nonce: dialogaAdmin.nonce,
                     flow_id: flowId
                 },
                 success: (response) => {
                     if (response.success) {
-                        dialogawpModal.success(t('Flow deleted successfully.'));
+                        dialogaModal.success(t('Flow deleted successfully.'));
                         if (!this.isEditor) {
                             window.location.reload();
                             return;
@@ -3558,22 +3558,22 @@
 
                         if (parseInt(this.currentFlowId) === parseInt(flowId)) {
                             this.currentFlowId = null;
-                            window.location.assign(dialogawpAdmin.builderUrl);
+                            window.location.assign(dialogaAdmin.builderUrl);
                         }
                     } else {
                         $card.removeClass('loading is-deleting');
-                        dialogawpModal.error(t('Failed to delete flow.'));
+                        dialogaModal.error(t('Failed to delete flow.'));
                     }
                 },
                 error: () => {
                     $card.removeClass('loading is-deleting');
-                    dialogawpModal.error(t('Error deleting flow.'));
+                    dialogaModal.error(t('Error deleting flow.'));
                 }
             });
         },
         
         duplicateFlow: function(flowId) {
-            dialogawpModal.alert(t('Duplicate feature coming soon!'), t('Coming Soon'));
+            dialogaModal.alert(t('Duplicate feature coming soon!'), t('Coming Soon'));
         },
         
         truncate: function(str, length) {
@@ -3583,9 +3583,9 @@
     };
     
     $(document).ready(function() {
-        if ($('.dialogawp-builder-wrap').length > 0) {
-            window.dialogawpBuilder = dialogawpBuilder;
-            dialogawpBuilder.init();
+        if ($('.dialoga-builder-wrap').length > 0) {
+            window.dialogaBuilder = dialogaBuilder;
+            dialogaBuilder.init();
         }
     });
     

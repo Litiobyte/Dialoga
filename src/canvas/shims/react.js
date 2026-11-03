@@ -1,7 +1,7 @@
 const React = window.React;
 
 if (!React) {
-    throw new Error('DialogaWP requires the WordPress React script handle.');
+    throw new Error('Dialoga requires the WordPress React script handle.');
 }
 
 export default React;

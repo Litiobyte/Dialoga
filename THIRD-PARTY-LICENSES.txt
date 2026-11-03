@@ -1,4 +1,4 @@
-DialogaWP bundled JavaScript dependencies
+Dialoga bundled JavaScript dependencies
 =========================================
 
 The production canvas bundle contains code from these packages:

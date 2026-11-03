@@ -3,20 +3,20 @@
 Run `node tests/flow-transfer-browser-test.cjs` from the repository. No project
 dependencies, web server, or WordPress installation are required. Requires PHP,
 Playwright (or playwright-core), jQuery 3.x, and Chromium/Chrome. Missing tooling
-prints `SKIP`; set `DIALOGAWP_BROWSER_REQUIRE=1` to fail instead (recommended for CI).
+prints `SKIP`; set `DIALOGA_BROWSER_REQUIRE=1` to fail instead (recommended for CI).
 
-The runner resolves dependencies from the project, `DIALOGAWP_BROWSER_TOOLING`, or
+The runner resolves dependencies from the project, `DIALOGA_BROWSER_TOOLING`, or
 the approved temporary tooling directory used during development. Example:
 
 ```sh
 npm install --prefix /var/folders/2w/_41g_m7s1b3ds8bs1w06m15r0000gp/T/opencode/flow-transfer-browser-tooling --no-audit --no-fund --ignore-scripts playwright@1.56.1 jquery@3.7.1
-DIALOGAWP_BROWSER_REQUIRE=1 node tests/flow-transfer-browser-test.cjs
+DIALOGA_BROWSER_REQUIRE=1 node tests/flow-transfer-browser-test.cjs
 ```
 
-Set `DIALOGAWP_BROWSER_EXECUTABLE` for a custom Chromium executable or `PHP_BINARY`
+Set `DIALOGA_BROWSER_EXECUTABLE` for a custom Chromium executable or `PHP_BINARY`
 for a custom PHP executable. The default uses installed macOS Chrome when
 available, otherwise Playwright's Chromium. For external dependencies elsewhere,
-set `DIALOGAWP_BROWSER_TOOLING` to their parent directory containing `node_modules`.
+set `DIALOGA_BROWSER_TOOLING` to their parent directory containing `node_modules`.
 
 ## Fixture Boundaries
 

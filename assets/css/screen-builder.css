@@ -1,30 +1,30 @@
 /*
- * DialogaWP — builder screen styles.
+ * Dialoga — builder screen styles.
  *
  * Was a nowdoc in templates/admin/builder.php passed to wp_add_inline_style().
  * That call ran while the page BODY rendered, by which point WP_Styles had
- * already printed the 'dialogawp-admin' handle and put it in $done — so
+ * already printed the 'dialoga-admin' handle and put it in $done — so
  * print_late_styles() skipped it and none of this CSS ever reached the page.
- * Enqueued per-screen from DialogaWP::enqueue_admin_assets() instead.
+ * Enqueued per-screen from Dialoga::enqueue_admin_assets() instead.
  */
 
 /* v0.39.7 — dashicons on primary buttons inherit the parent's color, but some
    admin themes / block-editor stylesheets set .dashicons to a dark color which
    makes them invisible on the blue button-primary background. Force white here
    so the "+ New Flow" and "Create New Flow" icons always render correctly. */
-.dialogawp-builder-wrap .button-primary .dashicons,
-.dialogawp-builder-wrap .button-primary:hover .dashicons,
-.dialogawp-builder-wrap .button-primary:focus .dashicons {
+.dialoga-builder-wrap .button-primary .dashicons,
+.dialoga-builder-wrap .button-primary:hover .dashicons,
+.dialoga-builder-wrap .button-primary:focus .dashicons {
     color: #ffffff !important;
 }
-.wp-core-ui .dialogawp-builder-wrap .button-primary .dashicons {
+.wp-core-ui .dialoga-builder-wrap .button-primary .dashicons {
     vertical-align: middle;
     line-height: 1.2;
 }
 
-.dialogawp-builder-wrap .dialogawp-new-flow.button-primary .dashicons,
-.dialogawp-builder-wrap .dialogawp-new-flow.button-primary:hover .dashicons,
-.dialogawp-builder-wrap .dialogawp-new-flow.button-primary:focus .dashicons {
+.dialoga-builder-wrap .dialoga-new-flow.button-primary .dashicons,
+.dialoga-builder-wrap .dialoga-new-flow.button-primary:hover .dashicons,
+.dialoga-builder-wrap .dialoga-new-flow.button-primary:focus .dashicons {
     color: #26233A !important;
 }
 
@@ -35,12 +35,12 @@
    explicit height using calc that accounts for admin bar + H1 + margin. No
    flex-parent-child dependency, no measurement, no observer. Just a hard
    calc that reliably fills the viewport. */
-.dialogawp-builder-wrap {
+.dialoga-builder-wrap {
     margin: 10px 20px 0 0 !important;
     /* removed display:flex — no longer needed since container sizes itself */
 }
 
-.dialogawp-builder-container {
+.dialoga-builder-container {
     display: flex !important;
     gap: 20px;
     background: transparent;
@@ -51,17 +51,17 @@
     box-sizing: border-box !important;
 }
 
-.dialogawp-builder-page-header {
+.dialoga-builder-page-header {
     margin-bottom: 12px;
 }
 
-.dialogawp-back-to-flows {
+.dialoga-back-to-flows {
     display: inline-flex;
     align-items: center;
     gap: 5px;
 }
 
-.dialogawp-builder-list-view {
+.dialoga-builder-list-view {
     overflow: hidden;
     border: 1px solid #E5E7EF;
     border-radius: 10px;
@@ -69,7 +69,7 @@
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
-.dialogawp-builder-list-actions {
+.dialoga-builder-list-actions {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -78,39 +78,39 @@
     background: #F7F8FC;
 }
 
-.dialogawp-builder-list-actions .dashicons {
+.dialoga-builder-list-actions .dashicons {
     vertical-align: middle;
 }
 
-.dialogawp-builder-list-table-wrap {
+.dialoga-builder-list-table-wrap {
     overflow-x: auto;
 }
 
-.dialogawp-flows-table {
+.dialoga-flows-table {
     margin: 0;
     border: 0;
     box-shadow: none;
 }
 
-.dialogawp-flows-table th,
-.dialogawp-flows-table td {
+.dialoga-flows-table th,
+.dialoga-flows-table td {
     padding: 14px 16px;
     vertical-align: middle;
 }
 
-.dialogawp-flows-table .column-primary {
+.dialoga-flows-table .column-primary {
     width: 46%;
 }
 
-.dialogawp-flows-table .row-title {
+.dialoga-flows-table .row-title {
     color: #190F4F;
 }
 
-.dialogawp-flows-table .row-title:hover {
+.dialoga-flows-table .row-title:hover {
     color: #007D75;
 }
 
-.dialogawp-flows-table .button-link-delete {
+.dialoga-flows-table .button-link-delete {
     padding: 0;
     border: 0;
     background: transparent;
@@ -118,18 +118,18 @@
     cursor: pointer;
 }
 
-.dialogawp-flows-table .dialogawp-flow-status {
+.dialoga-flows-table .dialoga-flow-status {
     display: inline-flex;
     min-width: 58px;
     justify-content: center;
 }
 
-.dialogawp-flows-table tr.is-deleting {
+.dialoga-flows-table tr.is-deleting {
     opacity: 0.58;
     pointer-events: none;
 }
 
-.dialogawp-builder-empty-actions {
+.dialoga-builder-empty-actions {
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
@@ -137,13 +137,13 @@
     margin-top: 8px;
 }
 
-.dialogawp-builder-empty-note {
+.dialoga-builder-empty-note {
     margin-top: 16px;
     color: #64748B;
     font-size: 13px;
 }
 
-.dialogawp-flows-sidebar {
+.dialoga-flows-sidebar {
     width: 280px;
     background: #fff;
     border: 1px solid #E5E7EF;
@@ -153,12 +153,12 @@
     overflow-y: auto;
 }
 
-.dialogawp-flows-sidebar h2 {
+.dialoga-flows-sidebar h2 {
     margin: 0;
     font-size: 16px;
 }
 
-.dialogawp-flows-sidebar-header {
+.dialoga-flows-sidebar-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -167,24 +167,24 @@
     flex-wrap: wrap; /* v0.42.8 — let actions drop to a second row when sidebar is narrow */
 }
 
-.dialogawp-flows-sidebar-actions {
+.dialoga-flows-sidebar-actions {
     display: flex;
     align-items: center;
     gap: 6px;
     flex-wrap: wrap; /* v0.42.8 — buttons wrap instead of clipping (Import was getting cut off) */
 }
 
-.dialogawp-flows-sidebar-actions .button {
+.dialoga-flows-sidebar-actions .button {
     height: auto;
     font-size: 12px;
 }
 
-.dialogawp-builder-toolbar-right {
+.dialoga-builder-toolbar-right {
     flex-wrap: wrap;
     align-items: center;
 }
 
-.dialogawp-transfer-overlay {
+.dialoga-transfer-overlay {
     position: fixed;
     inset: 0;
     z-index: 200000;
@@ -195,7 +195,7 @@
     background: rgba(0, 0, 0, 0.45);
 }
 
-.dialogawp-transfer-dialog {
+.dialoga-transfer-dialog {
     width: 560px;
     max-width: 100%;
     max-height: calc(100vh - 40px);
@@ -208,19 +208,19 @@
     box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
 }
 
-.dialogawp-transfer-dialog h2 { margin: 0 0 16px; }
-.dialogawp-transfer-content { overflow-y: auto; min-height: 0; }
-.dialogawp-transfer-content label { display: block; padding: 8px 0; overflow-wrap: anywhere; }
-.dialogawp-transfer-content p, .dialogawp-transfer-warnings { overflow-wrap: anywhere; }
-.dialogawp-transfer-warnings { padding: 12px 12px 12px 28px; background: #fff8e1; }
-.dialogawp-transfer-actions { display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap; }
-.dialogawp-transfer-status { color: #b32d2e; }
+.dialoga-transfer-dialog h2 { margin: 0 0 16px; }
+.dialoga-transfer-content { overflow-y: auto; min-height: 0; }
+.dialoga-transfer-content label { display: block; padding: 8px 0; overflow-wrap: anywhere; }
+.dialoga-transfer-content p, .dialoga-transfer-warnings { overflow-wrap: anywhere; }
+.dialoga-transfer-warnings { padding: 12px 12px 12px 28px; background: #fff8e1; }
+.dialoga-transfer-actions { display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap; }
+.dialoga-transfer-status { color: #b32d2e; }
 
-body.dialogawp-canvas-fullscreen { overflow: hidden; }
-body.dialogawp-canvas-fullscreen #wpadminbar,
-body.dialogawp-canvas-fullscreen #adminmenumain { visibility: hidden; }
-body.dialogawp-canvas-fullscreen .dialogawp-builder-wrap { display: block !important; }
-body.dialogawp-canvas-fullscreen .dialogawp-builder-container {
+body.dialoga-canvas-fullscreen { overflow: hidden; }
+body.dialoga-canvas-fullscreen #wpadminbar,
+body.dialoga-canvas-fullscreen #adminmenumain { visibility: hidden; }
+body.dialoga-canvas-fullscreen .dialoga-builder-wrap { display: block !important; }
+body.dialoga-canvas-fullscreen .dialoga-builder-container {
     position: fixed;
     inset: 0;
     z-index: 99990;
@@ -233,12 +233,12 @@ body.dialogawp-canvas-fullscreen .dialogawp-builder-container {
     background: #fff;
     flex-direction: row;
 }
-body.dialogawp-canvas-fullscreen .dialogawp-flows-sidebar { display: none; }
-body.dialogawp-canvas-fullscreen .dialogawp-builder-main { border: 0; border-radius: 0; min-height: 0; }
-body.dialogawp-canvas-fullscreen .dialogawp-builder-active { flex: 0 0 auto; max-height: 55vh; overflow-y: auto; }
-body.dialogawp-canvas-fullscreen .dialogawp-canvas { min-height: 0 !important; overflow: hidden; }
-body.dialogawp-canvas-fullscreen .dialogawp-node-buttons { flex-wrap: wrap; }
-body.dialogawp-canvas-fullscreen .dialogawp-node-editor {
+body.dialoga-canvas-fullscreen .dialoga-flows-sidebar { display: none; }
+body.dialoga-canvas-fullscreen .dialoga-builder-main { border: 0; border-radius: 0; min-height: 0; }
+body.dialoga-canvas-fullscreen .dialoga-builder-active { flex: 0 0 auto; max-height: 55vh; overflow-y: auto; }
+body.dialoga-canvas-fullscreen .dialoga-canvas { min-height: 0 !important; overflow: hidden; }
+body.dialoga-canvas-fullscreen .dialoga-node-buttons { flex-wrap: wrap; }
+body.dialoga-canvas-fullscreen .dialoga-node-editor {
     top: 70px;
     right: 12px;
     bottom: 12px;
@@ -246,8 +246,8 @@ body.dialogawp-canvas-fullscreen .dialogawp-node-editor {
     max-width: calc(100vw - 24px);
 }
 
-.dialogawp-new-flow-sidebar,
-.dialogawp-wizard-sidebar {
+.dialoga-new-flow-sidebar,
+.dialoga-wizard-sidebar {
     display: inline-flex !important;
     align-items: center;
     gap: 4px;
@@ -258,15 +258,15 @@ body.dialogawp-canvas-fullscreen .dialogawp-node-editor {
     text-decoration: none;
 }
 
-.dialogawp-new-flow-sidebar .dashicons,
-.dialogawp-wizard-sidebar .dashicons {
+.dialoga-new-flow-sidebar .dashicons,
+.dialoga-wizard-sidebar .dashicons {
     font-size: 14px;
     width: 14px;
     height: 14px;
     line-height: 1;
 }
 
-.dialogawp-flow-item {
+.dialoga-flow-item {
     padding: 12px;
     border: 1px solid #E5E7EF;
     border-radius: 4px;
@@ -276,24 +276,24 @@ body.dialogawp-canvas-fullscreen .dialogawp-node-editor {
     position: relative;
 }
 
-.dialogawp-flow-item:focus-visible {
+.dialoga-flow-item:focus-visible {
     outline: 3px solid rgba(0, 173, 161, 0.38);
     outline-offset: 2px;
 }
 
-.dialogawp-flow-item:hover {
+.dialoga-flow-item:hover {
     border-color: #00ADA1;
     background: #E6F7F6;
 }
 
 /* Currently being edited in the builder */
-.dialogawp-flow-item.editing {
+.dialoga-flow-item.editing {
     border-color: #00ADA1;
     background: #E6F7F6;
     box-shadow: 0 0 0 2px #00ADA1;
 }
 
-.dialogawp-flow-item.editing::before {
+.dialoga-flow-item.editing::before {
     content: '✎ Editing';
     position: absolute;
     top: -8px;
@@ -308,12 +308,12 @@ body.dialogawp-canvas-fullscreen .dialogawp-node-editor {
 }
 
 /* Loading state when activating a flow */
-.dialogawp-flow-item.loading {
+.dialoga-flow-item.loading {
     opacity: 0.6;
     pointer-events: none;
 }
 
-.dialogawp-flow-item.loading::after {
+.dialoga-flow-item.loading::after {
     content: '';
     position: absolute;
     top: 50%;
@@ -324,15 +324,15 @@ body.dialogawp-canvas-fullscreen .dialogawp-node-editor {
     border: 2px solid #190F4F;
     border-top-color: transparent;
     border-radius: 50%;
-    animation: dialogawp-spin 0.8s linear infinite;
+    animation: dialoga-spin 0.8s linear infinite;
 }
 
-@keyframes dialogawp-spin {
+@keyframes dialoga-spin {
     to { transform: rotate(360deg); }
 }
 
 /* Save status indicator — compact dot-only pill, expands to show text on hover or during activity */
-.dialogawp-save-status {
+.dialoga-save-status {
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -345,10 +345,10 @@ body.dialogawp-canvas-fullscreen .dialogawp-node-editor {
 }
 
 /* Collapse text to an icon-only pill when the flow is in the "saved" state */
-.dialogawp-save-status--saved .dialogawp-save-status-text { display: none; }
-.dialogawp-save-status--saved:hover .dialogawp-save-status-text { display: inline; }
+.dialoga-save-status--saved .dialoga-save-status-text { display: none; }
+.dialoga-save-status--saved:hover .dialoga-save-status-text { display: inline; }
 
-.dialogawp-save-status-dot {
+.dialoga-save-status-dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
@@ -356,83 +356,83 @@ body.dialogawp-canvas-fullscreen .dialogawp-node-editor {
 }
 
 /* Saved (green) */
-.dialogawp-save-status--saved {
+.dialoga-save-status--saved {
     background: #dcfce7;
     color: #166534;
 }
-.dialogawp-save-status--saved .dialogawp-save-status-dot {
+.dialoga-save-status--saved .dialoga-save-status-dot {
     background: #16a34a;
 }
 
 /* Unsaved (amber) */
-.dialogawp-save-status--unsaved {
+.dialoga-save-status--unsaved {
     background: #fef3c7;
     color: #92400e;
 }
-.dialogawp-save-status--unsaved .dialogawp-save-status-dot {
+.dialoga-save-status--unsaved .dialoga-save-status-dot {
     background: #f59e0b;
-    animation: dialogawp-pulse-dot 1.5s infinite;
+    animation: dialoga-pulse-dot 1.5s infinite;
 }
 
 /* Saving (blue, spinning) */
-.dialogawp-save-status--saving {
+.dialoga-save-status--saving {
     background: #dbeafe;
     color: #1e40af;
 }
-.dialogawp-save-status--saving .dialogawp-save-status-dot {
+.dialoga-save-status--saving .dialoga-save-status-dot {
     background: transparent;
     border: 2px solid #3b82f6;
     border-top-color: transparent;
     width: 10px;
     height: 10px;
-    animation: dialogawp-spin 0.8s linear infinite;
+    animation: dialoga-spin 0.8s linear infinite;
 }
 
 /* Error (red) */
-.dialogawp-save-status--error {
+.dialoga-save-status--error {
     background: #fee2e2;
     color: #991b1b;
 }
-.dialogawp-save-status--error .dialogawp-save-status-dot {
+.dialoga-save-status--error .dialoga-save-status-dot {
     background: #dc2626;
 }
 
-@keyframes dialogawp-pulse-dot {
+@keyframes dialoga-pulse-dot {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.4; }
 }
 
-.dialogawp-flow-item-header {
+.dialoga-flow-item-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 8px;
 }
 
-.dialogawp-flow-item-header h4 {
+.dialoga-flow-item-header h4 {
     margin: 0;
     font-size: 14px;
 }
 
-.dialogawp-flow-status {
+.dialoga-flow-status {
     font-size: 11px;
     padding: 2px 6px;
     border-radius: 3px;
     background: #E5E7EF;
 }
 
-.dialogawp-flow-status.active {
+.dialoga-flow-status.active {
     background: #00a32a;
     color: #fff;
 }
 
-.dialogawp-flow-item-meta {
+.dialoga-flow-item-meta {
     font-size: 12px;
     color: #666;
     margin-bottom: 8px;
 }
 
-.dialogawp-flow-item-actions {
+.dialoga-flow-item-actions {
     display: flex;
     gap: 5px;
     flex-wrap: wrap;
@@ -442,11 +442,11 @@ body.dialogawp-canvas-fullscreen .dialogawp-node-editor {
    label or larger admin font pushes past the sidebar width. Each
    button keeps its natural size but can drop to the next row rather
    than being clipped by the sidebar's right edge. */
-.dialogawp-flow-item-actions .button {
+.dialoga-flow-item-actions .button {
     flex: 0 1 auto;
 }
 
-.dialogawp-builder-main {
+.dialoga-builder-main {
     flex: 1;
     min-width: 0; /* v0.42.8 — allow flex child to shrink past its intrinsic width instead of pushing overflow */
     display: flex;
@@ -459,7 +459,7 @@ body.dialogawp-canvas-fullscreen .dialogawp-node-editor {
     overflow: hidden;
 }
 
-.dialogawp-builder-toolbar {
+.dialoga-builder-toolbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -471,7 +471,7 @@ body.dialogawp-canvas-fullscreen .dialogawp-node-editor {
     overflow-x: auto;
 }
 
-.dialogawp-builder-toolbar-left {
+.dialoga-builder-toolbar-left {
     display: flex;
     min-width: 0;
     gap: 12px;
@@ -480,7 +480,7 @@ body.dialogawp-canvas-fullscreen .dialogawp-node-editor {
     flex-wrap: nowrap;
 }
 
-.dialogawp-builder-toolbar-right .button {
+.dialoga-builder-toolbar-right .button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -491,7 +491,7 @@ body.dialogawp-canvas-fullscreen .dialogawp-node-editor {
    line-height:1.9 and vertical-align:top with 3 classes, which outranks a
    plain two-class selector and breaks the toolbar icon centering. Scope with
    the wp-core-ui body class + wrapper so our 18px box wins. */
-.wp-core-ui .dialogawp-builder-wrap .dialogawp-builder-toolbar .button .dashicons {
+.wp-core-ui .dialoga-builder-wrap .dialoga-builder-toolbar .button .dashicons {
     width: 18px;
     height: 18px;
     margin: 0;
@@ -499,40 +499,40 @@ body.dialogawp-canvas-fullscreen .dialogawp-node-editor {
     vertical-align: middle;
 }
 
-.dialogawp-export-current,
-.dialogawp-import-flows {
+.dialoga-export-current,
+.dialoga-import-flows {
     border-color: #9DDCD7 !important;
     background: #F1FBFA !important;
     color: #007D75 !important;
 }
 
-.dialogawp-export-current:hover,
-.dialogawp-import-flows:hover,
-.dialogawp-export-current:focus,
-.dialogawp-import-flows:focus {
+.dialoga-export-current:hover,
+.dialoga-import-flows:hover,
+.dialoga-export-current:focus,
+.dialoga-import-flows:focus {
     border-color: #00ADA1 !important;
     background: #E0F5F3 !important;
     color: #005E58 !important;
 }
 
-.dialogawp-fullscreen-toggle {
+.dialoga-fullscreen-toggle {
     border-color: #190F4F !important;
     background: #190F4F !important;
     color: #fff !important;
 }
 
-.dialogawp-fullscreen-toggle:hover,
-.dialogawp-fullscreen-toggle:focus {
+.dialoga-fullscreen-toggle:hover,
+.dialoga-fullscreen-toggle:focus {
     border-color: #31246F !important;
     background: #31246F !important;
     color: #fff !important;
 }
 
-.dialogawp-fullscreen-toggle .dashicons {
+.dialoga-fullscreen-toggle .dashicons {
     color: currentColor;
 }
 
-.dialogawp-flow-name-input {
+.dialoga-flow-name-input {
     font-size: 16px;
     font-weight: 600;
     padding: 6px 12px;
@@ -542,7 +542,7 @@ body.dialogawp-canvas-fullscreen .dialogawp-node-editor {
     min-width: 0;
 }
 
-.dialogawp-visibility-controls {
+.dialoga-visibility-controls {
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -552,7 +552,7 @@ body.dialogawp-canvas-fullscreen .dialogawp-node-editor {
     border-left: 1px solid #E5E7EF;
 }
 
-.dialogawp-visibility-controls label {
+.dialoga-visibility-controls label {
     margin: 0;
     color: #26233A;
     font-size: 13px;
@@ -560,21 +560,21 @@ body.dialogawp-canvas-fullscreen .dialogawp-node-editor {
     white-space: nowrap;
 }
 
-.dialogawp-visibility-controls select {
+.dialoga-visibility-controls select {
     width: 170px;
     min-width: 0;
     padding: 5px 10px;
     font-size: 13px;
 }
 
-.dialogawp-active-toggle {
+.dialoga-active-toggle {
     display: flex;
     align-items: center;
     gap: 5px;
     margin: 0;
 }
 
-.dialogawp-builder-toolbar-right {
+.dialoga-builder-toolbar-right {
     display: flex;
     flex: 0 0 auto;
     align-items: center;
@@ -583,35 +583,35 @@ body.dialogawp-canvas-fullscreen .dialogawp-node-editor {
 }
 
 @media (max-width: 1500px) {
-    .dialogawp-builder-toolbar {
+    .dialoga-builder-toolbar {
         padding: 12px;
         gap: 8px;
     }
 
-    .dialogawp-builder-toolbar-left {
+    .dialoga-builder-toolbar-left {
         gap: 8px;
     }
 
-    .dialogawp-flow-name-input {
+    .dialoga-flow-name-input {
         width: 120px;
     }
 
-    .dialogawp-visibility-controls {
+    .dialoga-visibility-controls {
         gap: 5px;
         margin-left: 0;
         padding-left: 8px;
     }
 
-    .dialogawp-visibility-controls select {
+    .dialoga-visibility-controls select {
         width: 135px;
     }
 
-    .dialogawp-builder-toolbar-right {
+    .dialoga-builder-toolbar-right {
         gap: 5px;
     }
 
-    .dialogawp-builder-toolbar-right .button,
-    #dialogawp-visibility-settings {
+    .dialoga-builder-toolbar-right .button,
+    #dialoga-visibility-settings {
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -620,11 +620,11 @@ body.dialogawp-canvas-fullscreen .dialogawp-node-editor {
         padding: 0 6px;
     }
 
-    .dialogawp-export-current .dialogawp-toolbar-label,
-    .dialogawp-import-flows .dialogawp-toolbar-label,
-    #dialogawp-visibility-settings .dialogawp-toolbar-label,
-    .dialogawp-fullscreen-label,
-    .dialogawp-save-status-text {
+    .dialoga-export-current .dialoga-toolbar-label,
+    .dialoga-import-flows .dialoga-toolbar-label,
+    #dialoga-visibility-settings .dialoga-toolbar-label,
+    .dialoga-fullscreen-label,
+    .dialoga-save-status-text {
         position: absolute;
         width: 1px;
         height: 1px;
@@ -636,29 +636,29 @@ body.dialogawp-canvas-fullscreen .dialogawp-node-editor {
         border: 0;
     }
 
-    .dialogawp-builder-toolbar-right .dashicons,
-    #dialogawp-visibility-settings .dashicons {
+    .dialoga-builder-toolbar-right .dashicons,
+    #dialoga-visibility-settings .dashicons {
         margin: 0;
     }
 }
 
-.dialogawp-node-palette {
+.dialoga-node-palette {
     padding: 15px 20px;
     background: #F7F8FC;
     border-bottom: 1px solid #E5E7EF;
 }
 
-.dialogawp-node-palette h3 {
+.dialoga-node-palette h3 {
     margin: 0 0 10px 0;
     font-size: 14px;
 }
 
-.dialogawp-node-buttons {
+.dialoga-node-buttons {
     display: flex;
     gap: 10px;
 }
 
-.dialogawp-add-node {
+.dialoga-add-node {
     display: flex;
     align-items: center;
     gap: 5px;
@@ -673,38 +673,38 @@ body.dialogawp-canvas-fullscreen .dialogawp-node-editor {
 }
 
 /* Palette node color coding — matches canvas node colors */
-.dialogawp-add-node[data-type="question"] {
+.dialoga-add-node[data-type="question"] {
     border-color: #ff9800; background: #fff3e0; color: #f57c00;
 }
-.dialogawp-add-node[data-type="question"]:hover {
+.dialoga-add-node[data-type="question"]:hover {
     background: #ffe0b2; transform: translateY(-2px); box-shadow: 0 2px 8px rgba(255,152,0,0.25);
 }
-.dialogawp-add-node[data-type="branch"] {
+.dialoga-add-node[data-type="branch"] {
     border-color: #9c27b0; background: #f3e5f5; color: #7b1fa2;
 }
-.dialogawp-add-node[data-type="branch"]:hover {
+.dialoga-add-node[data-type="branch"]:hover {
     background: #e1bee7; transform: translateY(-2px); box-shadow: 0 2px 8px rgba(156,39,176,0.25);
 }
-.dialogawp-add-node[data-type="action"] {
+.dialoga-add-node[data-type="action"] {
     border-color: #4caf50; background: #e8f5e9; color: #388e3c;
 }
-.dialogawp-add-node[data-type="action"]:hover {
+.dialoga-add-node[data-type="action"]:hover {
     background: #c8e6c9; transform: translateY(-2px); box-shadow: 0 2px 8px rgba(76,175,80,0.25);
 }
-.dialogawp-add-node[data-type="ai_chat"] {
+.dialoga-add-node[data-type="ai_chat"] {
     border-color: #3f51b5; background: #e8eaf6; color: #283593;
 }
-.dialogawp-add-node[data-type="ai_chat"]:hover {
+.dialoga-add-node[data-type="ai_chat"]:hover {
     background: #c5cae9; transform: translateY(-2px); box-shadow: 0 2px 8px rgba(63,81,181,0.25);
 }
-.dialogawp-add-node[data-type="loop"] {
+.dialoga-add-node[data-type="loop"] {
     border-color: #ff5722; background: #fbe9e7; color: #bf360c;
 }
-.dialogawp-add-node[data-type="loop"]:hover {
+.dialoga-add-node[data-type="loop"]:hover {
     background: #ffccbc; transform: translateY(-2px); box-shadow: 0 2px 8px rgba(255,87,34,0.25);
 }
 
-.dialogawp-canvas {
+.dialoga-canvas {
     flex: 1;
     min-height: 400px; /* v0.42.8 — safety floor so canvas never collapses to 0 when toolbar+palette wrap and eat more vertical space than expected */
     background: #F7F8FC;
@@ -712,8 +712,8 @@ body.dialogawp-canvas-fullscreen .dialogawp-node-editor {
     background-size: 20px 20px;
 }
 
-.dialogawp-node-editor {
-    /* v0.42.8 — was position:absolute inside .dialogawp-builder-main with fixed
+.dialoga-node-editor {
+    /* v0.42.8 — was position:absolute inside .dialoga-builder-main with fixed
        top:120px + max-height:500px on content. On laptops < 900px tall that
        pushed the Save/Delete footer below the visible viewport with no way to
        scroll. Switching to position:fixed anchored to viewport with top+bottom
@@ -735,7 +735,7 @@ body.dialogawp-canvas-fullscreen .dialogawp-node-editor {
     flex-direction: column;
 }
 
-.dialogawp-node-editor-header {
+.dialoga-node-editor-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -744,12 +744,12 @@ body.dialogawp-canvas-fullscreen .dialogawp-node-editor {
     background: #F7F8FC;
 }
 
-.dialogawp-node-editor-header h3 {
+.dialoga-node-editor-header h3 {
     margin: 0;
     font-size: 16px;
 }
 
-.dialogawp-close-editor {
+.dialoga-close-editor {
     background: none;
     border: none;
     cursor: pointer;
@@ -757,17 +757,17 @@ body.dialogawp-canvas-fullscreen .dialogawp-node-editor {
     color: #666;
 }
 
-.dialogawp-close-editor:hover {
+.dialoga-close-editor:hover {
     color: #000;
 }
 
-.dialogawp-close-editor:focus-visible,
-.dialogawp-modal-close:focus-visible {
+.dialoga-close-editor:focus-visible,
+.dialoga-modal-close:focus-visible {
     outline: 3px solid rgba(0, 173, 161, 0.38);
     outline-offset: 2px;
 }
 
-.dialogawp-node-editor-content {
+.dialoga-node-editor-content {
     padding: 20px;
     /* v0.42.8 — flex:1 in a fixed-height flex column means this area absorbs
        all the space between the pinned header and pinned footer, and scrolls
@@ -777,56 +777,56 @@ body.dialogawp-canvas-fullscreen .dialogawp-node-editor {
     overflow-y: auto;
 }
 
-.dialogawp-node-editor-header {
+.dialoga-node-editor-header {
     flex-shrink: 0; /* v0.42.8 — header stays pinned even when content grows */
 }
 
-.dialogawp-node-editor-footer {
+.dialoga-node-editor-footer {
     flex-shrink: 0; /* v0.42.8 — Save/Delete stay pinned at bottom, always reachable */
 }
 
-.dialogawp-field {
+.dialoga-field {
     margin-bottom: 20px;
 }
 
-.dialogawp-field label {
+.dialoga-field label {
     display: block;
     margin-bottom: 5px;
     font-weight: 600;
     font-size: 13px;
 }
 
-.dialogawp-field input[type="text"],
-.dialogawp-field input[type="number"],
-.dialogawp-field textarea,
-.dialogawp-field select {
+.dialoga-field input[type="text"],
+.dialoga-field input[type="number"],
+.dialoga-field textarea,
+.dialoga-field select {
     width: 100%;
     padding: 8px 12px;
     border: 1px solid #E5E7EF;
     border-radius: 4px;
 }
 
-.dialogawp-field .description {
+.dialoga-field .description {
     margin: 5px 0 0 0;
     font-size: 12px;
     color: #666;
     font-style: italic;
 }
 
-.dialogawp-node-editor-footer {
+.dialoga-node-editor-footer {
     padding: 15px 20px;
     border-top: 1px solid #E5E7EF;
     display: flex;
     justify-content: space-between;
 }
 
-.dialogawp-loading {
+.dialoga-loading {
     text-align: center;
     padding: 20px;
     color: #666;
 }
 
-.dialogawp-builder-inline-error {
+.dialoga-builder-inline-error {
     margin: 12px 0;
     padding: 12px;
     border: 1px solid #FECACA;
@@ -835,59 +835,59 @@ body.dialogawp-canvas-fullscreen .dialogawp-node-editor {
     color: #991B1B;
     font-size: 13px;
 }
-.dialogawp-draggable-node.dragging {
+.dialoga-draggable-node.dragging {
     opacity: 0.5;
     cursor: grabbing;
 }
 
-.dialogawp-canvas.drag-over {
+.dialoga-canvas.drag-over {
     background-color: #f0f6fc;
     border: 2px dashed #190F4F;
 }
 
-.dialogawp-add-node {
+.dialoga-add-node {
     cursor: grab;
 }
 
-.dialogawp-add-node:active {
+.dialoga-add-node:active {
     cursor: grabbing;
 }
 
-.dialogawp-add-node:active {
+.dialoga-add-node:active {
     transform: translateY(0);
 }
 
-.dialogawp-node-palette {
+.dialoga-node-palette {
     background: #f0f6fc;
 }
 
-.dialogawp-node-palette h3 {
+.dialoga-node-palette h3 {
     color: #190F4F;
 }
 
 @media (max-width: 1200px) {
-    .dialogawp-builder-container {
+    .dialoga-builder-container {
         min-height: 620px !important;
     }
 }
 
 @media (max-width: 782px) {
-    .dialogawp-builder-list-actions {
+    .dialoga-builder-list-actions {
         flex-wrap: wrap;
     }
 
-    .dialogawp-flows-table {
+    .dialoga-flows-table {
         min-width: 640px;
     }
 
-    .dialogawp-visibility-controls {
+    .dialoga-visibility-controls {
         width: 100%;
         margin-left: 0;
         padding-left: 0;
         border-left: 0;
     }
 
-    .dialogawp-visibility-controls select {
+    .dialoga-visibility-controls select {
         flex: 1;
         min-width: 0;
     }

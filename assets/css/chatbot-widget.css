@@ -1,10 +1,10 @@
 ﻿/**
- * DIALOGAWP Chat Widget - Frontend Styles
+ * DIALOGA Chat Widget - Frontend Styles
  * Modern chat bubble interface
  */
 
 /* Widget Container */
-.dialogawp-widget {
+.dialoga-widget {
     position: fixed;
     bottom: 20px;
     right: 20px;
@@ -12,30 +12,30 @@
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
 
     /* Color theme — overridden by JS using the primary_color setting */
-    --dialogawp-primary:          #190F4F;
-    --dialogawp-primary-dark:     #110A38;
-    --dialogawp-primary-contrast: #FFFFFF;
-    --dialogawp-secondary:        #00ADA1;
-    --dialogawp-accent:           #FD6A4D;
-    --dialogawp-panel:            #F7F8FC;
-    --dialogawp-text:             #26233A;
-    --dialogawp-border:           #E5E7EF;
+    --dialoga-primary:          #190F4F;
+    --dialoga-primary-dark:     #110A38;
+    --dialoga-primary-contrast: #FFFFFF;
+    --dialoga-secondary:        #00ADA1;
+    --dialoga-accent:           #FD6A4D;
+    --dialoga-panel:            #F7F8FC;
+    --dialoga-text:             #26233A;
+    --dialoga-border:           #E5E7EF;
 }
 
 /* Bottom-left position — flip horizontal anchor */
-.dialogawp-widget.dialogawp-widget--bottom-left {
+.dialoga-widget.dialoga-widget--bottom-left {
     right: auto;
     left: 20px;
 }
 
 /* Chat Bubble (Closed State) — v0.38.19: bigger default + size variants */
-.dialogawp-bubble {
+.dialoga-bubble {
     /* Default (medium) — visitor size-picker in Settings can override */
-    --dialogawp-bubble-size: 68px;
-    width: var(--dialogawp-bubble-size);
-    height: var(--dialogawp-bubble-size);
+    --dialoga-bubble-size: 68px;
+    width: var(--dialoga-bubble-size);
+    height: var(--dialoga-bubble-size);
     border-radius: 50%;
-    background: var(--dialogawp-primary);
+    background: var(--dialoga-primary);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -44,15 +44,15 @@
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     position: relative;
 }
-.dialogawp-bubble--size-sm { --dialogawp-bubble-size: 56px; }
-.dialogawp-bubble--size-md { --dialogawp-bubble-size: 68px; }
-.dialogawp-bubble--size-lg { --dialogawp-bubble-size: 80px; }
-.dialogawp-bubble svg {
-    width: calc(var(--dialogawp-bubble-size) * 0.38);
-    height: calc(var(--dialogawp-bubble-size) * 0.38);
+.dialoga-bubble--size-sm { --dialoga-bubble-size: 56px; }
+.dialoga-bubble--size-md { --dialoga-bubble-size: 68px; }
+.dialoga-bubble--size-lg { --dialoga-bubble-size: 80px; }
+.dialoga-bubble svg {
+    width: calc(var(--dialoga-bubble-size) * 0.38);
+    height: calc(var(--dialoga-bubble-size) * 0.38);
 }
 
-.dialogawp-bubble:hover {
+.dialoga-bubble:hover {
     transform: scale(1.08);
     box-shadow: 0 10px 26px rgba(0, 0, 0, 0.22);
 }
@@ -60,7 +60,7 @@
 /* Unread badge — v0.38.19. Shows a small red circle with a count on the
    top-right of the bubble on first visit. Vanishes once the bubble is
    opened (localStorage flag prevents it from reappearing). */
-.dialogawp-bubble__badge {
+.dialoga-bubble__badge {
     position: absolute;
     top: -4px;
     right: -4px;
@@ -78,10 +78,10 @@
     border: 2px solid #fff;
     box-shadow: 0 2px 6px rgba(239, 68, 68, 0.5);
     pointer-events: none;
-    animation: dialogawp-badge-pop 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.3) both;
+    animation: dialoga-badge-pop 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.3) both;
     animation-delay: 0.5s;
 }
-@keyframes dialogawp-badge-pop {
+@keyframes dialoga-badge-pop {
     from { opacity: 0; transform: scale(0.4); }
     to   { opacity: 1; transform: scale(1); }
 }
@@ -89,63 +89,63 @@
 /* Periodic attention bounce — v0.38.19. Fires every 30s until the visitor
    engages. Small vertical hop, keeps the bubble in peripheral vision without
    being loud. */
-@keyframes dialogawp-bubble-bounce {
+@keyframes dialoga-bubble-bounce {
     0%, 100% { transform: translateY(0); }
     30%      { transform: translateY(-8px); }
     45%      { transform: translateY(0); }
     60%      { transform: translateY(-4px); }
     75%      { transform: translateY(0); }
 }
-.dialogawp-bubble--bounce {
-    animation: dialogawp-bubble-bounce 0.9s ease-in-out;
+.dialoga-bubble--bounce {
+    animation: dialoga-bubble-bounce 0.9s ease-in-out;
 }
 
 /* Nudge animation — ripple ring + gentle pulse */
-@keyframes dialogawp-nudge-pulse {
+@keyframes dialoga-nudge-pulse {
     0%, 100% { transform: scale(1); }
     50%       { transform: scale(1.08); }
 }
 
-@keyframes dialogawp-nudge-ripple {
+@keyframes dialoga-nudge-ripple {
     0%   { transform: scale(1);   opacity: 0.55; }
     100% { transform: scale(2.4); opacity: 0; }
 }
 
-.dialogawp-bubble--nudge {
+.dialoga-bubble--nudge {
     /* Delay matches the legacy JS timing so the bubble pulses 3s after load,
        giving the visitor a moment to read the page first. */
-    animation: dialogawp-nudge-pulse 2.2s ease-in-out 3s infinite;
+    animation: dialoga-nudge-pulse 2.2s ease-in-out 3s infinite;
 }
 
-.dialogawp-bubble--nudge::before {
+.dialoga-bubble--nudge::before {
     content: '';
     position: absolute;
     inset: 0;
     border-radius: 50%;
-    background: var(--dialogawp-primary);
-    animation: dialogawp-nudge-ripple 2.2s ease-out 3s infinite;
+    background: var(--dialoga-primary);
+    animation: dialoga-nudge-ripple 2.2s ease-out 3s infinite;
     z-index: -1;
 }
 
-.dialogawp-bubble--nudge:hover {
+.dialoga-bubble--nudge:hover {
     animation-play-state: paused;
 }
 
-.dialogawp-bubble--nudge:hover::before {
+.dialoga-bubble--nudge:hover::before {
     animation-play-state: paused;
 }
 
-.dialogawp-bubble svg {
+.dialoga-bubble svg {
     width: 28px;
     height: 28px;
 }
 
-.dialogawp-bubble-text {
+.dialoga-bubble-text {
     display: none;
 }
 
 /* Chat Window (Expanded State) */
-.dialogawp-window {
+.dialoga-window {
     width: 380px;
     height: 600px;
     max-height: calc(100vh - 100px);
@@ -158,28 +158,28 @@
 }
 
 /* Header */
-.dialogawp-header {
-    background: var(--dialogawp-primary);
-    color: var(--dialogawp-primary-contrast);
+.dialoga-header {
+    background: var(--dialoga-primary);
+    color: var(--dialoga-primary-contrast);
     padding: 16px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.dialogawp-header-title strong {
+.dialoga-header-title strong {
     font-size: 16px;
     display: block;
 }
 
-.dialogawp-header-status {
+.dialoga-header-status {
     font-size: 12px;
     opacity: 0.9;
     display: block;
     margin-top: 2px;
 }
 
-.dialogawp-close-btn {
+.dialoga-close-btn {
     background: transparent;
     border: none;
     cursor: pointer;
@@ -191,14 +191,14 @@
     transition: background 0.2s;
 }
 
-.dialogawp-close-btn:hover {
+.dialoga-close-btn:hover {
     background: rgba(255, 255, 255, 0.1);
 }
 
 /* Preview message bubble (v0.38.10) — server-rendered, CSS-animation revealed
    after a configurable delay (animation-delay set inline). Works even when
    page-speed plugins defer JS, because no JS is required to show it. */
-.dialogawp-preview-message {
+.dialoga-preview-message {
     position: absolute;
     bottom: 78px;
     right: 0;
@@ -220,23 +220,23 @@
     transform: translateY(8px) scale(0.96);
     pointer-events: none;
 
-    animation: dialogawp-preview-reveal 0.45s cubic-bezier(.2,.9,.3,1.2) forwards;
+    animation: dialoga-preview-reveal 0.45s cubic-bezier(.2,.9,.3,1.2) forwards;
     /* animation-delay is set inline per the Settings → Engagement → "Show after" value */
 }
-@keyframes dialogawp-preview-reveal {
+@keyframes dialoga-preview-reveal {
     0%   { opacity: 0; transform: translateY(8px) scale(0.96); pointer-events: none; }
     99%  { pointer-events: none; }
     100% { opacity: 1; transform: translateY(0)   scale(1);    pointer-events: auto; }
 }
-.dialogawp-widget.dialogawp-widget--bottom-left .dialogawp-preview-message {
+.dialoga-widget.dialoga-widget--bottom-left .dialoga-preview-message {
     right: auto;
     left: 0;
     border-radius: 12px 12px 12px 4px;
 }
-.dialogawp-preview-text {
+.dialoga-preview-text {
     pointer-events: none;
 }
-.dialogawp-preview-close {
+.dialoga-preview-close {
     position: absolute;
     top: 4px;
     right: 4px;
@@ -251,28 +251,28 @@
     border-radius: 50%;
     transition: background 0.15s, color 0.15s;
 }
-.dialogawp-preview-close:hover {
+.dialoga-preview-close:hover {
     background: #F7F8FC;
     color: #1f2937;
 }
 
 /* Header action group + icon buttons (v0.38.7+) — bulletproof against
    site themes AND wp-admin-bar styles that bleed into the front-end when
-   an admin is logged in. Uses #dialogawp-widget for max specificity + redeclares
+   an admin is logged in. Uses #dialoga-widget for max specificity + redeclares
    every property an admin-side stylesheet might override. */
-#dialogawp-widget .dialogawp-window .dialogawp-header-actions {
+#dialoga-widget .dialoga-window .dialoga-header-actions {
     display: flex !important;
     align-items: center !important;
     gap: 2px !important;
     flex-shrink: 0 !important;
     flex-wrap: nowrap !important;
 }
-#dialogawp-widget .dialogawp-window button.dialogawp-header-icon-btn,
-#dialogawp-widget .dialogawp-window button.dialogawp-close-btn {
+#dialoga-widget .dialoga-window button.dialoga-header-icon-btn,
+#dialoga-widget .dialoga-window button.dialoga-close-btn {
     background: transparent !important;
     background-color: transparent !important;
     background-image: none !important;
-    color: var(--dialogawp-primary-contrast) !important;
+    color: var(--dialoga-primary-contrast) !important;
     border: 0 !important;
     border-color: transparent !important;
     box-shadow: none !important;
@@ -303,22 +303,22 @@
     -moz-appearance: none !important;
     transition: background 0.2s ease, transform 0.3s ease, opacity 0.2s ease !important;
 }
-#dialogawp-widget .dialogawp-window button.dialogawp-header-icon-btn {
+#dialoga-widget .dialoga-window button.dialoga-header-icon-btn {
     opacity: 0.85 !important;
 }
-#dialogawp-widget .dialogawp-window button.dialogawp-header-icon-btn:hover,
-#dialogawp-widget .dialogawp-window button.dialogawp-header-icon-btn:focus,
-#dialogawp-widget .dialogawp-window button.dialogawp-close-btn:hover,
-#dialogawp-widget .dialogawp-window button.dialogawp-close-btn:focus {
+#dialoga-widget .dialoga-window button.dialoga-header-icon-btn:hover,
+#dialoga-widget .dialoga-window button.dialoga-header-icon-btn:focus,
+#dialoga-widget .dialoga-window button.dialoga-close-btn:hover,
+#dialoga-widget .dialoga-window button.dialoga-close-btn:focus {
     background: rgba(255, 255, 255, 0.18) !important;
     opacity: 1 !important;
     outline: none !important;
 }
-#dialogawp-widget .dialogawp-window button.dialogawp-header-icon-btn:hover {
+#dialoga-widget .dialoga-window button.dialoga-header-icon-btn:hover {
     transform: rotate(-90deg) !important;
 }
-#dialogawp-widget .dialogawp-window button.dialogawp-header-icon-btn svg,
-#dialogawp-widget .dialogawp-window button.dialogawp-close-btn svg {
+#dialoga-widget .dialoga-window button.dialoga-header-icon-btn svg,
+#dialoga-widget .dialoga-window button.dialoga-close-btn svg {
     display: block !important;
     width: 16px !important;
     height: 16px !important;
@@ -326,7 +326,7 @@
 }
 
 /* Messages Container */
-.dialogawp-messages {
+.dialoga-messages {
     flex: 1;
     overflow-y: auto;
     padding: 20px;
@@ -334,24 +334,24 @@
 }
 
 /* Message Bubbles */
-.dialogawp-message {
+.dialoga-message {
     margin-bottom: 16px;
     display: flex;
 }
 
-.dialogawp-bot-message {
+.dialoga-bot-message {
     justify-content: flex-start;
 }
 
-.dialogawp-user-message {
+.dialoga-user-message {
     justify-content: flex-end;
 }
 
-.dialogawp-message-content {
+.dialoga-message-content {
     max-width: 75%;
 }
 
-.dialogawp-message-text {
+.dialoga-message-text {
     padding: 12px 16px;
     border-radius: 18px;
     font-size: 14px;
@@ -359,20 +359,20 @@
     word-wrap: break-word;
 }
 
-.dialogawp-bot-message .dialogawp-message-text {
+.dialoga-bot-message .dialoga-message-text {
     background: #fff;
     color: #333;
     border-bottom-left-radius: 4px;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
 }
 
-.dialogawp-user-message .dialogawp-message-text {
-    background: var(--dialogawp-primary);
-    color: var(--dialogawp-primary-contrast);
+.dialoga-user-message .dialoga-message-text {
+    background: var(--dialoga-primary);
+    color: var(--dialoga-primary-contrast);
     border-bottom-right-radius: 4px;
 }
 
-.dialogawp-message-time {
+.dialoga-message-time {
     font-size: 11px;
     color: #999;
     margin-top: 4px;
@@ -380,7 +380,7 @@
 }
 
 /* Typing Indicator */
-.dialogawp-typing {
+.dialoga-typing {
     display: flex;
     align-items: center;
     padding: 12px 16px;
@@ -391,24 +391,24 @@
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
 }
 
-.dialogawp-typing span {
+.dialoga-typing span {
     width: 8px;
     height: 8px;
     border-radius: 50%;
     background: #ccc;
     margin: 0 2px;
-    animation: dialogawp-typing-bounce 1.4s infinite;
+    animation: dialoga-typing-bounce 1.4s infinite;
 }
 
-.dialogawp-typing span:nth-child(2) {
+.dialoga-typing span:nth-child(2) {
     animation-delay: 0.2s;
 }
 
-.dialogawp-typing span:nth-child(3) {
+.dialoga-typing span:nth-child(3) {
     animation-delay: 0.4s;
 }
 
-@keyframes dialogawp-typing-bounce {
+@keyframes dialoga-typing-bounce {
     0%, 60%, 100% {
         transform: translateY(0);
     }
@@ -418,7 +418,7 @@
 }
 
 /* Input Area */
-.dialogawp-input-area {
+.dialoga-input-area {
     padding: 16px;
     background: #fff;
     border-top: 1px solid #E5E7EF;
@@ -429,18 +429,18 @@
    patterns (CAASI/WellnessLiving reference design). Pills are outlined
    in the brand color with a light hover fill instead of the earlier
    inverted-color fill. */
-.dialogawp-buttons {
+.dialoga-buttons {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
     padding: 4px 0;
 }
 
-.dialogawp-button {
+.dialoga-button {
     padding: 8px 18px;
     background: #fff;
-    border: 1.5px solid var(--dialogawp-primary);
-    color: var(--dialogawp-primary);
+    border: 1.5px solid var(--dialoga-primary);
+    color: var(--dialoga-primary);
     border-radius: 999px;
     font-size: 13px;
     font-weight: 500;
@@ -454,27 +454,27 @@
     text-overflow: ellipsis;
 }
 
-.dialogawp-button:hover {
-    background: color-mix(in srgb, var(--dialogawp-primary) 8%, #fff);
-    color: var(--dialogawp-primary);
-    border-color: var(--dialogawp-primary);
+.dialoga-button:hover {
+    background: color-mix(in srgb, var(--dialoga-primary) 8%, #fff);
+    color: var(--dialoga-primary);
+    border-color: var(--dialoga-primary);
     transform: translateY(-1px);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
-.dialogawp-button:active {
+.dialoga-button:active {
     transform: translateY(0);
-    background: color-mix(in srgb, var(--dialogawp-primary) 15%, #fff);
+    background: color-mix(in srgb, var(--dialoga-primary) 15%, #fff);
 }
 
 /* Text Input */
-.dialogawp-text-input-container {
+.dialoga-text-input-container {
     display: flex;
     gap: 8px;
     align-items: center;
 }
 
-.dialogawp-text-input {
+.dialoga-text-input {
     flex: 1;
     padding: 12px 16px;
     border: 2px solid #E5E7EF;
@@ -484,20 +484,20 @@
     transition: border-color 0.2s;
 }
 
-.dialogawp-text-input:focus {
-    border-color: var(--dialogawp-primary);
+.dialoga-text-input:focus {
+    border-color: var(--dialoga-primary);
 }
 
-.dialogawp-send-btn {
+.dialoga-send-btn {
     width: 40px !important;
     min-width: 40px !important;
     max-width: 40px !important;
     height: 40px !important;
     flex: 0 0 40px;
     border-radius: 50% !important;
-    background: var(--dialogawp-primary) !important;
+    background: var(--dialoga-primary) !important;
     border: none !important;
-    color: var(--dialogawp-primary-contrast) !important;
+    color: var(--dialoga-primary-contrast) !important;
     cursor: pointer;
     display: flex !important;
     align-items: center !important;
@@ -508,34 +508,34 @@
     overflow: visible;
 }
 
-.dialogawp-send-btn svg {
+.dialoga-send-btn svg {
     display: block !important;
     width: 20px !important;
     height: 20px !important;
     flex-shrink: 0;
 }
 
-.dialogawp-send-btn svg path {
+.dialoga-send-btn svg path {
     fill: currentColor !important;
 }
 
-.dialogawp-send-btn:hover {
-    background: var(--dialogawp-primary-dark) !important;
+.dialoga-send-btn:hover {
+    background: var(--dialoga-primary-dark) !important;
     transform: scale(1.05);
 }
 
-.dialogawp-send-btn:active {
+.dialoga-send-btn:active {
     transform: scale(0.95);
 }
 
-.dialogawp-multi-select {
+.dialoga-multi-select {
     display: flex;
     flex-direction: column;
     gap: 8px;
     padding: 4px 0;
 }
 
-.dialogawp-multi-option {
+.dialoga-multi-option {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -550,34 +550,34 @@
     user-select: none;
 }
 
-.dialogawp-multi-option:hover {
-    border-color: var(--dialogawp-primary);
+.dialoga-multi-option:hover {
+    border-color: var(--dialoga-primary);
     background: #fafbff;
 }
 
-.dialogawp-multi-option input[type="checkbox"] {
+.dialoga-multi-option input[type="checkbox"] {
     width: 16px;
     height: 16px;
-    accent-color: var(--dialogawp-primary);
+    accent-color: var(--dialoga-primary);
     cursor: pointer;
     margin: 0;
 }
 
-.dialogawp-multi-continue {
+.dialoga-multi-continue {
     margin-top: 8px;
     align-self: stretch;
 }
 
-.dialogawp-multi-continue:disabled {
+.dialoga-multi-continue:disabled {
     opacity: 0.5;
     cursor: not-allowed;
 }
 
-.dialogawp-restart-btn {
+.dialoga-restart-btn {
     width: 100%;
     padding: 12px 16px;
-    background: var(--dialogawp-primary);
-    color: var(--dialogawp-primary-contrast);
+    background: var(--dialoga-primary);
+    color: var(--dialoga-primary-contrast);
     border: none;
     border-radius: 24px;
     font-size: 14px;
@@ -589,37 +589,37 @@
     transition: all 0.2s;
 }
 
-.dialogawp-restart-btn:hover {
-    background: var(--dialogawp-primary-dark);
+.dialoga-restart-btn:hover {
+    background: var(--dialoga-primary-dark);
     transform: translateY(-1px);
 }
 
-.dialogawp-restart-btn:active {
+.dialoga-restart-btn:active {
     transform: translateY(0);
 }
 
 /* Mobile Responsive — bottom-sheet pattern */
 @media (max-width: 480px) {
-    .dialogawp-widget {
+    .dialoga-widget {
         bottom: 0;
         right: 0;
         left: 0;
     }
 
-    .dialogawp-bubble {
+    .dialoga-bubble {
         bottom: 20px;
         right: 20px;
         position: fixed;
     }
 
-    .dialogawp-widget.dialogawp-widget--bottom-left .dialogawp-bubble {
+    .dialoga-widget.dialoga-widget--bottom-left .dialoga-bubble {
         right: auto;
         left: 20px;
     }
 
     /* Bottom-sheet: 85% of *dynamic* viewport so mobile browser toolbars don't
        crop the top of the window. Falls back to vh on browsers that ignore dvh. */
-    .dialogawp-window {
+    .dialoga-window {
         position: fixed;
         bottom: 0;
         left: 0;
@@ -636,7 +636,7 @@
     }
 
     /* Ensure the message scroll container actually grows + scrolls inside the sheet */
-    .dialogawp-messages {
+    .dialoga-messages {
         flex: 1 1 auto;
         min-height: 0;
         overflow-y: auto;
@@ -645,29 +645,29 @@
 
     /* Input area: keep visible even when empty so the user always knows where
        input would appear; ensure it doesn't shrink when messages overflow */
-    .dialogawp-input-area {
+    .dialoga-input-area {
         flex-shrink: 0;
     }
-    .dialogawp-branding {
+    .dialoga-branding {
         flex-shrink: 0;
     }
 }
 
 /* Scrollbar Styling */
-.dialogawp-messages::-webkit-scrollbar {
+.dialoga-messages::-webkit-scrollbar {
     width: 6px;
 }
 
-.dialogawp-messages::-webkit-scrollbar-track {
+.dialoga-messages::-webkit-scrollbar-track {
     background: transparent;
 }
 
-.dialogawp-messages::-webkit-scrollbar-thumb {
+.dialoga-messages::-webkit-scrollbar-thumb {
     background: #cbd5e0;
     border-radius: 3px;
 }
 
-.dialogawp-messages::-webkit-scrollbar-thumb:hover {
+.dialoga-messages::-webkit-scrollbar-thumb:hover {
     background: #a0aec0;
 }
 
@@ -676,15 +676,15 @@
    ============================================ */
 
 /* Lead Capture Form */
-.dialogawp-lead-form {
+.dialoga-lead-form {
     padding: 10px 0;
 }
 
-.dialogawp-form-field {
+.dialoga-form-field {
     margin-bottom: 15px;
 }
 
-.dialogawp-form-field label {
+.dialoga-form-field label {
     display: block;
     font-size: 13px;
     font-weight: 500;
@@ -692,12 +692,12 @@
     margin-bottom: 5px;
 }
 
-.dialogawp-required {
+.dialoga-required {
     color: #d32f2f;
     margin-left: 2px;
 }
 
-.dialogawp-form-input {
+.dialoga-form-input {
     width: 100%;
     padding: 10px 12px;
     border: 1px solid #E5E7EF;
@@ -708,27 +708,27 @@
     box-sizing: border-box;
 }
 
-.dialogawp-form-input:focus {
+.dialoga-form-input:focus {
     outline: none;
-    border-color: var(--dialogawp-primary, #190F4F);
+    border-color: var(--dialoga-primary, #190F4F);
     box-shadow: 0 0 0 2px rgba(0, 125, 117, 0.18);
 }
 
-.dialogawp-form-input.dialogawp-input-error {
+.dialoga-form-input.dialoga-input-error {
     border-color: #d32f2f;
     background-color: #ffebee;
 }
 
-.dialogawp-form-input.dialogawp-input-error:focus {
+.dialoga-form-input.dialoga-input-error:focus {
     border-color: #d32f2f;
     box-shadow: 0 0 0 2px rgba(211, 47, 47, 0.1);
 }
 
-.dialogawp-submit-lead-btn {
+.dialoga-submit-lead-btn {
     width: 100%;
     padding: 12px 20px;
-    background-color: var(--dialogawp-primary, #190F4F);
-    color: var(--dialogawp-primary-contrast);
+    background-color: var(--dialoga-primary, #190F4F);
+    color: var(--dialoga-primary-contrast);
     border: none;
     border-radius: 4px;
     font-size: 15px;
@@ -738,30 +738,30 @@
     margin-top: 5px;
 }
 
-.dialogawp-submit-lead-btn:hover {
-    background-color: var(--dialogawp-primary-dark, #110A38);
+.dialoga-submit-lead-btn:hover {
+    background-color: var(--dialoga-primary-dark, #110A38);
 }
 
-.dialogawp-submit-lead-btn:active {
+.dialoga-submit-lead-btn:active {
     transform: translateY(1px);
 }
 
-.dialogawp-submit-lead-btn:disabled {
+.dialoga-submit-lead-btn:disabled {
     opacity: 0.6;
     cursor: not-allowed;
 }
 
 /* v0.39.4 — Link Button (renderLinkButton). Rendered in the input area so it
    feels like a prominent CTA at the end of a flow. Anchor tag, opens in target. */
-.dialogawp-link-button {
+.dialoga-link-button {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
     width: 100%;
     padding: 14px 20px;
-    background-color: var(--dialogawp-primary, #190F4F);
-    color: var(--dialogawp-primary-contrast) !important;
+    background-color: var(--dialoga-primary, #190F4F);
+    color: var(--dialoga-primary-contrast) !important;
     text-decoration: none !important;
     font-size: 15px;
     font-weight: 600;
@@ -773,55 +773,55 @@
     transition: background-color 0.2s, transform 0.15s, box-shadow 0.2s;
     cursor: pointer;
 }
-.dialogawp-link-button:hover {
-    background-color: var(--dialogawp-primary-dark, #110A38);
+.dialoga-link-button:hover {
+    background-color: var(--dialoga-primary-dark, #110A38);
     box-shadow: 0 4px 12px rgba(0,0,0,0.14);
     transform: translateY(-1px);
-    color: var(--dialogawp-primary-contrast) !important;
+    color: var(--dialoga-primary-contrast) !important;
     text-decoration: none !important;
 }
-.dialogawp-link-button:active {
+.dialoga-link-button:active {
     transform: translateY(0);
     box-shadow: 0 1px 3px rgba(0,0,0,0.10);
 }
-.dialogawp-link-button__arrow {
+.dialoga-link-button__arrow {
     display: inline-block;
     transition: transform 0.15s;
     font-weight: 700;
 }
-.dialogawp-link-button:hover .dialogawp-link-button__arrow {
+.dialoga-link-button:hover .dialoga-link-button__arrow {
     transform: translateX(3px);
 }
 
 /* Redirect Messages */
-.dialogawp-redirect-message {
+.dialoga-redirect-message {
     padding: 15px;
     text-align: center;
 }
 
-.dialogawp-redirect-message p {
+.dialoga-redirect-message p {
     margin: 0 0 10px 0;
     font-size: 14px;
     color: #333;
 }
 
-.dialogawp-redirect-message p:last-child {
+.dialoga-redirect-message p:last-child {
     margin-bottom: 0;
 }
 
 /* Countdown without message (v0.29.1) */
-.dialogawp-redirect-countdown {
+.dialoga-redirect-countdown {
     padding: 15px;
     text-align: center;
 }
 
-.dialogawp-countdown {
+.dialoga-countdown {
     font-weight: 600;
-    color: var(--dialogawp-primary, #190F4F);
+    color: var(--dialoga-primary, #190F4F);
     font-size: 16px;
 }
 
-.dialogawp-countdown span {
+.dialoga-countdown span {
     font-size: 20px;
     font-weight: 700;
 }
@@ -836,32 +836,32 @@
     }
 }
 
-.dialogawp-countdown span {
+.dialoga-countdown span {
     display: inline-block;
     animation: pulse 1s infinite;
 }
 
 /* Mobile responsive adjustments */
 @media (max-width: 480px) {
-    .dialogawp-form-input {
+    .dialoga-form-input {
         font-size: 16px; /* Prevent zoom on iOS */
     }
     
-    .dialogawp-submit-lead-btn {
+    .dialoga-submit-lead-btn {
         padding: 14px 20px;
         font-size: 16px; /* Prevent zoom on iOS */
     }
 }
 
 /* Accessibility improvements */
-.dialogawp-form-input:focus,
-.dialogawp-submit-lead-btn:focus {
-    outline: 2px solid var(--dialogawp-primary, #190F4F);
+.dialoga-form-input:focus,
+.dialoga-submit-lead-btn:focus {
+    outline: 2px solid var(--dialoga-primary, #190F4F);
     outline-offset: 2px;
 }
 
 /* Loading state for submit button */
-.dialogawp-submit-lead-btn:disabled::after {
+.dialoga-submit-lead-btn:disabled::after {
     content: '...';
     animation: ellipsis 1.5s infinite;
 }
@@ -876,10 +876,10 @@
 
 /* v0.42.0 — Unified footer bar: Reset (left) + Powered by (right),
    sitting BELOW the message input as a single horizontal bar. Replaces
-   the earlier stand-alone `.dialogawp-branding` div + the header-mounted
+   the earlier stand-alone `.dialoga-branding` div + the header-mounted
    restart button. Matches the CAASI/WellnessLiving reference layout
    admins consistently expect from a modern chatbot. */
-.dialogawp-footer-bar {
+.dialoga-footer-bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -892,7 +892,7 @@
     flex-shrink: 0;
 }
 
-.dialogawp-footer-reset {
+.dialoga-footer-reset {
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -910,12 +910,12 @@
     line-height: 1;
 }
 
-.dialogawp-footer-reset:hover {
+.dialoga-footer-reset:hover {
     color: #26233A;
     background: #f1f5f9;
 }
 
-.dialogawp-footer-reset svg {
+.dialoga-footer-reset svg {
     width: 14px;
     height: 14px;
     stroke: currentColor;
@@ -925,17 +925,17 @@
 }
 
 /* Branding footer link (right side of the bar). Free shows "powered by
-   DialogaWP" with a small logo; Pro can override text + URL via a filter
-   for white-label agencies. See DIALOGAWP_PRO_Widget_Branding for the Pro
+   Dialoga" with a small logo; Pro can override text + URL via a filter
+   for white-label agencies. See DIALOGA_PRO_Widget_Branding for the Pro
    extension. */
-.dialogawp-branding {
+.dialoga-branding {
     line-height: 1;
     text-align: right;
     display: inline-flex;
     align-items: center;
 }
 
-.dialogawp-branding a {
+.dialoga-branding a {
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -948,13 +948,13 @@
     font-weight: 500;
 }
 
-.dialogawp-branding a:hover {
+.dialoga-branding a:hover {
     color: #475569;
 }
 
-.dialogawp-branding-logo {
+.dialoga-branding-logo {
     /* v0.42.3 — height-only sizing so the logo's natural aspect ratio is
-       preserved (the DialogaWP wordmark is wider than tall — forcing it into
+       preserved (the Dialoga wordmark is wider than tall — forcing it into
        a square was letterboxing it). max-width is a defensive guard for
        Pro users who upload custom logos with unusual aspect ratios. */
     height: 24px;
@@ -966,14 +966,14 @@
 }
 
 /* AI Chat — Connect with our team button */
-.dialogawp-connect-btn {
+.dialoga-connect-btn {
     display: block;
     width: 100%;
     margin-top: 8px;
     padding: 10px 16px;
     background: transparent;
-    border: 2px solid var(--dialogawp-primary, #190F4F);
-    color: var(--dialogawp-primary, #190F4F);
+    border: 2px solid var(--dialoga-primary, #190F4F);
+    color: var(--dialoga-primary, #190F4F);
     border-radius: 8px;
     font-size: 14px;
     font-weight: 500;
@@ -982,24 +982,24 @@
     transition: all 0.2s;
 }
 
-.dialogawp-connect-btn:hover {
-    background: var(--dialogawp-primary, #190F4F);
-    color: var(--dialogawp-primary-contrast);
+.dialoga-connect-btn:hover {
+    background: var(--dialoga-primary, #190F4F);
+    color: var(--dialoga-primary-contrast);
 }
 
 /* ==========================================================================
    Survey Form
    ========================================================================== */
 
-.dialogawp-survey-form {
+.dialoga-survey-form {
     padding: 4px 0;
 }
 
-.dialogawp-survey-question {
+.dialoga-survey-question {
     margin-bottom: 16px;
 }
 
-.dialogawp-survey-label {
+.dialoga-survey-label {
     display: block;
     font-size: 13px;
     font-weight: 600;
@@ -1008,12 +1008,12 @@
 }
 
 /* Rating stars */
-.dialogawp-survey-rating {
+.dialoga-survey-rating {
     display: flex;
     gap: 4px;
 }
 
-.dialogawp-survey-star {
+.dialoga-survey-star {
     width: 36px;
     height: 36px;
     border: 1px solid #E5E7EF;
@@ -1026,21 +1026,21 @@
     padding: 0;
 }
 
-.dialogawp-survey-star:hover,
-.dialogawp-survey-star.selected {
+.dialoga-survey-star:hover,
+.dialoga-survey-star.selected {
     color: #F59E0B;
     border-color: #F59E0B;
     background: #FFFBEB;
 }
 
 /* NPS scale */
-.dialogawp-survey-nps {
+.dialoga-survey-nps {
     display: flex;
     flex-wrap: wrap;
     gap: 4px;
 }
 
-.dialogawp-survey-nps-btn {
+.dialoga-survey-nps-btn {
     width: 28px;
     height: 28px;
     border: 1px solid #E5E7EF;
@@ -1054,14 +1054,14 @@
     padding: 0;
 }
 
-.dialogawp-survey-nps-btn:hover,
-.dialogawp-survey-nps-btn.selected {
-    background: var(--dialogawp-primary, #190F4F);
-    color: var(--dialogawp-primary-contrast);
-    border-color: var(--dialogawp-primary, #190F4F);
+.dialoga-survey-nps-btn:hover,
+.dialoga-survey-nps-btn.selected {
+    background: var(--dialoga-primary, #190F4F);
+    color: var(--dialoga-primary-contrast);
+    border-color: var(--dialoga-primary, #190F4F);
 }
 
-.dialogawp-survey-nps-labels {
+.dialoga-survey-nps-labels {
     display: flex;
     justify-content: space-between;
     width: 100%;
@@ -1071,13 +1071,13 @@
 }
 
 /* Choice buttons */
-.dialogawp-survey-choices {
+.dialoga-survey-choices {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
 }
 
-.dialogawp-survey-choice-btn {
+.dialoga-survey-choice-btn {
     padding: 6px 14px;
     border: 1px solid #E5E7EF;
     border-radius: 20px;
@@ -1088,15 +1088,15 @@
     transition: all 0.15s;
 }
 
-.dialogawp-survey-choice-btn:hover,
-.dialogawp-survey-choice-btn.selected {
-    background: var(--dialogawp-primary, #190F4F);
-    color: var(--dialogawp-primary-contrast);
-    border-color: var(--dialogawp-primary, #190F4F);
+.dialoga-survey-choice-btn:hover,
+.dialoga-survey-choice-btn.selected {
+    background: var(--dialoga-primary, #190F4F);
+    color: var(--dialoga-primary-contrast);
+    border-color: var(--dialoga-primary, #190F4F);
 }
 
 /* Text input */
-.dialogawp-survey-text {
+.dialoga-survey-text {
     width: 100%;
     padding: 8px 12px;
     border: 1px solid #E5E7EF;
@@ -1109,12 +1109,12 @@
     transition: border-color 0.15s;
 }
 
-.dialogawp-survey-text:focus {
-    border-color: var(--dialogawp-primary, #190F4F);
+.dialoga-survey-text:focus {
+    border-color: var(--dialoga-primary, #190F4F);
 }
 
 /* Submit button */
-.dialogawp-survey-submit {
+.dialoga-survey-submit {
     margin-top: 8px;
     width: 100%;
 }

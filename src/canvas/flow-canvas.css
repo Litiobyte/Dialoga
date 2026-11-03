@@ -1,25 +1,25 @@
-.dialogawp-rf-canvas,
-.dialogawp-rf-canvas .react-flow {
+.dialoga-rf-canvas,
+.dialoga-rf-canvas .react-flow {
     width: 100%;
     height: 100%;
     min-height: 400px;
 }
 
-.dialogawp-rf-canvas {
+.dialoga-rf-canvas {
     position: relative;
     overflow: hidden;
     background: #F7F8FC;
 }
 
-.dialogawp-builder-wrap .react-flow__pane {
+.dialoga-builder-wrap .react-flow__pane {
     cursor: grab;
 }
 
-.dialogawp-builder-wrap .react-flow__pane.dragging {
+.dialoga-builder-wrap .react-flow__pane.dragging {
     cursor: grabbing;
 }
 
-.dialogawp-rf-node {
+.dialoga-rf-node {
     position: relative;
     min-width: 200px;
     max-width: 260px;
@@ -32,12 +32,12 @@
     transition: border-color 0.15s, box-shadow 0.15s;
 }
 
-.dialogawp-rf-node.is-selected {
+.dialoga-rf-node.is-selected {
     border-color: #00ADA1;
     box-shadow: 0 0 0 3px rgba(0, 173, 161, 0.22), 0 6px 18px rgba(25, 15, 79, 0.16);
 }
 
-.dialogawp-rf-node-type {
+.dialoga-rf-node-type {
     margin-bottom: 8px;
     color: var(--node-text);
     font-size: 10px;
@@ -46,7 +46,7 @@
     text-transform: uppercase;
 }
 
-.dialogawp-rf-node-label {
+.dialoga-rf-node-label {
     overflow: hidden;
     color: #26233A;
     font-size: 13px;
@@ -54,20 +54,20 @@
     text-overflow: ellipsis;
 }
 
-.dialogawp-builder-wrap .react-flow__handle {
+.dialoga-builder-wrap .react-flow__handle {
     width: 12px;
     height: 12px;
     border: 2px solid #FFFFFF;
     background: var(--node-border, #00ADA1);
 }
 
-.dialogawp-builder-wrap .react-flow__handle.connectingfrom,
-.dialogawp-builder-wrap .react-flow__handle.connectingto {
+.dialoga-builder-wrap .react-flow__handle.connectingfrom,
+.dialoga-builder-wrap .react-flow__handle.connectingto {
     background: #FD6A4D;
     box-shadow: 0 0 0 4px rgba(253, 106, 77, 0.25);
 }
 
-.dialogawp-rf-node .dialogawp-node-delete {
+.dialoga-rf-node .dialoga-node-delete {
     position: absolute;
     top: 4px;
     right: 4px;
@@ -88,12 +88,12 @@
     transition: opacity 0.15s;
 }
 
-.dialogawp-rf-node:hover .dialogawp-node-delete,
-.dialogawp-rf-node .dialogawp-node-delete:focus-visible {
+.dialoga-rf-node:hover .dialoga-node-delete,
+.dialoga-rf-node .dialoga-node-delete:focus-visible {
     opacity: 1;
 }
 
-.dialogawp-rf-start {
+.dialoga-rf-start {
     min-width: 160px;
     padding: 6px 14px;
     border: 2px dashed #16A34A;
@@ -107,12 +107,12 @@
     text-transform: uppercase;
 }
 
-.dialogawp-rf-start .react-flow__handle {
+.dialoga-rf-start .react-flow__handle {
     background: #16A34A;
     box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.25);
 }
 
-.dialogawp-rf-edge-delete {
+.dialoga-rf-edge-delete {
     position: absolute;
     z-index: 1000;
     display: flex;
@@ -131,7 +131,7 @@
     pointer-events: all;
 }
 
-.dialogawp-rf-count {
+.dialoga-rf-count {
     position: absolute;
     top: 10px;
     right: 10px;
@@ -146,7 +146,7 @@
     pointer-events: none;
 }
 
-.dialogawp-rf-empty {
+.dialoga-rf-empty {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -158,7 +158,7 @@
     pointer-events: none;
 }
 
-.dialogawp-rf-empty img {
+.dialoga-rf-empty img {
     display: block;
     width: auto;
     height: 80px;
@@ -166,24 +166,24 @@
     opacity: 0.4;
 }
 
-.dialogawp-builder-wrap .react-flow__controls,
-.dialogawp-builder-wrap .react-flow__minimap {
+.dialoga-builder-wrap .react-flow__controls,
+.dialoga-builder-wrap .react-flow__minimap {
     overflow: hidden;
     border: 1px solid #E5E7EF;
     border-radius: 8px;
     box-shadow: 0 4px 14px rgba(25, 15, 79, 0.12);
 }
 
-.dialogawp-builder-wrap .react-flow__controls-button {
+.dialoga-builder-wrap .react-flow__controls-button {
     border-bottom-color: #E5E7EF;
     color: #190F4F;
 }
 
-.dialogawp-builder-wrap .react-flow__controls-button:hover {
+.dialoga-builder-wrap .react-flow__controls-button:hover {
     background: #E6F7F6;
 }
 
-body.dialogawp-canvas-fullscreen .dialogawp-rf-canvas,
-body.dialogawp-canvas-fullscreen .dialogawp-rf-canvas .react-flow {
+body.dialoga-canvas-fullscreen .dialoga-rf-canvas,
+body.dialoga-canvas-fullscreen .dialoga-rf-canvas .react-flow {
     min-height: 0;
 }

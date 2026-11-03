@@ -92,7 +92,7 @@
   "Enable conversation retention": "Activar conservación de conversaciones",
   "Delete abandoned conversations after": "Eliminar conversaciones abandonadas después de",
   "Abandoned conversations older than this many days are removed during the daily cleanup. This reduces stored visitor-typed text without a business justification.": "Las conversaciones abandonadas con más de esta cantidad de días se eliminan durante la limpieza diaria. Esto reduce el texto almacenado escrito por visitantes sin una justificación comercial.",
-  "DIALOGAWP Settings": "Ajustes de DIALOGAWP",
+  "DIALOGA Settings": "Ajustes de DIALOGA",
   "Settings pages": "Páginas de ajustes",
   "Settings saved successfully!": "¡Ajustes guardados correctamente!",
   "Widget active": "Widget activo",

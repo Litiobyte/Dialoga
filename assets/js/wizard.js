@@ -2,8 +2,8 @@
     'use strict';
 
     function t(message) {
-        var wizard = window.dialogawpWizard && window.dialogawpWizard.i18n;
-        var admin = window.dialogawpAdmin && window.dialogawpAdmin.i18n;
+        var wizard = window.dialogaWizard && window.dialogaWizard.i18n;
+        var admin = window.dialogaAdmin && window.dialogaAdmin.i18n;
         if (wizard && Object.prototype.hasOwnProperty.call(wizard, message)) return wizard[message];
         return admin && Object.prototype.hasOwnProperty.call(admin, message) ? admin[message] : message;
     }
@@ -50,7 +50,7 @@
 
             // Progress dots — click to jump to step
             document.addEventListener('click', function(e) {
-                var dot = e.target.closest('.dialogawp-wizard-progress-dot');
+                var dot = e.target.closest('.dialoga-wizard-progress-dot');
                 if (dot) {
                     var step = parseInt(dot.dataset.step);
                     self.goToStep(step);
@@ -58,7 +58,7 @@
             });
 
             // Welcome step shortcuts — click to jump to step
-            document.querySelectorAll('.dialogawp-wizard-welcome-step[data-goto]').forEach(function(step) {
+            document.querySelectorAll('.dialoga-wizard-welcome-step[data-goto]').forEach(function(step) {
                 step.addEventListener('click', function() {
                     var target = parseInt(step.dataset.goto);
                     self.goToStep(target);
@@ -73,17 +73,17 @@
                 self.data.ai.testPassed = false;
                 var status = document.getElementById('wizard-key-status');
                 status.textContent = '';
-                status.className = 'dialogawp-wizard-key-status';
+                status.className = 'dialoga-wizard-key-status';
             });
 
             // Managed AI click — show info modal
-            var managedAI = document.querySelector('.dialogawp-wizard-radio-card-coming-soon');
+            var managedAI = document.querySelector('.dialoga-wizard-radio-card-coming-soon');
             if (managedAI) managedAI.addEventListener('click', function(e) {
                 e.preventDefault();
-                dialogawpModal.confirm(
-                    t('Managed AI is coming soon to DialogaWP Pro. We handle the AI infrastructure so you don\'t need your own API key — just plug in and go.\n\nIncludes:\n- No API key setup required\n- Pay-as-you-go usage billing\n- Automatic model updates\n- Priority AI response times\n\nWant to be notified when it launches?'),
+                dialogaModal.confirm(
+                    t('Managed AI is coming soon to Dialoga Pro. We handle the AI infrastructure so you don\'t need your own API key — just plug in and go.\n\nIncludes:\n- No API key setup required\n- Pay-as-you-go usage billing\n- Automatic model updates\n- Priority AI response times\n\nWant to be notified when it launches?'),
                     function() {
-                        window.open('https://www.litiobyte.com/labs-detalle.php?slug=dialogawp', '_blank', 'noopener,noreferrer');
+                        window.open('https://www.litiobyte.com/labs-detalle.php?slug=dialoga', '_blank', 'noopener,noreferrer');
                     },
                     { title: t('Managed AI — Coming Soon'), okText: t('Join Waitlist'), cancelText: t('Close'), icon: '\uD83E\uDD16' }
                 );
@@ -143,7 +143,7 @@
             });
 
             // Goal cards (multi-select toggle)
-            document.querySelectorAll('.dialogawp-wizard-goal-card').forEach(function(card) {
+            document.querySelectorAll('.dialoga-wizard-goal-card').forEach(function(card) {
                 card.addEventListener('click', function() {
                     var goal = card.dataset.goal;
                     var idx = self.data.goal.types.indexOf(goal);
@@ -161,9 +161,9 @@
             });
 
             // Visibility cards
-            document.querySelectorAll('.dialogawp-wizard-visibility-card').forEach(function(card) {
+            document.querySelectorAll('.dialoga-wizard-visibility-card').forEach(function(card) {
                 card.addEventListener('click', function() {
-                    document.querySelectorAll('.dialogawp-wizard-visibility-card').forEach(function(c) {
+                    document.querySelectorAll('.dialoga-wizard-visibility-card').forEach(function(c) {
                         c.classList.remove('selected');
                         c.setAttribute('aria-pressed', 'false');
                     });
@@ -180,10 +180,10 @@
             });
 
             // Visibility role checkboxes
-            document.querySelectorAll('.dialogawp-wizard-role-check').forEach(function(cb) {
+            document.querySelectorAll('.dialoga-wizard-role-check').forEach(function(cb) {
                 cb.addEventListener('change', function() {
                     self.data.visibility.roles = [];
-                    document.querySelectorAll('.dialogawp-wizard-role-check:checked').forEach(function(checked) {
+                    document.querySelectorAll('.dialoga-wizard-role-check:checked').forEach(function(checked) {
                         self.data.visibility.roles.push(checked.value);
                     });
                     self.debounceSave();
@@ -209,13 +209,13 @@
             if (index < 0 || index >= this.totalSteps) return;
 
             // Hide all steps
-            document.querySelectorAll('.dialogawp-wizard-step').forEach(function(s) {
+            document.querySelectorAll('.dialoga-wizard-step').forEach(function(s) {
                 s.classList.remove('active');
                 s.setAttribute('aria-hidden', 'true');
             });
 
             // Show target step
-            var step = document.querySelector('.dialogawp-wizard-step[data-step="' + index + '"]');
+            var step = document.querySelector('.dialoga-wizard-step[data-step="' + index + '"]');
             if (step) {
                 step.classList.add('active');
                 step.setAttribute('aria-hidden', 'false');
@@ -260,19 +260,19 @@
                     if (!this.data.ai.testPassed) {
                         var status = document.getElementById('wizard-key-status');
                         status.textContent = t('Please test your connection before proceeding.');
-                        status.className = 'dialogawp-wizard-key-status error';
+                        status.className = 'dialoga-wizard-key-status error';
                         return false;
                     }
                     return true;
                 case 3: // Customize
                     this.captureCustomize();
                     if (!this.data.customize.businessType) {
-                        dialogawpModal.error(t('Please select your industry or business type.'), t('Error'));
+                        dialogaModal.error(t('Please select your industry or business type.'), t('Error'));
                         document.getElementById('wizard-business-type').focus();
                         return false;
                     }
                     if (this.data.customize.businessType === 'other' && !this.data.customize.otherIndustry) {
-                        dialogawpModal.error(t('Please specify your industry.'), t('Error'));
+                        dialogaModal.error(t('Please specify your industry.'), t('Error'));
                         document.getElementById('wizard-other-industry').focus();
                         return false;
                     }
@@ -280,7 +280,7 @@
                 case 4: // Goal
                     if (!this.data.goal.types || this.data.goal.types.length === 0) {
                         // Subtle highlight
-                        document.querySelectorAll('.dialogawp-wizard-goal-card').forEach(function(c) {
+                        document.querySelectorAll('.dialoga-wizard-goal-card').forEach(function(c) {
                             c.style.animation = 'none';
                             c.offsetHeight; // reflow
                             c.style.animation = 'wizardFadeIn 0.3s ease';
@@ -325,13 +325,13 @@
             for (var i = 0; i < this.totalSteps; i++) {
                 var stepLabel = t(shortLabels[i]);
                 var ariaLabel = t('Step %1$d of %2$d').replace('%1$d', i + 1).replace('%2$d', this.totalSteps) + ': ' + stepLabel;
-                html += '<div class="dialogawp-wizard-progress-step">';
-                html += '<div class="dialogawp-wizard-progress-dot-wrap">';
-                html += '<button type="button" class="dialogawp-wizard-progress-dot" data-step="' + i + '" aria-controls="wizard-step-' + i + '" aria-label="' + escapeHtml(ariaLabel) + '">' + (i + 1) + '</button>';
-                html += '<div class="dialogawp-wizard-progress-label">' + escapeHtml(stepLabel) + '</div>';
+                html += '<div class="dialoga-wizard-progress-step">';
+                html += '<div class="dialoga-wizard-progress-dot-wrap">';
+                html += '<button type="button" class="dialoga-wizard-progress-dot" data-step="' + i + '" aria-controls="wizard-step-' + i + '" aria-label="' + escapeHtml(ariaLabel) + '">' + (i + 1) + '</button>';
+                html += '<div class="dialoga-wizard-progress-label">' + escapeHtml(stepLabel) + '</div>';
                 html += '</div>';
                 if (i < this.totalSteps - 1) {
-                    html += '<div class="dialogawp-wizard-progress-line" data-line="' + i + '"></div>';
+                    html += '<div class="dialoga-wizard-progress-line" data-line="' + i + '"></div>';
                 }
                 html += '</div>';
             }
@@ -350,8 +350,8 @@
             ];
 
             for (var i = 0; i < this.totalSteps; i++) {
-                var dot = document.querySelector('.dialogawp-wizard-progress-dot[data-step="' + i + '"]');
-                var line = document.querySelector('.dialogawp-wizard-progress-line[data-line="' + i + '"]');
+                var dot = document.querySelector('.dialoga-wizard-progress-dot[data-step="' + i + '"]');
+                var line = document.querySelector('.dialoga-wizard-progress-line[data-line="' + i + '"]');
 
                 dot.classList.remove('active', 'completed');
                 dot.removeAttribute('aria-current');
@@ -378,11 +378,11 @@
         saveState: function() {
             var self = this;
             var fd = new FormData();
-            fd.append('action', 'dialogawp_wizard_save_state');
-            fd.append('nonce', dialogawpWizard.nonce);
+            fd.append('action', 'dialoga_wizard_save_state');
+            fd.append('nonce', dialogaWizard.nonce);
             fd.append('currentStep', this.currentStep);
             fd.append('data', JSON.stringify(this.data));
-            fetch(dialogawpWizard.ajaxUrl, { method: 'POST', body: fd })
+            fetch(dialogaWizard.ajaxUrl, { method: 'POST', body: fd })
                 .then(function(r) { return r.json(); })
                 .then(function(resp) {
                     if (resp && resp.success) self.showSavePill();
@@ -411,10 +411,10 @@
         loadState: function() {
             var self = this;
             var fd = new FormData();
-            fd.append('action', 'dialogawp_wizard_get_state');
-            fd.append('nonce', dialogawpWizard.nonce);
+            fd.append('action', 'dialoga_wizard_get_state');
+            fd.append('nonce', dialogaWizard.nonce);
 
-            fetch(dialogawpWizard.ajaxUrl, { method: 'POST', body: fd })
+            fetch(dialogaWizard.ajaxUrl, { method: 'POST', body: fd })
                 .then(function(r) { return r.json(); })
                 .then(function(resp) {
                     if (!resp.success) { self.goToStep(0); return; }
@@ -437,12 +437,12 @@
 
                     var startStep = (d.state && d.state.currentStep) ? d.state.currentStep : 0;
                     document.getElementById('wizard-loading').style.display = 'none';
-                    document.querySelector('.dialogawp-wizard-content').style.display = '';
+                    document.querySelector('.dialoga-wizard-content').style.display = '';
                     self.goToStep(startStep);
                 })
                 .catch(function() {
                     document.getElementById('wizard-loading').style.display = 'none';
-                    document.querySelector('.dialogawp-wizard-content').style.display = '';
+                    document.querySelector('.dialoga-wizard-content').style.display = '';
                     self.goToStep(0);
                 });
         },
@@ -467,7 +467,7 @@
                 document.getElementById('wizard-key-row-input').style.display = 'none';
                 var status = document.getElementById('wizard-key-status');
                 status.textContent = '\u2713 ' + t('Connection verified. You\'re all set!');
-                status.className = 'dialogawp-wizard-key-status success';
+                status.className = 'dialoga-wizard-key-status success';
             } else {
                 document.getElementById('wizard-key-row-saved').style.display = 'none';
                 document.getElementById('wizard-key-row-input').style.display = '';
@@ -500,7 +500,7 @@
 
             if (!apiKey && !this.data.ai.testPassed) {
                 status.textContent = t('Please enter your API key.');
-                status.className = 'dialogawp-wizard-key-status error';
+                status.className = 'dialoga-wizard-key-status error';
                 return;
             }
 
@@ -509,23 +509,23 @@
 
             // First save the AI settings
             var fd = new FormData();
-            fd.append('action', 'dialogawp_save_ai_settings');
-            fd.append('nonce', dialogawpWizard.nonce);
+            fd.append('action', 'dialoga_save_ai_settings');
+            fd.append('nonce', dialogaWizard.nonce);
             fd.append('provider', this.data.ai.provider);
             fd.append('model', this.data.ai.model);
             fd.append('max_tokens', 500);
             fd.append('instructions', '');
             if (apiKey) fd.append('api_key', apiKey);
 
-            fetch(dialogawpWizard.ajaxUrl, { method: 'POST', body: fd })
+            fetch(dialogaWizard.ajaxUrl, { method: 'POST', body: fd })
                 .then(function(r) { return r.json(); })
                 .then(function() {
                     // Now test the connection
                     var fd2 = new FormData();
-                    fd2.append('action', 'dialogawp_test_ai');
-                    fd2.append('nonce', dialogawpWizard.nonce);
+                    fd2.append('action', 'dialoga_test_ai');
+                    fd2.append('nonce', dialogaWizard.nonce);
 
-                    return fetch(dialogawpWizard.ajaxUrl, { method: 'POST', body: fd2 });
+                    return fetch(dialogaWizard.ajaxUrl, { method: 'POST', body: fd2 });
                 })
                 .then(function(r) { return r.json(); })
                 .then(function(data) {
@@ -535,7 +535,7 @@
                     if (data.success) {
                         self.data.ai.testPassed = true;
                         status.textContent = '\u2713 ' + t('Connection successful! Your AI is ready.');
-                        status.className = 'dialogawp-wizard-key-status success';
+                        status.className = 'dialoga-wizard-key-status success';
                         document.getElementById('wizard-api-key').value = '';
                         document.getElementById('wizard-key-row-saved').style.display = '';
                         document.getElementById('wizard-key-row-input').style.display = 'none';
@@ -543,14 +543,14 @@
                     } else {
                         self.data.ai.testPassed = false;
                         status.textContent = '\u2717 ' + t(data.data.message || 'Connection failed. Check your API key.');
-                        status.className = 'dialogawp-wizard-key-status error';
+                        status.className = 'dialoga-wizard-key-status error';
                     }
                 })
                 .catch(function() {
                     btn.textContent = t('Test Connection');
                     btn.disabled = false;
                     status.textContent = '\u2717 ' + t('Network error. Please try again.');
-                    status.className = 'dialogawp-wizard-key-status error';
+                    status.className = 'dialoga-wizard-key-status error';
                 });
         },
 
@@ -558,7 +558,7 @@
         // Step 2: Website Crawl
         // ====================================================================
         initCrawlStep: function() {
-            document.getElementById('wizard-site-url').textContent = dialogawpWizard.siteUrl;
+            document.getElementById('wizard-site-url').textContent = dialogaWizard.siteUrl;
 
             if (this.data.crawl.completed) {
                 document.getElementById('wizard-crawl-status').style.display = 'none';
@@ -576,10 +576,10 @@
             document.getElementById('wizard-crawl-progress').style.display = '';
 
             var fd = new FormData();
-            fd.append('action', 'dialogawp_crawl_website');
-            fd.append('nonce', dialogawpWizard.nonce);
+            fd.append('action', 'dialoga_crawl_website');
+            fd.append('nonce', dialogaWizard.nonce);
 
-            fetch(dialogawpWizard.ajaxUrl, { method: 'POST', body: fd })
+            fetch(dialogaWizard.ajaxUrl, { method: 'POST', body: fd })
                 .then(function(r) { return r.json(); })
                 .then(function(data) {
                     document.getElementById('wizard-crawl-progress').style.display = 'none';
@@ -596,13 +596,13 @@
                         self.debounceSave();
                     } else {
                         document.getElementById('wizard-crawl-status').style.display = '';
-                        dialogawpModal.error(t(data.data.message || 'Crawl failed. Please try again.'), t('Error'));
+                        dialogaModal.error(t(data.data.message || 'Crawl failed. Please try again.'), t('Error'));
                     }
                 })
                 .catch(function() {
                     document.getElementById('wizard-crawl-progress').style.display = 'none';
                     document.getElementById('wizard-crawl-status').style.display = '';
-                    dialogawpModal.error(t('Network error during crawl. Please try again.'), t('Error'));
+                    dialogaModal.error(t('Network error during crawl. Please try again.'), t('Error'));
                 });
         },
 
@@ -611,7 +611,7 @@
         // ====================================================================
         initCustomizeStep: function() {
             var d = this.data.customize;
-            document.getElementById('wizard-business-name').value = d.businessName || dialogawpWizard.siteName || '';
+            document.getElementById('wizard-business-name').value = d.businessName || dialogaWizard.siteName || '';
             document.getElementById('wizard-business-type').value = d.businessType || '';
             document.getElementById('wizard-custom-instructions').value = d.instructions || '';
             document.getElementById('wizard-other-industry').value = d.otherIndustry || '';
@@ -630,7 +630,7 @@
         // ====================================================================
         initGoalStep: function() {
             var types = this.data.goal.types || [];
-            document.querySelectorAll('.dialogawp-wizard-goal-card').forEach(function(c) {
+            document.querySelectorAll('.dialoga-wizard-goal-card').forEach(function(c) {
                 var selected = types.indexOf(c.dataset.goal) > -1;
                 c.classList.toggle('selected', selected);
                 c.setAttribute('aria-pressed', String(selected));
@@ -642,7 +642,7 @@
         // ====================================================================
         initVisibilityStep: function() {
             var mode = this.data.visibility.mode || 'everyone';
-            document.querySelectorAll('.dialogawp-wizard-visibility-card').forEach(function(c) {
+            document.querySelectorAll('.dialoga-wizard-visibility-card').forEach(function(c) {
                 var selected = c.dataset.visibility === mode;
                 c.classList.toggle('selected', selected);
                 c.setAttribute('aria-pressed', String(selected));
@@ -652,7 +652,7 @@
                 rolesSection.style.display = mode === 'specific_roles' ? '' : 'none';
             }
             var roles = this.data.visibility.roles || [];
-            document.querySelectorAll('.dialogawp-wizard-role-check').forEach(function(cb) {
+            document.querySelectorAll('.dialoga-wizard-role-check').forEach(function(cb) {
                 cb.checked = roles.indexOf(cb.value) > -1;
             });
         },
@@ -671,7 +671,7 @@
             ];
 
             steps.forEach(function(s) {
-                var stepEl = document.querySelector('.dialogawp-wizard-welcome-step[data-goto="' + s.id + '"]');
+                var stepEl = document.querySelector('.dialoga-wizard-welcome-step[data-goto="' + s.id + '"]');
                 var numEl = document.getElementById('welcome-step-' + s.id);
                 if (!stepEl || !numEl) return;
 
@@ -729,9 +729,9 @@
         },
 
         reviewItem: function(label, value) {
-            return '<div class="dialogawp-wizard-review-item">' +
-                '<div class="dialogawp-wizard-review-label">' + escapeHtml(label) + '</div>' +
-                '<div class="dialogawp-wizard-review-value">' + escapeHtml(value) + '</div>' +
+            return '<div class="dialoga-wizard-review-item">' +
+                '<div class="dialoga-wizard-review-label">' + escapeHtml(label) + '</div>' +
+                '<div class="dialoga-wizard-review-value">' + escapeHtml(value) + '</div>' +
                 '</div>';
         },
 
@@ -744,8 +744,8 @@
             // Save custom instructions first
             this.captureCustomize();
             var fd0 = new FormData();
-            fd0.append('action', 'dialogawp_save_ai_settings');
-            fd0.append('nonce', dialogawpWizard.nonce);
+            fd0.append('action', 'dialoga_save_ai_settings');
+            fd0.append('nonce', dialogaWizard.nonce);
             fd0.append('provider', this.data.ai.provider);
             fd0.append('model', this.data.ai.model);
             fd0.append('max_tokens', 500);
@@ -755,18 +755,18 @@
             document.getElementById('wizard-error').style.display = 'none';
             document.getElementById('wizard-creating').style.display = '';
 
-            fetch(dialogawpWizard.ajaxUrl, { method: 'POST', body: fd0 })
+            fetch(dialogaWizard.ajaxUrl, { method: 'POST', body: fd0 })
                 .then(function() {
                     // Generate the flow with wizard context
                     var fd = new FormData();
-                    fd.append('action', 'dialogawp_generate_flow');
-                    fd.append('nonce', dialogawpWizard.nonce);
+                    fd.append('action', 'dialoga_generate_flow');
+                    fd.append('nonce', dialogaWizard.nonce);
                     fd.append('business_name', self.data.customize.businessName || '');
                     fd.append('business_type', self.data.customize.businessType || '');
                     fd.append('other_industry', self.data.customize.otherIndustry || '');
                     fd.append('goals', JSON.stringify(self.data.goal.types || []));
 
-                    return fetch(dialogawpWizard.ajaxUrl, { method: 'POST', body: fd });
+                    return fetch(dialogaWizard.ajaxUrl, { method: 'POST', body: fd });
                 })
                 .then(function(r) { return r.json(); })
                 .then(function(data) {
@@ -851,8 +851,8 @@
         saveFlow: function(flow, flowName) {
             var self = this;
             var fd = new FormData();
-            fd.append('action', 'dialogawp_save_flow');
-            fd.append('nonce', dialogawpWizard.nonce);
+            fd.append('action', 'dialoga_save_flow');
+            fd.append('nonce', dialogaWizard.nonce);
             fd.append('flow_id', 0);
             fd.append('flow_name', flowName);
             fd.append('is_active', 1);
@@ -860,7 +860,7 @@
             fd.append('visible_roles', JSON.stringify(this.data.visibility.roles || []));
             fd.append('flow_data', JSON.stringify(flow));
 
-            fetch(dialogawpWizard.ajaxUrl, { method: 'POST', body: fd })
+            fetch(dialogaWizard.ajaxUrl, { method: 'POST', body: fd })
                 .then(function(r) { return r.json(); })
                 .then(function(data) {
                     if (data.success) {
@@ -950,11 +950,11 @@
         // ====================================================================
         completeWizard: function() {
             var fd = new FormData();
-            fd.append('action', 'dialogawp_wizard_complete');
-            fd.append('nonce', dialogawpWizard.nonce);
+            fd.append('action', 'dialoga_wizard_complete');
+            fd.append('nonce', dialogaWizard.nonce);
             fd.append('flow_id', this.createdFlowId || 0);
 
-            fetch(dialogawpWizard.ajaxUrl, { method: 'POST', body: fd })
+            fetch(dialogaWizard.ajaxUrl, { method: 'POST', body: fd })
                 .then(function(r) { return r.json(); })
                 .then(function(data) {
                     if (data.success) {
@@ -964,12 +964,12 @@
         },
 
         skipWizard: function() {
-            dialogawpModal.confirm(t('Skip the setup wizard? You can always set things up manually later.'), function() {
+            dialogaModal.confirm(t('Skip the setup wizard? You can always set things up manually later.'), function() {
                 var fd = new FormData();
-                fd.append('action', 'dialogawp_wizard_skip');
-                fd.append('nonce', dialogawpWizard.nonce);
+                fd.append('action', 'dialoga_wizard_skip');
+                fd.append('nonce', dialogaWizard.nonce);
 
-                fetch(dialogawpWizard.ajaxUrl, { method: 'POST', body: fd })
+                fetch(dialogaWizard.ajaxUrl, { method: 'POST', body: fd })
                     .then(function(r) { return r.json(); })
                     .then(function(data) {
                         if (data.success) {
@@ -981,7 +981,7 @@
     };
 
     // Boot
-    if (document.getElementById('dialogawp-wizard')) {
+    if (document.getElementById('dialoga-wizard')) {
         W.init();
     }
 })();

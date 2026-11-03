@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Project-Id-Version: DialogaWP\nLanguage: es_ES\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n != 1);\n"
+msgstr "Project-Id-Version: Dialoga\nLanguage: es_ES\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "%1$d embeddings generated. %2$d items remaining - run again to continue."
 msgstr "%1$d representaciones vectoriales generadas. Quedan %2$d elementos - ejecuta de nuevo para continuar."
@@ -870,17 +870,17 @@ msgstr "Atención al cliente"
 msgid "Customize Your Chatbot"
 msgstr "Personaliza tu chatbot"
 
-msgid "DIALOGAWP - AI Settings"
-msgstr "DIALOGAWP - Ajustes de IA"
+msgid "DIALOGA - AI Settings"
+msgstr "DIALOGA - Ajustes de IA"
 
-msgid "DIALOGAWP - Flow Builder"
-msgstr "DIALOGAWP - Editor de flujos"
+msgid "DIALOGA - Flow Builder"
+msgstr "DIALOGA - Editor de flujos"
 
-msgid "DIALOGAWP AI connection successful!"
-msgstr "¡Conexión con la IA de DIALOGAWP establecida correctamente!"
+msgid "DIALOGA AI connection successful!"
+msgstr "¡Conexión con la IA de DIALOGA establecida correctamente!"
 
-msgid "DIALOGAWP Settings"
-msgstr "Ajustes de DIALOGAWP"
+msgid "DIALOGA Settings"
+msgstr "Ajustes de DIALOGA"
 
 msgid "Danger Zone"
 msgstr "Zona de peligro"
@@ -987,14 +987,14 @@ msgstr "Modo de escritorio"
 msgid "Detected Clicks"
 msgstr "Clics detectados"
 
-msgid "DialogaWP Leads"
-msgstr "Contactos de DialogaWP"
+msgid "Dialoga Leads"
+msgstr "Contactos de Dialoga"
 
-msgid "DialogaWP Pro is a separate plugin that adds further reporting on top of everything here - a per-node conversation funnel, full chat transcripts by session, A/B test comparisons, time-to-lead, and analytics CSV export."
-msgstr "DialogaWP Pro es un plugin independiente que añade informes adicionales: un embudo de conversación por nodo, transcripciones completas por sesión, comparaciones de pruebas A/B, tiempo hasta la captación del contacto y exportación de estadísticas en CSV."
+msgid "Dialoga Pro is a separate plugin that adds further reporting on top of everything here - a per-node conversation funnel, full chat transcripts by session, A/B test comparisons, time-to-lead, and analytics CSV export."
+msgstr "Dialoga Pro es un plugin independiente que añade informes adicionales: un embudo de conversación por nodo, transcripciones completas por sesión, comparaciones de pruebas A/B, tiempo hasta la captación del contacto y exportación de estadísticas en CSV."
 
-msgid "DialogaWP uses AI to power your chatbot conversations. You'll need an API key from OpenAI or Anthropic."
-msgstr "DialogaWP utiliza IA para las conversaciones de tu chatbot. Necesitarás una clave de API de OpenAI o Anthropic."
+msgid "Dialoga uses AI to power your chatbot conversations. You'll need an API key from OpenAI or Anthropic."
+msgstr "Dialoga utiliza IA para las conversaciones de tu chatbot. Necesitarás una clave de API de OpenAI o Anthropic."
 
 msgid "Discard saved wizard progress"
 msgstr "Descartar el progreso guardado del asistente"
@@ -1191,8 +1191,8 @@ msgstr "Salir de pantalla completa"
 msgid "Expand canvas within this browser tab"
 msgstr "Amplía el lienzo dentro de esta pestaña del navegador"
 
-msgid "Expected dialogawp-flows version 1 with 1-100 flows."
-msgstr "Se esperaba dialogawp-flows versión 1 con 1-100 flujos."
+msgid "Expected dialoga-flows version 1 with 1-100 flows."
+msgstr "Se esperaba dialoga-flows versión 1 con 1-100 flujos."
 
 msgid "Export"
 msgstr "Exportar"
@@ -1341,11 +1341,11 @@ msgstr "Generar flujo sugerido"
 msgid "Get Started →"
 msgstr "Comenzar →"
 
-msgid "Getting Started - DialogaWP"
-msgstr "Primeros pasos - DialogaWP"
+msgid "Getting Started - Dialoga"
+msgstr "Primeros pasos - Dialoga"
 
-msgid "Getting Started — DialogaWP"
-msgstr "Primeros pasos — DialogaWP"
+msgid "Getting Started — Dialoga"
+msgstr "Primeros pasos — Dialoga"
 
 msgid "Getting an Anthropic API Key"
 msgstr "Obtener una clave de API de Anthropic"
@@ -1604,8 +1604,8 @@ msgstr "Contactos captados"
 msgid "Leads older than this many days are removed during the daily cleanup."
 msgstr "Los contactos con más de esta cantidad de días se eliminan durante la limpieza diaria."
 
-msgid "Learn more about DialogaWP Pro"
-msgstr "Más información sobre DialogaWP Pro"
+msgid "Learn more about Dialoga Pro"
+msgstr "Más información sobre Dialoga Pro"
 
 msgid "Leave all unchecked to let every user's session persist normally, except when Test Mode is enabled."
 msgstr "Deja todos sin marcar para que las sesiones se conserven normalmente, excepto cuando el modo de prueba esté activado."
@@ -1661,8 +1661,8 @@ msgstr "Volver atrás"
 msgid "Loops back to:"
 msgstr "Vuelve a:"
 
-msgid "Loving DialogaWP?"
-msgstr "¿Te gusta DialogaWP?"
+msgid "Loving Dialoga?"
+msgstr "¿Te gusta Dialoga?"
 
 msgid "Main color for the chat widget buttons and header."
 msgstr "Color principal de los botones y el encabezado del widget de chat."
@@ -1673,8 +1673,8 @@ msgstr "Asegúrate de haber configurado tu proveedor de IA en %s antes de activa
 msgid "Manage Flows"
 msgstr "Gestionar flujos"
 
-msgid "Managed AI is coming soon to DialogaWP Pro. We handle the AI infrastructure so you don't need your own API key — just plug in and go.\n\nIncludes:\n- No API key setup required\n- Pay-as-you-go usage billing\n- Automatic model updates\n- Priority AI response times\n\nWant to be notified when it launches?"
-msgstr "La IA gestionada llegará pronto a DialogaWP Pro. Nos encargamos de la infraestructura de IA para que no necesites tu propia clave de API: conecta y empieza.\n\nIncluye:\n- Sin configuración de claves de API\n- Facturación según el uso\n- Actualizaciones automáticas de modelos\n- Tiempos de respuesta de IA prioritarios\n\n¿Quieres recibir un aviso cuando se lance?"
+msgid "Managed AI is coming soon to Dialoga Pro. We handle the AI infrastructure so you don't need your own API key — just plug in and go.\n\nIncludes:\n- No API key setup required\n- Pay-as-you-go usage billing\n- Automatic model updates\n- Priority AI response times\n\nWant to be notified when it launches?"
+msgstr "La IA gestionada llegará pronto a Dialoga Pro. Nos encargamos de la infraestructura de IA para que no necesites tu propia clave de API: conecta y empieza.\n\nIncluye:\n- Sin configuración de claves de API\n- Facturación según el uso\n- Actualizaciones automáticas de modelos\n- Tiempos de respuesta de IA prioritarios\n\n¿Quieres recibir un aviso cuando se lance?"
 
 msgid "Managed AI — Coming Soon"
 msgstr "IA gestionada — Próximamente"
@@ -1784,8 +1784,8 @@ msgstr "Nuevo"
 msgid "New Flow"
 msgstr "Nuevo flujo"
 
-msgid "New Lead from DIALOGAWP"
-msgstr "Nuevo contacto de DIALOGAWP"
+msgid "New Lead from DIALOGA"
+msgstr "Nuevo contacto de DIALOGA"
 
 msgid "New Tab"
 msgstr "Nueva pestaña"
@@ -2681,8 +2681,8 @@ msgstr "Clave de objeto JSON no segura."
 msgid "Unsaved changes"
 msgstr "Cambios sin guardar"
 
-msgid "Unsupported node type: %s. Enable its extension or register runtime support via dialogawp_import_node_types."
-msgstr "Tipo de nodo no compatible: %s. Activa su extensión o registra la compatibilidad de ejecución mediante dialogawp_import_node_types."
+msgid "Unsupported node type: %s. Enable its extension or register runtime support via dialoga_import_node_types."
+msgstr "Tipo de nodo no compatible: %s. Activa su extensión o registra la compatibilidad de ejecución mediante dialoga_import_node_types."
 
 msgid "Untitled"
 msgstr "Sin título"
@@ -2804,11 +2804,11 @@ msgstr "Bienvenido"
 msgid "Welcome Message"
 msgstr "Mensaje de bienvenida"
 
-msgid "Welcome to DialogaWP"
-msgstr "Bienvenido a DialogaWP"
+msgid "Welcome to Dialoga"
+msgstr "Bienvenido a Dialoga"
 
-msgid "Welcome to DialogaWP. Here's how your chatbot is performing."
-msgstr "Bienvenido a DialogaWP. Así está funcionando tu chatbot."
+msgid "Welcome to Dialoga. Here's how your chatbot is performing."
+msgstr "Bienvenido a Dialoga. Así está funcionando tu chatbot."
 
 msgid "Welcome to the Flow Builder"
 msgstr "Bienvenido al editor de flujos"
@@ -2822,8 +2822,8 @@ msgstr "¿Qué quieres decir o preguntar?"
 msgid "WhatsApp Number"
 msgstr "Número de WhatsApp"
 
-msgid "When a visitor sends a message, DIALOGAWP finds the most relevant pages from your knowledge base and sends only those to the AI - keeping costs low and responses focused."
-msgstr "Cuando un visitante envía un mensaje, DIALOGAWP busca las páginas más relevantes en tu base de conocimiento y envía solo esas a la IA, para mantener los costes bajos y las respuestas centradas."
+msgid "When a visitor sends a message, DIALOGA finds the most relevant pages from your knowledge base and sends only those to the AI - keeping costs low and responses focused."
+msgstr "Cuando un visitante envía un mensaje, DIALOGA busca las páginas más relevantes en tu base de conocimiento y envía solo esas a la IA, para mantener los costes bajos y las respuestas centradas."
 
 msgid "When enabled, chat history carries over as you navigate between pages, but clears automatically on page refresh. Use this to test flows without residual sessions interfering."
 msgstr "Cuando está activado, el historial del chat se conserva al navegar entre páginas, pero se borra automáticamente al recargar la página. Úsalo para probar flujos sin interferencias de sesiones anteriores."
@@ -2876,8 +2876,8 @@ msgstr "Año hasta la fecha"
 msgid "Yes"
 msgstr "Sí"
 
-msgid "You are billed directly by Anthropic or OpenAI - DIALOGAWP does not charge for AI usage."
-msgstr "Anthropic u OpenAI te facturan directamente: DIALOGAWP no cobra por el uso de IA."
+msgid "You are billed directly by Anthropic or OpenAI - DIALOGA does not charge for AI usage."
+msgstr "Anthropic u OpenAI te facturan directamente: DIALOGA no cobra por el uso de IA."
 
 msgid "You do not have permission to export leads."
 msgstr "No tienes permiso para exportar contactos."

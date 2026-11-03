@@ -1,5 +1,5 @@
 /* ==========================================================================
-   DialogaWP Getting Started Wizard
+   Dialoga Getting Started Wizard
    ========================================================================== */
 
 :root {
@@ -35,14 +35,14 @@
 }
 
 /* Reset & full-screen */
-.dialogawp-wizard-body {
+.dialoga-wizard-body {
     margin: 0 !important;
     padding: 0 !important;
     overflow: hidden;
     background: var(--wiz-gray-50);
 }
 
-.dialogawp-wizard-wrap {
+.dialoga-wizard-wrap {
     position: fixed;
     top: 0;
     left: 0;
@@ -61,7 +61,7 @@
    Header
    ========================================================================== */
 
-.dialogawp-wizard-header {
+.dialoga-wizard-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -72,7 +72,7 @@
     z-index: 10;
 }
 
-.dialogawp-wizard-brand {
+.dialoga-wizard-brand {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -82,30 +82,30 @@
     color: var(--wiz-blue);
 }
 
-.dialogawp-wizard-brand-logo {
+.dialoga-wizard-brand-logo {
     height: 56px;
     width: auto;
 }
 
-.dialogawp-wizard-progress {
+.dialoga-wizard-progress {
     display: flex;
     align-items: center;
     gap: 0;
 }
 
-.dialogawp-wizard-progress-step {
+.dialoga-wizard-progress-step {
     display: flex;
     align-items: center;
 }
 
-.dialogawp-wizard-progress-dot-wrap {
+.dialoga-wizard-progress-dot-wrap {
     display: flex;
     flex-direction: column;
     align-items: center;
     min-width: 70px;
 }
 
-.dialogawp-wizard-progress-dot {
+.dialoga-wizard-progress-dot {
     width: 32px;
     height: 32px;
     border-radius: 50%;
@@ -123,13 +123,13 @@
     font-family: var(--wiz-font-body);
 }
 
-.dialogawp-wizard-progress-dot:hover {
+.dialoga-wizard-progress-dot:hover {
     border-color: var(--wiz-blue-light);
     color: var(--wiz-blue-light);
     transform: scale(1.1);
 }
 
-.dialogawp-wizard-progress-label {
+.dialoga-wizard-progress-label {
     font-size: 10px;
     font-weight: 500;
     color: var(--wiz-gray-400);
@@ -138,19 +138,19 @@
     text-align: center;
 }
 
-.dialogawp-wizard-progress-dot.active {
+.dialoga-wizard-progress-dot.active {
     border-color: var(--wiz-blue);
     color: #fff;
     background: var(--wiz-blue);
 }
 
-.dialogawp-wizard-progress-dot.completed {
+.dialoga-wizard-progress-dot.completed {
     border-color: var(--wiz-green);
     color: #fff;
     background: var(--wiz-green);
 }
 
-.dialogawp-wizard-progress-line {
+.dialoga-wizard-progress-line {
     width: 40px;
     height: 2px;
     flex-shrink: 0;
@@ -159,18 +159,18 @@
     transition: var(--wiz-transition);
 }
 
-.dialogawp-wizard-progress-line.completed {
+.dialoga-wizard-progress-line.completed {
     background: var(--wiz-green);
 }
 
-.dialogawp-wizard-header-actions {
+.dialoga-wizard-header-actions {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-.dialogawp-wizard-skip-btn,
-.dialogawp-wizard-exit-btn {
+.dialoga-wizard-skip-btn,
+.dialoga-wizard-exit-btn {
     background: none;
     border: 1px solid var(--wiz-gray-300);
     border-radius: var(--wiz-radius-sm);
@@ -187,23 +187,23 @@
     align-items: center;
 }
 
-.dialogawp-wizard-exit-btn {
+.dialoga-wizard-exit-btn {
     color: var(--wiz-blue);
     border-color: var(--wiz-blue);
 }
 
-.dialogawp-wizard-skip-btn:hover {
+.dialoga-wizard-skip-btn:hover {
     background: var(--wiz-gray-100);
     color: var(--wiz-gray-700);
 }
 
-.dialogawp-wizard-exit-btn:hover {
+.dialoga-wizard-exit-btn:hover {
     background: var(--wiz-blue);
     color: #fff;
 }
 
 /* Auto-save pill — hidden by default; .is-visible fades in for ~1.6s after each save. */
-.dialogawp-wizard-save-pill {
+.dialoga-wizard-save-pill {
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -219,11 +219,11 @@
     pointer-events: none;
 }
 
-.dialogawp-wizard-save-pill.is-visible {
+.dialoga-wizard-save-pill.is-visible {
     opacity: 1;
 }
 
-.dialogawp-wizard-save-dot {
+.dialoga-wizard-save-dot {
     width: 7px;
     height: 7px;
     border-radius: 50%;
@@ -235,7 +235,7 @@
    Content Area
    ========================================================================== */
 
-.dialogawp-wizard-content {
+.dialoga-wizard-content {
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
@@ -245,18 +245,18 @@
     padding: 40px 24px;
 }
 
-.dialogawp-wizard-slider {
+.dialoga-wizard-slider {
     width: 100%;
     position: relative;
 }
 
-.dialogawp-wizard-step {
+.dialoga-wizard-step {
     display: none;
     justify-content: center;
     animation: wizardFadeIn 0.35s ease;
 }
 
-.dialogawp-wizard-step.active {
+.dialoga-wizard-step.active {
     display: flex;
 }
 
@@ -269,7 +269,7 @@
    Loading State
    ========================================================================== */
 
-.dialogawp-wizard-loading {
+.dialoga-wizard-loading {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -277,7 +277,7 @@
     justify-content: center;
 }
 
-.dialogawp-wizard-sr-only {
+.dialoga-wizard-sr-only {
     position: absolute;
     width: 1px;
     height: 1px;
@@ -293,7 +293,7 @@
    Cards
    ========================================================================== */
 
-.dialogawp-wizard-card {
+.dialoga-wizard-card {
     width: 100%;
     max-width: 680px;
     background: #fff;
@@ -302,11 +302,11 @@
     padding: 40px;
 }
 
-.dialogawp-wizard-card-wide {
+.dialoga-wizard-card-wide {
     max-width: 1100px;
 }
 
-.dialogawp-wizard-card h1 {
+.dialoga-wizard-card h1 {
     font-family: var(--wiz-font-heading);
     font-size: 28px;
     font-weight: 800;
@@ -315,7 +315,7 @@
     text-align: center;
 }
 
-.dialogawp-wizard-card h2 {
+.dialoga-wizard-card h2 {
     font-family: var(--wiz-font-heading);
     font-size: 24px;
     font-weight: 700;
@@ -323,7 +323,7 @@
     margin: 0 0 8px;
 }
 
-.dialogawp-wizard-card h3 {
+.dialoga-wizard-card h3 {
     font-family: var(--wiz-font-heading);
     font-size: 18px;
     font-weight: 700;
@@ -331,7 +331,7 @@
     margin: 0 0 4px;
 }
 
-.dialogawp-wizard-subtitle {
+.dialoga-wizard-subtitle {
     font-size: 16px;
     color: var(--wiz-gray-500);
     text-align: center;
@@ -339,7 +339,7 @@
     line-height: 1.6;
 }
 
-.dialogawp-wizard-desc {
+.dialoga-wizard-desc {
     font-size: 15px;
     color: var(--wiz-gray-500);
     margin: 0 0 28px;
@@ -350,18 +350,18 @@
    Welcome Step
    ========================================================================== */
 
-.dialogawp-wizard-welcome-icon {
+.dialoga-wizard-welcome-icon {
     text-align: center;
     margin-bottom: 20px;
 }
 
-.dialogawp-wizard-welcome-steps {
+.dialoga-wizard-welcome-steps {
     display: flex;
     flex-direction: column;
     gap: 12px;
 }
 
-.dialogawp-wizard-welcome-step {
+.dialoga-wizard-welcome-step {
     display: flex;
     align-items: center;
     gap: 16px;
@@ -377,12 +377,12 @@
     transition: var(--wiz-transition);
 }
 
-.dialogawp-wizard-welcome-step:hover {
+.dialoga-wizard-welcome-step:hover {
     border-color: var(--wiz-blue-light);
     background: var(--wiz-blue-pale);
 }
 
-.dialogawp-wizard-welcome-arrow {
+.dialoga-wizard-welcome-arrow {
     margin-left: auto;
     font-size: 20px;
     color: var(--wiz-gray-300);
@@ -390,25 +390,25 @@
     transition: var(--wiz-transition);
 }
 
-.dialogawp-wizard-welcome-step:hover .dialogawp-wizard-welcome-arrow {
+.dialoga-wizard-welcome-step:hover .dialoga-wizard-welcome-arrow {
     color: var(--wiz-blue);
     transform: translateX(3px);
 }
 
-.dialogawp-wizard-welcome-step.completed {
+.dialoga-wizard-welcome-step.completed {
     border-color: #BBF7D0;
     background: #F0FDF4;
 }
 
-.dialogawp-wizard-welcome-step.completed .dialogawp-wizard-welcome-num {
+.dialoga-wizard-welcome-step.completed .dialoga-wizard-welcome-num {
     background: #16A34A;
 }
 
-.dialogawp-wizard-welcome-step.completed strong {
+.dialoga-wizard-welcome-step.completed strong {
     color: #166534;
 }
 
-.dialogawp-wizard-welcome-num {
+.dialoga-wizard-welcome-num {
     width: 32px;
     height: 32px;
     border-radius: 50%;
@@ -423,13 +423,13 @@
     flex-shrink: 0;
 }
 
-.dialogawp-wizard-welcome-step strong {
+.dialoga-wizard-welcome-step strong {
     display: block;
     font-size: 14px;
     color: var(--wiz-gray-800);
 }
 
-.dialogawp-wizard-welcome-step span {
+.dialoga-wizard-welcome-step span {
     font-size: 13px;
     color: var(--wiz-gray-500);
 }
@@ -438,11 +438,11 @@
    Form Fields
    ========================================================================== */
 
-.dialogawp-wizard-field {
+.dialoga-wizard-field {
     margin-bottom: 20px;
 }
 
-.dialogawp-wizard-field label {
+.dialoga-wizard-field label {
     display: block;
     font-size: 14px;
     font-weight: 600;
@@ -450,16 +450,16 @@
     margin-bottom: 8px;
 }
 
-.dialogawp-wizard-optional {
+.dialoga-wizard-optional {
     font-weight: 400;
     color: var(--wiz-gray-400);
 }
 
-.dialogawp-wizard-field input[type="text"],
-.dialogawp-wizard-field input[type="password"],
-.dialogawp-wizard-field input[type="url"],
-.dialogawp-wizard-field select,
-.dialogawp-wizard-field textarea {
+.dialoga-wizard-field input[type="text"],
+.dialoga-wizard-field input[type="password"],
+.dialoga-wizard-field input[type="url"],
+.dialoga-wizard-field select,
+.dialoga-wizard-field textarea {
     width: 100%;
     padding: 11px 14px;
     font-size: 15px;
@@ -472,43 +472,43 @@
     transition: border-color 0.15s, box-shadow 0.15s;
 }
 
-.dialogawp-wizard-field input:focus,
-.dialogawp-wizard-field select:focus,
-.dialogawp-wizard-field textarea:focus {
+.dialoga-wizard-field input:focus,
+.dialoga-wizard-field select:focus,
+.dialoga-wizard-field textarea:focus {
     outline: none;
     border-color: var(--wiz-blue-light);
     box-shadow: 0 0 0 3px rgba(0, 173, 161, 0.2);
 }
 
-.dialogawp-wizard-field textarea {
+.dialoga-wizard-field textarea {
     resize: vertical;
     min-height: 100px;
 }
 
-.dialogawp-wizard-hint {
+.dialoga-wizard-hint {
     font-size: 13px;
     color: var(--wiz-gray-400);
     margin-top: 6px;
 }
 
-.dialogawp-wizard-note {
+.dialoga-wizard-note {
     font-size: 13px;
     color: var(--wiz-gray-400);
     margin-top: 8px;
 }
 
 /* Radio cards */
-.dialogawp-wizard-radio-group {
+.dialoga-wizard-radio-group {
     display: flex;
     gap: 12px;
 }
 
-.dialogawp-wizard-radio-group-3 {
+.dialoga-wizard-radio-group-3 {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
 }
 
-.dialogawp-wizard-radio-card {
+.dialoga-wizard-radio-card {
     flex: 1;
     display: flex;
     align-items: center;
@@ -520,40 +520,40 @@
     transition: var(--wiz-transition);
 }
 
-.dialogawp-wizard-radio-card:hover {
+.dialoga-wizard-radio-card:hover {
     border-color: var(--wiz-blue-light);
 }
 
-.dialogawp-wizard-radio-card:has(input:checked) {
+.dialoga-wizard-radio-card:has(input:checked) {
     border-color: var(--wiz-secondary);
     background: var(--wiz-blue-pale);
 }
 
-.dialogawp-wizard-radio-card input {
+.dialoga-wizard-radio-card input {
     accent-color: var(--wiz-blue-light);
 }
 
-.dialogawp-wizard-radio-content strong {
+.dialoga-wizard-radio-content strong {
     display: block;
     font-size: 14px;
     color: var(--wiz-gray-800);
 }
 
-.dialogawp-wizard-radio-content span {
+.dialoga-wizard-radio-content span {
     font-size: 12px;
     color: var(--wiz-gray-500);
 }
 
-.dialogawp-wizard-radio-card-coming-soon {
+.dialoga-wizard-radio-card-coming-soon {
     cursor: pointer;
     position: relative;
 }
 
-.dialogawp-wizard-radio-card-coming-soon:hover {
+.dialoga-wizard-radio-card-coming-soon:hover {
     border-color: var(--wiz-blue-light);
 }
 
-.dialogawp-wizard-coming-soon-tag {
+.dialoga-wizard-coming-soon-tag {
     display: inline-block;
     background: var(--wiz-gray-200);
     color: var(--wiz-gray-500);
@@ -567,13 +567,13 @@
 }
 
 /* API Key row */
-.dialogawp-wizard-key-row {
+.dialoga-wizard-key-row {
     display: flex;
     gap: 10px;
     align-items: center;
 }
 
-.dialogawp-wizard-key-masked {
+.dialoga-wizard-key-masked {
     flex: 1;
     padding: 11px 14px !important;
     background: var(--wiz-gray-50) !important;
@@ -583,17 +583,17 @@
 }
 
 /* Key status */
-.dialogawp-wizard-key-status {
+.dialoga-wizard-key-status {
     margin-top: 8px;
     font-size: 13px;
     font-weight: 500;
 }
 
-.dialogawp-wizard-key-status.success {
+.dialoga-wizard-key-status.success {
     color: var(--wiz-green);
 }
 
-.dialogawp-wizard-key-status.error {
+.dialoga-wizard-key-status.error {
     color: var(--wiz-red);
 }
 
@@ -601,14 +601,14 @@
    AI Instructions Accordion
    ========================================================================== */
 
-.dialogawp-wizard-accordion {
+.dialoga-wizard-accordion {
     margin-top: 24px;
     border: 1px solid var(--wiz-gray-200);
     border-radius: var(--wiz-radius-sm);
     overflow: hidden;
 }
 
-.dialogawp-wizard-accordion-toggle {
+.dialoga-wizard-accordion-toggle {
     width: 100%;
     display: flex;
     align-items: center;
@@ -623,30 +623,30 @@
     font-family: var(--wiz-font-body);
 }
 
-.dialogawp-wizard-chevron {
+.dialoga-wizard-chevron {
     font-size: 10px;
     transition: transform 0.2s;
 }
 
-.dialogawp-wizard-accordion.open .dialogawp-wizard-chevron {
+.dialoga-wizard-accordion.open .dialoga-wizard-chevron {
     transform: rotate(180deg);
 }
 
-.dialogawp-wizard-accordion-body {
+.dialoga-wizard-accordion-body {
     display: none;
     padding: 16px;
     border-top: 1px solid var(--wiz-gray-200);
 }
 
-.dialogawp-wizard-accordion-body[hidden] {
+.dialoga-wizard-accordion-body[hidden] {
     display: none !important;
 }
 
-.dialogawp-wizard-accordion.open .dialogawp-wizard-accordion-body {
+.dialoga-wizard-accordion.open .dialoga-wizard-accordion-body {
     display: block;
 }
 
-.dialogawp-wizard-instructions h4 {
+.dialoga-wizard-instructions h4 {
     font-family: var(--wiz-font-heading);
     font-size: 15px;
     font-weight: 600;
@@ -654,7 +654,7 @@
     color: var(--wiz-gray-800);
 }
 
-.dialogawp-wizard-instructions ol {
+.dialoga-wizard-instructions ol {
     margin: 0 0 12px;
     padding-left: 20px;
     font-size: 14px;
@@ -662,14 +662,14 @@
     line-height: 1.8;
 }
 
-.dialogawp-wizard-instructions code {
+.dialoga-wizard-instructions code {
     background: var(--wiz-gray-100);
     padding: 2px 6px;
     border-radius: 4px;
     font-size: 13px;
 }
 
-.dialogawp-wizard-instructions a {
+.dialoga-wizard-instructions a {
     color: var(--wiz-blue-light);
     font-weight: 500;
 }
@@ -678,7 +678,7 @@
    Site URL Display
    ========================================================================== */
 
-.dialogawp-wizard-site-url {
+.dialoga-wizard-site-url {
     background: var(--wiz-gray-50);
     border: 1px solid var(--wiz-gray-200);
     border-radius: var(--wiz-radius-sm);
@@ -693,14 +693,14 @@
    Crawl States
    ========================================================================== */
 
-.dialogawp-wizard-crawl-status,
-.dialogawp-wizard-crawl-progress,
-.dialogawp-wizard-crawl-results {
+.dialoga-wizard-crawl-status,
+.dialoga-wizard-crawl-progress,
+.dialoga-wizard-crawl-results {
     text-align: center;
     padding: 24px 0;
 }
 
-.dialogawp-wizard-spinner {
+.dialoga-wizard-spinner {
     width: 40px;
     height: 40px;
     border: 4px solid var(--wiz-gray-200);
@@ -710,7 +710,7 @@
     margin: 0 auto 16px;
 }
 
-.dialogawp-wizard-spinner-lg {
+.dialoga-wizard-spinner-lg {
     width: 56px;
     height: 56px;
     border-width: 5px;
@@ -720,16 +720,16 @@
     to { transform: rotate(360deg); }
 }
 
-.dialogawp-wizard-success-icon {
+.dialoga-wizard-success-icon {
     font-size: 48px;
     margin-bottom: 12px;
 }
 
-.dialogawp-wizard-crawl-results h3 {
+.dialoga-wizard-crawl-results h3 {
     margin-bottom: 8px;
 }
 
-.dialogawp-wizard-crawl-results p {
+.dialoga-wizard-crawl-results p {
     color: var(--wiz-gray-500);
     font-size: 14px;
     margin-bottom: 16px;
@@ -739,22 +739,22 @@
    Goal Cards
    ========================================================================== */
 
-.dialogawp-wizard-goal-grid {
+.dialoga-wizard-goal-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 16px;
     margin-top: 8px;
 }
 
-.dialogawp-wizard-goal-grid-3 {
+.dialoga-wizard-goal-grid-3 {
     grid-template-columns: repeat(3, 1fr);
 }
 
-.dialogawp-wizard-goal-grid-4 {
+.dialoga-wizard-goal-grid-4 {
     grid-template-columns: repeat(4, 1fr);
 }
 
-.dialogawp-wizard-goal-section-label {
+.dialoga-wizard-goal-section-label {
     font-family: var(--wiz-font-heading);
     font-size: 13px;
     font-weight: 600;
@@ -766,7 +766,7 @@
     border-top: 1px solid var(--wiz-gray-200);
 }
 
-.dialogawp-wizard-goal-card {
+.dialoga-wizard-goal-card {
     background: #fff;
     border: 2px solid var(--wiz-gray-200);
     border-radius: var(--wiz-radius);
@@ -777,19 +777,19 @@
     font-family: var(--wiz-font-body);
 }
 
-.dialogawp-wizard-goal-card:hover {
+.dialoga-wizard-goal-card:hover {
     border-color: var(--wiz-blue-light);
     box-shadow: var(--wiz-shadow);
 }
 
-.dialogawp-wizard-goal-card.selected {
+.dialoga-wizard-goal-card.selected {
     border-color: var(--wiz-secondary);
     background: var(--wiz-blue-pale);
     box-shadow: 0 0 0 3px rgba(0, 173, 161, 0.2);
     position: relative;
 }
 
-.dialogawp-wizard-goal-card.selected::after {
+.dialoga-wizard-goal-card.selected::after {
     content: '\2713';
     position: absolute;
     top: 10px;
@@ -806,11 +806,11 @@
     font-weight: 700;
 }
 
-.dialogawp-wizard-goal-icon {
+.dialoga-wizard-goal-icon {
     margin-bottom: 16px;
 }
 
-.dialogawp-wizard-goal-card h3 {
+.dialoga-wizard-goal-card h3 {
     font-family: var(--wiz-font-heading);
     font-size: 20px;
     font-weight: 700;
@@ -822,7 +822,7 @@
     flex-wrap: wrap;
 }
 
-.dialogawp-wizard-pro-badge {
+.dialoga-wizard-pro-badge {
     display: inline-block;
     background: linear-gradient(135deg, #190F4F 0%, #007D75 100%) !important;
     color: #fff !important;
@@ -836,31 +836,31 @@
     line-height: 1;
 }
 
-.dialogawp-wizard-pro-badge-sm {
+.dialoga-wizard-pro-badge-sm {
     font-size: 8px !important;
     padding: 2px 6px !important;
 }
 
-.dialogawp-wizard-goal-card p {
+.dialoga-wizard-goal-card p {
     font-size: 14px;
     color: var(--wiz-gray-500);
     line-height: 1.5;
     margin: 0 0 16px;
 }
 
-.dialogawp-wizard-goal-card ul {
+.dialoga-wizard-goal-card ul {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
-.dialogawp-wizard-goal-card li {
+.dialoga-wizard-goal-card li {
     font-size: 13px;
     color: var(--wiz-gray-600);
     padding: 4px 0;
 }
 
-.dialogawp-wizard-goal-card li::before {
+.dialoga-wizard-goal-card li::before {
     content: '\2713';
     color: var(--wiz-green);
     font-weight: 700;
@@ -871,14 +871,14 @@
    Visibility Step
    ========================================================================== */
 
-.dialogawp-wizard-visibility-grid {
+.dialoga-wizard-visibility-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 16px;
     margin-top: 8px;
 }
 
-.dialogawp-wizard-visibility-card {
+.dialoga-wizard-visibility-card {
     background: #fff;
     border: 2px solid var(--wiz-gray-200);
     border-radius: var(--wiz-radius);
@@ -889,21 +889,21 @@
     font-family: var(--wiz-font-body);
 }
 
-.dialogawp-wizard-visibility-card:hover {
+.dialoga-wizard-visibility-card:hover {
     border-color: var(--wiz-blue-light);
 }
 
-.dialogawp-wizard-visibility-card.selected {
+.dialoga-wizard-visibility-card.selected {
     border-color: var(--wiz-secondary);
     background: var(--wiz-blue-pale);
     box-shadow: 0 0 0 3px rgba(0, 173, 161, 0.2);
 }
 
-.dialogawp-wizard-visibility-icon {
+.dialoga-wizard-visibility-icon {
     margin-bottom: 12px;
 }
 
-.dialogawp-wizard-visibility-card h3 {
+.dialoga-wizard-visibility-card h3 {
     font-family: var(--wiz-font-heading);
     font-size: 16px;
     font-weight: 700;
@@ -911,20 +911,20 @@
     color: var(--wiz-gray-900);
 }
 
-.dialogawp-wizard-visibility-card p {
+.dialoga-wizard-visibility-card p {
     font-size: 13px;
     color: var(--wiz-gray-500);
     line-height: 1.5;
     margin: 0;
 }
 
-.dialogawp-wizard-roles-grid {
+.dialoga-wizard-roles-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 8px;
 }
 
-.dialogawp-wizard-role-item {
+.dialoga-wizard-role-item {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -938,11 +938,11 @@
     transition: var(--wiz-transition);
 }
 
-.dialogawp-wizard-role-item:hover {
+.dialoga-wizard-role-item:hover {
     border-color: var(--wiz-blue-light);
 }
 
-.dialogawp-wizard-role-item input {
+.dialoga-wizard-role-item input {
     accent-color: var(--wiz-blue);
 }
 
@@ -950,21 +950,21 @@
    Review Step
    ========================================================================== */
 
-.dialogawp-wizard-review-grid {
+.dialoga-wizard-review-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 12px;
     margin-bottom: 28px;
 }
 
-.dialogawp-wizard-review-item {
+.dialoga-wizard-review-item {
     background: var(--wiz-gray-50);
     border: 1px solid var(--wiz-gray-200);
     border-radius: var(--wiz-radius-sm);
     padding: 16px;
 }
 
-.dialogawp-wizard-review-label {
+.dialoga-wizard-review-label {
     font-size: 11px;
     font-weight: 600;
     text-transform: uppercase;
@@ -973,35 +973,35 @@
     margin-bottom: 4px;
 }
 
-.dialogawp-wizard-review-value {
+.dialoga-wizard-review-value {
     font-size: 15px;
     font-weight: 600;
     color: var(--wiz-gray-800);
 }
 
 /* Creating / Complete / Error states */
-.dialogawp-wizard-creating,
-.dialogawp-wizard-complete,
-.dialogawp-wizard-error {
+.dialoga-wizard-creating,
+.dialoga-wizard-complete,
+.dialoga-wizard-error {
     text-align: center;
     padding: 32px 0;
 }
 
-.dialogawp-wizard-complete-icon,
-.dialogawp-wizard-error-icon {
+.dialoga-wizard-complete-icon,
+.dialoga-wizard-error-icon {
     font-size: 56px;
     margin-bottom: 16px;
 }
 
-.dialogawp-wizard-creating h3,
-.dialogawp-wizard-complete h2,
-.dialogawp-wizard-error h3 {
+.dialoga-wizard-creating h3,
+.dialoga-wizard-complete h2,
+.dialoga-wizard-error h3 {
     margin-bottom: 12px;
 }
 
-.dialogawp-wizard-creating p,
-.dialogawp-wizard-complete p,
-.dialogawp-wizard-error p {
+.dialoga-wizard-creating p,
+.dialoga-wizard-complete p,
+.dialoga-wizard-error p {
     color: var(--wiz-gray-500);
     font-size: 15px;
     line-height: 1.6;
@@ -1012,7 +1012,7 @@
    Buttons
    ========================================================================== */
 
-.dialogawp-wizard-btn {
+.dialoga-wizard-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -1029,74 +1029,74 @@
     line-height: 1.4;
 }
 
-.dialogawp-wizard-btn:disabled {
+.dialoga-wizard-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
 }
 
-.dialogawp-wizard-btn-primary {
+.dialoga-wizard-btn-primary {
     background: var(--wiz-blue);
     color: #fff;
 }
 
-.dialogawp-wizard-btn-primary:hover:not(:disabled) {
+.dialoga-wizard-btn-primary:hover:not(:disabled) {
     background: #110A38;
 }
 
-.dialogawp-wizard-btn-primary.dialogawp-wizard-btn-lg {
+.dialoga-wizard-btn-primary.dialoga-wizard-btn-lg {
     background: var(--wiz-accent);
     color: #26233A;
 }
 
-.dialogawp-wizard-btn-primary.dialogawp-wizard-btn-lg:hover:not(:disabled) {
+.dialoga-wizard-btn-primary.dialoga-wizard-btn-lg:hover:not(:disabled) {
     background: #E95539;
 }
 
-.dialogawp-wizard-btn-outline {
+.dialoga-wizard-btn-outline {
     background: #fff;
     color: var(--wiz-blue);
     border: 2px solid var(--wiz-blue);
 }
 
-.dialogawp-wizard-btn-outline:hover:not(:disabled) {
+.dialoga-wizard-btn-outline:hover:not(:disabled) {
     background: var(--wiz-blue-pale);
 }
 
-.dialogawp-wizard-btn-ghost {
+.dialoga-wizard-btn-ghost {
     background: none;
     color: var(--wiz-gray-500);
     border: none;
 }
 
-.dialogawp-wizard-btn-ghost:hover:not(:disabled) {
+.dialoga-wizard-btn-ghost:hover:not(:disabled) {
     color: var(--wiz-gray-700);
 }
 
-.dialogawp-wizard-btn-lg {
+.dialoga-wizard-btn-lg {
     padding: 14px 32px;
     font-size: 16px;
 }
 
-.dialogawp-wizard-btn-sm {
+.dialoga-wizard-btn-sm {
     padding: 6px 16px;
     font-size: 13px;
 }
 
-.dialogawp-wizard-btn-full {
+.dialoga-wizard-btn-full {
     width: 100%;
 }
 
-.dialogawp-wizard-wrap button:focus-visible,
-.dialogawp-wizard-wrap a:focus-visible,
-.dialogawp-wizard-wrap input:focus-visible,
-.dialogawp-wizard-wrap select:focus-visible,
-.dialogawp-wizard-wrap textarea:focus-visible {
+.dialoga-wizard-wrap button:focus-visible,
+.dialoga-wizard-wrap a:focus-visible,
+.dialoga-wizard-wrap input:focus-visible,
+.dialoga-wizard-wrap select:focus-visible,
+.dialoga-wizard-wrap textarea:focus-visible {
     outline: 3px solid var(--wiz-secondary);
     outline-offset: 3px;
 }
 
-.dialogawp-wizard-step h1[tabindex="-1"]:focus,
-.dialogawp-wizard-step h2[tabindex="-1"]:focus {
+.dialoga-wizard-step h1[tabindex="-1"]:focus,
+.dialoga-wizard-step h2[tabindex="-1"]:focus {
     outline: none;
 }
 
@@ -1104,7 +1104,7 @@
    Footer
    ========================================================================== */
 
-.dialogawp-wizard-footer {
+.dialoga-wizard-footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -1114,7 +1114,7 @@
     flex-shrink: 0;
 }
 
-.dialogawp-wizard-step-label {
+.dialoga-wizard-step-label {
     font-size: 13px;
     color: var(--wiz-gray-400);
     font-weight: 500;
@@ -1125,141 +1125,141 @@
    ========================================================================== */
 
 @media (max-width: 768px) {
-    .dialogawp-wizard-header {
+    .dialoga-wizard-header {
         padding: 12px 16px;
     }
 
-    .dialogawp-wizard-progress {
+    .dialoga-wizard-progress {
         display: none;
     }
 
-    .dialogawp-wizard-content {
+    .dialoga-wizard-content {
         padding: 24px 16px;
     }
 
-    .dialogawp-wizard-card {
+    .dialoga-wizard-card {
         padding: 28px 20px;
     }
 
-    .dialogawp-wizard-card h1 {
+    .dialoga-wizard-card h1 {
         font-size: 22px;
     }
 
-    .dialogawp-wizard-radio-group {
+    .dialoga-wizard-radio-group {
         flex-direction: column;
     }
 
-    .dialogawp-wizard-radio-group-3 {
+    .dialoga-wizard-radio-group-3 {
         grid-template-columns: 1fr;
     }
 
-    .dialogawp-wizard-goal-grid,
-    .dialogawp-wizard-goal-grid-3,
-    .dialogawp-wizard-goal-grid-4 {
+    .dialoga-wizard-goal-grid,
+    .dialoga-wizard-goal-grid-3,
+    .dialoga-wizard-goal-grid-4 {
         grid-template-columns: 1fr 1fr;
     }
 
-    .dialogawp-wizard-visibility-grid {
+    .dialoga-wizard-visibility-grid {
         grid-template-columns: 1fr;
     }
 
-    .dialogawp-wizard-roles-grid {
+    .dialoga-wizard-roles-grid {
         grid-template-columns: 1fr 1fr;
     }
 
-    .dialogawp-wizard-review-grid {
+    .dialoga-wizard-review-grid {
         grid-template-columns: 1fr;
     }
 
-    .dialogawp-wizard-footer {
+    .dialoga-wizard-footer {
         padding: 12px 16px;
     }
 
-    .dialogawp-wizard-welcome-steps {
+    .dialoga-wizard-welcome-steps {
         gap: 8px;
     }
 }
 
 @media (max-width: 520px) {
-    .dialogawp-wizard-header {
+    .dialoga-wizard-header {
         align-items: stretch;
         flex-direction: column;
         gap: 10px;
     }
 
-    .dialogawp-wizard-brand {
+    .dialoga-wizard-brand {
         justify-content: center;
     }
 
-    .dialogawp-wizard-brand-logo {
+    .dialoga-wizard-brand-logo {
         height: 44px;
     }
 
-    .dialogawp-wizard-header-actions {
+    .dialoga-wizard-header-actions {
         display: grid;
         grid-template-columns: 1fr 1fr;
         width: 100%;
     }
 
-    .dialogawp-wizard-save-pill {
+    .dialoga-wizard-save-pill {
         grid-column: 1 / -1;
         justify-self: center;
     }
 
-    .dialogawp-wizard-exit-btn,
-    .dialogawp-wizard-skip-btn {
+    .dialoga-wizard-exit-btn,
+    .dialoga-wizard-skip-btn {
         justify-content: center;
         text-align: center;
     }
 
-    .dialogawp-wizard-content {
+    .dialoga-wizard-content {
         padding: 16px 12px;
     }
 
-    .dialogawp-wizard-card {
+    .dialoga-wizard-card {
         padding: 24px 16px;
         border-radius: var(--wiz-radius-sm);
     }
 
-    .dialogawp-wizard-card h2 {
+    .dialoga-wizard-card h2 {
         font-size: 21px;
     }
 
-    .dialogawp-wizard-welcome-step {
+    .dialoga-wizard-welcome-step {
         gap: 12px;
         padding: 12px;
     }
 
-    .dialogawp-wizard-welcome-arrow {
+    .dialoga-wizard-welcome-arrow {
         display: none;
     }
 
-    .dialogawp-wizard-goal-grid,
-    .dialogawp-wizard-goal-grid-3,
-    .dialogawp-wizard-goal-grid-4,
-    .dialogawp-wizard-roles-grid {
+    .dialoga-wizard-goal-grid,
+    .dialoga-wizard-goal-grid-3,
+    .dialoga-wizard-goal-grid-4,
+    .dialoga-wizard-roles-grid {
         grid-template-columns: 1fr;
     }
 
-    .dialogawp-wizard-key-row {
+    .dialoga-wizard-key-row {
         align-items: stretch;
         flex-direction: column;
     }
 
-    .dialogawp-wizard-footer {
+    .dialoga-wizard-footer {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 8px;
         padding: 10px 12px;
     }
 
-    .dialogawp-wizard-step-label {
+    .dialoga-wizard-step-label {
         grid-column: 1 / -1;
         grid-row: 1;
         text-align: center;
     }
 
-    .dialogawp-wizard-footer .dialogawp-wizard-btn {
+    .dialoga-wizard-footer .dialoga-wizard-btn {
         width: 100%;
         padding-left: 12px;
         padding-right: 12px;
@@ -1267,9 +1267,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .dialogawp-wizard-wrap *,
-    .dialogawp-wizard-wrap *::before,
-    .dialogawp-wizard-wrap *::after {
+    .dialoga-wizard-wrap *,
+    .dialoga-wizard-wrap *::before,
+    .dialoga-wizard-wrap *::after {
         scroll-behavior: auto !important;
         transition-duration: 0.01ms !important;
         animation-duration: 0.01ms !important;

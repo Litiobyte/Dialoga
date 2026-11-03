@@ -45,7 +45,7 @@ const NODE_COLORS = {
 };
 
 function t(message) {
-    const messages = window.dialogawpAdmin && window.dialogawpAdmin.i18n;
+    const messages = window.dialogaAdmin && window.dialogaAdmin.i18n;
     return messages && Object.prototype.hasOwnProperty.call(messages, message)
         ? messages[message]
         : message;
@@ -77,14 +77,14 @@ function toCanvasNodes(nodes) {
     return [
         {
             id: START_NODE_ID,
-            type: 'dialogawpStart',
+            type: 'dialogaStart',
             position: { x: 220, y: 28 },
             data: {},
             draggable: false,
             selectable: false,
             deletable: false,
         },
-        ...nodes.map(node => ({ ...clone(node), type: 'dialogawpNode' })),
+        ...nodes.map(node => ({ ...clone(node), type: 'dialogaNode' })),
     ];
 }
 
@@ -92,7 +92,7 @@ function toCanvasEdges(edges, nodes) {
     const nodeTypes = new Map(nodes.map(node => [node.id, node.data && node.data.nodeType]));
     return edges.map(edge => ({
         ...clone(edge),
-        type: nodeTypes.get(edge.source) === 'loop' ? 'dialogawpLoop' : 'dialogawpEdge',
+        type: nodeTypes.get(edge.source) === 'loop' ? 'dialogaLoop' : 'dialogaEdge',
         markerEnd: {
             type: MarkerType.ArrowClosed,
             color: nodeTypes.get(edge.source) === 'loop' ? '#FF5722' : '#00ADA1',
@@ -160,7 +160,7 @@ function nodeLabel(node, nodes, edges) {
     return data.label || data.message || data.question || data.output_message || t('Untitled');
 }
 
-function DialogaWPNode({ id, data, selected }) {
+function DialogaNode({ id, data, selected }) {
     const canvas = useContext(CanvasContext);
     const updateNodeInternals = useUpdateNodeInternals();
     const node = canvas.nodes.find(candidate => candidate.id === id) || { id, data };
@@ -175,22 +175,22 @@ function DialogaWPNode({ id, data, selected }) {
 
     const removeNode = event => {
         event.stopPropagation();
-        if (window.dialogawpBuilder && window.dialogawpBuilder.deleteNode) {
-            window.dialogawpBuilder.selectedNode = clone(node);
-            window.dialogawpBuilder.deleteNode();
+        if (window.dialogaBuilder && window.dialogaBuilder.deleteNode) {
+            window.dialogaBuilder.selectedNode = clone(node);
+            window.dialogaBuilder.deleteNode();
         }
     };
 
     return (
         <div
-            className={'dialogawp-rf-node' + (selected ? ' is-selected' : '')}
+            className={'dialoga-rf-node' + (selected ? ' is-selected' : '')}
             style={{ '--node-background': colors.background, '--node-border': colors.border, '--node-text': colors.text }}
             data-node-id={id}
         >
             <Handle type="target" position={Position.Top} title={t('Input')} />
-            <button className="dialogawp-node-delete nodrag nopan" type="button" onClick={removeNode} title={t('Delete node')}>×</button>
-            <div className="dialogawp-rf-node-type">{nodeTypeLabel(type)}</div>
-            <div className="dialogawp-rf-node-label">{nodeLabel(node, canvas.nodes, canvas.edges)}</div>
+            <button className="dialoga-node-delete nodrag nopan" type="button" onClick={removeNode} title={t('Delete node')}>×</button>
+            <div className="dialoga-rf-node-type">{nodeTypeLabel(type)}</div>
+            <div className="dialoga-rf-node-label">{nodeLabel(node, canvas.nodes, canvas.edges)}</div>
             {type === 'branch' && groups.length > 0 ? groups.map((group, index) => (
                 <Handle
                     key={group.id}
@@ -214,14 +214,14 @@ function DialogaWPNode({ id, data, selected }) {
 
 function StartNode() {
     return (
-        <div className="dialogawp-rf-start" data-start-node="true">
+        <div className="dialoga-rf-start" data-start-node="true">
             <span>▶ {t('Chat starts here')}</span>
             <Handle type="source" position={Position.Bottom} data-start-handle="true" title={t('Click to connect to first node')} />
         </div>
     );
 }
 
-function DialogaWPEdge(props) {
+function DialogaEdge(props) {
     const canvas = useContext(CanvasContext);
     const [hovered, setHovered] = useState(false);
     const hoverTimer = useRef(null);
@@ -262,7 +262,7 @@ function DialogaWPEdge(props) {
             <EdgeLabelRenderer>
                 <button
                     type="button"
-                    className="dialogawp-rf-edge-delete nodrag nopan"
+                    className="dialoga-rf-edge-delete nodrag nopan"
                     style={{ transform: `translate(-50%, -50%) translate(${labelX}px, ${labelY}px)` }}
                     onMouseEnter={() => {
                         window.clearTimeout(hoverTimer.current);
@@ -292,12 +292,12 @@ function CanvasInner(props) {
 
     const notifyChanged = useCallback(() => {
         if (window.jQuery) {
-            window.jQuery(document).trigger('dialogawp:canvas-changed');
+            window.jQuery(document).trigger('dialoga:canvas-changed');
         }
     }, []);
 
     const refreshSelectedEditor = useCallback((source, target) => {
-        const builder = window.dialogawpBuilder;
+        const builder = window.dialogaBuilder;
         if (!builder || !builder.selectedNode || !builder.selectNode) return;
         const selected = builder.selectedNode;
         if ((selected.id === target && selected.data.nodeType === 'branch') ||
@@ -315,8 +315,8 @@ function CanvasInner(props) {
 
     const confirmDeleteEdge = useCallback(edgeId => {
         const remove = () => removeEdge(edgeId);
-        if (window.dialogawpModal && window.dialogawpModal.confirm) {
-            window.dialogawpModal.confirm(t('Delete this connection?'), remove, {
+        if (window.dialogaModal && window.dialogaModal.confirm) {
+            window.dialogaModal.confirm(t('Delete this connection?'), remove, {
                 title: t('Delete Connection'),
                 okText: t('Delete'),
                 danger: true,
@@ -381,18 +381,18 @@ function CanvasInner(props) {
                 panOffset: { x: viewportRef.current.x, y: viewportRef.current.y },
             }),
         };
-        window.dialogawpReactInstance = api;
+        window.dialogaReactInstance = api;
         return () => {
-            if (window.dialogawpReactInstance === api) delete window.dialogawpReactInstance;
+            if (window.dialogaReactInstance === api) delete window.dialogaReactInstance;
         };
     }, [setFlow]);
 
     const onDrop = useCallback(event => {
         event.preventDefault();
-        const nodeType = event.dataTransfer.getData('dialogawp/node-type');
-        if (!nodeType || !window.dialogawpBuilder || !window.dialogawpBuilder.addNodeAtPosition) return;
+        const nodeType = event.dataTransfer.getData('dialoga/node-type');
+        if (!nodeType || !window.dialogaBuilder || !window.dialogaBuilder.addNodeAtPosition) return;
         const position = screenToFlowPosition({ x: event.clientX, y: event.clientY });
-        window.dialogawpBuilder.addNodeAtPosition(nodeType, position.x, position.y, false);
+        window.dialogaBuilder.addNodeAtPosition(nodeType, position.x, position.y, false);
     }, [screenToFlowPosition]);
 
     const context = useMemo(() => ({
@@ -402,23 +402,23 @@ function CanvasInner(props) {
     }), [nodes, edges, confirmDeleteEdge]);
 
     const edgeTypes = useMemo(() => ({
-        dialogawpEdge: DialogaWPEdge,
-        dialogawpLoop: DialogaWPEdge,
+        dialogaEdge: DialogaEdge,
+        dialogaLoop: DialogaEdge,
     }), []);
     const nodeTypes = useMemo(() => ({
-        dialogawpNode: DialogaWPNode,
-        dialogawpStart: StartNode,
+        dialogaNode: DialogaNode,
+        dialogaStart: StartNode,
     }), []);
 
     return (
         <CanvasContext.Provider value={context}>
-            <div className="dialogawp-rf-canvas" onDrop={onDrop} onDragOver={event => {
+            <div className="dialoga-rf-canvas" onDrop={onDrop} onDragOver={event => {
                 event.preventDefault();
                 event.dataTransfer.dropEffect = 'copy';
             }}>
                 <ReactFlow
                     nodes={nodes}
-                    edges={edges.map(edge => ({ ...edge, data: { ...(edge.data || {}), loop: edge.type === 'dialogawpLoop' } }))}
+                    edges={edges.map(edge => ({ ...edge, data: { ...(edge.data || {}), loop: edge.type === 'dialogaLoop' } }))}
                     nodeTypes={nodeTypes}
                     edgeTypes={edgeTypes}
                     onNodesChange={onNodesChange}
@@ -464,10 +464,10 @@ function CanvasInner(props) {
                             : (NODE_COLORS[nodeTypeForDisplay(node)] || NODE_COLORS.message).border}
                     />
                 </ReactFlow>
-                <div className="dialogawp-rf-count">{(nodesRef.current.length === 1 ? t('%s node') : t('%s nodes')).replace('%s', nodesRef.current.length)}</div>
+                <div className="dialoga-rf-count">{(nodesRef.current.length === 1 ? t('%s node') : t('%s nodes')).replace('%s', nodesRef.current.length)}</div>
                 {nodesRef.current.length === 0 ? (
-                    <div className="dialogawp-rf-empty">
-                        <img src={(window.dialogawpAdmin && window.dialogawpAdmin.logoUrl) || ''} alt="DialogaWP" />
+                    <div className="dialoga-rf-empty">
+                        <img src={(window.dialogaAdmin && window.dialogaAdmin.logoUrl) || ''} alt="Dialoga" />
                         <div>{t('Drag nodes from palette above or click buttons to add')}</div>
                     </div>
                 ) : null}
@@ -484,4 +484,4 @@ function FlowCanvas(props) {
     );
 }
 
-window.dialogawpCanvasComponent = FlowCanvas;
+window.dialogaCanvasComponent = FlowCanvas;

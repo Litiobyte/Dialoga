@@ -1,80 +1,80 @@
 /*
- * DialogaWP — analytics screen styles.
+ * Dialoga — analytics screen styles.
  *
  * Was a nowdoc in templates/admin/analytics.php passed to wp_add_inline_style().
  * That call ran while the page BODY rendered, by which point WP_Styles had
- * already printed the 'dialogawp-admin' handle and put it in $done — so
+ * already printed the 'dialoga-admin' handle and put it in $done — so
  * print_late_styles() skipped it and none of this CSS ever reached the page.
- * Enqueued per-screen from DialogaWP::enqueue_admin_assets() instead.
+ * Enqueued per-screen from Dialoga::enqueue_admin_assets() instead.
  */
 
-.dialogawp-analytics-wrap { max-width: 1240px; color: #26233A; }
-.dialogawp-screen-header { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin: 20px 0 24px; padding-bottom: 20px; border-bottom: 1px solid #E5E7EF; }
-.dialogawp-screen-header h1 { padding: 0; color: #190F4F; font-size: 26px; font-weight: 700; line-height: 1.2; }
-.dialogawp-screen-header p { margin: 6px 0 0; color: #64748B; font-size: 14px; }
-.dialogawp-analytics-filter { background: #fff; border: 1px solid #E5E7EF; border-radius: 12px; padding: 18px 20px; margin-bottom: 16px; box-shadow: 0 1px 2px rgba(25,15,79,0.04); }
-.dialogawp-analytics-filter label { font-size: 12px; font-weight: 600; color: #64748B; text-transform: uppercase; letter-spacing: 0.04em; }
-.dialogawp-analytics-presets { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
-.dialogawp-analytics-preset { padding: 5px 12px; border: 1px solid #E5E7EF; border-radius: 999px; background: #F7F8FC; color: #374151; font-size: 12px; font-weight: 600; text-decoration: none; transition: border-color 0.15s, background 0.15s, color 0.15s; }
-.dialogawp-analytics-preset:hover { border-color: #00ADA1; background: #E6F7F5; color: #006A63; }
-.dialogawp-analytics-preset.is-active { border-color: #190F4F; background: #190F4F; color: #fff; }
-.dialogawp-analytics-date-fields { display: flex; align-items: flex-end; gap: 15px; }
-.dialogawp-analytics-date-fields > div { display: grid; gap: 5px; }
-.dialogawp-analytics-date-fields input { min-height: 36px; }
-.dialogawp-analytics-date-fields .button-primary { min-height: 36px; border-color: #007D75; background: #007D75; }
-.dialogawp-analytics-date-fields .button-primary:hover { border-color: #006A63; background: #006A63; }
-.dialogawp-analytics-definition { margin: 0 0 20px; padding: 12px 14px; border-left: 3px solid #00ADA1; border-radius: 4px; background: #F1F5F9; color: #64748B; font-size: 13px; line-height: 1.55; }
-.dialogawp-analytics-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
-.dialogawp-analytics-stat { min-width: 0; background: #fff; border: 1px solid #E5E7EF; border-radius: 12px; padding: 20px; box-shadow: 0 1px 2px rgba(25,15,79,0.04); }
-.dialogawp-analytics-stat h3 { margin: 0 0 12px; font-size: 13px; font-weight: 600; color: #64748B; text-transform: uppercase; letter-spacing: 0.04em; }
-.dialogawp-analytics-stat-value { font-size: 32px; font-weight: 700; color: #26233A; line-height: 1; }
-.dialogawp-analytics-stat-label { font-size: 12px; color: #94A3B8; margin-top: 6px; }
-.dialogawp-analytics-stat-accent-1 { border-top: 3px solid #00ADA1; }
-.dialogawp-analytics-stat-accent-2 { border-top: 3px solid #10B981; }
-.dialogawp-analytics-stat-accent-3 { border-top: 3px solid #8B5CF6; }
-.dialogawp-analytics-stat-accent-4 { border-top: 3px solid #F59E0B; }
-.dialogawp-analytics-stat-accent-5 { border-top: 3px solid #0EA5E9; }
-.dialogawp-analytics-content { position: relative; }
-.dialogawp-analytics-loading { display: none; position: absolute; inset: 0; z-index: 50; background: rgba(248, 250, 252, 0.85); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); border-radius: 12px; align-items: flex-start; justify-content: center; padding-top: 60px; }
-.dialogawp-analytics-content.is-loading .dialogawp-analytics-loading { display: flex; }
-.dialogawp-analytics-spinner { width: 40px; height: 40px; border: 4px solid #E5E7EF; border-top-color: #00ADA1; border-radius: 50%; animation: dialogawp-analytics-spin 0.8s linear infinite; }
-.dialogawp-analytics-loading-text { margin-left: 14px; font-size: 14px; color: #475569; font-weight: 500; line-height: 40px; }
-.dialogawp-analytics-section-description { margin-top: 0; color: #64748B; }
-.dialogawp-analytics-dropoff { display: flex; align-items: center; gap: 20px; padding: 16px 20px; border: 1px solid #F59E0B; border-radius: 8px; background: #FFFBEB; }
-.dialogawp-analytics-dropoff-value { color: #B45309; font-size: 32px; font-weight: 700; }
-.dialogawp-analytics-dropoff-label { font-size: 14px; }
-.dialogawp-analytics-dropoff-node { font-size: 15px; }
-.dialogawp-analytics-dropoff-type { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 4px; background: #F59E0B; color: #fff; font-size: 11px; }
-.dialogawp-chart-canvas { position: relative; }
-.dialogawp-chart-canvas-trend { height: 280px; padding: 8px 4px 0; }
-.dialogawp-chart-canvas-donut { height: 220px; }
-.dialogawp-chart-canvas-sources { height: var(--dialogawp-chart-height); margin-bottom: 16px; }
-.dialogawp-analytics-conversion-layout { display: grid; grid-template-columns: 280px minmax(0, 1fr); align-items: center; gap: 24px; }
-.dialogawp-analytics-conversion-copy { color: #475569; font-size: 14px; line-height: 1.6; }
-.dialogawp-analytics-conversion-copy p { margin: 0 0 10px; }
-.dialogawp-analytics-conversion-tip { color: #64748B; font-size: 13px; }
-.dialogawp-analytics-heading-meta { margin-left: 6px; color: #94A3B8; font-size: 11px; font-weight: 500; }
-.dialogawp-analytics-empty { padding: 40px; color: #64748B; text-align: center; }
-.dialogawp-table-scroll { max-width: 100%; overflow-x: auto; }
-.dialogawp-analytics-wrap .dialogawp-leads-table { min-width: 560px; }
-.dialogawp-analytics-source-page { max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; font-weight: 400; }
-.dialogawp-analytics-count-link { color: #007D75; font-weight: 600; text-decoration: none; }
-.dialogawp-analytics-count-link span { margin-left: 4px; color: #94A3B8; font-size: 11px; }
-.dialogawp-analytics-pro-promo { border: 1px solid #E5E7EF; border-left: 4px solid #FD6A4D; background: linear-gradient(135deg, #F7F8FC, #FFF7ED); }
-.dialogawp-analytics-pro-promo h2 { color: #26233A; }
-.dialogawp-analytics-pro-promo p { color: #475569; }
-.dialogawp-analytics-wrap :where(a, button, input, .button):focus-visible,
-.dialogawp-analytics-wrap .dialogawp-table-scroll:focus-visible { outline: 2px solid #007D75; outline-offset: 2px; box-shadow: none; }
-@keyframes dialogawp-analytics-spin { to { transform: rotate(360deg); } }
-@media (prefers-reduced-motion: reduce) { .dialogawp-analytics-spinner { animation-duration: 1.6s; } }
+.dialoga-analytics-wrap { max-width: 1240px; color: #26233A; }
+.dialoga-screen-header { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin: 20px 0 24px; padding-bottom: 20px; border-bottom: 1px solid #E5E7EF; }
+.dialoga-screen-header h1 { padding: 0; color: #190F4F; font-size: 26px; font-weight: 700; line-height: 1.2; }
+.dialoga-screen-header p { margin: 6px 0 0; color: #64748B; font-size: 14px; }
+.dialoga-analytics-filter { background: #fff; border: 1px solid #E5E7EF; border-radius: 12px; padding: 18px 20px; margin-bottom: 16px; box-shadow: 0 1px 2px rgba(25,15,79,0.04); }
+.dialoga-analytics-filter label { font-size: 12px; font-weight: 600; color: #64748B; text-transform: uppercase; letter-spacing: 0.04em; }
+.dialoga-analytics-presets { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+.dialoga-analytics-preset { padding: 5px 12px; border: 1px solid #E5E7EF; border-radius: 999px; background: #F7F8FC; color: #374151; font-size: 12px; font-weight: 600; text-decoration: none; transition: border-color 0.15s, background 0.15s, color 0.15s; }
+.dialoga-analytics-preset:hover { border-color: #00ADA1; background: #E6F7F5; color: #006A63; }
+.dialoga-analytics-preset.is-active { border-color: #190F4F; background: #190F4F; color: #fff; }
+.dialoga-analytics-date-fields { display: flex; align-items: flex-end; gap: 15px; }
+.dialoga-analytics-date-fields > div { display: grid; gap: 5px; }
+.dialoga-analytics-date-fields input { min-height: 36px; }
+.dialoga-analytics-date-fields .button-primary { min-height: 36px; border-color: #007D75; background: #007D75; }
+.dialoga-analytics-date-fields .button-primary:hover { border-color: #006A63; background: #006A63; }
+.dialoga-analytics-definition { margin: 0 0 20px; padding: 12px 14px; border-left: 3px solid #00ADA1; border-radius: 4px; background: #F1F5F9; color: #64748B; font-size: 13px; line-height: 1.55; }
+.dialoga-analytics-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+.dialoga-analytics-stat { min-width: 0; background: #fff; border: 1px solid #E5E7EF; border-radius: 12px; padding: 20px; box-shadow: 0 1px 2px rgba(25,15,79,0.04); }
+.dialoga-analytics-stat h3 { margin: 0 0 12px; font-size: 13px; font-weight: 600; color: #64748B; text-transform: uppercase; letter-spacing: 0.04em; }
+.dialoga-analytics-stat-value { font-size: 32px; font-weight: 700; color: #26233A; line-height: 1; }
+.dialoga-analytics-stat-label { font-size: 12px; color: #94A3B8; margin-top: 6px; }
+.dialoga-analytics-stat-accent-1 { border-top: 3px solid #00ADA1; }
+.dialoga-analytics-stat-accent-2 { border-top: 3px solid #10B981; }
+.dialoga-analytics-stat-accent-3 { border-top: 3px solid #8B5CF6; }
+.dialoga-analytics-stat-accent-4 { border-top: 3px solid #F59E0B; }
+.dialoga-analytics-stat-accent-5 { border-top: 3px solid #0EA5E9; }
+.dialoga-analytics-content { position: relative; }
+.dialoga-analytics-loading { display: none; position: absolute; inset: 0; z-index: 50; background: rgba(248, 250, 252, 0.85); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); border-radius: 12px; align-items: flex-start; justify-content: center; padding-top: 60px; }
+.dialoga-analytics-content.is-loading .dialoga-analytics-loading { display: flex; }
+.dialoga-analytics-spinner { width: 40px; height: 40px; border: 4px solid #E5E7EF; border-top-color: #00ADA1; border-radius: 50%; animation: dialoga-analytics-spin 0.8s linear infinite; }
+.dialoga-analytics-loading-text { margin-left: 14px; font-size: 14px; color: #475569; font-weight: 500; line-height: 40px; }
+.dialoga-analytics-section-description { margin-top: 0; color: #64748B; }
+.dialoga-analytics-dropoff { display: flex; align-items: center; gap: 20px; padding: 16px 20px; border: 1px solid #F59E0B; border-radius: 8px; background: #FFFBEB; }
+.dialoga-analytics-dropoff-value { color: #B45309; font-size: 32px; font-weight: 700; }
+.dialoga-analytics-dropoff-label { font-size: 14px; }
+.dialoga-analytics-dropoff-node { font-size: 15px; }
+.dialoga-analytics-dropoff-type { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 4px; background: #F59E0B; color: #fff; font-size: 11px; }
+.dialoga-chart-canvas { position: relative; }
+.dialoga-chart-canvas-trend { height: 280px; padding: 8px 4px 0; }
+.dialoga-chart-canvas-donut { height: 220px; }
+.dialoga-chart-canvas-sources { height: var(--dialoga-chart-height); margin-bottom: 16px; }
+.dialoga-analytics-conversion-layout { display: grid; grid-template-columns: 280px minmax(0, 1fr); align-items: center; gap: 24px; }
+.dialoga-analytics-conversion-copy { color: #475569; font-size: 14px; line-height: 1.6; }
+.dialoga-analytics-conversion-copy p { margin: 0 0 10px; }
+.dialoga-analytics-conversion-tip { color: #64748B; font-size: 13px; }
+.dialoga-analytics-heading-meta { margin-left: 6px; color: #94A3B8; font-size: 11px; font-weight: 500; }
+.dialoga-analytics-empty { padding: 40px; color: #64748B; text-align: center; }
+.dialoga-table-scroll { max-width: 100%; overflow-x: auto; }
+.dialoga-analytics-wrap .dialoga-leads-table { min-width: 560px; }
+.dialoga-analytics-source-page { max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; font-weight: 400; }
+.dialoga-analytics-count-link { color: #007D75; font-weight: 600; text-decoration: none; }
+.dialoga-analytics-count-link span { margin-left: 4px; color: #94A3B8; font-size: 11px; }
+.dialoga-analytics-pro-promo { border: 1px solid #E5E7EF; border-left: 4px solid #FD6A4D; background: linear-gradient(135deg, #F7F8FC, #FFF7ED); }
+.dialoga-analytics-pro-promo h2 { color: #26233A; }
+.dialoga-analytics-pro-promo p { color: #475569; }
+.dialoga-analytics-wrap :where(a, button, input, .button):focus-visible,
+.dialoga-analytics-wrap .dialoga-table-scroll:focus-visible { outline: 2px solid #007D75; outline-offset: 2px; box-shadow: none; }
+@keyframes dialoga-analytics-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .dialoga-analytics-spinner { animation-duration: 1.6s; } }
 @media (max-width: 960px) {
-    .dialogawp-analytics-stats { grid-template-columns: repeat(2, 1fr); }
+    .dialoga-analytics-stats { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 600px) {
-    .dialogawp-analytics-stats { grid-template-columns: 1fr; }
-    .dialogawp-analytics-date-fields { align-items: stretch; flex-direction: column; }
-    .dialogawp-analytics-date-fields .button { width: 100%; }
-    .dialogawp-analytics-conversion-layout { grid-template-columns: 1fr; }
-    .dialogawp-chart-canvas-donut { height: 240px; }
-    .dialogawp-analytics-dropoff { align-items: flex-start; }
+    .dialoga-analytics-stats { grid-template-columns: 1fr; }
+    .dialoga-analytics-date-fields { align-items: stretch; flex-direction: column; }
+    .dialoga-analytics-date-fields .button { width: 100%; }
+    .dialoga-analytics-conversion-layout { grid-template-columns: 1fr; }
+    .dialoga-chart-canvas-donut { height: 240px; }
+    .dialoga-analytics-dropoff { align-items: flex-start; }
 }

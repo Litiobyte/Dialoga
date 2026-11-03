@@ -1,7 +1,10 @@
 <?php
 /** Deterministic standalone regression suite: php tests/flow-transfer-test.php */
-define('ABSPATH', __DIR__ . '/');
-define('DIALOGAWP_VERSION', 'test-version');
+if (!defined('ABSPATH')) {
+    if (PHP_SAPI !== 'cli') { http_response_code(403); exit('CLI only.'); }
+    define('ABSPATH', __DIR__ . '/');
+}
+define('DIALOGA_VERSION', 'test-version');
 
 class Transfer_Response extends Exception {
     public $success;
@@ -33,10 +36,10 @@ function wp_roles() {
     };
 }
 function apply_filters($name, $value) {
-    return 'dialogawp_import_node_types' === $name ? array_merge($value, $GLOBALS['extra_types']) : $value;
+    return 'dialoga_import_node_types' === $name ? array_merge($value, $GLOBALS['extra_types']) : $value;
 }
 function add_action($hook, $callback) { $GLOBALS['hooks'][$hook] = $callback; }
-class DialogaWP_Frontend {
+class Dialoga_Frontend {
     public static function invalidate_flow_cache($id = 0) { $GLOBALS['invalidations'][] = $id; }
 }
 class Transfer_DB {
@@ -56,9 +59,11 @@ class Transfer_DB {
         $this->suppressed = $value;
         return $old;
     }
-    public function prepare($sql, $id) {
-        assert_test(false !== strpos($sql, '%d'), 'export IDs use prepared placeholders');
-        return $id;
+    public function prepare($sql, ...$args) {
+        // Real $wpdb replaces %i/%d placeholders with the passed args; return
+        // the last value like the identifier/value substitution would.
+        assert_test(false !== strpos($sql, '%d') || 1 === count($args), 'export IDs use prepared placeholders');
+        return $args ? $args[count($args) - 1] : $sql;
     }
     public function get_row($id) {
         ++$this->reads;
@@ -69,7 +74,7 @@ class Transfer_DB {
         return array_values($this->rows);
     }
     public function insert($table, $data, $formats) {
-        assert_test('wp_dialogawp_flows' === $table && count($formats) === count($data), 'insert table and formats');
+        assert_test('wp_dialoga_flows' === $table && count($formats) === count($data), 'insert table and formats');
         ++$this->inserts;
         if ($this->inserts === $this->fail_insert) {
             $this->last_error = 'PRIVATE SQL ERROR';
@@ -113,14 +118,14 @@ function endpoint($method, $payload = array()) {
         $_POST[$key] = is_string($value) ? addslashes($value) : addslashes(json_encode($value));
     }
     try {
-        call_user_func(array('DialogaWP_Flow_Transfer', $method));
+        call_user_func(array('Dialoga_Flow_Transfer', $method));
     } catch (Transfer_Response $response) {
         return $response;
     }
     throw new Exception('Endpoint did not send JSON.');
 }
 function fixture() {
-    return json_decode('{"format":"dialogawp-flows","version":1,"plugin_version":"elsewhere","flows":[{"flow_name":"Sales flow","visibility_mode":"specific_roles","visible_roles":["administrator"],"flow_data":{"nodes":[{"id":"n1","type":"custom","position":{"x":12.5,"y":-20},"data":{"nodeType":"question","message":"Hello","is_start":true,"auto_continue":false,"allow_multiple":false,"delay":0,"options":[{"id":"o1","label":"Yes"}]}},{"id":"n2","type":"custom","position":{"x":100,"y":200},"data":{"nodeType":"branch","output_groups":[{"id":"g1","label":"Match","logic":"and","conditions":[{"id":"c1","operator":"equals","value":"Yes"}]}]}},{"id":"n3","type":"custom","position":{"x":20,"y":300},"data":{"nodeType":"loop","target_node_id":"n1"}}],"edges":[{"id":"e1","source":"__start__","sourceHandle":null,"target":"n1","type":"smoothstep","animated":true},{"id":"e2","source":"n1","target":"n2"},{"id":"e3","source":"n2","sourceHandle":"g1","target":"n3"}]}}]}');
+    return json_decode('{"format":"dialoga-flows","version":1,"plugin_version":"elsewhere","flows":[{"flow_name":"Sales flow","visibility_mode":"specific_roles","visible_roles":["administrator"],"flow_data":{"nodes":[{"id":"n1","type":"custom","position":{"x":12.5,"y":-20},"data":{"nodeType":"question","message":"Hello","is_start":true,"auto_continue":false,"allow_multiple":false,"delay":0,"options":[{"id":"o1","label":"Yes"}]}},{"id":"n2","type":"custom","position":{"x":100,"y":200},"data":{"nodeType":"branch","output_groups":[{"id":"g1","label":"Match","logic":"and","conditions":[{"id":"c1","operator":"equals","value":"Yes"}]}]}},{"id":"n3","type":"custom","position":{"x":20,"y":300},"data":{"nodeType":"loop","target_node_id":"n1"}}],"edges":[{"id":"e1","source":"__start__","sourceHandle":null,"target":"n1","type":"smoothstep","animated":true},{"id":"e2","source":"n1","target":"n2"},{"id":"e3","source":"n2","sourceHandle":"g1","target":"n3"}]}}]}');
 }
 function rejection($mutate, $fragment) {
     reset_transfer();
@@ -133,14 +138,14 @@ function rejection($mutate, $fragment) {
 }
 
 reset_transfer();
-DialogaWP_Flow_Transfer::init();
+Dialoga_Flow_Transfer::init();
 assert_test(3 === count($GLOBALS['hooks']), 'three authenticated AJAX hooks');
 foreach (array('ajax_export', 'ajax_validate', 'ajax_import') as $method) {
     reset_transfer();
     $GLOBALS['nonce_ok'] = false;
     $response = endpoint($method);
     assert_test(!$response->success && 403 === $response->status, 'nonce denied: ' . $method);
-    assert_test(array(array('dialogawp_nonce', 'nonce', false)) === $GLOBALS['nonce_calls'], 'nonce contract');
+    assert_test(array(array('dialoga_nonce', 'nonce', false)) === $GLOBALS['nonce_calls'], 'nonce contract');
     assert_test(!$GLOBALS['cap_calls'] && !$GLOBALS['wpdb']->reads && !$GLOBALS['wpdb']->inserts, 'nonce fails closed');
     reset_transfer();
     $GLOBALS['cap_ok'] = false;
@@ -274,7 +279,7 @@ assert_test($response->success && !isset($config->headers) && array() === get_ob
 reset_transfer();
 $p = fixture();
 $raw = json_encode($p);
-$response = endpoint('ajax_validate', array('package' => $raw . str_repeat(' ', DialogaWP_Flow_Transfer::MAX_BYTES - strlen($raw))));
+$response = endpoint('ajax_validate', array('package' => $raw . str_repeat(' ', Dialoga_Flow_Transfer::MAX_BYTES - strlen($raw))));
 assert_test($response->success, 'exact 5 MiB boundary accepted');
 reset_transfer();
 $raw = str_replace('12.5', '1e999', json_encode(fixture()));
@@ -283,7 +288,7 @@ reset_transfer();
 $GLOBALS['wpdb']->fail_insert = 1;
 $response = endpoint('ajax_import', array('package' => fixture()));
 assert_test(!$response->success && !$GLOBALS['wpdb']->deletes && !$GLOBALS['wpdb']->rows, 'first insert failure has no cleanup targets');
-foreach (array('{bad', str_repeat(' ', DialogaWP_Flow_Transfer::MAX_BYTES + 1), '{"format":"dialogawp-flows","version":1,"flows":[],"n":1e999}') as $raw) {
+foreach (array('{bad', str_repeat(' ', Dialoga_Flow_Transfer::MAX_BYTES + 1), '{"format":"dialoga-flows","version":1,"flows":[],"n":1e999}') as $raw) {
     reset_transfer();
     $response = endpoint('ajax_import', array('package' => $raw));
     assert_test(!$response->success && !$GLOBALS['wpdb']->inserts, 'malformed/oversized/nonfinite JSON rejected');
@@ -297,7 +302,7 @@ $GLOBALS['wpdb']->rows[7]->flow_data = str_replace('question', 'unknown_type', $
 $response = endpoint('ajax_export', array('flow_ids' => array(7, 7)));
 assert_test($response->success && 1 === count($response->data['package']['flows']) && 2 === count($response->data['warnings']), 'export-only unknown roles/types preserved, duplicate IDs deduplicated');
 assert_test(array('format', 'version', 'plugin_version', 'flows') === array_keys($response->data['package']), 'exact export envelope');
-assert_test(DIALOGAWP_VERSION === $response->data['package']['plugin_version'], 'export plugin version');
+assert_test(DIALOGA_VERSION === $response->data['package']['plugin_version'], 'export plugin version');
 assert_test(!isset($response->data['package']['flows'][0]->id), 'no DB IDs exported');
 $override = $p->flows[0];
 $override->id = 7;

@@ -176,7 +176,7 @@
   "Email is sent with WordPress's built-in mailer. If your host blocks outgoing mail, install an SMTP plugin so these notifications deliver reliably.": "El correo se envía con el sistema integrado de WordPress. Si tu alojamiento bloquea el correo saliente, instala un plugin SMTP para que estas notificaciones se entreguen de forma fiable.",
   "Recipient Email": "Correo del destinatario",
   "Where to send the notification email.": "Dónde enviar el correo de notificación.",
-  "New Lead from DIALOGAWP": "Nuevo contacto de DIALOGAWP",
+  "New Lead from DIALOGA": "Nuevo contacto de DIALOGA",
   "Use variables like {user_name}, {user_email}, {user_phone}.": "Usa variables como {user_name}, {user_email}, {user_phone}.",
   "Email Body": "Cuerpo del correo",
   "Name: {user_name}...": "Nombre: {user_name}...",
