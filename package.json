@@ -5,6 +5,7 @@
   "description": "Build tooling for the Dialoga WordPress plugin.",
   "scripts": {
     "build": "node tools/build-canvas.mjs",
+    "package": "npm run build && bash tools/build-zip.sh",
     "watch": "node tools/build-canvas.mjs --watch",
     "test": "npm run build && php tests/flow-transfer-test.php && php tests/i18n-test.php && php tests/settings-test.php && node tests/canvas-build-test.cjs && node tests/canvas-browser-test.cjs",
     "env:start": "wp-env start",

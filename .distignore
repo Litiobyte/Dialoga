@@ -4,6 +4,7 @@
 /node_modules
 /tests
 /tools
+/src
 /.DS_Store
 /**/*.log
 /.env
@@ -15,3 +16,7 @@
 /.wp-env.json
 plugin-check-report.json
 readme-source.md
+README.md
+package.json
+package-lock.json
+/build

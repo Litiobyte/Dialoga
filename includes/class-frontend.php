@@ -1004,7 +1004,13 @@ JS;
 
         // Sanitize lead data
         $lead_data = array();
-        $_lead_data_post = isset($_POST['lead_data']) && is_array(wp_unslash($_POST['lead_data'])) ? wp_unslash($_POST['lead_data']) : array();
+        $_lead_data_post = array();
+        if (isset($_POST['lead_data'])) {
+            $_lead_data_post = wp_unslash($_POST['lead_data']);
+        }
+        if (!is_array($_lead_data_post)) {
+            $_lead_data_post = array();
+        }
         foreach ($_lead_data_post as $key => $value) {
             $lead_data[sanitize_key($key)] = sanitize_text_field($value);
         }

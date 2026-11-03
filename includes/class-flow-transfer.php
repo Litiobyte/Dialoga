@@ -180,7 +180,7 @@ class Dialoga_Flow_Transfer {
                 self::fail(sprintf(__('%s contains HTML or unsafe control characters; use plain text.', 'dialoga'), $path));
             }
             if (preg_match('/\.(?:url|redirect_url|button_url)$/', $path) && '' !== $value) {
-                $scheme = parse_url($value, PHP_URL_SCHEME);
+                $scheme = wp_parse_url($value, PHP_URL_SCHEME);
                 if (false === $scheme || (null !== $scheme && !in_array(strtolower($scheme), array('http', 'https', 'mailto', 'tel', 'sms'), true))) {
                     // translators: %s: JSON field path.
                     self::fail(sprintf(__('%s uses an unsupported URL scheme.', 'dialoga'), $path));
@@ -364,7 +364,7 @@ class Dialoga_Flow_Transfer {
     }
 
     private static function error_response($error) {
-        wp_send_json_error(array('message' => $error->getMessage()), $error->getCode() ?: 400);
+        wp_send_json_error(array('message' => sanitize_text_field($error->getMessage())), $error->getCode() ?: 400);
     }
 
     public static function ajax_export() {

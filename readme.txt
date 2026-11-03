@@ -1,4 +1,4 @@
-=== Dialoga – Chatbot Flows Made Easy, With or Without AI ===
+=== Dialoga - Chatbot Flows Made Easy, With or Without AI ===
 Contributors: litiobyte
 Tags: chatbot, lead generation, conversational form, lead capture, no-code
 Requires at least: 6.2

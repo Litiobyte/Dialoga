@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: Dialoga
+ * Plugin Name: Dialoga - Chatbot Flows Made Easy, With or Without AI
  * Plugin URI: https://www.litiobyte.com/labs-detalle.php?slug=dialoga
  * Description: Visual chatbot flow builder for WordPress with easy conversational flows, with or without AI.
  * Version: 1.0.0
@@ -207,8 +207,6 @@ class Dialoga {
     }
     
     public function activate() {
-        Dialoga_Database::rename_legacy_tables();
-        Dialoga_Database::rename_legacy_options();
         Dialoga_Database::create_tables();
         Dialoga_Database::migrate(); // Run migration for existing tables
         

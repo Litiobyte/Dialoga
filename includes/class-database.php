@@ -20,48 +20,6 @@ if (!defined('ABSPATH')) {
 class Dialoga_Database {
 
     /**
-     * Migration from the pre-1.0 "DialogaWP" era: table names carried the
-     * "dialogawp_" prefix. WordPress.org cannot accept plugins with "wp" in
-     * the slug, so the plugin was renamed to Dialoga at 1.0.0 and its tables
-     * renamed accordingly. RENAME preserves every row, index, and column.
-     * Idempotent — does nothing when legacy tables are absent/gone.
-     */
-    public static function rename_legacy_tables() {
-        global $wpdb;
-        $tables = array(
-            'dialoga_flows',
-            'dialoga_conversations',
-            'dialoga_leads',
-            'dialoga_analytics',
-            'dialoga_ai_knowledge',
-        );
-        foreach ($tables as $table) {
-            $legacy = $wpdb->prefix . 'dialogawp_' . substr($table, strlen('dialoga_'));
-            $current = $wpdb->prefix . $table;
-            $legacy_exists  = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $legacy));
-            $current_exists = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $current));
-            if ($legacy_exists && !$current_exists) {
-                $wpdb->query($wpdb->prepare("RENAME TABLE %i TO %i", $legacy, $current));
-            }
-        }
-    }
-
-    /**
-     * Migration from the pre-1.0 "DialogaWP" era: option names also carried
-     * the "dialogawp_" prefix (settings, AI settings, transients, etc.).
-     * One UPDATE per storage table renames everything in place; idempotent
-     * because REPLACE() is a no-op once no "dialogawp_" substring remains.
-     */
-    public static function rename_legacy_options() {
-        global $wpdb;
-        $wpdb->query(
-            "UPDATE {$wpdb->options}
-             SET option_name = REPLACE(option_name, 'dialogawp_', 'dialoga_')
-             WHERE option_name LIKE '%dialogawp\\_%'"
-        );
-    }
-
-    /**
      * Create database tables
      */
     public static function create_tables() {

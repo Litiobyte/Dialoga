@@ -584,7 +584,7 @@ class Dialoga_AI {
                 if (empty($_SERVER[$key])) {
                     continue;
                 }
-                foreach (explode(',', (string) wp_unslash($_SERVER[$key])) as $candidate) {
+                foreach (explode(',', sanitize_text_field(wp_unslash($_SERVER[$key]))) as $candidate) {
                     $candidate = trim($candidate);
                     if (filter_var($candidate, FILTER_VALIDATE_IP)) {
                         return $candidate;

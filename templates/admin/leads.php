@@ -13,7 +13,7 @@ $leads_table = $wpdb->prefix . 'dialoga_leads';
 // Handle status update
 if (isset($_POST['update_lead_status']) && check_admin_referer('dialoga_update_lead')) {
     $lead_id    = isset($_POST['lead_id']) ? absint(wp_unslash($_POST['lead_id'])) : 0;
-    $new_status = isset($_POST['status']) && is_string(wp_unslash($_POST['status'])) ? sanitize_key(wp_unslash($_POST['status'])) : '';
+    $new_status = isset($_POST['status']) ? sanitize_key(wp_unslash($_POST['status'])) : '';
     // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared -- admin write/update op; $wpdb->update() handles preparation internally.
     $wpdb->update($leads_table, array('status' => $new_status), array('id' => $lead_id), array('%s'), array('%d'));
     echo '<div class="notice notice-success"><p>' . esc_html__('Lead status updated!', 'dialoga') . '</p></div>';

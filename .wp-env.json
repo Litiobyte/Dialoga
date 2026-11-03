@@ -1,13 +1,15 @@
 {
   "phpVersion": "8.2",
-  "plugins": [
-    "/var/folders/2w/_41g_m7s1b3ds8bs1w06m15r0000gp/T/opencode/dialoga-check/dialoga"
-  ],
+  "plugins": [],
   "port": 8888,
+  "mappings": {
+    "wp-content/plugins/dialoga": "."
+  },
   "config": {
     "WP_DEBUG": true,
-    "WP_DEBUG_LOG": true,
-    "WP_DEBUG_DISPLAY": false,
-    "SCRIPT_DEBUG": true
+    "WP_DEBUG_LOG": true
+  },
+  "lifecycleScripts": {
+    "afterStart": "npx wp-env run cli wp plugin install plugin-check --activate"
   }
 }

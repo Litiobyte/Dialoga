@@ -47,39 +47,49 @@ class Dialoga_I18n {
                     // from the reviewed JSON catalogs, so switch on the
                     // known set instead of calling with variables.
                     if (isset($plural_messages[$msgid])) {
-                        // translators: %s: number of items the message plurals.
                         switch ($msgid) {
                             case "You've handled %s visitor conversations so far!":
+                                // translators: %s: number of visitor conversations handled.
                                 $messages[$msgid] = _n("You've handled %s visitor conversation so far!", "You've handled %s visitor conversations so far!", 2, 'dialoga');
                                 break;
                             case '%d admin test leads hidden':
+                                // translators: %d: number of admin test leads hidden.
                                 $messages[$msgid] = _n('%d admin test lead hidden', '%d admin test leads hidden', 2, 'dialoga');
                                 break;
                             case '%d leads':
+                                // translators: %d: number of leads.
                                 $messages[$msgid] = _n('%d lead', '%d leads', 2, 'dialoga');
                                 break;
                             case '%d link clicks':
+                                // translators: %d: number of link clicks.
                                 $messages[$msgid] = _n('%d link click', '%d link clicks', 2, 'dialoga');
                                 break;
                             case 'across %1$d visitors (%2$s avg)':
+                                // translators: %1$d: number of visitors; %2$s: average time.
                                 $messages[$msgid] = _n('across %1$d visitor (%2$s avg)', 'across %1$d visitors (%2$s avg)', 2, 'dialoga');
                                 break;
                             case 'across %d visitors':
+                                // translators: %d: number of visitors.
                                 $messages[$msgid] = _n('across %d visitor', 'across %d visitors', 2, 'dialoga');
                                 break;
                             case '%d active flows':
+                                // translators: %d: number of active flows.
                                 $messages[$msgid] = _n('%d active flow', '%d active flows', 2, 'dialoga');
                                 break;
                             case '%d conversations with lead data':
+                                // translators: %d: number of conversations with lead data.
                                 $messages[$msgid] = _n('%d conversation with lead data', '%d conversations with lead data', 2, 'dialoga');
                                 break;
                             case '%d conversations with conversion link clicks':
+                                // translators: %d: number of conversations with a conversion link click.
                                 $messages[$msgid] = _n('%d conversation with a conversion link click', '%d conversations with conversion link clicks', 2, 'dialoga');
                                 break;
                             case '%d lead records shown':
+                                // translators: %d: number of lead records shown.
                                 $messages[$msgid] = _n('%d lead record shown', '%d lead records shown', 2, 'dialoga');
                                 break;
                             case 'Lead records: %d results':
+                                // translators: %d: number of lead search results.
                                 $messages[$msgid] = _n('Lead records: %d result', 'Lead records: %d results', 2, 'dialoga');
                                 break;
                             default:

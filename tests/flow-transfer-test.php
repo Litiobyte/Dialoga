@@ -21,6 +21,10 @@ function wp_send_json_error($data, $status = 200) { throw new Transfer_Response(
 function wp_json_encode($value) { return json_encode($value); }
 function __($text, $domain = 'default') { return $text; }
 function wp_unslash($value) { return stripslashes($value); }
+function sanitize_text_field($value) {
+    return preg_replace('/[\r\n\t ]+/', ' ', trim((string) $value, " \t\n\r\0\x0B"));
+}
+function wp_parse_url($url, $component = -1) { return parse_url($url, $component); }
 function current_time($type) { return '2026-10-31 12:00:00'; }
 function check_ajax_referer($action, $field, $die = true) {
     $GLOBALS['nonce_calls'][] = array($action, $field, $die);

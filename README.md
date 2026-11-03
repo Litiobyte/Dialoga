@@ -102,6 +102,20 @@ Las traducciones administrativas se gestionan desde `languages/*-es.json`:
 node tools/build-translations.cjs
 ```
 
+## Empaquetado
+
+Genera el zip listo para subir a WordPress.org (o instalar manualmente):
+
+```bash
+npm run package
+```
+
+El comando construye el canvas y luego `tools/build-zip.sh`:
+
+- Recrea staging limpio en `build/dialoga/` copiando solo lo permitido por `.distignore` (excluye `tests/`, `tools/`, `src/`, `node_modules`, dotfiles y `build/`).
+- Produce `build/dialoga.zip` con la carpeta raíz `dialoga/` y valida que no contenga rutas de desarrollo ni archivos ocultos.
+- Imprime el listado final con `unzip -l` para inspección.
+
 ## Licencia
 
 Dialoga se distribuye bajo [GNU GPL v2 o posterior](https://www.gnu.org/licenses/gpl-2.0.html).

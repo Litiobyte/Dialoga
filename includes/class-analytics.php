@@ -1715,7 +1715,7 @@ class Dialoga_Analytics {
                      {$c_where_aliased}
                        AND a.event_type = 'link_clicked'
                        AND {$node_id_expr} IN ({$placeholders})",
-                    array_merge(array($analytics_table, $conv_table), $conversion_node_ids)
+                    ...array_merge(array($analytics_table, $conv_table), $conversion_node_ids)
                 )
             );
 
@@ -1732,7 +1732,7 @@ class Dialoga_Analytics {
                          (c.lead_data IS NOT NULL AND c.lead_data != '{}')
                          OR a.id IS NOT NULL
                        )",
-                    array_merge(array($conv_table, $analytics_table), $conversion_node_ids)
+                    ...array_merge(array($conv_table, $analytics_table), $conversion_node_ids)
                 )
             );
         }
