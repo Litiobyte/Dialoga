@@ -413,11 +413,11 @@
                             <div class="dialoga-wizard-roles-grid">
                                 <?php
                                 $wp_roles = wp_roles();
-                                foreach ($wp_roles->role_names as $role_slug => $role_name) :
+                                foreach ($wp_roles->role_names as $dialoga_role_slug => $dialoga_role_name) :
                                 ?>
                                 <label class="dialoga-wizard-role-item">
-                                    <input type="checkbox" class="dialoga-wizard-role-check" value="<?php echo esc_attr($role_slug); ?>" />
-                                    <?php echo esc_html(translate_user_role($role_name)); ?>
+                                    <input type="checkbox" class="dialoga-wizard-role-check" value="<?php echo esc_attr($dialoga_role_slug); ?>" />
+                                    <?php echo esc_html(translate_user_role($dialoga_role_name)); ?>
                                 </label>
                                 <?php endforeach; ?>
                             </div>

@@ -26,10 +26,10 @@ if (!defined('WP_UNINSTALL_PLUGIN')) {
 // v0.39.6: guard rail — preserve all Dialoga data unless the admin has
 // explicitly opted in. This makes the "Deactivate → Delete → Upload → Activate"
 // update workflow safe by default.
-$settings = get_option('dialoga_settings', array());
-$opt_in   = isset($settings['delete_data_on_uninstall']) && (int) $settings['delete_data_on_uninstall'] === 1;
+$dialoga_settings = get_option('dialoga_settings', array());
+$dialoga_opt_in   = isset($dialoga_settings['delete_data_on_uninstall']) && (int) $dialoga_settings['delete_data_on_uninstall'] === 1;
 
-if (!$opt_in) {
+if (!$dialoga_opt_in) {
     // Bail out — leave every table, option, and transient intact so the next
     // reinstall/activate finds all flows, leads, conversations, and analytics
     // exactly as they were.
@@ -39,15 +39,15 @@ if (!$opt_in) {
 global $wpdb;
 
 // Drop all DIALOGA tables — ONLY reached when the admin opted in above.
-$tables = array(
+$dialoga_tables = array(
     $wpdb->prefix . 'dialoga_flows',
     $wpdb->prefix . 'dialoga_conversations',
     $wpdb->prefix . 'dialoga_leads',
     $wpdb->prefix . 'dialoga_analytics'
 );
 
-foreach ($tables as $table) {
-    $wpdb->query($wpdb->prepare("DROP TABLE IF EXISTS %i", $table));
+foreach ($dialoga_tables as $dialoga_table) {
+    $wpdb->query($wpdb->prepare("DROP TABLE IF EXISTS %i", $dialoga_table));
 }
 
 // Delete all plugin options

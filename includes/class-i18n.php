@@ -93,9 +93,11 @@ class Dialoga_I18n {
                                 $messages[$msgid] = _n('Lead records: %d result', 'Lead records: %d results', 2, 'dialoga');
                                 break;
                             default:
+                                // phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText -- every $msgid is a reviewed literal from the bundled translation catalogs.
                                 $messages[$msgid] = __($msgid, 'dialoga');
                         }
                     } else {
+                        // phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText -- every $msgid is a reviewed literal from the bundled translation catalogs.
                         $messages[$msgid] = __($msgid, 'dialoga');
                     }
                 }

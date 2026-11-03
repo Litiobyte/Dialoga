@@ -14,9 +14,12 @@
 /.distignore
 /.nvmrc
 /.wp-env.json
+/.wp-env.package.json
 plugin-check-report.json
 readme-source.md
 README.md
 package.json
 package-lock.json
+/.wp-env.package.json
+/**/.*
 /build

@@ -10,15 +10,15 @@ if (!current_user_can('manage_options')) {
     wp_die(esc_html__('You do not have permission to manage these settings.', 'dialoga'));
 }
 
-$current_tab = isset($_GET['tab']) && is_string($_GET['tab']) ? sanitize_key(wp_unslash($_GET['tab'])) : 'general';
+$dialoga_current_tab = isset($_GET['tab']) && is_string($_GET['tab']) ? sanitize_key(wp_unslash($_GET['tab'])) : 'general';
 // License rendering remains owned by the extension.
-if ($current_tab === 'license') {
+if ($dialoga_current_tab === 'license') {
     do_action('dialoga_settings_license_tab');
     return;
 }
 
 // These are content defaults, not interface translations. Never localize saved messages.
-$defaults = array(
+$dialoga_defaults = array(
     'enabled' => false,
     'test_mode' => false,
     'bubble_nudge' => true,
@@ -42,24 +42,24 @@ $defaults = array(
     'bubble_unread_badge' => true,
     'bubble_bounce' => true,
 );
-$stored_settings = get_option('dialoga_settings', array());
-$settings = array_replace($defaults, is_array($stored_settings) ? $stored_settings : array());
-foreach ($defaults as $key => $default) {
-    if (is_array($default) && !in_array($key, array('fresh_session_roles', 'visible_roles'), true)) {
-        $settings[$key] = array_replace($default, is_array($settings[$key]) ? $settings[$key] : array());
+$dialoga_stored_settings = get_option('dialoga_settings', array());
+$dialoga_settings = array_replace($dialoga_defaults, is_array($dialoga_stored_settings) ? $dialoga_stored_settings : array());
+foreach ($dialoga_defaults as $dialoga_key => $dialoga_default) {
+    if (is_array($dialoga_default) && !in_array($dialoga_key, array('fresh_session_roles', 'visible_roles'), true)) {
+        $dialoga_settings[$dialoga_key] = array_replace($dialoga_default, is_array($dialoga_settings[$dialoga_key]) ? $dialoga_settings[$dialoga_key] : array());
     }
 }
 
-$all_roles = wp_roles()->roles;
-$saved = false;
-$save_error = false;
+$dialoga_all_roles = wp_roles()->roles;
+$dialoga_saved = false;
+$dialoga_save_error = false;
 if (isset($_POST['dialoga_save_settings'])) {
     // Reject unexpected shapes before unslashing or invoking any sanitizers.
     if (!isset($_POST['_wpnonce']) || !is_string($_POST['_wpnonce'])) {
         wp_die(esc_html__('Invalid settings request. Please reload the page and try again.', 'dialoga'));
     }
     check_admin_referer('dialoga_settings');
-    $scalar_fields = array(
+    $dialoga_scalar_fields = array(
         'enabled', 'test_mode', 'bubble_nudge', 'visibility_mode', 'multi_flow_strategy',
         'primary_color', 'chat_position', 'session_duration', 'chat_header_title', 'welcome_message', 'offline_message',
         'business_hours_enabled', 'timezone', 'email_notifications_enabled',
@@ -68,127 +68,127 @@ if (isset($_POST['dialoga_save_settings'])) {
         'include_admin_sessions', 'preview_message_enabled', 'preview_message_text',
         'preview_message_delay', 'bubble_size', 'bubble_unread_badge', 'bubble_bounce',
     );
-    $posted = array();
-    foreach ($scalar_fields as $key) {
-        if (isset($_POST[$key])) {
-            if (!is_string($_POST[$key])) {
-                $save_error = true;
+    $dialoga_posted = array();
+    foreach ($dialoga_scalar_fields as $dialoga_key) {
+        if (isset($_POST[$dialoga_key])) {
+            if (!is_string($_POST[$dialoga_key])) {
+                $dialoga_save_error = true;
                 break;
             }
             // sanitize_textarea_field strips tags but preserves the newlines
             // that the offline/welcome multiline inputs legitimately contain;
             // type-specific sanitizers below narrow each field further.
-            $posted[$key] = sanitize_textarea_field(wp_unslash($_POST[$key]));
+            $dialoga_posted[$dialoga_key] = sanitize_textarea_field(wp_unslash($_POST[$dialoga_key]));
         }
     }
-    foreach (array('fresh_session_roles', 'visible_roles') as $key) {
-        $posted[$key] = array();
-        if (!isset($_POST[$key])) {
+    foreach (array('fresh_session_roles', 'visible_roles') as $dialoga_key) {
+        $dialoga_posted[$dialoga_key] = array();
+        if (!isset($_POST[$dialoga_key])) {
             continue;
         }
-        if (!is_array($_POST[$key])) {
-            $save_error = true;
+        if (!is_array($_POST[$dialoga_key])) {
+            $dialoga_save_error = true;
             break;
         }
-        foreach ($_POST[$key] as $role) {
-            if (!is_string($role)) {
-                $save_error = true;
+        foreach ($_POST[$dialoga_key] as $dialoga_role) {
+            if (!is_string($dialoga_role)) {
+                $dialoga_save_error = true;
                 break;
             }
-            $role = sanitize_key(wp_unslash($role));
-            if (isset($all_roles[$role])) {
-                $posted[$key][] = $role;
+            $dialoga_role = sanitize_key(wp_unslash($dialoga_role));
+            if (isset($dialoga_all_roles[$dialoga_role])) {
+                $dialoga_posted[$dialoga_key][] = $dialoga_role;
             }
         }
-        $posted[$key] = array_values(array_unique($posted[$key]));
+        $dialoga_posted[$dialoga_key] = array_values(array_unique($dialoga_posted[$dialoga_key]));
     }
 
-    if (!$save_error) {
+    if (!$dialoga_save_error) {
         // Start from existing options so extension-owned and nested keys survive.
-        foreach (array('enabled', 'test_mode', 'bubble_nudge', 'include_admin_sessions', 'bubble_unread_badge', 'bubble_bounce') as $key) {
-            $settings[$key] = isset($posted[$key]) && $posted[$key] === '1' ? 1 : 0;
+        foreach (array('enabled', 'test_mode', 'bubble_nudge', 'include_admin_sessions', 'bubble_unread_badge', 'bubble_bounce') as $dialoga_key) {
+            $dialoga_settings[$dialoga_key] = isset($dialoga_posted[$dialoga_key]) && $dialoga_posted[$dialoga_key] === '1' ? 1 : 0;
         }
-        $settings['fresh_session_roles'] = $posted['fresh_session_roles'];
-        $settings['visible_roles'] = $posted['visible_roles'];
-        $enums = array(
+        $dialoga_settings['fresh_session_roles'] = $dialoga_posted['fresh_session_roles'];
+        $dialoga_settings['visible_roles'] = $dialoga_posted['visible_roles'];
+        $dialoga_enums = array(
             'visibility_mode' => array('everyone', 'logged_in', 'specific_roles'),
             'chat_position' => array('bottom-right', 'bottom-left'),
             'bubble_size' => array('sm', 'md', 'lg'),
         );
-        foreach ($enums as $key => $allowed) {
-            if (isset($posted[$key]) && in_array($posted[$key], $allowed, true)) {
-                $settings[$key] = $posted[$key];
+        foreach ($dialoga_enums as $dialoga_key => $dialoga_allowed) {
+            if (isset($dialoga_posted[$dialoga_key]) && in_array($dialoga_posted[$dialoga_key], $dialoga_allowed, true)) {
+                $dialoga_settings[$dialoga_key] = $dialoga_posted[$dialoga_key];
             }
         }
         // This field is rendered only by extensions; absence must not reset it.
-        if (isset($posted['multi_flow_strategy']) && in_array($posted['multi_flow_strategy'], array('specific', 'ab', 'newest'), true)) {
-            $settings['multi_flow_strategy'] = $posted['multi_flow_strategy'];
+        if (isset($dialoga_posted['multi_flow_strategy']) && in_array($dialoga_posted['multi_flow_strategy'], array('specific', 'ab', 'newest'), true)) {
+            $dialoga_settings['multi_flow_strategy'] = $dialoga_posted['multi_flow_strategy'];
         }
-        if (isset($posted['primary_color'])) {
-            $color = sanitize_hex_color($posted['primary_color']);
-            if ($color) {
-                $settings['primary_color'] = $color;
+        if (isset($dialoga_posted['primary_color'])) {
+            $dialoga_color = sanitize_hex_color($dialoga_posted['primary_color']);
+            if ($dialoga_color) {
+                $dialoga_settings['primary_color'] = $dialoga_color;
             }
         }
-        if (isset($posted['session_duration']) && preg_match('/^\d+$/', $posted['session_duration'])) {
-            $settings['session_duration'] = min(90, max(1, intval($posted['session_duration'])));
+        if (isset($dialoga_posted['session_duration']) && preg_match('/^\d+$/', $dialoga_posted['session_duration'])) {
+            $dialoga_settings['session_duration'] = min(90, max(1, intval($dialoga_posted['session_duration'])));
         }
-        if (isset($posted['chat_header_title'])) {
-            $header_title = sanitize_text_field($posted['chat_header_title']);
-            $settings['chat_header_title'] = $header_title !== '' ? $header_title : $defaults['chat_header_title'];
+        if (isset($dialoga_posted['chat_header_title'])) {
+            $dialoga_header_title = sanitize_text_field($dialoga_posted['chat_header_title']);
+            $dialoga_settings['chat_header_title'] = $dialoga_header_title !== '' ? $dialoga_header_title : $dialoga_defaults['chat_header_title'];
         }
-        foreach (array('welcome_message', 'offline_message') as $key) {
-            if (isset($posted[$key])) {
-                $settings[$key] = sanitize_textarea_field($posted[$key]);
+        foreach (array('welcome_message', 'offline_message') as $dialoga_key) {
+            if (isset($dialoga_posted[$dialoga_key])) {
+                $dialoga_settings[$dialoga_key] = sanitize_textarea_field($dialoga_posted[$dialoga_key]);
             }
         }
-        $settings['business_hours']['enabled'] = isset($posted['business_hours_enabled']) && $posted['business_hours_enabled'] === '1' ? 1 : 0;
-        if (isset($posted['timezone']) && in_array($posted['timezone'], timezone_identifiers_list(), true)) {
-            $settings['business_hours']['timezone'] = $posted['timezone'];
+        $dialoga_settings['business_hours']['enabled'] = isset($dialoga_posted['business_hours_enabled']) && $dialoga_posted['business_hours_enabled'] === '1' ? 1 : 0;
+        if (isset($dialoga_posted['timezone']) && in_array($dialoga_posted['timezone'], timezone_identifiers_list(), true)) {
+            $dialoga_settings['business_hours']['timezone'] = $dialoga_posted['timezone'];
         }
-        $settings['email_notifications']['enabled'] = isset($posted['email_notifications_enabled']) && $posted['email_notifications_enabled'] === '1' ? 1 : 0;
-        if (isset($posted['email_notifications_recipient'])) {
-            $settings['email_notifications']['recipient'] = implode(', ', array_filter(array_map(
-                static function ($email) { return sanitize_email(trim($email)); },
-                explode(',', $posted['email_notifications_recipient'])
+        $dialoga_settings['email_notifications']['enabled'] = isset($dialoga_posted['email_notifications_enabled']) && $dialoga_posted['email_notifications_enabled'] === '1' ? 1 : 0;
+        if (isset($dialoga_posted['email_notifications_recipient'])) {
+            $dialoga_settings['email_notifications']['recipient'] = implode(', ', array_filter(array_map(
+                static function ($dialoga_email) { return sanitize_email(trim($dialoga_email)); },
+                explode(',', $dialoga_posted['email_notifications_recipient'])
             )));
         }
-        if (isset($posted['email_notifications_subject'])) {
-            $settings['email_notifications']['subject'] = sanitize_text_field($posted['email_notifications_subject']);
+        if (isset($dialoga_posted['email_notifications_subject'])) {
+            $dialoga_settings['email_notifications']['subject'] = sanitize_text_field($dialoga_posted['email_notifications_subject']);
         }
-        foreach (array('lead_retention', 'conversation_retention') as $key) {
-            $settings[$key]['enabled'] = isset($posted[$key . '_enabled']) && $posted[$key . '_enabled'] === '1' ? 1 : 0;
-            if (isset($posted[$key . '_days']) && preg_match('/^\d+$/', $posted[$key . '_days'])) {
-                $settings[$key]['days'] = min(3650, max(1, intval($posted[$key . '_days'])));
+        foreach (array('lead_retention', 'conversation_retention') as $dialoga_key) {
+            $dialoga_settings[$dialoga_key]['enabled'] = isset($dialoga_posted[$dialoga_key . '_enabled']) && $dialoga_posted[$dialoga_key . '_enabled'] === '1' ? 1 : 0;
+            if (isset($dialoga_posted[$dialoga_key . '_days']) && preg_match('/^\d+$/', $dialoga_posted[$dialoga_key . '_days'])) {
+                $dialoga_settings[$dialoga_key]['days'] = min(3650, max(1, intval($dialoga_posted[$dialoga_key . '_days'])));
             }
         }
-        $settings['preview_message']['enabled'] = isset($posted['preview_message_enabled']) && $posted['preview_message_enabled'] === '1' ? 1 : 0;
-        if (isset($posted['preview_message_text'])) {
-            $settings['preview_message']['text'] = sanitize_text_field($posted['preview_message_text']);
+        $dialoga_settings['preview_message']['enabled'] = isset($dialoga_posted['preview_message_enabled']) && $dialoga_posted['preview_message_enabled'] === '1' ? 1 : 0;
+        if (isset($dialoga_posted['preview_message_text'])) {
+            $dialoga_settings['preview_message']['text'] = sanitize_text_field($dialoga_posted['preview_message_text']);
         }
-        if (isset($posted['preview_message_delay']) && preg_match('/^\d+$/', $posted['preview_message_delay'])) {
-            $settings['preview_message']['delay'] = min(60, max(0, intval($posted['preview_message_delay'])));
+        if (isset($dialoga_posted['preview_message_delay']) && preg_match('/^\d+$/', $dialoga_posted['preview_message_delay'])) {
+            $dialoga_settings['preview_message']['delay'] = min(60, max(0, intval($dialoga_posted['preview_message_delay'])));
         }
-        update_option('dialoga_settings', $settings);
+        update_option('dialoga_settings', $dialoga_settings);
 
         // Keep the existing daily retention scheduling behavior.
-        foreach (array('lead_retention', 'conversation_retention') as $key) {
-            $hook = 'dialoga_' . $key . '_cleanup';
-            $next = wp_next_scheduled($hook);
-            if (!empty($settings[$key]['enabled'])) {
-                if (!$next) {
-                    wp_schedule_event(time() + HOUR_IN_SECONDS, 'daily', $hook);
+        foreach (array('lead_retention', 'conversation_retention') as $dialoga_key) {
+            $dialoga_hook = 'dialoga_' . $dialoga_key . '_cleanup';
+            $dialoga_next = wp_next_scheduled($dialoga_hook);
+            if (!empty($dialoga_settings[$dialoga_key]['enabled'])) {
+                if (!$dialoga_next) {
+                    wp_schedule_event(time() + HOUR_IN_SECONDS, 'daily', $dialoga_hook);
                 }
-            } elseif ($next) {
-                wp_unschedule_event($next, $hook);
+            } elseif ($dialoga_next) {
+                wp_unschedule_event($dialoga_next, $dialoga_hook);
             }
         }
-        $saved = true;
+        $dialoga_saved = true;
     }
 }
 
 // Interface strings are literal gettext msgids; escape them in their output context below.
-$tabs = array(
+$dialoga_tabs = array(
     'general' => __('General', 'dialoga'),
     'appearance' => __('Appearance', 'dialoga'),
     'messages' => __('Messages', 'dialoga'),
@@ -198,7 +198,7 @@ $tabs = array(
     'data-privacy' => __('Data & Privacy', 'dialoga'),
     'danger-zone' => __('Danger Zone', 'dialoga'),
 );
-$sections = array(
+$dialoga_sections = array(
     'general' => array(
         array('enabled', __('Enable Chatbot', 'dialoga'), __('Turn the chatbot on or off on your website.', 'dialoga'), 'checkbox', __('Enable chatbot on frontend', 'dialoga')),
         array('test_mode', __('Test Mode', 'dialoga'), __('When enabled, chat history carries over as you navigate between pages, but clears automatically on page refresh. Use this to test flows without residual sessions interfering.', 'dialoga'), 'checkbox', __('Enable test mode', 'dialoga')),
@@ -242,24 +242,24 @@ $sections = array(
         array('conversation_retention_days', __('Delete abandoned conversations after', 'dialoga'), __('Abandoned conversations older than this many days are removed during the daily cleanup. This reduces stored visitor-typed text without a business justification.', 'dialoga'), 'number', array(1, 3650)),
     ),
 );
-$values = $settings;
-foreach (array('business_hours', 'email_notifications', 'lead_retention', 'conversation_retention', 'preview_message') as $key) {
-    foreach ($settings[$key] as $child => $value) {
-        $values[$key . '_' . $child] = $value;
+$dialoga_values = $dialoga_settings;
+foreach (array('business_hours', 'email_notifications', 'lead_retention', 'conversation_retention', 'preview_message') as $dialoga_key) {
+    foreach ($dialoga_settings[$dialoga_key] as $dialoga_child => $dialoga_value) {
+        $dialoga_values[$dialoga_key . '_' . $dialoga_child] = $dialoga_value;
     }
 }
-$values['timezone'] = $settings['business_hours']['timezone'];
+$dialoga_values['timezone'] = $dialoga_settings['business_hours']['timezone'];
 // Preserve valid existing non-US zones when saving an unrelated tab.
-$current_timezone = $values['timezone'];
-if (is_string($current_timezone) && in_array($current_timezone, timezone_identifiers_list(), true)) {
-    $sections['business-hours'][1][4][$current_timezone] = $sections['business-hours'][1][4][$current_timezone] ?? $current_timezone;
+$dialoga_current_timezone = $dialoga_values['timezone'];
+if (is_string($dialoga_current_timezone) && in_array($dialoga_current_timezone, timezone_identifiers_list(), true)) {
+    $dialoga_sections['business-hours'][1][4][$dialoga_current_timezone] = $dialoga_sections['business-hours'][1][4][$dialoga_current_timezone] ?? $dialoga_current_timezone;
 }
 global $wpdb;
-$active_flows_count = (int) dialoga_query_cached('settings_active_flows', static function () {
+$dialoga_active_flows_count = (int) dialoga_query_cached('settings_active_flows', static function () {
     global $wpdb;
     return (int) $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %i WHERE is_active = 1", $wpdb->prefix . 'dialoga_flows'));
 }, 120);
-$widget_enabled = !empty($settings['enabled']);
+$dialoga_widget_enabled = !empty($dialoga_settings['enabled']);
 ?>
 <div class="wrap dialoga-settings-wrap">
     <div class="dialoga-screen-header">
@@ -268,38 +268,38 @@ $widget_enabled = !empty($settings['enabled']);
             <p><?php echo esc_html__('Control your widget appearance, messaging, visibility, and data preferences.', 'dialoga'); ?></p>
         </div>
         <div class="dialoga-settings-summary" role="status">
-            <strong><?php echo $widget_enabled ? esc_html__('Widget active', 'dialoga') : esc_html__('Widget paused', 'dialoga'); ?></strong>
+            <strong><?php echo $dialoga_widget_enabled ? esc_html__('Widget active', 'dialoga') : esc_html__('Widget paused', 'dialoga'); ?></strong>
             <?php // translators: %d: number of active flows. ?>
-            <span><?php echo esc_html(sprintf(_n('%d active flow', '%d active flows', $active_flows_count, 'dialoga'), $active_flows_count)); ?></span>
+            <span><?php echo esc_html(sprintf(_n('%d active flow', '%d active flows', $dialoga_active_flows_count, 'dialoga'), $dialoga_active_flows_count)); ?></span>
         </div>
     </div>
-    <?php $extra_tabs = apply_filters('dialoga_settings_tabs', array()); ?>
-    <?php if (!empty($extra_tabs) && is_array($extra_tabs)) : ?>
+    <?php $dialoga_extra_tabs = apply_filters('dialoga_settings_tabs', array()); ?>
+    <?php if (!empty($dialoga_extra_tabs) && is_array($dialoga_extra_tabs)) : ?>
         <nav class="nav-tab-wrapper dialoga-settings-extension-nav" aria-label="<?php echo esc_attr__('Settings pages', 'dialoga'); ?>">
-            <a href="<?php echo esc_url(admin_url('admin.php?page=dialoga-settings&tab=general')); ?>" class="nav-tab <?php echo $current_tab === 'general' ? 'nav-tab-active' : ''; ?>"><?php echo esc_html__('General', 'dialoga'); ?></a>
-            <?php foreach ($extra_tabs as $tab_slug => $tab_label) : ?>
-                <a href="<?php echo esc_url(admin_url('admin.php?page=dialoga-settings&tab=' . urlencode($tab_slug))); ?>" class="nav-tab <?php echo $current_tab === $tab_slug ? 'nav-tab-active' : ''; ?>"><?php echo esc_html($tab_label); ?></a>
+            <a href="<?php echo esc_url(admin_url('admin.php?page=dialoga-settings&tab=general')); ?>" class="nav-tab <?php echo $dialoga_current_tab === 'general' ? 'nav-tab-active' : ''; ?>"><?php echo esc_html__('General', 'dialoga'); ?></a>
+            <?php foreach ($dialoga_extra_tabs as $dialoga_tab_slug => $dialoga_tab_label) : ?>
+                <a href="<?php echo esc_url(admin_url('admin.php?page=dialoga-settings&tab=' . urlencode($dialoga_tab_slug))); ?>" class="nav-tab <?php echo $dialoga_current_tab === $dialoga_tab_slug ? 'nav-tab-active' : ''; ?>"><?php echo esc_html($dialoga_tab_label); ?></a>
             <?php endforeach; ?>
         </nav>
     <?php endif; ?>
 
-    <?php if ($saved) : ?>
+    <?php if ($dialoga_saved) : ?>
         <div class="notice notice-success" role="status"><p><?php echo esc_html__('Settings saved successfully!', 'dialoga'); ?></p></div>
-    <?php elseif ($save_error) : ?>
+    <?php elseif ($dialoga_save_error) : ?>
         <div class="notice notice-error" role="alert"><p><?php echo esc_html__('Settings were not saved because the request contained invalid fields. Please reload the page and try again.', 'dialoga'); ?></p></div>
     <?php endif; ?>
-    <?php if ($widget_enabled && $active_flows_count === 0) : ?>
+    <?php if ($dialoga_widget_enabled && $dialoga_active_flows_count === 0) : ?>
         <div class="notice notice-warning">
             <p><strong><?php echo esc_html__('Chat Widget Enabled But No Active Flow', 'dialoga'); ?></strong></p>
             <p><?php echo esc_html__('The chat widget is enabled, but you do not have any active flows. Visitors will not see the chat bubble until you create and activate a flow.', 'dialoga'); ?></p>
             <p><a href="<?php echo esc_url(admin_url('admin.php?page=dialoga-builder')); ?>" class="button"><?php echo esc_html__('Create a Flow', 'dialoga'); ?></a></p>
         </div>
-    <?php elseif (!$widget_enabled && $active_flows_count > 0) : ?>
+    <?php elseif (!$dialoga_widget_enabled && $dialoga_active_flows_count > 0) : ?>
         <div class="notice notice-info">
             <p><strong><?php echo esc_html__('Chat Widget Disabled', 'dialoga'); ?></strong></p>
             <p><?php echo esc_html__('You have active flows, but the chat widget is disabled. Enable it below to show the chat bubble on your website.', 'dialoga'); ?></p>
         </div>
-    <?php elseif ($widget_enabled && $active_flows_count > 0) : ?>
+    <?php elseif ($dialoga_widget_enabled && $dialoga_active_flows_count > 0) : ?>
         <div class="notice notice-success">
             <p><strong><?php echo esc_html__('Chat Widget Active', 'dialoga'); ?></strong></p>
             <p><?php echo esc_html__('The chat widget is enabled with active flows. Visit your site to see it in action!', 'dialoga'); ?></p>
@@ -312,79 +312,79 @@ $widget_enabled = !empty($settings['enabled']);
             <button type="submit" name="dialoga_save_settings" value="1" class="button button-primary button-large"><?php echo esc_html__('Save Settings', 'dialoga'); ?></button>
         </div>
         <nav class="dialoga-settings-tabs" aria-label="<?php echo esc_attr__('Settings sections', 'dialoga'); ?>">
-            <?php foreach ($tabs as $slug => $label) : ?>
-                <a id="dialoga-settings-tab-<?php echo esc_attr($slug); ?>" href="#dialoga-settings-<?php echo esc_attr($slug); ?>" class="dialoga-settings-tab"><?php echo esc_html($label); ?></a>
+            <?php foreach ($dialoga_tabs as $dialoga_slug => $dialoga_label) : ?>
+                <a id="dialoga-settings-tab-<?php echo esc_attr($dialoga_slug); ?>" href="#dialoga-settings-<?php echo esc_attr($dialoga_slug); ?>" class="dialoga-settings-tab"><?php echo esc_html($dialoga_label); ?></a>
             <?php endforeach; ?>
         </nav>
 
-        <?php foreach ($sections as $slug => $fields) : ?>
-            <section id="dialoga-settings-<?php echo esc_attr($slug); ?>" class="dialoga-settings-section dialoga-settings-panel" aria-labelledby="dialoga-settings-heading-<?php echo esc_attr($slug); ?>">
-                <h2 id="dialoga-settings-heading-<?php echo esc_attr($slug); ?>"><?php echo esc_html($tabs[$slug]); ?></h2>
-                <?php foreach ($fields as $field) :
-                    list($name, $label, $help, $type) = $field;
-                    $value = $values[$name] ?? '';
-                    $id = 'dialoga-setting-' . $name;
+        <?php foreach ($dialoga_sections as $dialoga_slug => $dialoga_fields) : ?>
+            <section id="dialoga-settings-<?php echo esc_attr($dialoga_slug); ?>" class="dialoga-settings-section dialoga-settings-panel" aria-labelledby="dialoga-settings-heading-<?php echo esc_attr($dialoga_slug); ?>">
+                <h2 id="dialoga-settings-heading-<?php echo esc_attr($dialoga_slug); ?>"><?php echo esc_html($dialoga_tabs[$dialoga_slug]); ?></h2>
+                <?php foreach ($dialoga_fields as $dialoga_field) :
+                    list($dialoga_name, $dialoga_label, $dialoga_help, $type) = $dialoga_field;
+                    $dialoga_value = $dialoga_values[$dialoga_name] ?? '';
+                    $id = 'dialoga-setting-' . $dialoga_name;
                     ?>
-                    <?php if ($name === 'include_admin_sessions') : ?>
+                    <?php if ($dialoga_name === 'include_admin_sessions') : ?>
                         <h3 class="dialoga-settings-subheading"><?php echo esc_html__('Data Quality', 'dialoga'); ?></h3>
-                    <?php elseif ($name === 'lead_retention_enabled') : ?>
+                    <?php elseif ($dialoga_name === 'lead_retention_enabled') : ?>
                         <h3 class="dialoga-settings-subheading"><?php echo esc_html__('Lead Data Retention', 'dialoga'); ?></h3>
-                    <?php elseif ($name === 'conversation_retention_enabled') : ?>
+                    <?php elseif ($dialoga_name === 'conversation_retention_enabled') : ?>
                         <h3 class="dialoga-settings-subheading"><?php echo esc_html__('Conversation Retention', 'dialoga'); ?></h3>
                     <?php endif; ?>
-                    <div class="dialoga-setting-row"<?php if ($name === 'visible_roles') : ?> id="dialoga-roles-selector"<?php endif; ?>>
+                    <div class="dialoga-setting-row"<?php if ($dialoga_name === 'visible_roles') : ?> id="dialoga-roles-selector"<?php endif; ?>>
                         <div class="dialoga-setting-label">
                             <?php if ($type === 'roles') : ?>
-                                <h4 id="<?php echo esc_attr($id); ?>-label"><?php echo esc_html($label); ?></h4>
+                                <h4 id="<?php echo esc_attr($id); ?>-label"><?php echo esc_html($dialoga_label); ?></h4>
                             <?php else : ?>
-                                <h4><label for="<?php echo esc_attr($id); ?>"><?php echo esc_html($label); ?></label></h4>
+                                <h4><label for="<?php echo esc_attr($id); ?>"><?php echo esc_html($dialoga_label); ?></label></h4>
                             <?php endif; ?>
-                            <p id="<?php echo esc_attr($id); ?>-help"><?php echo esc_html($help); ?></p>
+                            <p id="<?php echo esc_attr($id); ?>-help"><?php echo esc_html($dialoga_help); ?></p>
                         </div>
                         <div class="dialoga-setting-control">
                             <?php if ($type === 'checkbox') : ?>
-                                <label><input type="checkbox" id="<?php echo esc_attr($id); ?>" name="<?php echo esc_attr($name); ?>" value="1" aria-describedby="<?php echo esc_attr($id); ?>-help" <?php checked(!empty($value)); ?> /> <?php echo esc_html($field[4]); ?></label>
+                                <label><input type="checkbox" id="<?php echo esc_attr($id); ?>" name="<?php echo esc_attr($dialoga_name); ?>" value="1" aria-describedby="<?php echo esc_attr($id); ?>-help" <?php checked(!empty($dialoga_value)); ?> /> <?php echo esc_html($dialoga_field[4]); ?></label>
                             <?php elseif ($type === 'roles') : ?>
                                 <div class="dialoga-settings-roles" role="group" aria-labelledby="<?php echo esc_attr($id); ?>-label" aria-describedby="<?php echo esc_attr($id); ?>-help">
-                                    <?php foreach ($all_roles as $role_slug => $role_info) : ?>
-                                        <label><input type="checkbox" name="<?php echo esc_attr($name); ?>[]" value="<?php echo esc_attr($role_slug); ?>" <?php checked(in_array($role_slug, is_array($value) ? $value : array(), true)); ?> /> <span><?php echo esc_html(translate_user_role($role_info['name'])); ?></span> <code><?php echo esc_html($role_slug); ?></code></label>
+                                    <?php foreach ($dialoga_all_roles as $dialoga_role_slug => $dialoga_role_info) : ?>
+                                        <label><input type="checkbox" name="<?php echo esc_attr($dialoga_name); ?>[]" value="<?php echo esc_attr($dialoga_role_slug); ?>" <?php checked(in_array($dialoga_role_slug, is_array($dialoga_value) ? $dialoga_value : array(), true)); ?> /> <span><?php echo esc_html(translate_user_role($dialoga_role_info['name'])); ?></span> <code><?php echo esc_html($dialoga_role_slug); ?></code></label>
                                     <?php endforeach; ?>
                                 </div>
-                                <p class="description"><?php echo esc_html($field[4]); ?></p>
+                                <p class="description"><?php echo esc_html($dialoga_field[4]); ?></p>
                             <?php elseif ($type === 'select') : ?>
-                                <select id="<?php echo esc_attr($id); ?>" name="<?php echo esc_attr($name); ?>" aria-describedby="<?php echo esc_attr($id); ?>-help">
-                                    <?php foreach ($field[4] as $option => $option_label) : ?>
-                                        <option value="<?php echo esc_attr($option); ?>" <?php selected(is_scalar($value) ? $value : '', $option); ?>><?php echo esc_html($option_label); ?></option>
+                                <select id="<?php echo esc_attr($id); ?>" name="<?php echo esc_attr($dialoga_name); ?>" aria-describedby="<?php echo esc_attr($id); ?>-help">
+                                    <?php foreach ($dialoga_field[4] as $dialoga_option => $dialoga_option_label) : ?>
+                                        <option value="<?php echo esc_attr($dialoga_option); ?>" <?php selected(is_scalar($dialoga_value) ? $dialoga_value : '', $dialoga_option); ?>><?php echo esc_html($dialoga_option_label); ?></option>
                                     <?php endforeach; ?>
                                 </select>
                             <?php elseif ($type === 'textarea') : ?>
-                                <textarea id="<?php echo esc_attr($id); ?>" name="<?php echo esc_attr($name); ?>" rows="3" aria-describedby="<?php echo esc_attr($id); ?>-help"><?php echo esc_textarea(is_scalar($value) ? $value : ''); ?></textarea>
+                                <textarea id="<?php echo esc_attr($id); ?>" name="<?php echo esc_attr($dialoga_name); ?>" rows="3" aria-describedby="<?php echo esc_attr($id); ?>-help"><?php echo esc_textarea(is_scalar($dialoga_value) ? $dialoga_value : ''); ?></textarea>
                             <?php elseif ($type === 'color') : ?>
                                 <div class="dialoga-color-picker">
-                                    <input type="color" id="<?php echo esc_attr($id); ?>" name="primary_color" value="<?php echo esc_attr(is_scalar($value) ? $value : $defaults['primary_color']); ?>" aria-describedby="<?php echo esc_attr($id); ?>-help" />
-                                    <input type="text" name="primary_color_text" value="<?php echo esc_attr(is_scalar($value) ? $value : $defaults['primary_color']); ?>" readonly aria-label="<?php echo esc_attr__('Primary color hex value', 'dialoga'); ?>" />
+                                    <input type="color" id="<?php echo esc_attr($id); ?>" name="primary_color" value="<?php echo esc_attr(is_scalar($dialoga_value) ? $dialoga_value : $dialoga_defaults['primary_color']); ?>" aria-describedby="<?php echo esc_attr($id); ?>-help" />
+                                    <input type="text" name="primary_color_text" value="<?php echo esc_attr(is_scalar($dialoga_value) ? $dialoga_value : $dialoga_defaults['primary_color']); ?>" readonly aria-label="<?php echo esc_attr__('Primary color hex value', 'dialoga'); ?>" />
                                 </div>
                             <?php else : ?>
-                                <input type="<?php echo esc_attr($type); ?>" id="<?php echo esc_attr($id); ?>" name="<?php echo esc_attr($name); ?>" value="<?php echo esc_attr(is_scalar($value) ? $value : ''); ?>" aria-describedby="<?php echo esc_attr($id); ?>-help"
-                                    <?php if ($type === 'number') : ?> min="<?php echo esc_attr($field[4][0]); ?>" max="<?php echo esc_attr($field[4][1]); ?>" step="1"<?php endif; ?>
-                                    <?php if ($name === 'chat_header_title') : ?> maxlength="80"<?php endif; ?>
-                                    <?php if ($name === 'preview_message_text') : ?> maxlength="120" placeholder="<?php echo esc_attr__('Hi! 👋 Got a question?', 'dialoga'); ?>"<?php endif; ?> />
+                                <input type="<?php echo esc_attr($type); ?>" id="<?php echo esc_attr($id); ?>" name="<?php echo esc_attr($dialoga_name); ?>" value="<?php echo esc_attr(is_scalar($dialoga_value) ? $dialoga_value : ''); ?>" aria-describedby="<?php echo esc_attr($id); ?>-help"
+                                    <?php if ($type === 'number') : ?> min="<?php echo esc_attr($dialoga_field[4][0]); ?>" max="<?php echo esc_attr($dialoga_field[4][1]); ?>" step="1"<?php endif; ?>
+                                    <?php if ($dialoga_name === 'chat_header_title') : ?> maxlength="80"<?php endif; ?>
+                                    <?php if ($dialoga_name === 'preview_message_text') : ?> maxlength="120" placeholder="<?php echo esc_attr__('Hi! 👋 Got a question?', 'dialoga'); ?>"<?php endif; ?> />
                                 <?php if ($type === 'number') : ?>
-                                    <span><?php echo $name === 'preview_message_delay' ? esc_html__('seconds', 'dialoga') : esc_html__('days', 'dialoga'); ?></span>
+                                    <span><?php echo $dialoga_name === 'preview_message_delay' ? esc_html__('seconds', 'dialoga') : esc_html__('days', 'dialoga'); ?></span>
                                 <?php endif; ?>
                             <?php endif; ?>
-                            <?php if ($name === 'test_mode' && !empty($settings['test_mode'])) : ?>
+                            <?php if ($dialoga_name === 'test_mode' && !empty($dialoga_settings['test_mode'])) : ?>
                                 <p class="dialoga-settings-test-notice"><?php echo esc_html__('Test mode is active. Sessions reset on page refresh for all visitors. Turn off before going live.', 'dialoga'); ?></p>
                             <?php endif; ?>
-                            <?php if (in_array($name, array('lead_retention_days', 'conversation_retention_days'), true)) :
-                                $retention_key = substr($name, 0, -5);
-                                if (!empty($settings[$retention_key]['enabled'])) :
-                                    $next = wp_next_scheduled('dialoga_' . $retention_key . '_cleanup');
+                            <?php if (in_array($dialoga_name, array('lead_retention_days', 'conversation_retention_days'), true)) :
+                                $dialoga_retention_key = substr($dialoga_name, 0, -5);
+                                if (!empty($dialoga_settings[$dialoga_retention_key]['enabled'])) :
+                                    $dialoga_next = wp_next_scheduled('dialoga_' . $dialoga_retention_key . '_cleanup');
                                     ?>
                                     <p class="dialoga-settings-retention-status">
-                                        <?php if ($next) : ?>
+                                        <?php if ($dialoga_next) : ?>
                                             <?php /* translators: %s: time until the next scheduled cleanup. */ ?>
-                                            <?php echo esc_html(sprintf(__('Active - next cleanup in %s.', 'dialoga'), human_time_diff(time(), $next))); ?>
+                                            <?php echo esc_html(sprintf(__('Active - next cleanup in %s.', 'dialoga'), human_time_diff(time(), $dialoga_next))); ?>
                                         <?php else : ?>
                                             <?php echo esc_html__('Active - scheduled.', 'dialoga'); ?>
                                         <?php endif; ?>
@@ -395,10 +395,10 @@ $widget_enabled = !empty($settings['enabled']);
                     </div>
                 <?php endforeach; ?>
                 <?php
-                if ($slug === 'general') {
-                    do_action('dialoga_settings_multi_flow_row', $settings);
-                } elseif ($slug === 'appearance') {
-                    do_action('dialoga_settings_widget_extra_rows', $settings);
+                if ($dialoga_slug === 'general') {
+                    do_action('dialoga_settings_multi_flow_row', $dialoga_settings);
+                } elseif ($dialoga_slug === 'appearance') {
+                    do_action('dialoga_settings_widget_extra_rows', $dialoga_settings);
                 }
                 ?>
             </section>

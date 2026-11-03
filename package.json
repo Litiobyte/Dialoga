@@ -12,8 +12,11 @@
     "env:stop": "wp-env stop",
     "env:status": "wp-env status",
     "env:logs": "wp-env logs",
-    "env:cli": "wp-env run cli"
-  },
+    "env:cli": "wp-env run cli",
+    "env:package:start": "wp-env start --config=.wp-env.package.json",
+    "check:report": "wp-env run cli --config=.wp-env.package.json wp plugin check dialoga --format=strict-json > plugin-check-report.json",
+    "check:package": "npm run package && wp-env start --config=.wp-env.package.json && wp-env run cli --config=.wp-env.package.json wp plugin install plugin-check --activate --force && wp-env run cli --config=.wp-env.package.json wp plugin install /var/www/html/tmp/dialoga-package/dialoga.zip --force --activate && wp-env run cli --config=.wp-env.package.json wp plugin check dialoga"
+},
   "dependencies": {
     "@xyflow/react": "12.12.0"
   },

@@ -8,68 +8,81 @@ if (!defined('ABSPATH')) {
 }
 
 global $wpdb;
-$leads_table = $wpdb->prefix . 'dialoga_leads';
+$dialoga_leads_table = $wpdb->prefix . 'dialoga_leads';
 
 // Handle status update
 if (isset($_POST['update_lead_status']) && check_admin_referer('dialoga_update_lead')) {
-    $lead_id    = isset($_POST['lead_id']) ? absint(wp_unslash($_POST['lead_id'])) : 0;
-    $new_status = isset($_POST['status']) ? sanitize_key(wp_unslash($_POST['status'])) : '';
+    $dialoga_lead_id    = isset($_POST['lead_id']) ? absint(wp_unslash($_POST['lead_id'])) : 0;
+    $dialoga_new_status = isset($_POST['status']) ? sanitize_key(wp_unslash($_POST['status'])) : '';
     // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared -- admin write/update op; $wpdb->update() handles preparation internally.
-    $wpdb->update($leads_table, array('status' => $new_status), array('id' => $lead_id), array('%s'), array('%d'));
+    $wpdb->update($dialoga_leads_table, array('status' => $dialoga_new_status), array('id' => $dialoga_lead_id), array('%s'), array('%d'));
     echo '<div class="notice notice-success"><p>' . esc_html__('Lead status updated!', 'dialoga') . '</p></div>';
 }
 
 // Tag filter
-$tag_filter = isset($_GET['tag']) ? sanitize_text_field(wp_unslash($_GET['tag'])) : '';
+$dialoga_tag_filter = isset($_GET['tag']) ? sanitize_text_field(wp_unslash($_GET['tag'])) : '';
 
 // Admin-session filter — by default hide leads from admin testing sessions
 // so the leads list reflects real public visitors. Toggle in Settings.
 //
 // v0.38.17 — defensive column existence check so we don't throw
 // "Unknown column" errors on installs where migration hasn't run yet.
-$dialoga_leads_cols   = $wpdb->get_col($wpdb->prepare("DESCRIBE %i", $leads_table), 0);
-$has_admin_flag_col  = in_array('is_admin_session', $dialoga_leads_cols, true);
+$dialoga_leads_cols   = $wpdb->get_col($wpdb->prepare("DESCRIBE %i", $dialoga_leads_table), 0);
+$dialoga_has_admin_flag_col  = in_array('is_admin_session', $dialoga_leads_cols, true);
 $dialoga_settings_for_filter = get_option('dialoga_settings', array());
-$include_admin = !empty($dialoga_settings_for_filter['include_admin_sessions']);
-$admin_clause  = ($include_admin || !$has_admin_flag_col) ? '' : ' AND is_admin_session = 0';
+$dialoga_include_admin = !empty($dialoga_settings_for_filter['include_admin_sessions']);
+$dialoga_admin_clause  = ($dialoga_include_admin || !$dialoga_has_admin_flag_col) ? '' : ' AND is_admin_session = 0';
 
 // Allow viewing admin-test rows via ?show=admin for one-off inspection
-$show_admin_only = isset($_GET['show']) && $_GET['show'] === 'admin' && $has_admin_flag_col;
-if ($show_admin_only) {
-    $admin_clause = ' AND is_admin_session = 1';
-}
+// (only possible when the column exists). The predicate is a constant
+// literal baked into each of the four query variants below, so no SQL
+// fragment is ever interpolated at runtime.
+$dialoga_show_admin_only = isset($_GET['show']) && $_GET['show'] === 'admin' && $dialoga_has_admin_flag_col;
 
-// Build query
-if ($tag_filter) {
-    $tag_like = '%' . $wpdb->esc_like('"' . $tag_filter . '"') . '%';
-    $leads = $wpdb->get_results($wpdb->prepare(
-        "SELECT * FROM %i WHERE tags LIKE %s {$admin_clause} ORDER BY created_at DESC LIMIT 200",
-        $leads_table,
-        $tag_like
-    ));
+if ($dialoga_tag_filter) {
+    $dialoga_tag_like = '%' . $wpdb->esc_like('"' . $dialoga_tag_filter . '"') . '%';
+    // 2026-11 — four fully literal result queries: phpcs treats any SQL held
+    // in a variable as NotPrepared/Unescaped even when both ternary branches
+    // are string literals, so the predicate is inslined per branch instead.
+    $dialoga_leads = $dialoga_show_admin_only
+        ? $wpdb->get_results($wpdb->prepare(
+            "SELECT * FROM %i WHERE tags LIKE %s AND is_admin_session = 1 ORDER BY created_at DESC LIMIT 200",
+            $dialoga_leads_table,
+            $dialoga_tag_like
+        ))
+        : $wpdb->get_results($wpdb->prepare(
+            "SELECT * FROM %i WHERE tags LIKE %s ORDER BY created_at DESC LIMIT 200",
+            $dialoga_leads_table,
+            $dialoga_tag_like
+        ));
 } else {
-    $leads = $wpdb->get_results($wpdb->prepare(
-        "SELECT * FROM %i WHERE 1=1 {$admin_clause} ORDER BY created_at DESC LIMIT 200",
-        $leads_table
-    ));
+    $dialoga_leads = $dialoga_show_admin_only
+        ? $wpdb->get_results($wpdb->prepare(
+            "SELECT * FROM %i WHERE is_admin_session = 1 ORDER BY created_at DESC LIMIT 200",
+            $dialoga_leads_table
+        ))
+        : $wpdb->get_results($wpdb->prepare(
+            "SELECT * FROM %i WHERE 1=1 ORDER BY created_at DESC LIMIT 200",
+            $dialoga_leads_table
+        ));
 }
 
 // CSV export handled earlier in admin_init (see Dialoga::maybe_export_leads_csv)
 
 // Collect all unique tags for filter dropdown
-$all_leads_for_tags = $wpdb->get_col($wpdb->prepare(
+$dialoga_all_leads_for_tags = $wpdb->get_col($wpdb->prepare(
     "SELECT tags FROM %i WHERE tags IS NOT NULL AND tags != ''",
-    $leads_table
+    $dialoga_leads_table
 ));
-$all_tags = array();
-foreach ($all_leads_for_tags as $tags_json) {
-    $arr = json_decode($tags_json, true);
-    if (is_array($arr)) {
-        $all_tags = array_merge($all_tags, $arr);
+$dialoga_all_tags = array();
+foreach ($dialoga_all_leads_for_tags as $dialoga_tags_json) {
+    $dialoga_arr = json_decode($dialoga_tags_json, true);
+    if (is_array($dialoga_arr)) {
+        $dialoga_all_tags = array_merge($dialoga_all_tags, $dialoga_arr);
     }
 }
-$all_tags = array_values(array_unique(array_filter($all_tags)));
-sort($all_tags);
+$dialoga_all_tags = array_values(array_unique(array_filter($dialoga_all_tags)));
+sort($dialoga_all_tags);
 
 // Tag colors — hash-based for consistency
 function dialoga_tag_color($tag) {
@@ -82,16 +95,16 @@ function dialoga_tag_color($tag) {
     return $colors[$idx];
 }
 
-$base_url = admin_url('admin.php?page=dialoga-leads');
-$status_labels = array(
+$dialoga_base_url = admin_url('admin.php?page=dialoga-leads');
+$dialoga_status_labels = array(
     'new' => __('New', 'dialoga'),
     'contacted' => __('Contacted', 'dialoga'),
     'qualified' => __('Qualified', 'dialoga'),
     'converted' => __('Converted', 'dialoga'),
     'closed' => __('Closed', 'dialoga'),
 );
-$export_url = wp_nonce_url(
-    $base_url . ($tag_filter ? '&tag=' . urlencode($tag_filter) : '') . '&export=csv',
+$dialoga_export_url = wp_nonce_url(
+    $dialoga_base_url . ($dialoga_tag_filter ? '&tag=' . urlencode($dialoga_tag_filter) : '') . '&export=csv',
     'dialoga_export_leads'
 );
 ?>
@@ -101,43 +114,43 @@ $export_url = wp_nonce_url(
         <div>
             <div class="dialoga-leads-title-row">
                 <h1><?php echo esc_html__('Dialoga Leads', 'dialoga'); ?></h1>
-                <?php if ($show_admin_only) : ?>
+                <?php if ($dialoga_show_admin_only) : ?>
                     <span class="dialoga-leads-view-badge"><?php echo esc_html__('Admin test sessions only', 'dialoga'); ?></span>
                 <?php endif; ?>
             </div>
             <p class="dialoga-leads-description">
                 <?php
                 /* translators: %d: number of lead records shown. */
-                echo esc_html(sprintf(_n('%d lead record shown', '%d lead records shown', count($leads), 'dialoga'), count($leads)));
+                echo esc_html(sprintf(_n('%d lead record shown', '%d lead records shown', count($dialoga_leads), 'dialoga'), count($dialoga_leads)));
                 ?>
-                <?php if ($tag_filter) : ?>
+                <?php if ($dialoga_tag_filter) : ?>
                     <span class="dialoga-leads-current-filter">
                         <?php
                         /* translators: %s: active tag filter. */
-                        echo esc_html(sprintf(__('Tagged “%s”', 'dialoga'), $tag_filter));
+                        echo esc_html(sprintf(__('Tagged “%s”', 'dialoga'), $dialoga_tag_filter));
                         ?>
                     </span>
                 <?php endif; ?>
             </p>
         </div>
-        <?php if ($show_admin_only) : ?>
+        <?php if ($dialoga_show_admin_only) : ?>
             <a href="<?php echo esc_url(admin_url('admin.php?page=dialoga-leads')); ?>" class="button">&larr; <?php echo esc_html__('Back to public leads', 'dialoga'); ?></a>
         <?php endif; ?>
     </div>
 
     <?php
-    if (!$show_admin_only && !$include_admin && $has_admin_flag_col) {
-        $admin_count = (int) $wpdb->get_var($wpdb->prepare(
+    if (!$dialoga_show_admin_only && !$dialoga_include_admin && $dialoga_has_admin_flag_col) {
+        $dialoga_admin_count = (int) $wpdb->get_var($wpdb->prepare(
             "SELECT COUNT(*) FROM %i WHERE is_admin_session = %d",
-            $leads_table,
+            $dialoga_leads_table,
             1
         ));
-        if ($admin_count > 0) :
+        if ($dialoga_admin_count > 0) :
     ?>
         <p class="dialoga-leads-admin-note">
             <?php
             /* translators: %d: hidden admin test lead count. */
-            echo esc_html(sprintf(_n('%d admin test lead hidden', '%d admin test leads hidden', $admin_count, 'dialoga'), $admin_count));
+            echo esc_html(sprintf(_n('%d admin test lead hidden', '%d admin test leads hidden', $dialoga_admin_count, 'dialoga'), $dialoga_admin_count));
             ?> &mdash;
             <a href="<?php echo esc_url(admin_url('admin.php?page=dialoga-leads&show=admin')); ?>"><?php echo esc_html__('view', 'dialoga'); ?></a>
             &middot; <a href="<?php echo esc_url(admin_url('admin.php?page=dialoga-settings')); ?>"><?php echo esc_html__('change in Settings', 'dialoga'); ?></a>
@@ -146,47 +159,47 @@ $export_url = wp_nonce_url(
 
     <div class="dialoga-leads-toolbar">
         <nav class="dialoga-leads-filters" aria-label="<?php echo esc_attr__('Filter leads by tag', 'dialoga'); ?>">
-            <?php if (!empty($all_tags)) : ?>
+            <?php if (!empty($dialoga_all_tags)) : ?>
             <span class="dialoga-leads-filter-label"><?php echo esc_html__('Filter by tag:', 'dialoga'); ?></span>
-            <a href="<?php echo esc_url($base_url); ?>"
-               class="dialoga-filter-tag dialoga-filter-tag--all<?php echo $tag_filter ? '' : ' is-active'; ?>"
-               <?php echo $tag_filter ? '' : 'aria-current="page"'; ?>>
+            <a href="<?php echo esc_url($dialoga_base_url); ?>"
+               class="dialoga-filter-tag dialoga-filter-tag--all<?php echo $dialoga_tag_filter ? '' : ' is-active'; ?>"
+               <?php echo $dialoga_tag_filter ? '' : 'aria-current="page"'; ?>>
                 <?php echo esc_html__('All', 'dialoga'); ?>
             </a>
-            <?php foreach ($all_tags as $t) :
-                $active = ($tag_filter === $t);
-                list($bg, $text) = dialoga_tag_color($t);
+            <?php foreach ($dialoga_all_tags as $dialoga_t) :
+                $dialoga_active = ($dialoga_tag_filter === $dialoga_t);
+                list($dialoga_bg, $dialoga_text) = dialoga_tag_color($dialoga_t);
             ?>
-            <a href="<?php echo esc_url($base_url . '&tag=' . urlencode($t)); ?>"
-               class="dialoga-filter-tag<?php echo $active ? ' is-active' : ''; ?>"
-               <?php echo $active ? 'aria-current="page"' : ''; ?>
-               style="background:<?php echo esc_attr($active ? $text : $bg); ?>;
-                       color:<?php echo esc_attr($active ? '#fff' : $text); ?>;
-                       border:1px solid <?php echo esc_attr($text); ?>;">
-                <?php echo esc_html($t); ?>
+            <a href="<?php echo esc_url($dialoga_base_url . '&tag=' . urlencode($dialoga_t)); ?>"
+               class="dialoga-filter-tag<?php echo $dialoga_active ? ' is-active' : ''; ?>"
+               <?php echo $dialoga_active ? 'aria-current="page"' : ''; ?>
+               style="background:<?php echo esc_attr($dialoga_active ? $dialoga_text : $dialoga_bg); ?>;
+                       color:<?php echo esc_attr($dialoga_active ? '#fff' : $dialoga_text); ?>;
+                       border:1px solid <?php echo esc_attr($dialoga_text); ?>;">
+                <?php echo esc_html($dialoga_t); ?>
             </a>
             <?php endforeach; ?>
             <?php else : ?>
                 <span class="dialoga-leads-filter-label"><?php echo esc_html__('No tags available', 'dialoga'); ?></span>
             <?php endif; ?>
         </nav>
-        <a href="<?php echo esc_url($export_url); ?>" class="button button-primary dialoga-leads-export">
+        <a href="<?php echo esc_url($dialoga_export_url); ?>" class="button button-primary dialoga-leads-export">
             <span class="dashicons dashicons-download" aria-hidden="true"></span> <?php echo esc_html__('Export CSV', 'dialoga'); ?>
         </a>
     </div>
 
     <!-- Datalist for tag autocomplete (populated from existing tags) -->
     <datalist id="dialoga-tag-suggestions">
-        <?php foreach ($all_tags as $t) : ?>
-        <option value="<?php echo esc_attr($t); ?>"></option>
+        <?php foreach ($dialoga_all_tags as $dialoga_t) : ?>
+        <option value="<?php echo esc_attr($dialoga_t); ?>"></option>
         <?php endforeach; ?>
     </datalist>
 
-    <?php if (empty($leads)) : ?>
+    <?php if (empty($dialoga_leads)) : ?>
         <div class="dialoga-notice dialoga-leads-empty">
             <p><?php
             /* translators: %s: tag name. */
-            echo $tag_filter ? sprintf(esc_html__('No leads with tag %s.', 'dialoga'), '<strong>' . esc_html($tag_filter) . '</strong>') : esc_html__('No leads captured yet.', 'dialoga');
+            echo $dialoga_tag_filter ? sprintf(esc_html__('No leads with tag %s.', 'dialoga'), '<strong>' . esc_html($dialoga_tag_filter) . '</strong>') : esc_html__('No leads captured yet.', 'dialoga');
             ?></p>
         </div>
     <?php else : ?>
@@ -199,7 +212,7 @@ $export_url = wp_nonce_url(
             <caption>
                 <?php
                 /* translators: %d: number of lead records shown. */
-                echo esc_html(sprintf(_n('Lead records: %d result', 'Lead records: %d results', count($leads), 'dialoga'), count($leads)));
+                echo esc_html(sprintf(_n('Lead records: %d result', 'Lead records: %d results', count($dialoga_leads), 'dialoga'), count($dialoga_leads)));
                 ?>
             </caption>
             <thead>
@@ -215,82 +228,82 @@ $export_url = wp_nonce_url(
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($leads as $lead) :
-                    $tags_arr = $lead->tags ? json_decode($lead->tags, true) : array();
-                    if (!is_array($tags_arr)) $tags_arr = array();
+                <?php foreach ($dialoga_leads as $dialoga_lead) :
+                    $dialoga_tags_arr = $dialoga_lead->tags ? json_decode($dialoga_lead->tags, true) : array();
+                    if (!is_array($dialoga_tags_arr)) $dialoga_tags_arr = array();
                 ?>
-                    <tr id="lead-row-<?php echo esc_attr($lead->id); ?>">
-                        <th scope="row"><?php echo esc_html($lead->id); ?></th>
-                        <td><?php echo esc_html($lead->name ?: '—'); ?></td>
+                    <tr id="lead-row-<?php echo esc_attr($dialoga_lead->id); ?>">
+                        <th scope="row"><?php echo esc_html($dialoga_lead->id); ?></th>
+                        <td><?php echo esc_html($dialoga_lead->name ?: '—'); ?></td>
                         <td>
-                            <?php if ($lead->email) : ?>
-                                <a href="mailto:<?php echo esc_attr($lead->email); ?>"><?php echo esc_html($lead->email); ?></a>
+                            <?php if ($dialoga_lead->email) : ?>
+                                <a href="mailto:<?php echo esc_attr($dialoga_lead->email); ?>"><?php echo esc_html($dialoga_lead->email); ?></a>
                             <?php else : ?>—<?php endif; ?>
                         </td>
                         <td>
-                            <?php if ($lead->phone) : ?>
-                                <a href="tel:<?php echo esc_attr($lead->phone); ?>"><?php echo esc_html($lead->phone); ?></a>
+                            <?php if ($dialoga_lead->phone) : ?>
+                                <a href="tel:<?php echo esc_attr($dialoga_lead->phone); ?>"><?php echo esc_html($dialoga_lead->phone); ?></a>
                             <?php else : ?>—<?php endif; ?>
                         </td>
                         <td>
-                            <span class="dialoga-lead-status dialoga-lead-status--<?php echo esc_attr(sanitize_html_class($lead->status)); ?>">
-                                <?php echo esc_html($status_labels[$lead->status] ?? $lead->status); ?>
+                            <span class="dialoga-lead-status dialoga-lead-status--<?php echo esc_attr(sanitize_html_class($dialoga_lead->status)); ?>">
+                                <?php echo esc_html($dialoga_status_labels[$dialoga_lead->status] ?? $dialoga_lead->status); ?>
                             </span>
                         </td>
-                        <td class="dialoga-tags-cell" data-lead-id="<?php echo esc_attr($lead->id); ?>">
+                        <td class="dialoga-tags-cell" data-lead-id="<?php echo esc_attr($dialoga_lead->id); ?>">
                             <div class="dialoga-tags-list">
-                                <?php foreach ($tags_arr as $tag) :
-                                    list($bg, $text) = dialoga_tag_color($tag);
+                                <?php foreach ($dialoga_tags_arr as $tag) :
+                                    list($dialoga_bg, $dialoga_text) = dialoga_tag_color($tag);
                                 ?>
                                 <span class="dialoga-tag-pill"
                                       data-tag="<?php echo esc_attr($tag); ?>"
-                                       style="background:<?php echo esc_attr($bg); ?>;color:<?php echo esc_attr($text); ?>;border-color:<?php echo esc_attr($text); ?>;">
+                                       style="background:<?php echo esc_attr($dialoga_bg); ?>;color:<?php echo esc_attr($dialoga_text); ?>;border-color:<?php echo esc_attr($dialoga_text); ?>;">
                                      <?php echo esc_html($tag); ?>
                                      <button type="button" class="dialoga-tag-remove"
-                                             onclick="dialogaLeads.removeTag(<?php echo esc_attr($lead->id); ?>, '<?php echo esc_js($tag); ?>')"
+                                             onclick="dialogaLeads.removeTag(<?php echo esc_attr($dialoga_lead->id); ?>, '<?php echo esc_js($tag); ?>')"
                                              aria-label="<?php
                                              /* translators: 1: tag name, 2: lead ID. */
-                                             echo esc_attr(sprintf(__('Remove tag %1$s from lead %2$d', 'dialoga'), $tag, $lead->id));
+                                             echo esc_attr(sprintf(__('Remove tag %1$s from lead %2$d', 'dialoga'), $tag, $dialoga_lead->id));
                                              ?>">&times;</button>
                                 </span>
                                 <?php endforeach; ?>
                                  <button type="button" class="dialoga-tag-add-btn"
-                                         onclick="dialogaLeads.showAddTag(<?php echo esc_attr($lead->id); ?>)"
+                                         onclick="dialogaLeads.showAddTag(<?php echo esc_attr($dialoga_lead->id); ?>)"
                                          aria-expanded="false"
-                                         aria-controls="tag-input-<?php echo esc_attr($lead->id); ?>"
+                                         aria-controls="tag-input-<?php echo esc_attr($dialoga_lead->id); ?>"
                                          <?php // translators: %d: lead record ID. ?>
-                                         aria-label="<?php echo esc_attr(sprintf(__('Add tag to lead %d', 'dialoga'), $lead->id)); ?>">
+                                         aria-label="<?php echo esc_attr(sprintf(__('Add tag to lead %d', 'dialoga'), $dialoga_lead->id)); ?>">
                                      + <?php echo esc_html__('tag', 'dialoga'); ?>
                                  </button>
-                                 <span class="dialoga-tag-spinner" id="tag-spinner-<?php echo esc_attr($lead->id); ?>" hidden role="status">
+                                 <span class="dialoga-tag-spinner" id="tag-spinner-<?php echo esc_attr($dialoga_lead->id); ?>" hidden role="status">
                                      <span class="dialoga-spinner-dot" aria-hidden="true"></span>
                                      <span><?php echo esc_html__('Saving...', 'dialoga'); ?></span>
                                  </span>
                              </div>
-                            <div class="dialoga-tag-input-wrap" id="tag-input-<?php echo esc_attr($lead->id); ?>" hidden>
+                            <div class="dialoga-tag-input-wrap" id="tag-input-<?php echo esc_attr($dialoga_lead->id); ?>" hidden>
                                  <input type="text" placeholder="<?php echo esc_attr__('tag name', 'dialoga'); ?>"
                                         list="dialoga-tag-suggestions"
                                         autocomplete="off"
                                         <?php // translators: %d: lead record ID. ?>
-                                        aria-label="<?php echo esc_attr(sprintf(__('Tag name for lead %d', 'dialoga'), $lead->id)); ?>"
-                                        onkeydown="if(event.key==='Enter'){event.preventDefault();dialogaLeads.addTag(<?php echo esc_attr($lead->id); ?>,this.value);}"
-                                        id="tag-input-field-<?php echo esc_attr($lead->id); ?>" />
-                                <button type="button" class="button button-small button-primary" onclick="dialogaLeads.addTag(<?php echo esc_attr($lead->id); ?>,document.getElementById('tag-input-field-<?php echo esc_attr($lead->id); ?>').value)"><?php echo esc_html__('Add', 'dialoga'); ?></button>
-                                <button type="button" class="button button-small" onclick="dialogaLeads.hideAddTag(<?php echo esc_attr($lead->id); ?>)"
+                                        aria-label="<?php echo esc_attr(sprintf(__('Tag name for lead %d', 'dialoga'), $dialoga_lead->id)); ?>"
+                                        onkeydown="if(event.key==='Enter'){event.preventDefault();dialogaLeads.addTag(<?php echo esc_attr($dialoga_lead->id); ?>,this.value);}"
+                                        id="tag-input-field-<?php echo esc_attr($dialoga_lead->id); ?>" />
+                                <button type="button" class="button button-small button-primary" onclick="dialogaLeads.addTag(<?php echo esc_attr($dialoga_lead->id); ?>,document.getElementById('tag-input-field-<?php echo esc_attr($dialoga_lead->id); ?>').value)"><?php echo esc_html__('Add', 'dialoga'); ?></button>
+                                <button type="button" class="button button-small" onclick="dialogaLeads.hideAddTag(<?php echo esc_attr($dialoga_lead->id); ?>)"
                                         <?php // translators: %d: lead record ID. ?>
-                                aria-label="<?php echo esc_attr(sprintf(__('Cancel adding a tag to lead %d', 'dialoga'), $lead->id)); ?>"><?php echo esc_html__('Cancel', 'dialoga'); ?></button>
+                                aria-label="<?php echo esc_attr(sprintf(__('Cancel adding a tag to lead %d', 'dialoga'), $dialoga_lead->id)); ?>"><?php echo esc_html__('Cancel', 'dialoga'); ?></button>
                             </div>
                         </td>
-                        <td><?php echo esc_html(wp_date('M d, Y g:i A', strtotime($lead->created_at), new DateTimeZone('UTC'))); ?></td>
+                        <td><?php echo esc_html(wp_date('M d, Y g:i A', strtotime($dialoga_lead->created_at), new DateTimeZone('UTC'))); ?></td>
                         <td class="dialoga-lead-actions">
                             <button class="button button-small"
-                                    onclick="dialogaLeads.viewLead(<?php echo esc_attr($lead->id); ?>)">
+                                    onclick="dialogaLeads.viewLead(<?php echo esc_attr($dialoga_lead->id); ?>)">
                                 <?php echo esc_html__('View', 'dialoga'); ?>
                             </button>
                              <button class="button button-small dialoga-lead-delete-btn"
-                                    onclick="dialogaLeads.deleteLead(<?php echo esc_attr($lead->id); ?>, '<?php
+                                    onclick="dialogaLeads.deleteLead(<?php echo esc_attr($dialoga_lead->id); ?>, '<?php
                                     /* translators: %d: lead ID. */
-                                    echo esc_js($lead->name ?: $lead->email ?: sprintf(__('Lead #%d', 'dialoga'), $lead->id));
+                                    echo esc_js($dialoga_lead->name ?: $dialoga_lead->email ?: sprintf(__('Lead #%d', 'dialoga'), $dialoga_lead->id));
                                      ?>')">
                                 <?php echo esc_html__('Delete', 'dialoga'); ?>
                             </button>

@@ -254,11 +254,11 @@ $dialoga_builder_url = admin_url('admin.php?page=dialoga-builder');
                 <div id="dialoga-roles-list">
                     <?php
                     $wp_roles = wp_roles();
-                    $available_roles = $wp_roles->get_names();
-                    foreach ($available_roles as $role_key => $role_name) {
+                    $dialoga_available_roles = $wp_roles->get_names();
+                    foreach ($dialoga_available_roles as $dialoga_role_key => $dialoga_role_name) {
                         echo '<label style="display: block; margin-bottom: 10px; padding: 8px; background: #F7F8FC; border-radius: 4px;">';
-                        echo '<input type="checkbox" class="dialoga-role-checkbox" value="' . esc_attr($role_key) . '" style="margin-right: 8px;" />';
-                        echo esc_html(translate_user_role($role_name));
+                        echo '<input type="checkbox" class="dialoga-role-checkbox" value="' . esc_attr($dialoga_role_key) . '" style="margin-right: 8px;" />';
+                        echo esc_html(translate_user_role($dialoga_role_name));
                         echo '</label>';
                     }
                     ?>

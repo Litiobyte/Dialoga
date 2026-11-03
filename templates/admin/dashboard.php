@@ -8,22 +8,22 @@ if (!defined('ABSPATH')) {
 }
 
 // Get metrics
-$conversation_metrics = Dialoga_Analytics::get_conversation_metrics();
-$lead_metrics = Dialoga_Analytics::get_lead_metrics();
-$funnel_metrics = Dialoga_Analytics::get_funnel_metrics();
+$dialoga_conversation_metrics = Dialoga_Analytics::get_conversation_metrics();
+$dialoga_lead_metrics = Dialoga_Analytics::get_lead_metrics();
+$dialoga_funnel_metrics = Dialoga_Analytics::get_funnel_metrics();
 
 global $wpdb;
-$active_flows = intval(dialoga_query_cached('dash_active_flows', static function () {
+$dialoga_active_flows = intval(dialoga_query_cached('dash_active_flows', static function () {
     global $wpdb;
     return $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %i WHERE is_active = 1", $wpdb->prefix . 'dialoga_flows'));
 }));
-$total_flows = intval(dialoga_query_cached('dash_total_flows', static function () {
+$dialoga_total_flows = intval(dialoga_query_cached('dash_total_flows', static function () {
     global $wpdb;
     return $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %i", $wpdb->prefix . 'dialoga_flows'));
 }));
 
 // Recent leads (last 5)
-$recent_leads = dialoga_query_cached('dash_recent_leads', static function () {
+$dialoga_recent_leads = dialoga_query_cached('dash_recent_leads', static function () {
     global $wpdb;
     return $wpdb->get_results($wpdb->prepare("SELECT * FROM %i ORDER BY created_at DESC LIMIT 5", $wpdb->prefix . 'dialoga_leads'));
 });
@@ -32,10 +32,10 @@ $recent_leads = dialoga_query_cached('dash_recent_leads', static function () {
 // wizard state. State is auto-saved as user_meta on every step change, then
 // cleared on wizard_complete. Deliberately no fallback to skipped — if the
 // user skipped, they don't want the resume nudge.
-$wizard_state = get_user_meta(get_current_user_id(), 'dialoga_wizard_state', true);
-$wizard_resume = null;
-if (is_array($wizard_state) && isset($wizard_state['currentStep'])) {
-    $wizard_steps = array(
+$dialoga_wizard_state = get_user_meta(get_current_user_id(), 'dialoga_wizard_state', true);
+$dialoga_wizard_resume = null;
+if (is_array($dialoga_wizard_state) && isset($dialoga_wizard_state['currentStep'])) {
+    $dialoga_wizard_steps = array(
         0 => __('Welcome', 'dialoga'),
         1 => __('AI Setup', 'dialoga'),
         2 => __('Crawl Website', 'dialoga'),
@@ -44,13 +44,19 @@ if (is_array($wizard_state) && isset($wizard_state['currentStep'])) {
         5 => __('Visibility', 'dialoga'),
         6 => __('Launch', 'dialoga'),
     );
-    $step_idx   = intval($wizard_state['currentStep']);
+    $dialoga_step_idx   = intval($dialoga_wizard_state['currentStep']);
     /* translators: %d: setup step number. */
-    $step_label = isset($wizard_steps[$step_idx]) ? $wizard_steps[$step_idx] : sprintf(__('Step %d', 'dialoga'), $step_idx + 1);
-    $total      = count($wizard_steps);
-    $percent    = min(100, max(0, round(($step_idx / max(1, $total - 1)) * 100)));
-    $updated    = isset($wizard_state['updated_at']) ? $wizard_state['updated_at'] : '';
-    $wizard_resume = compact('step_idx', 'step_label', 'total', 'percent', 'updated');
+    $dialoga_step_label = isset($dialoga_wizard_steps[$dialoga_step_idx]) ? $dialoga_wizard_steps[$dialoga_step_idx] : sprintf(__('Step %d', 'dialoga'), $dialoga_step_idx + 1);
+    $dialoga_total      = count($dialoga_wizard_steps);
+    $dialoga_percent    = min(100, max(0, round(($dialoga_step_idx / max(1, $dialoga_total - 1)) * 100)));
+    $dialoga_updated    = isset($dialoga_wizard_state['updated_at']) ? $dialoga_wizard_state['updated_at'] : '';
+    $dialoga_wizard_resume = array(
+        'step_idx'   => $dialoga_step_idx,
+        'step_label' => $dialoga_step_label,
+        'total'      => $dialoga_total,
+        'percent'    => $dialoga_percent,
+        'updated'    => $dialoga_updated,
+    );
 }
 ?>
 
@@ -72,7 +78,7 @@ if (is_array($wizard_state) && isset($wizard_state['currentStep'])) {
         </div>
     </div>
 
-    <?php if ($wizard_resume) : ?>
+    <?php if ($dialoga_wizard_resume) : ?>
     <div class="dialoga-dash-resume" id="dialoga-wizard-resume-card">
         <div class="dialoga-dash-resume-icon"><span class="dashicons dashicons-admin-tools"></span></div>
         <div class="dialoga-dash-resume-body">
@@ -80,16 +86,16 @@ if (is_array($wizard_state) && isset($wizard_state['currentStep'])) {
             <p class="dialoga-dash-resume-meta">
                 <?php
                 /* translators: %1$s: step label, %2$d: current step, %3$d: total steps. */
-                echo sprintf(esc_html__('Resuming from %1$s (step %2$d of %3$d)', 'dialoga'), '<strong>' . esc_html($wizard_resume['step_label']) . '</strong>', intval($wizard_resume['step_idx']) + 1, intval($wizard_resume['total']));
+                echo sprintf(esc_html__('Resuming from %1$s (step %2$d of %3$d)', 'dialoga'), '<strong>' . esc_html($dialoga_wizard_resume['step_label']) . '</strong>', intval($dialoga_wizard_resume['step_idx']) + 1, intval($dialoga_wizard_resume['total']));
                 ?>
-                <?php if (!empty($wizard_resume['updated'])) : ?>
+                <?php if (!empty($dialoga_wizard_resume['updated'])) : ?>
                     &middot; <?php
                     /* translators: %s: elapsed time. */
-                    echo esc_html(sprintf(__('last saved %s ago', 'dialoga'), human_time_diff(strtotime($wizard_resume['updated']), current_time('timestamp'))));
+                    echo esc_html(sprintf(__('last saved %s ago', 'dialoga'), human_time_diff(strtotime($dialoga_wizard_resume['updated']), current_time('timestamp'))));
                     ?>
                 <?php endif; ?>
             </p>
-            <div class="dialoga-dash-resume-bar"><div class="dialoga-dash-resume-bar-fill" style="width: <?php echo intval($wizard_resume['percent']); ?>%;"></div></div>
+            <div class="dialoga-dash-resume-bar"><div class="dialoga-dash-resume-bar-fill" style="width: <?php echo intval($dialoga_wizard_resume['percent']); ?>%;"></div></div>
         </div>
         <div class="dialoga-dash-resume-actions">
             <a href="<?php echo esc_url(admin_url('admin.php?page=dialoga-wizard')); ?>" class="button button-primary"><?php echo esc_html__('Resume Setup', 'dialoga'); ?></a>
@@ -98,7 +104,7 @@ if (is_array($wizard_state) && isset($wizard_state['currentStep'])) {
     </div>
     <?php endif; ?>
 
-    <?php if ($active_flows === 0 && $total_flows === 0) : ?>
+    <?php if ($dialoga_active_flows === 0 && $dialoga_total_flows === 0) : ?>
     <div class="dialoga-dash-alert dialoga-dash-alert-info">
         <?php
         /* translators: %1$s: create-flow link, %2$s: setup-wizard link. */
@@ -107,7 +113,7 @@ if (is_array($wizard_state) && isset($wizard_state['currentStep'])) {
             '<a href="' . esc_url(admin_url('admin.php?page=dialoga-wizard')) . '">' . esc_html__('run the Setup Wizard', 'dialoga') . '</a>');
         ?>
     </div>
-    <?php elseif ($active_flows === 0) : ?>
+    <?php elseif ($dialoga_active_flows === 0) : ?>
     <div class="dialoga-dash-alert dialoga-dash-alert-info">
         <?php echo esc_html__("No active flows. Your chatbot won't appear on your website until you activate a flow.", 'dialoga'); ?>
         <a href="<?php echo esc_url(admin_url('admin.php?page=dialoga-builder')); ?>"><?php echo esc_html__('Manage Flows', 'dialoga'); ?> &rarr;</a>
@@ -122,17 +128,17 @@ if (is_array($wizard_state) && isset($wizard_state['currentStep'])) {
         // are the top-of-funnel visibility metric and deserve a dedicated
         // tile. Hidden when zero (pre-v0.38.7 sites, or genuinely no traffic)
         // to avoid a confusing empty box.
-        $bubble_impressions = isset($funnel_metrics['impressions'])
-            ? (int) $funnel_metrics['impressions']
+        $dialoga_bubble_impressions = isset($dialoga_funnel_metrics['impressions'])
+            ? (int) $dialoga_funnel_metrics['impressions']
             : 0;
-        if ($bubble_impressions > 0) :
+        if ($dialoga_bubble_impressions > 0) :
         ?>
         <div class="dialoga-dash-stat">
             <div class="dialoga-dash-stat-icon dialoga-dash-stat-icon-visibility">
                 <span class="dashicons dashicons-visibility"></span>
             </div>
             <div class="dialoga-dash-stat-content">
-                <div class="dialoga-dash-stat-value"><?php echo number_format($bubble_impressions); ?></div>
+                <div class="dialoga-dash-stat-value"><?php echo number_format($dialoga_bubble_impressions); ?></div>
                 <div class="dialoga-dash-stat-label" title="<?php echo esc_attr__('Times the chat bubble was shown to real visitors on your site', 'dialoga'); ?>"><?php echo esc_html__('Bubble Shown', 'dialoga'); ?></div>
             </div>
         </div>
@@ -143,7 +149,7 @@ if (is_array($wizard_state) && isset($wizard_state['currentStep'])) {
                 <span class="dashicons dashicons-format-chat"></span>
             </div>
             <div class="dialoga-dash-stat-content">
-                <div class="dialoga-dash-stat-value"><?php echo number_format($conversation_metrics['total_conversations']); ?></div>
+                <div class="dialoga-dash-stat-value"><?php echo number_format($dialoga_conversation_metrics['total_conversations']); ?></div>
                 <div class="dialoga-dash-stat-label"><?php echo esc_html__('Conversations', 'dialoga'); ?></div>
             </div>
         </div>
@@ -153,7 +159,7 @@ if (is_array($wizard_state) && isset($wizard_state['currentStep'])) {
                 <span class="dashicons dashicons-groups"></span>
             </div>
             <div class="dialoga-dash-stat-content">
-                <div class="dialoga-dash-stat-value"><?php echo number_format($lead_metrics['total_leads']); ?></div>
+                <div class="dialoga-dash-stat-value"><?php echo number_format($dialoga_lead_metrics['total_leads']); ?></div>
                 <div class="dialoga-dash-stat-label"><?php echo esc_html__('Leads Captured', 'dialoga'); ?></div>
             </div>
         </div>
@@ -165,15 +171,15 @@ if (is_array($wizard_state) && isset($wizard_state['currentStep'])) {
         // captures AND marked Link Button clicks. Only shown when link
         // conversions are actually in play — for a lead-capture-only setup this
         // number always equals Leads Captured, so the tile would just be noise.
-        $has_link_conv_configured = !empty(Dialoga_Analytics::get_conversion_link_node_ids());
-        if ($has_link_conv_configured) :
+        $dialoga_has_link_conv_configured = !empty(Dialoga_Analytics::get_conversion_link_node_ids());
+        if ($dialoga_has_link_conv_configured) :
         ?>
         <div class="dialoga-dash-stat">
             <div class="dialoga-dash-stat-icon dialoga-dash-stat-icon-conversions">
                 <span class="dashicons dashicons-yes-alt"></span>
             </div>
             <div class="dialoga-dash-stat-content">
-                <div class="dialoga-dash-stat-value"><?php echo number_format($conversation_metrics['conversations_converted']); ?></div>
+                <div class="dialoga-dash-stat-value"><?php echo number_format($dialoga_conversation_metrics['conversations_converted']); ?></div>
                 <div class="dialoga-dash-stat-label" title="<?php echo esc_attr__('Conversations that captured a lead or triggered a marked Link Button click', 'dialoga'); ?>"><?php echo esc_html__('Total Conversions', 'dialoga'); ?></div>
             </div>
         </div>
@@ -184,7 +190,7 @@ if (is_array($wizard_state) && isset($wizard_state['currentStep'])) {
                 <span class="dashicons dashicons-chart-line"></span>
             </div>
             <div class="dialoga-dash-stat-content">
-                <div class="dialoga-dash-stat-value"><?php echo esc_html($conversation_metrics['conversion_rate']); ?>%</div>
+                <div class="dialoga-dash-stat-value"><?php echo esc_html($dialoga_conversation_metrics['conversion_rate']); ?>%</div>
                 <div class="dialoga-dash-stat-label"><?php echo esc_html__('Conversion Rate', 'dialoga'); ?></div>
             </div>
         </div>
@@ -194,7 +200,7 @@ if (is_array($wizard_state) && isset($wizard_state['currentStep'])) {
                 <span class="dashicons dashicons-randomize"></span>
             </div>
             <div class="dialoga-dash-stat-content">
-                <div class="dialoga-dash-stat-value"><?php echo intval($active_flows); ?></div>
+                <div class="dialoga-dash-stat-value"><?php echo intval($dialoga_active_flows); ?></div>
                 <div class="dialoga-dash-stat-label"><?php echo esc_html__('Active Flows', 'dialoga'); ?></div>
             </div>
         </div>
@@ -204,14 +210,14 @@ if (is_array($wizard_state) && isset($wizard_state['currentStep'])) {
          separate Advanced Analytics → Funnel report for deeper drill-down.
     -->
     <?php
-    $is_pro = function_exists('dialoga_is_pro') ? dialoga_is_pro() : (defined('DIALOGA_PRO_VERSION'));
-    $active_flow_dash = dialoga_query_cached('dash_active_flow_row', static function () {
+    $dialoga_is_pro = function_exists('dialoga_is_pro') ? dialoga_is_pro() : (defined('DIALOGA_PRO_VERSION'));
+    $dialoga_active_flow_dash = dialoga_query_cached('dash_active_flow_row', static function () {
         global $wpdb;
         return $wpdb->get_row($wpdb->prepare("SELECT id, flow_name FROM %i WHERE is_active = 1 ORDER BY id DESC LIMIT 1", $wpdb->prefix . 'dialoga_flows'));
     });
-    $drop_offs_dash   = $active_flow_dash ? Dialoga_Analytics::get_top_drop_offs($active_flow_dash->id, 3) : array();
+    $dialoga_drop_offs_dash   = $dialoga_active_flow_dash ? Dialoga_Analytics::get_top_drop_offs($dialoga_active_flow_dash->id, 3) : array();
 
-    $type_label_map = array(
+    $dialoga_type_label_map = array(
         'question' => __('Question', 'dialoga'),
         'branch'   => __('Branch', 'dialoga'),
         'action'   => __('Action', 'dialoga'),
@@ -221,44 +227,44 @@ if (is_array($wizard_state) && isset($wizard_state['currentStep'])) {
         'message'  => __('Message', 'dialoga'),
     );
     ?>
-    <?php if (!empty($drop_offs_dash)) : ?>
+    <?php if (!empty($dialoga_drop_offs_dash)) : ?>
     <div class="dialoga-dash-card dialoga-dash-card-spaced">
         <div class="dialoga-dash-card-header">
             <h3><?php echo esc_html__('Where visitors are dropping off', 'dialoga'); ?></h3>
-            <?php if ($active_flow_dash) : ?>
+            <?php if ($dialoga_active_flow_dash) : ?>
                 <span class="dialoga-dash-card-meta">
-                    <?php echo esc_html__('Active flow:', 'dialoga'); ?> <?php echo esc_html($active_flow_dash->flow_name); ?>
+                    <?php echo esc_html__('Active flow:', 'dialoga'); ?> <?php echo esc_html($dialoga_active_flow_dash->flow_name); ?>
                 </span>
             <?php endif; ?>
         </div>
         <div class="dialoga-dash-dropoffs">
-            <?php foreach ($drop_offs_dash as $i => $do) :
-                $type_pretty = $type_label_map[$do['node_type']] ?? ucfirst($do['node_type']);
+            <?php foreach ($dialoga_drop_offs_dash as $dialoga_i => $dialoga_do) :
+                $dialoga_type_pretty = $dialoga_type_label_map[$dialoga_do['node_type']] ?? ucfirst($dialoga_do['node_type']);
             ?>
             <div class="dialoga-dash-dropoff">
                 <div class="dialoga-dash-dropoff-value">
-                    <?php echo esc_html($do['drop_off_pct']); ?>%
+                    <?php echo esc_html($dialoga_do['drop_off_pct']); ?>%
                 </div>
                 <div class="dialoga-dash-dropoff-content">
                     <div class="dialoga-dash-dropoff-title">
-                        <?php echo esc_html($do['node_label']); ?>
-                        <?php if ($type_pretty) : ?>
-                            <span class="dialoga-dash-dropoff-type"><?php echo esc_html($type_pretty); ?></span>
+                        <?php echo esc_html($dialoga_do['node_label']); ?>
+                        <?php if ($dialoga_type_pretty) : ?>
+                            <span class="dialoga-dash-dropoff-type"><?php echo esc_html($dialoga_type_pretty); ?></span>
                         <?php endif; ?>
                     </div>
                     <div class="dialoga-dash-dropoff-meta">
                         <?php
                         /* translators: %1$s: visitor count, %2$s: missed visitor count. */
-                        echo esc_html(sprintf(__('%1$s visitors reached; %2$s never got here', 'dialoga'), number_format($do['views']), number_format($do['missed'])));
+                        echo esc_html(sprintf(__('%1$s visitors reached; %2$s never got here', 'dialoga'), number_format($dialoga_do['views']), number_format($dialoga_do['missed'])));
                         ?>
                     </div>
                 </div>
             </div>
             <?php endforeach; ?>
 
-            <?php if ($is_pro) : ?>
+            <?php if ($dialoga_is_pro) : ?>
             <div class="dialoga-dash-dropoff-action">
-                <a href="<?php echo esc_url(admin_url('admin.php?page=dialoga-pro-analytics&tab=funnel&flow_id=' . intval($active_flow_dash->id))); ?>"
+                <a href="<?php echo esc_url(admin_url('admin.php?page=dialoga-pro-analytics&tab=funnel&flow_id=' . intval($dialoga_active_flow_dash->id))); ?>"
                    class="dialoga-dash-card-link">
                     <?php echo esc_html__('See full funnel breakdown', 'dialoga'); ?> &rarr;
                 </a>
@@ -270,12 +276,12 @@ if (is_array($wizard_state) && isset($wizard_state['currentStep'])) {
 
     <!-- Flows Overview -->
     <?php
-    $all_flows = dialoga_query_cached('dash_recent_flows', static function () {
+    $dialoga_all_flows = dialoga_query_cached('dash_recent_flows', static function () {
         global $wpdb;
         return $wpdb->get_results($wpdb->prepare("SELECT id, flow_name, is_active, created_at FROM %i ORDER BY created_at DESC LIMIT 5", $wpdb->prefix . 'dialoga_flows'));
     });
     ?>
-    <?php if (!empty($all_flows)) : ?>
+    <?php if (!empty($dialoga_all_flows)) : ?>
     <div class="dialoga-dash-card dialoga-dash-card-spaced">
         <div class="dialoga-dash-card-header">
             <h3><?php echo esc_html__('Your Flows', 'dialoga'); ?></h3>
@@ -292,21 +298,21 @@ if (is_array($wizard_state) && isset($wizard_state['currentStep'])) {
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($all_flows as $flow) : ?>
+                <?php foreach ($dialoga_all_flows as $dialoga_flow) : ?>
                 <tr>
                     <th scope="row">
-                        <a href="<?php echo esc_url(add_query_arg('flow_id', intval($flow->id), admin_url('admin.php?page=dialoga-builder'))); ?>">
-                            <?php echo esc_html($flow->flow_name ?: __('Untitled Flow', 'dialoga')); ?>
+                        <a href="<?php echo esc_url(add_query_arg('flow_id', intval($dialoga_flow->id), admin_url('admin.php?page=dialoga-builder'))); ?>">
+                            <?php echo esc_html($dialoga_flow->flow_name ?: __('Untitled Flow', 'dialoga')); ?>
                         </a>
                     </th>
                     <td>
-                        <?php if ($flow->is_active) : ?>
+                        <?php if ($dialoga_flow->is_active) : ?>
                             <span class="dialoga-dash-badge dialoga-dash-badge-active"><?php echo esc_html__('Active', 'dialoga'); ?></span>
                         <?php else : ?>
                             <span class="dialoga-dash-badge dialoga-dash-badge-inactive"><?php echo esc_html__('Inactive', 'dialoga'); ?></span>
                         <?php endif; ?>
                     </td>
-                    <td><?php echo esc_html(wp_date('M j, Y', strtotime($flow->created_at), new DateTimeZone('UTC'))); ?></td>
+                    <td><?php echo esc_html(wp_date('M j, Y', strtotime($dialoga_flow->created_at), new DateTimeZone('UTC'))); ?></td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -324,7 +330,7 @@ if (is_array($wizard_state) && isset($wizard_state['currentStep'])) {
                 <h3><?php echo esc_html__('Recent Leads', 'dialoga'); ?></h3>
                 <a href="<?php echo esc_url(admin_url('admin.php?page=dialoga-leads')); ?>"><?php echo esc_html__('View All', 'dialoga'); ?> &rarr;</a>
             </div>
-            <?php if (!empty($recent_leads)) : ?>
+            <?php if (!empty($dialoga_recent_leads)) : ?>
             <div class="dialoga-table-scroll" tabindex="0">
             <table class="dialoga-dash-table">
                 <caption class="screen-reader-text"><?php echo esc_html__('Recent Leads', 'dialoga'); ?></caption>
@@ -336,15 +342,15 @@ if (is_array($wizard_state) && isset($wizard_state['currentStep'])) {
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($recent_leads as $lead) :
-                        $data = json_decode($lead->lead_data, true) ?: array();
-                        $name = $data['name'] ?? $data['full_name'] ?? '-';
-                        $email = $data['email'] ?? '-';
+                    <?php foreach ($dialoga_recent_leads as $dialoga_lead) :
+                        $dialoga_data = json_decode($dialoga_lead->lead_data, true) ?: array();
+                        $dialoga_name = $dialoga_data['name'] ?? $dialoga_data['full_name'] ?? '-';
+                        $dialoga_email = $dialoga_data['email'] ?? '-';
                     ?>
                     <tr>
-                        <th scope="row"><?php echo esc_html($name); ?></th>
-                        <td><?php echo esc_html($email); ?></td>
-                        <td><?php echo esc_html(wp_date('M j', strtotime($lead->created_at), new DateTimeZone('UTC'))); ?></td>
+                        <th scope="row"><?php echo esc_html($dialoga_name); ?></th>
+                        <td><?php echo esc_html($dialoga_email); ?></td>
+                        <td><?php echo esc_html(wp_date('M j', strtotime($dialoga_lead->created_at), new DateTimeZone('UTC'))); ?></td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -389,32 +395,32 @@ if (is_array($wizard_state) && isset($wizard_state['currentStep'])) {
                 // Free users get sent to dialoga.io/pricing in a new tab
                 // (clearer than routing them to a partial-featured page
                 // that just shows an upgrade block at the bottom).
-                $is_pro = function_exists('dialoga_is_pro') && dialoga_is_pro();
-                $upgrade_url = function_exists('dialoga_upgrade_url') ? dialoga_upgrade_url() : 'https://www.litiobyte.com/labs-detalle.php?slug=dialoga';
-                $convo_url = $is_pro
+                $dialoga_is_pro = function_exists('dialoga_is_pro') && dialoga_is_pro();
+                $dialoga_upgrade_url = function_exists('dialoga_upgrade_url') ? dialoga_upgrade_url() : 'https://www.litiobyte.com/labs-detalle.php?slug=dialoga';
+                $dialoga_convo_url = $dialoga_is_pro
                     ? admin_url('admin.php?page=dialoga-pro-analytics&tab=conversations')
-                    : $upgrade_url;
-                $adv_url = $is_pro
+                    : $dialoga_upgrade_url;
+                $dialoga_adv_url = $dialoga_is_pro
                     ? admin_url('admin.php?page=dialoga-pro-analytics&tab=performance')
-                    : $upgrade_url;
-                $gated_class    = $is_pro ? 'dialoga-dash-link' : 'dialoga-dash-link is-gated';
-                $gated_target   = $is_pro ? '' : ' target="_blank" rel="noopener"';
+                    : $dialoga_upgrade_url;
+                $dialoga_gated_class    = $dialoga_is_pro ? 'dialoga-dash-link' : 'dialoga-dash-link is-gated';
+                $dialoga_gated_target   = $dialoga_is_pro ? '' : ' target="_blank" rel="noopener"';
                 ?>
-                <a href="<?php echo esc_url($convo_url); ?>" class="<?php echo esc_attr($gated_class); ?>"<?php echo wp_kses_post($gated_target); ?>>
+                <a href="<?php echo esc_url($dialoga_convo_url); ?>" class="<?php echo esc_attr($dialoga_gated_class); ?>"<?php echo wp_kses_post($dialoga_gated_target); ?>>
                     <span class="dashicons dashicons-format-chat dialoga-dash-icon-purple"></span>
                     <div>
                         <strong><?php echo esc_html__('Conversations', 'dialoga'); ?></strong>
                         <span><?php echo esc_html__('Read every chat your visitors had', 'dialoga'); ?></span>
                     </div>
-                    <?php if (!$is_pro) : ?><span class="dialoga-pro-pill">Pro</span><?php endif; ?>
+                    <?php if (!$dialoga_is_pro) : ?><span class="dialoga-pro-pill">Pro</span><?php endif; ?>
                 </a>
-                <a href="<?php echo esc_url($adv_url); ?>" class="<?php echo esc_attr($gated_class); ?>"<?php echo wp_kses_post($gated_target); ?>>
+                <a href="<?php echo esc_url($dialoga_adv_url); ?>" class="<?php echo esc_attr($dialoga_gated_class); ?>"<?php echo wp_kses_post($dialoga_gated_target); ?>>
                     <span class="dashicons dashicons-chart-pie dialoga-dash-icon-pink"></span>
                     <div>
                         <strong><?php echo esc_html__('Advanced Analytics', 'dialoga'); ?></strong>
                         <span><?php echo esc_html__('Funnel, heatmap, flow performance', 'dialoga'); ?></span>
                     </div>
-                    <?php if (!$is_pro) : ?><span class="dialoga-pro-pill">Pro</span><?php endif; ?>
+                    <?php if (!$dialoga_is_pro) : ?><span class="dialoga-pro-pill">Pro</span><?php endif; ?>
                 </a>
                 <a href="<?php echo esc_url(admin_url('admin.php?page=dialoga-ai-settings')); ?>" class="dialoga-dash-link">
                     <span class="dashicons dashicons-admin-site-alt3 dialoga-dash-icon-purple"></span>
@@ -444,7 +450,7 @@ if (is_array($wizard_state) && isset($wizard_state['currentStep'])) {
 
 </div>
 
-<?php if ($wizard_resume) : ?>
+<?php if ($dialoga_wizard_resume) : ?>
 <?php
 $dialoga_wizard_dismiss_js = "(function() {\n"
     . "    var t = function(s) { return (dialogaAdmin.i18n || {})[s] || s; };\n"

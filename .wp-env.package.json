@@ -1,0 +1,14 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/wp-env.json",
+  "phpVersion": "8.2",
+  "plugins": [],
+  "port": 8890,
+  "testsEnvironment": false,
+  "mappings": {
+    "tmp/dialoga-package": "./build"
+  },
+  "config": {
+    "WP_DEBUG": true,
+    "WP_DEBUG_LOG": true
+  }
+}

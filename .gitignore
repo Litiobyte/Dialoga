@@ -10,3 +10,4 @@ Dialoga/
 Dialoga.zip
 .wp-env.override.json
 plugin-check-report.json
+build/

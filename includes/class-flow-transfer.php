@@ -16,15 +16,21 @@ class Dialoga_Flow_Transfer {
 
     private static function authorize() {
         if (!check_ajax_referer('dialoga_nonce', 'nonce', false)) {
-            throw new RuntimeException(__('Security check failed.', 'dialoga'), 403);
+            self::deny(__('Security check failed.', 'dialoga'));
         }
         if (!current_user_can('manage_options')) {
-            throw new RuntimeException(__('Insufficient permissions.', 'dialoga'), 403);
+            self::deny(__('Insufficient permissions.', 'dialoga'));
         }
     }
 
+    private static function deny($message) {
+        // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- the only consumer is error_response(), which sanitize_text_field()s getMessage() before wp_send_json_error(); esc_html() here would double-encode.
+        throw new RuntimeException(sanitize_text_field($message), 403);
+    }
+
     private static function fail($message) {
-        throw new InvalidArgumentException($message, 400);
+        // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- same single consumer as deny(); see above.
+        throw new InvalidArgumentException(sanitize_text_field($message), 400);
     }
 
     private static function decode($raw, $field) {

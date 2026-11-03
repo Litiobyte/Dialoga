@@ -1,13 +1,15 @@
+
 {
+  "$schema": "https://schemas.wp.org/trunk/wp-env.json",
   "phpVersion": "8.2",
-  "plugins": [],
+  "plugins": ["."],
   "port": 8888,
-  "mappings": {
-    "wp-content/plugins/dialoga": "."
-  },
+  "testsEnvironment": false,
   "config": {
     "WP_DEBUG": true,
-    "WP_DEBUG_LOG": true
+    "WP_DEBUG_LOG": true,
+    "WP_DEBUG_DISPLAY": false,
+    "SCRIPT_DEBUG": true
   },
   "lifecycleScripts": {
     "afterStart": "npx wp-env run cli wp plugin install plugin-check --activate"
